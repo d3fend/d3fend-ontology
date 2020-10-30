@@ -83,8 +83,8 @@ if __name__ == "__main__":
 
     # Serialize to different formats
     #g.serialize(destination="d3fend-test.xml", base=base, format="pretty-xml")
-    g.serialize(destination=f"{output_fname}.xml", base=base)
-    log(f"Wrote: {output_fname}.xml")
+    g.serialize(destination=f"{output_fname}.owl", base=base)
+    log(f"Wrote: {output_fname}.owl")
     g.serialize(destination=f"{output_fname}.ttl", base=base, format="ttl")
     log(f"Wrote: {output_fname}.ttl")
     g.serialize(destination=f"{output_fname}.json", format="json-ld")

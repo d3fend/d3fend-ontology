@@ -2,6 +2,7 @@ SHELL ?= /usr/local/bin/bash
 
 build: ## npm run build and move to public folder
 	pipenv run python process.py
+	pipenv run python makecsv.py
 
 all: build ## the whole thing
 
