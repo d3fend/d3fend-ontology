@@ -2,8 +2,10 @@ import http.client
 import json
 import csv
 
-conn = http.client.HTTPConnection("d3fend.mitre.org")
-conn.request("GET", "http://api.d3fend.mitre.org/techniques/table")
+#conn = http.client.HTTPConnection("d3fend.mitre.org")
+conn = http.client.HTTPConnection("localhost:8000")
+#conn.request("GET", "https://api.d3fend.mitre.org/techniques/table")
+conn.request("GET", "http://localhost:8000/techniques/table")
 r1 = conn.getresponse()
 d3fend = json.loads(r1.read())
 
