@@ -1,5 +1,14 @@
 SHELL ?= /usr/local/bin/bash
 
+install-deps:
+	mkdir -p bin
+	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
+	chmod +x bin/robot
+	curl https://d3fend.pages.mitre.org/deps/robot/robot.jar > bin/robot.jar
+
+report:
+	./bin/robot report -i d3fend.owl
+
 build: ## npm run build and move to public folder
 	pipenv run python process.py
 	pipenv run python makecsv.py
