@@ -13,6 +13,19 @@ build: ## npm run build and move to public folder
 	pipenv run python process.py
 	pipenv run python makecsv.py
 
+filter-architecture-star:
+	./bin/robot extract --method STAR \
+    	--input d3fend.owl \
+    	--term-file termfile-architecture.txt \
+    	--output d3fend-architecture.owl
+
+filter-architecture-MIREOT:
+	./bin/robot extract --method MIREOT \
+    	--input d3fend.owl \
+		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode" \
+		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
+    	--output d3fend-architecture.owl
+
 all: build ## the whole thing
 
 help: ##print out this message
