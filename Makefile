@@ -10,6 +10,7 @@ report:
 	./bin/robot report -i d3fend.owl
 
 build: ## npm run build and move to public folder
+    # insert robot out to d3fend-robot.owl, process.py then reads d3fend-robot.
 	pipenv run python process.py
 	pipenv run python makecsv.py
 
