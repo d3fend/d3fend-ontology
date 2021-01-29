@@ -23,8 +23,8 @@ def log(message, error=False, info=False):
 
 def get_graph():
     g = Graph()
-    g.parse("d3fend-webprotege.owl")
-    log("Parsed d3fend-webprotege.owl")
+    g.parse("d3fend-robot.owl")
+    log("Parsed d3fend-robot.owl")
     log(f"The graph has {len(g)} triples", info=True)
     return g
 
