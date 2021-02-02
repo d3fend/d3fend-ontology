@@ -1,5 +1,8 @@
 SHELL ?= /usr/local/bin/bash
 
+clean:
+	rm -Rf build/*
+
 install-deps:
 	mkdir -p bin
 	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
@@ -13,19 +16,22 @@ report:
 robot-fails-with-ttl-in-d3fend-robot_owl-file-dammit:
 	./bin/robot query --format owl \
 		--input d3fend-webprotege.owl \
-		--query Restrictions-as-ObjectProperties.rq d3fend-robot.owl
+		--query Restrictions-as-ObjectProperties.rq build/d3fend-robot.owl
 
 robot-res-as-prop: ## Extracts and translates just restrictions -> object property assertions
 	./bin/robot query --input d3fend-webprotege.owl \
-		--query Restrictions-as-ObjectProperties.rq d3fend-res-as-prop.ttl
-	./bin/robot convert --input d3fend-robot.ttl --output d3fend-res-as-prop.owl
+		--query Restrictions-as-ObjectProperties.rq build/d3fend-res-as-prop.owl
+#	./bin/robot convert --input d3fend-robot.owl --output d3fend-res-as-prop.owl
 
 robot: robot-res-as-prop ## Adds in object property assertions for class property restrictions
 	./bin/robot merge --input d3fend-webprotege.owl \
-		--input d3fend-res-as-prop.owl \
-		--output d3fend-robot.owl
+		--input build/d3fend-res-as-prop.owl \
+		--output build/d3fend-robot.owl
 
-build: robot ## npm run build and move to public folder
+builddir:
+	mkdir -p build/
+
+build: 	builddir robot ## npm run build and move to public folder
 	pipenv run python process.py
 	pipenv run python makecsv.py
 
