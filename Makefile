@@ -32,8 +32,9 @@ builddir:
 	mkdir -p build/
 
 build: 	builddir robot ## npm run build and move to public folder
+	cp build/d3fend-robot.owl d3fend-full.owl  # TODO refactor
 	pipenv run python process.py
-	pipenv run python makecsv.py
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py
 
 filter-architecture-star:
 	./bin/robot extract --method STAR \
@@ -47,6 +48,13 @@ filter-architecture-MIREOT:
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode" \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
 		--output d3fend-architecture.owl
+
+clean:
+	rm -f d3fend.*
+	rm -f d3fend-webprotege.json 
+	rm -f d3fend-architecture*
+	rm -f d3fend-full.owl
+	rm -f build/*
 
 all: build ## the whole thing
 
