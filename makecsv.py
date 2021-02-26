@@ -31,6 +31,11 @@ def recurse_node(node, depth=0, indent_char=",", log=False, tactic=""):
                 except KeyError:
                     #lines.append(indent_char * depth + child['rdfs:label'])
                     print( "WARNING: EXCLUDED Technique - NO DEFINITION FOR: " + child['rdfs:label'])
+                except:
+                    print("tactic:" + str(tactic))
+                    print("child:" + child)
+                    print("depth:" + str(depth))
+                    raise
 
 
 

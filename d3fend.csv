@@ -6,20 +6,20 @@ Harden,,Process Segment Execution Prevention,,Preventing execution of any addres
 Harden,,Segment Address Offset Randomization,,Randomizing the base (start) address of one or more segments of memory during the initialization of a process.
 Harden,,Stack Frame Canary Verification,,Comparing a value stored in a stack frame with a known good value in order to prevent or detect a memory segment overwrite.
 Harden,Credential Hardening,,,
-Harden,,Multi-factor Authentication,,Requiring proof of two or more pieces of evidence in order to authenticate a user.
-Harden,,Strong Password Policy,,Modifying system configuration to increase password strength.
-Harden,,One-time Password,,A one-time password is valid for only one user authentication.
 Harden,,Certificate Pinning,,Persisting either a server’s X509 certificate or their public key and comparing that to server’s presented identity to allow for greater client confidence in the remote server’s identity for SSL connections.
+Harden,,Multi-factor Authentication,,Requiring proof of two or more pieces of evidence in order to authenticate a user.
+Harden,,One-time Password,,A one-time password is valid for only one user authentication.
+Harden,,Strong Password Policy,,Modifying system configuration to increase password strength.
 Harden,Platform Hardening,,,
+Harden,,Disk Encryption,,Encrypting a hard disk partition to prevent cleartext access to a file system.
 Harden,,Driver Load Integrity Checking,,Ensuring the integrity of drivers loaded during initialization of the operating system.
 Harden,,File Signature Authentication,,Using a digital signature to authenticate a file before opening.
-Harden,,TPM Boot Integrity,,Assuring the integrity of a platform by demonstrating that the boot process starts from a trusted combination of hardware and software and continues until the operating system has fully booted and applications are running.  Sometimes called Static Root of Trust Measurement (STRM).
-Harden,,Disk Encryption,,Encrypting a hard disk partition to prevent cleartext access to a file system.
 Harden,,RF Shielding,,Adding physical barriers to a platform to prevent undesired radio interference.
+Harden,,TPM Boot Integrity,,Assuring the integrity of a platform by demonstrating that the boot process starts from a trusted combination of hardware and software and continues until the operating system has fully booted and applications are running.  Sometimes called Static Root of Trust Measurement (STRM).
 Harden,Message Hardening,,,
-Harden,,Message Authentication,,Verifying a message is from the expected sender.
-Harden,,Transfer Agent Authentication,,Validating that server components of a messaging infrastructure are authorized to send a particular message.
+Harden,,Message Authentication,,Authenticating the sender of a message and ensuring message integrity.
 Harden,,Message Encryption,,Encrypting a message body using asymmetric or symmetric cryptography.
+Harden,,Transfer Agent Authentication,,Validating that server components of a messaging infrastructure are authorized to send a particular message.
 Detect,Network Traffic Analysis,,,
 Detect,,Administrative Network Activity Analysis,,Detection of unauthorized use of administrative network protocols by analyzing network activity against a baseline.
 Detect,,Certificate Analysis,,
@@ -50,6 +50,7 @@ Detect,,Web Session Activity Analysis,,Monitoring changes in user web session be
 Detect,Process Analysis,,,
 Detect,,Database Query String Analysis,,Analyzing database queries to detect [SQL Injection](https://capec.mitre.org/data/definitions/66.html).
 Detect,,File Access Pattern Analysis,,Analyzing the files accessed by a process to identify unauthorized activity.
+Detect,,Indirect Branch Call Analysis,,Analyzing vendor specific branch call recording in order to detect ROP style attacks.
 Detect,,Process Code Segment Verification,,"Comparing the ""text"" or ""code"" memory segments to a source of truth."
 Detect,,Process Lineage Analysis,,"Identification of suspicious processes executing on an end-point device by examining the ancestry and siblings of a process, and the associated metadata of each node on the tree, such as process execution, duration, and order relative to siblings and ancestors."
 Detect,,Process Self-Modification Detection,,"Detects processes that modify, change, or replace their own code at runtime."
@@ -59,13 +60,12 @@ Detect,,Shadow Stack Comparisons,,Comparing a call stack in system memory with a
 Detect,,System Call Analysis,,Analyzing system calls to determine whether a process is exhibiting unauthorized behavior.
 Detect,File Analysis,,,
 Detect,,Dynamic Analysis,,"Executing or opening a file in a synthetic ""sandbox"" environment to determine if the file is a malicious program or if the file exploits another program such as a document reader."
+Detect,,Emulated File Analysis,,Emulating instructions in a file looking for specific patterns.
 Detect,,File Content Rules,,Employing a pattern matching rule language to analyze files.
 Detect,,File Hashing,,Employing file hash comparisons to detect known malware.
-Detect,,Emulated File Analysis,,Emulating instructions in a file looking for specific patterns.
-Detect,Identifier Analysis,,,
-Detect,,Homoglyph Detection,,Comparing strings using a variety of techniques to determine if a deceptive or malicious string is being presented to a user.
-Detect,,URL Analysis,,Determining if a URL is benign or malicious by analyzing the URL or its components.
 Detect,Operating System Monitoring,,,
+Detect,,Endpoint Health Beacon,,"Monitoring the security status of an endpoint by sending periodic messages with health status, where absence of a response may indicate that the endpoint has been compromised."
+Detect,,Input Device Analysis,,Operating system level mechanisms to prevent abusive input device exploitation.
 Detect,,Local Account Monitoring,,Analyzing changes to local user accounts to detect unauthorized modifications.
 Detect,,Memory Boundary Tracking,,Analyzing a call stack for return addresses which point to unexpected  memory locations.
 Detect,,Scheduled Job Analysis,,"Analysis of source files, processes, destination files, or destination servers associated with a scheduled job to detect unauthorized use of job scheduling."
@@ -73,8 +73,9 @@ Detect,,System Daemon Monitoring,,Tracking changes to the state or configuration
 Detect,,System File Analysis,,
 Detect,,,Service Binary Verification,Analyzing changes in service binary files by comparing to a source of truth.
 Detect,,User Session Init Config Analysis,,Analyzing modifications to user session config files such as .bashrc or .bash_profile.
-Detect,,Endpoint Health Beacon,,"Monitoring the security status of an endpoint by sending periodic messages with health status, where absence of a response may indicate that the endpoint has been compromised."
-Detect,,Input Device Analysis,,Operating system level mechanisms to prevent abusive input device exploitation.
+Detect,Identifier Analysis,,,
+Detect,,Homoglyph Detection,,Comparing strings using a variety of techniques to determine if a deceptive or malicious string is being presented to a user.
+Detect,,URL Analysis,,Determining if a URL is benign or malicious by analyzing the URL or its components.
 Detect,Message Analysis,,,
 Detect,,Sender MTA Reputation Analysis,,Characterizing the reputation of mail transfer agents (MTA) to determine the security risk in emails.
 Detect,,Sender Reputation Analysis,,Ascertaining sender reputation based on information associated with a message (e.g. email/instant messaging).
@@ -84,12 +85,12 @@ Isolate,,DNS Blacklisting,,
 Isolate,,,Forward Resolution Domain Blacklisting,
 Isolate,,,Hierarchical Domain Blacklisting,Blocking the resolution of any subdomain of a specified domain name.
 Isolate,,,Homoglyph Blacklisting,Blocking DNS queries that are deceptively similar to legitimate domain names.
-Isolate,,,Forward Resolution IP Blacklisting,Blocking a DNS lookup based on the answer’s IP address value.
-Isolate,,,Reverse Resolution Domain Blacklisting,Blocking a reverse DNS lookup based on the answer’s domain name value.
+Isolate,,,Forward Resolution IP Blacklisting,Blocking a DNS lookup's answer's IP address value.
+Isolate,,,Reverse Resolution Domain Blacklisting,Blocking a reverse DNS lookup's answer’s domain name value.
 Isolate,,,Reverse Resolution IP Blacklisting,Blocking a reverse lookup based on the query’s IP address value.
+Isolate,,Encrypted Tunnels,,Encrypted encapsulation of routable network traffic.
 Isolate,,Inbound Traffic Filtering,,Restricting network traffic originating from untrusted networks destined towards a private host or enclave.
 Isolate,,Outbound Traffic Filtering,,Restricting network traffic originating from a private host or enclave destined towards untrusted networks.
-Isolate,,Encrypted Tunnels,,Encrypted encapsulation of routable network traffic.
 Isolate,Execution Isolation,,,
 Isolate,,Executable Blacklisting,,Blocking the execution of files on a host in accordance with defined application policy rules.
 Isolate,,Hardware-Based Process Isolation,,Preventing one process from writing to the memory space of another process through hardware based address manager implementations.
