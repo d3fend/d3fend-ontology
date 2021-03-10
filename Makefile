@@ -31,7 +31,7 @@ robot: robot-res-as-prop ## Adds in object property assertions for class propert
 builddir:
 	mkdir -p build/
 
-build: 	builddir robot ## npm run build and move to public folder
+build: 	builddir robot filter-architecture-MIREOT ## npm run build and move to public folder
 	cp build/d3fend-robot.owl d3fend-full.owl  # TODO refactor
 	pipenv run python process.py
 	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py
