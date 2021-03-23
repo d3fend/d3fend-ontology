@@ -1,7 +1,11 @@
 SHELL ?= /usr/local/bin/bash
 
 clean:
-	rm -Rf build/*
+	rm -f d3fend.*
+	rm -f d3fend-webprotege.json 
+	rm -f d3fend-architecture*
+	rm -f d3fend-full.owl
+	rm -f build/*
 
 install-deps:
 	mkdir -p bin
@@ -12,16 +16,9 @@ install-deps:
 report:
 	./bin/robot report -i d3fend.owl
 
-# WTH robot!? ttl isn't just default, it's only thing? DELETE TARGET AFTER DISCUSSION
-robot-fails-with-ttl-in-d3fend-robot_owl-file-dammit:
-	./bin/robot query --format owl \
-		--input d3fend-webprotege.owl \
-		--query Restrictions-as-ObjectProperties.rq build/d3fend-robot.owl
-
 robot-res-as-prop: ## Extracts and translates just restrictions -> object property assertions
 	./bin/robot query --input d3fend-webprotege.owl \
 		--query Restrictions-as-ObjectProperties.rq build/d3fend-res-as-prop.owl
-#	./bin/robot convert --input d3fend-robot.owl --output d3fend-res-as-prop.owl
 
 robot: robot-res-as-prop ## Adds in object property assertions for class property restrictions
 	./bin/robot merge --input d3fend-webprotege.owl \
@@ -31,10 +28,12 @@ robot: robot-res-as-prop ## Adds in object property assertions for class propert
 builddir:
 	mkdir -p build/
 
-build: 	builddir robot ## npm run build and move to public folder
+make-techniques-table-and-deploy: # Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py # TODO: refactor cert out of relative home/~?
+
+build: 	builddir robot ## npm run build and move to public folder 
 	cp build/d3fend-robot.owl d3fend-full.owl  # TODO refactor
-	pipenv run python process.py
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py
+	pipenv run python3 process.py
 
 filter-architecture-star:
 	./bin/robot extract --method STAR \
@@ -49,14 +48,7 @@ filter-architecture-MIREOT:
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
 		--output d3fend-architecture.owl
 
-clean:
-	rm -f d3fend.*
-	rm -f d3fend-webprotege.json 
-	rm -f d3fend-architecture*
-	rm -f d3fend-full.owl
-	rm -f build/*
-
-all: build ## the whole thing
+all: build make-techniques-table-and-deploy # build & deploy
 
 help: ##print out this message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
