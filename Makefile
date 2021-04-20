@@ -13,8 +13,14 @@ install-deps:
 	chmod +x bin/robot
 	curl https://d3fend.pages.mitre.org/deps/robot/robot.jar > bin/robot.jar
 
-report:
-	./bin/robot report -i d3fend.owl
+# See also how to configure one's own checks and labels for checks for report:
+#   http://robot.obolibrary.org/report#labels
+#   http://robot.obolibrary.org/report_queries/
+# 
+# A copy of robot's default_profile.txt extracted from robot.jar as convenient reference.
+# The report target is currently coded to not fail as some errors are not blockers yet.
+report: ## Generate d3fend-full-robot-report.txt on ontology source issues
+	./bin/robot report -i d3fend-full.owl --profile custom-report-profile.txt --fail-on none > robot-report.txt
 
 robot-res-as-prop: ## Extracts and translates just restrictions -> object property assertions
 	./bin/robot query --input d3fend-webprotege.owl \
