@@ -1,0 +1,19 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+CONSTRUCT { ?subject_subclass ?property ?object_class . }
+# SELECT ?subject_subclass ?property ?object_class
+WHERE {
+    VALUES ?poss_subject_class { d3f:OffensiveTechnique d3f:OffensiveTactic d3f:DefensiveTechnique d3f:DefensiveTactic d3f:DigitalArtifact } .
+    ?subject_class rdfs:subClassOf+ ?poss_subject_class .
+    ?restriction a owl:Restriction .
+    ?subject_class rdfs:subClassOf ?restriction .
+
+    # All subject class' children classes also need reified relations
+    ?subject_subclass rdfs:subClassOf* ?subject_class . 
+    ?restriction owl:onProperty ?property .
+    ?property rdfs:subPropertyOf* d3f:may-be-associated-with .
+    ?restriction owl:someValuesFrom ?object_class .
+}
+# ORDER BY ?subject_subclass ?property ?object_class
