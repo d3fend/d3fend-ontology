@@ -24,7 +24,7 @@ report: ## Generate d3fend-full-robot-report.txt on ontology source issues
 
 robot-res-as-prop: ## Extracts and translates just restrictions -> object property assertions
 	./bin/robot query --input d3fend-webprotege.owl \
-		--query Restrictions-as-ObjectProperties.rq build/d3fend-res-as-prop.owl
+		--query restrictions-as-objectproperties.rq build/d3fend-res-as-prop.owl
 
 robot: robot-res-as-prop ## Adds in object property assertions for class property restrictions
 	./bin/robot merge --input d3fend-webprotege.owl \
