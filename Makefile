@@ -41,15 +41,15 @@ build: 	builddir robot filter-architecture-MIREOT ## npm run build and move to p
 	cp build/d3fend-robot.owl d3fend-full.owl  # TODO refactor
 	pipenv run python3 process.py
 
-filter-architecture-star:
+filter-architecture-star: ## Requires termfile-architecture.txt for extracted classes
 	./bin/robot extract --method STAR \
-		--input d3fend.owl \
+		--input d3fend-webprotege.owl \
 		--term-file termfile-architecture.txt \
 		--output d3fend-architecture.owl
 
 filter-architecture-MIREOT:
 	./bin/robot extract --method MIREOT \
-		--input d3fend.owl \
+		--input d3fend-webprotege.owl \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode" \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
 		--output d3fend-architecture.owl
