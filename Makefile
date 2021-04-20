@@ -37,7 +37,7 @@ builddir:
 make-techniques-table-and-deploy: # Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
 	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py # TODO: refactor cert out of relative home/~?
 
-build: 	builddir robot ## npm run build and move to public folder 
+build: 	builddir robot filter-architecture-MIREOT ## npm run build and move to public folder
 	cp build/d3fend-robot.owl d3fend-full.owl  # TODO refactor
 	pipenv run python3 process.py
 
