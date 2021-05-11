@@ -2,6 +2,7 @@ import json
 from rdflib import Graph, Namespace, URIRef
 import pyld
 
+PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public.owl"
 
 class colors:
     HEADER = '\033[95m'
@@ -23,32 +24,11 @@ def log(message, error=False, info=False):
 
 def get_graph():
     g = Graph()
-    g.parse("build/d3fend-robot.owl")
-    log("Parsed build/d3fend-robot.owl")
+    filename = PUBLIC_ONTOLOGY_FILEPATH
+    g.parse(filename)
+    log(filename)
     log(f"The graph has {len(g)} triples", info=True)
     return g
-
-
-remove_triple_sparql_sparql = """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
-
-
-DELETE WHERE {
-    ?rs %s ?ro .
-}"""
-
-
-remove_d3fend_private_sparql = """
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
-
-DELETE WHERE {
-    ?s ?p ?o .
-    ?p rdfs:subPropertyOf d3f:d3fend-private-annotation .
-}
-"""
 
     
 if __name__ == "__main__":
@@ -59,50 +39,28 @@ if __name__ == "__main__":
     _base = "http://d3fend.mitre.org/ontologies/d3fend.owl"
     _xmlns = _base + "#"
 
-    base = URIRef("http://d3fend.mitre.org/ontologies/d3fend.owl")
     xmlns = Namespace(_xmlns)
+    g.namespace_manager.bind('', xmlns, override=True, replace=True)
+    ## Unbind may be indicated if desire serialization to manifest
+    ## 'd3f:' prefix instead of ':' (i.e., empty prefix). See
+    ## https://github.com/RDFLib/rdflib/issues/543.  Unbind operator
+    ## not available in latest release (5.0.0) yet.
+    # g.namespace_manager.unbind('') 
     d3f = Namespace(_xmlns)
+    g.namespace_manager.bind('d3f', d3f, override=True, replace=True)
 
-    g.namespace_manager.bind('', xmlns, override = True, replace=True)
-    #g.namespace_manager.bind('base', base, override = True, replace=True)
-    g.namespace_manager.bind('d3f', d3f, override = True, replace=True)
-
-
-    # Filter development content
-    g.update(remove_d3fend_private_sparql)
-    log("Deleted all: ?p rdfs:subPropertyOf* d3f:d3fend-private-annotation")
-
-    triples = [
-        "d3f:todo",
-        "d3f:comment",
-        "d3f:d3fend-private-annotation"
-    ]
-    for triple in triples:
-        g.update(remove_triple_sparql_sparql % triple)
-        log(f"Removing {triple} predicates")
-
+    for ns in g.namespaces():
+        log('%s:%s' % (ns), info=True)
+    
     # Serialize to different formats
-    #g.serialize(destination="d3fend-test.xml", base=base, format="pretty-xml")
-    g.serialize(destination=f"{output_fname}.owl", base=base)
+    base_uri = URIRef(_base)
+    g.serialize(destination=f"{output_fname}.owl", base=base_uri)
     log(f"Wrote: {output_fname}.owl")
-    g.serialize(destination=f"{output_fname}.ttl", base=base, format="ttl")
+    g.serialize(destination=f"{output_fname}.ttl", format="ttl")
     log(f"Wrote: {output_fname}.ttl")
+
+    
     g.serialize(destination=f"{output_fname}.json", format="json-ld")
     log(f"wrote: {output_fname}.json")
-
-
-    # with open(f"{output_fname}-rdflib.json") as f:
-        
-    #     expanded_jsonld = json.load(f)
-    #     context = { x[0]:x[1].__str__() for x in g.namespaces() if x[0]}
-    #     with open(f"{output_fname}.json", "+w") as output_file:
-    #         output_file.write(pyld.jsonld.compact(expanded_jsonld, context, 
-    #             options=dict(
-    #                 compactArrays=False,
-    #                 base=base
-    #                 )
-    #             )
-    #         )
-    #         log(f"wrote: {output_fname}.json")
 
     log(f"The graph now has {len(g)} triples", info=True)
