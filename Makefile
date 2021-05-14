@@ -97,7 +97,7 @@ build/d3fend-full.owl:	build/d3fend-res-as-prop.owl build/d3fend-trimmed-literal
 # NOTE: The hermit reasoner in Protege makes inferences as expected,
 # but [AFAICT, in preliminary try] it did not pick up on transitive
 # inferences nor modifies-part AFAICT.  Deferred until after first
-# public release of DEFEND.
+# public release of D3FEND.
 #
 # TODO When ready, add this back as final pre-public step and rewicker
 # filenames to establish build chain dependency/sequencing.
@@ -108,23 +108,31 @@ build/d3fend-full.owl:	build/d3fend-res-as-prop.owl build/d3fend-trimmed-literal
 # 		--input build/d3fend-full.owl \
 # 	        --output build/d3fend-materialized.owl
 
-# May use file for terms later
-#
-# TODO add sub-step for generating json-ld output of ontology with
-# python rdflib or OWLReady script.
-build/d3fend-public.owl:	build/d3fend-full.owl ## Clears out references and a-box content for public releases.
+build/d3fend-public-no-private-annotations.owl: 	build/d3fend-full.owl
 	./bin/robot remove --input build/d3fend-full.owl \
 	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "dcterms: http://purl.org/dc/terms/" \
 		--term d3f:d3fend-private-annotation \
-		--term d3f:d3fend-analysis-object-property \
-		--term d3f:D3FENDAnalyst \
-		--term d3f:D3FENDAnalysisThing \
-		--term d3f:TechniqueAssertion \
+		--select "self descendants instances" \
+	        --output build/d3fend-public-no-private-annotations.owl
+
+build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
+	./bin/robot remove --input build/d3fend-public-no-private-annotations.owl \
+	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
+		--add-prefix "dcterms: http://purl.org/dc/terms/" \
 		--term d3f:AnalysisCitation \
-		--select "individuals self children descendants instances" \
-		--axioms "annotation abox" \
-		--output build/d3fend-public.owl
+		--term d3f:AssertionConfidence \
+		--term d3f:D3FENDAnalysisThing \
+		--term d3f:D3FENDAnalyst \
+		--term d3f:FormFactor \
+		--term d3f:License \
+		--term d3f:OSSupport \
+		--term d3f:Product \
+		--term d3f:ProductDeveloper \
+		--term d3f:SupportLevel \
+		--term d3f:TechniqueAssertion \
+		--select instances \
+	        --output build/d3fend-public.owl
 
 # Got todo and comment through inheritance
 #		--term d3f:todo \
@@ -138,10 +146,10 @@ build/d3fend-public.owl:	build/d3fend-full.owl ## Clears out references and a-bo
 # Trimming doesn't help
 #		--trim true \
 
-reportdir:
+reportsdir:
 	mkdir -p reports/
 
-reports:	reportdir general-report missing-def-tech-comment-report missing-dao-comment-report ## Generates all reports for ontology quality checks
+reports:	reportsdir general-report missing-def-tech-comment-report missing-dao-comment-report ## Generates all reports for ontology quality checks
 
 robot:	add-header reports fix-has-links fix-whitespace-literals res-as-prop merge-prop public
 
@@ -158,30 +166,30 @@ d3fend-architecture.owl:
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
 		--output d3fend-architecture.owl
 
-build: 	builddir build/d3fend-public.owl d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build: 	builddir build/d3fend-full.owl build/d3fend-public.owl d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 process.py # expects a build/d3fend-public.owl file
 	cp build/d3fend-full.owl d3fend-full.owl
 
 # Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
-test-load-owl:	## Used to check d3fend.owl file as parseable and useable for DL profile.
-	-./bin/robot validate-profile --prefixes d3fend-prefixes.json --profile DL --input d3fend.owl --output reports/owl-validation.txt
+test-load-owl:	reportsdir ## Used to check d3fend.owl file as parseable and useable for DL profile.
+	-./bin/robot validate-profile --prefixes d3fend-prefixes.json --profile DL --input d3fend.owl --output reports/owl-validation.txt > reports/owl-validation-stdout.txt
 
 # Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
-test-load-ttl:  ## Used to check d3fend.ttl file as parseable and useable for DL profile.
-	-./bin/robot validate-profile --profile DL --input d3fend.ttl --output reports/ttl-validation.txt
+test-load-ttl:	reportsdir ## Used to check d3fend.ttl file as parseable and useable for DL profile.
+	-./bin/robot validate-profile --profile DL --input d3fend.ttl --output reports/ttl-validation.txt > reports/ttl-validation-stdout.txt
 
-test-load-json: ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
+test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
 #	./bin/robot validate-profile --profile DL --input d3fend.json --output reports/json-validation.txt # JSON-LD serialized by RDFlib not read by ROBOT or Protege
 	pipenv run python3 test_load_json.py
 	echo "RDFLib parsed d3fend.json successfully" > reports/json-validation.txt
 
 # Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
-test-load-full: ## Used to check d3fend-full.owl as parseable and useable for DL profile.
-	-./bin/robot validate-profile --profile DL --input d3fend-full.owl --output reports/full-validation.txt
+test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
+	-./bin/robot validate-profile --profile DL --input d3fend-full.owl --output reports/full-validation.txt > reports/full-validation-stdout.txt
 
 test-load-files:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
 
-all: build test-load-files make-techniques-table-and-deploy ## build & deploy as table (.csv)
+all: clean build test-load-files make-techniques-table-and-deploy ## build & deploy as table (.csv)
 
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
