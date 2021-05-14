@@ -4438,10 +4438,12 @@ Container images become containers at runtime and in the case of Docker containe
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemCall"/>
         <executes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Subroutine"/>
-        <rdfs:comment>A low-level Windows systems call for spawning (creating new) processes.</rdfs:comment>
+        <rdfs:comment>A process spawn refers to a function that loads and executes a new child process.The current process may wait for the child to terminate or may continue to execute asynchronously. Creating a new subprocess requires enough memory in which both the child process and the current program can execute. There is a family of spawn functions in DOS, inherited by Microsoft Windows. There is also a different family of spawn functions in an optional extension of the POSIX standards.  Fork-exec is another technique combining two Unix system calls, which can effect a process spawn.</rdfs:comment>
         <rdfs:label>Create Process</rdfs:label>
         <rdfs:seeAlso rdf:resource="http://dbpedia.org/page/Spawn_(computing)"/>
         <rdfs:seeAlso rdf:resource="https://docs.microsoft.com/en-us/windows/win32/procthread/creating-processes"/>
+        <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/Fork%E2%80%93exec"/>
+        <skos:altLabel>Process Spawn</skos:altLabel>
     </owl:Class>
     
 
@@ -14073,20 +14075,6 @@ Many operating systems, software frameworks and programs include a logging syste
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-    </owl:Class>
-    
-
-
-    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessSpawn -->
-
-    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessSpawn">
-        <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemServiceApplication"/>
-        <contains rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
-        <contains rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OperatingSystemFile"/>
-        <rdfs:comment>A process spawn refers to a function that loads and executes a new child process.The current process may wait for the child to terminate or may continue to execute asynchronously. Creating a new subprocess requires enough memory in which both the child process and the current program can execute. There is a family of spawn functions in DOS, inherited by Microsoft Windows. There is also a different family of spawn functions in an optional extension of the POSIX standards.  Fork-exec is another technique combining two Unix system calls, which can effect a process spawn.</rdfs:comment>
-        <rdfs:isDefinedBy rdf:resource="https://en.wikipedia.org/wiki/Spawn_(computing)"/>
-        <rdfs:label>Process Spawn</rdfs:label>
-        <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/Fork%E2%80%93exec"/>
     </owl:Class>
     
 
@@ -30393,8 +30381,8 @@ Using either Certificate Revocation Lists (CRLs) or Online Certificate Status Pr
 * The revocation service (OCSP or CRL) may be down during our connection and a browser will need to make a decision will need to be made about trusting the connection</kb-article>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <rdfs:label>Active Certificate Analysis</rdfs:label>
-        <rdfs:comment>Actively collecting certificates and analyzing them.</rdfs:comment>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CertificateFile"/>
+        <rdfs:comment>Actively collecting certificates and analyzing them.</rdfs:comment>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#AdministrativeNetworkActivityAnalysis">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
@@ -30421,6 +30409,7 @@ Exploits may, for example, rely on knowledge of addresses in a process&apos;s me
         <definition>Removing tokens or credentials from an authentication cache to prevent further user associated account accesses.</definition>
         <rdfs:label>Authentication Cache Invalidation</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Evict"/>
+        <disables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Credential"/>
         <kb-article>## How it works
 Applications can locally cache user authentication credentials for certain server connections. An application may attempt to use the cached credential for a connection. If the cached credentials exist then the user will not be typically prompted for new credentials.
 
@@ -30430,7 +30419,6 @@ Are these cached credentials only on the local host? Can they be persisted to th
 
 ## Examples
 Windows Credential Management API</kb-article>
-        <disables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Credential"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#AuthenticationEventThresholding">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
@@ -30528,8 +30516,8 @@ Certificate Analysis ensures that the data elements of the certificate are curre
 TLS certificates are designed to expire to ensure that the cryptographic keys are forced to be changed on a regular basis. The certificates in the trust path also expire and can cause a break in the trust chain. This means that even if a server certificate is updated correctly, intermediate certificates can expire and the trust chain is not maintained. This can cause services to become unavailable.</kb-article>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CertificateFile"/>
         <definition>Analyzing Public Key Infrastructure certificates to detect if they have been misconfigured or spoofed using both network traffic, certificate fields and third-party logs.</definition>
-        <rdfs:label>Certificate Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <rdfs:label>Certificate Analysis</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#CertificatePinning">
         <kb-article>## How it works
@@ -30559,8 +30547,8 @@ An extension of PKP is Subject Public Key Information Pinning (SPKI) includes pu
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Client-serverPayloadProfiling">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <rdfs:label>Client-server Payload Profiling</rdfs:label>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkTraffic"/>
         <definition>Comparing client-server request and response payloads to a baseline profile to identify outliers.</definition>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkTraffic"/>
         <kb-article>## How it works
 Profiling request and response payloads across multiple clients to a single server to develop a baseline of their characteristics. May take into account request/response sizes, entropy, frequency, and rhythm. Finally, identify outliers as they may indicate a malicious payload delivery and subsequent server exploitation.
 
@@ -30590,8 +30578,8 @@ A connected honeynet provides a tradeoff between emulating certain functionality
         <rdfs:label>Connected Honeynet</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ConnectionAttemptAnalysis">
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <definition>Detecting network reconnaissance scans in a computer network environment.</definition>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#IntranetNetworkTraffic"/>
         <rdfs:label>Connection Attempt Analysis</rdfs:label>
         <kb-article>## How it works
@@ -30650,8 +30638,8 @@ Detection of potential compromise of files on the hard disk could be done with a
 
 ## Considerations
 Effective implementation requires identifying any location that could end up containing credentials, and detecting an method of potential access to a source of credential data.</kb-article>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Credential"/>
         <rdfs:label>Credential Compromise Scope Analysis</rdfs:label>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Credential"/>
         <definition>Determining which credentials maybe have been compromised by analyzing the user logon history of a particular system.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialEviction">
@@ -30711,8 +30699,8 @@ This technique does not check for content hosted at the domain.
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DNSWhitelisting">
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundInternetDNSLookupTraffic"/>
         <rdfs:label>DNS Whitelisting</rdfs:label>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <rdfs:comment>Permitting only approved domains and their subdomains to be resolved.</rdfs:comment>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DatabaseQueryStringAnalysis">
         <rdfs:label>Database Query String Analysis</rdfs:label>
@@ -30759,8 +30747,8 @@ Systems in a decoy environment are typically configured so that some detectable 
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyFile">
         <definition>A file created for the purposes of deceiving an adversary.</definition>
-        <rdfs:label>Decoy File</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
+        <rdfs:label>Decoy File</rdfs:label>
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#File"/>
         <kb-article>## How it works
 The decoy file is made available as a local or network resource. Accesses to the file may be monitored. The files may be configurations, documents, executables, or other file types.
@@ -30800,13 +30788,13 @@ Decoy objects are typically configured with detectable means of communication bu
         <definition>A Decoy Object is created and deployed for the purposes of deceiving attackers.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyPersona">
+        <definition>Establishing a fake online identity to misdirect, deceive, and or interact with adversaries.</definition>
         <kb-article>## How it works
 A false online identity is created for the purposes of interacting with adversaries in a direct or indirect manner. This includes the associated email addresses, social media accounts, and other online communication profiles.
 
 ## Considerations
 * Include phone numbers and online social profiles as well as automatically or manually responding to contact made to the persona to improve realism.
 * Continuous updating and managing the decoy personas and online activity streams to ensure personas do not become stale and outdated.</kb-article>
-        <definition>Establishing a fake online identity to misdirect, deceive, and or interact with adversaries.</definition>
         <rdfs:label>Decoy Persona</rdfs:label>
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#User"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
@@ -30819,8 +30807,8 @@ Publicly released media includes press release, videos, or other marketing colla
 * Information used in decoy public released media must contain enough realism to deceive and provide interaction from adversaries.
 * Continuous development, creation, and distribution of media and identifiers are needed to ensure adversary interaction continues over time.
 * Decoy public releases could be placed on platforms with different degrees of ownership, including entirely enterprise-owned infrastructure, IaaS, and SaaS (including social applications). Platforms that are not entirely enterprise-owned may be more likely to gather information</kb-article>
-        <rdfs:label>Decoy Public Release</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
+        <rdfs:label>Decoy Public Release</rdfs:label>
         <definition>Issuing publicly released media to deceive adversaries.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoySessionToken">
@@ -30840,6 +30828,7 @@ Usage of decoy session tokens may be monitored to track attacker behavior or oth
         <rdfs:label>Decoy User Credential</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Credential"/>
+        <definition>A Credential created for the purpose of deceiving an adversary.</definition>
         <kb-article>## How it works
 A detection analytic is developed to determine when a user uses decoy credentials. Subsequent actions by that user may be monitored or controlled by the defender.
 
@@ -30850,7 +30839,6 @@ A credential may be:
 ## Considerations
 * Decoy credentials should be integrated with a larger decoy environment to ensure that when decoy credentials are compromised, the credentials are used to interact with a decoy asset that is being monitored.
 * Continuous maintenance and updates are needed to ensure the legitimacy of the larger decoy environment and specifically the assets that utilize the decoy credentials.</kb-article>
-        <definition>A Credential created for the purpose of deceiving an adversary.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasion">
         <rdfs:label>Defense Evasion</rdfs:label>
@@ -30972,8 +30960,8 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
         <skos:altLabel>Exception Handler Validation</skos:altLabel>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableBlacklisting">
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <rdfs:label>Executable Blacklisting</rdfs:label>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
         <definition>Blocking the execution of files on a host in accordance with defined application policy rules.</definition>
         <kb-article>## How it works
@@ -31043,9 +31031,9 @@ Certain file access actions may not be statistically different from benign activ
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <rdfs:label>File Analysis</rdfs:label>
         <todo>Do we want employed-by *and* enables?  If so, need to define and comment in ontology with annotations.</todo>
-        <definition>File Analysis is an analytic process to determine a file&apos;s status. For example: virus, trojan, benign, malicious, trusted, unauthorized, sensitive, etc.</definition>
         <kb-article>## Technique Overview
 Some techniques use file signatures or file metadata to compare against historical collections of malware. Files may also be compared against a source of ground truth such as cryptographic signatures. Examining files for potential malware using pattern matching against file contents/file behavior. Binary code may be dissembled and analyzed for predictive malware behavior, such as API call signatures. Analysis might occur within a protected environment such as a sandbox or live system.</kb-article>
+        <definition>File Analysis is an analytic process to determine a file&apos;s status. For example: virus, trojan, benign, malicious, trusted, unauthorized, sensitive, etc.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FileCarving">
         <rdfs:label>File Carving</rdfs:label>
@@ -31076,8 +31064,8 @@ Rules, often called signatures, are used for both generic and targeted malware d
  * YARA
  * ClamAV</kb-article>
         <definition>Employing a pattern matching rule language to analyze files.</definition>
-        <skos:altLabel>File Content Signatures</skos:altLabel>
         <rdfs:label>File Content Rules</rdfs:label>
+        <skos:altLabel>File Content Signatures</skos:altLabel>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FileHashing">
@@ -31088,8 +31076,8 @@ This technique requires a list of hashes to compare a file against.
 ## Considerations
 Performance on large files or very large numbers of files.</kb-article>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#File"/>
         <rdfs:label>File Hashing</rdfs:label>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#File"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FileSignatureAuthentication">
         <rdfs:label>File Signature Authentication</rdfs:label>
@@ -31265,25 +31253,25 @@ The blacklisted named components also include consideration for fonts or Unicode
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Email"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#URL"/>
         <definition>Comparing strings using a variety of techniques to determine if a deceptive or malicious string is being presented to a user.</definition>
-        <rdfs:label>Homoglyph Detection</rdfs:label>
         <kb-article>## How it works
 A homoglyph, in this context, is a deceptive string or word which looks like a trusted word, but is composed of different characters, for example: goooogle.com versus google.com. This is commonly found in phishing and typo squatting attacks where a human exploiting through a social engineering campaign. It is crucial that network activity monitoring detects traffic to homoglyph DNS names and reports it.
 
 ## Considerations 
 * In very large environments processing DNS queries can be computationally expensive due to the amount of traffic that is generated 
 * Legitimate companies and products use non-dictionary words in their names that could result in many false positives</kb-article>
+        <rdfs:label>Homoglyph Detection</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Hostname">
         <rdfs:isDefinedBy rdf:resource="https://dbpedia.org/page/Hostname"/>
-        <skos:altLabel>Nodename</skos:altLabel>
         <rdfs:label>Hostname</rdfs:label>
+        <skos:altLabel>Nodename</skos:altLabel>
         <rdfs:comment>In computer networking, a hostname (archaically nodename) is a label that is assigned to a device connected to a computer network and that is used to identify the device in various forms of electronic communication, such as the World Wide Web. Hostnames may be simple names consisting of a single word or phrase, or they may be structured.</rdfs:comment>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#IPCTrafficAnalysis">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <skos:altLabel>IPC Analysis</skos:altLabel>
-        <definition>Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.</definition>
         <todo>Rec&apos;d delete analyzes itself (same class).  Intent was probably to capture target DAOs for IPC.  Some IPC is between processes on same machine, and not just process analysis.  System Calls/Streams/Pipes/Mesg Queues covered?</todo>
+        <definition>Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.</definition>
         <kb-article>## How it works
 Inter process communication enables applications or threads to share data. This can involve one or more computers. Monitoring IPC in your environment can reveal abnormal or malicious activity.
 IPC can occur within a single computer or between multiple computers remotely through network protocols. Thus there are multiple ways to collect and monitor these exchanges between processes. A network protocol analyzer may monitor and parse SMB network traffic to record system activity. A host based monitoring agent may monitor IPC activity contained within a single host to look for deviations from standard usages.
@@ -31308,14 +31296,14 @@ IPC can occur within a single computer or between multiple computers remotely th
         <rdfs:label>Impact</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundSessionVolumeAnalysis">
-        <rdfs:label>Inbound Session Volume Analysis</rdfs:label>
         <kb-article>## How it works
 Network appliances are configured to alert on certain packets that typically are involved in DoS attacks. Typical packets include ICMP packets and SYN requests that are commonly used to flood networks. A sampling period is used to define a time window in which collected counts of the identified packets can be measured. If the collected number of packets exceeds a predefined limit then an alert is generated.
 
 ## Considerations
 Scalability as volume of attacks increase; single servers may not have the memory and storage resources to handle high volumes of network traffic.</kb-article>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundInternetNetworkTraffic"/>
+        <rdfs:label>Inbound Session Volume Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundInternetNetworkTraffic"/>
         <definition>Analyzing inbound network session or connection attempt volume.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundTrafficFiltering">
@@ -31480,8 +31468,8 @@ If the kernel itself has a vulnerability, the isolation policy can be circumvent
 
  * Linux C-Groups, and policy engines like SELinux and AppArmor
  * Windows Mandatory Integrity Control introduced in Windows Vista</kb-article>
-        <isolates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
+        <isolates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <definition>Preventing one process from writing to the memory space of another process with kernel based software.</definition>
         <rdfs:label>Kernel-based Process Isolation</rdfs:label>
     </rdf:Description>
@@ -31489,23 +31477,23 @@ If the kernel itself has a vulnerability, the isolation policy can be circumvent
         <rdfs:label>Lateral Movement</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#MemoryBoundaryTracking">
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <kb-article>## How it works
 This technique monitors for indicators of whether a return address is outside memory previously allocated for an object (i.e. function, module, process, or thread). If so, code that the return address points to is treated as malicious code.
 
 ## Considerations
 Kernel malware can manipulate memory contents, for example modifying pointers to hide processes, and thereby impact the accuracy of memory allocation information used to perform the analysis.</kb-article>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessCodeSegment"/>
         <rdfs:label>Memory Boundary Tracking</rdfs:label>
         <definition>Analyzing a call stack for return addresses which point to unexpected  memory locations.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#MessageAnalysis">
         <skos:altLabel>Email &amp; Messaging Analysis</skos:altLabel>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <rdfs:label>Message Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserToUserMessage"/>
-        <definition>Analyzing email or instant message content to detect unauthorized activity.</definition>
+        <rdfs:label>Message Analysis</rdfs:label>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <skos:altLabel>Electronic Message Analysis</skos:altLabel>
+        <definition>Analyzing email or instant message content to detect unauthorized activity.</definition>
         <kb-article>## Technique Overview
 
 Email and messaging are frequently used to deliver malicious content to targets. These enterprise capabilities are used to deliver software exploits or social engineering tricks. If the recipient of a message trusts the sender, attackers can avoid escalating suspicion.
@@ -31561,8 +31549,8 @@ When logging into an account users present two or more credentials that fall int
 ## Considerations
 MFA configuration steps may vary across accounts and in some cases left up to users to activate and implement.</kb-article>
         <definition>Requiring proof of two or more pieces of evidence in order to authenticate a user.</definition>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <authenticates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserAccount"/>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <rdfs:label>Multi-factor Authentication</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkIsolation">
@@ -31629,6 +31617,7 @@ Operating System Monitoring Techniques have varied implementations including bui
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundTrafficFiltering">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <rdfs:label>Outbound Traffic Filtering</rdfs:label>
+        <definition>Restricting network traffic originating from a private host or enclave destined towards untrusted networks.</definition>
         <kb-article>## How it works
 
 Outbound traffic, in this context, is network traffic originating from a private host or enclave destined towards untrusted networks.
@@ -31655,7 +31644,6 @@ There are various strategies for developing filtering rulesets:
 - iptables (Linux)
 - Windows Firewall
 - pf (BSD)</kb-article>
-        <definition>Restricting network traffic originating from a private host or enclave destined towards untrusted networks.</definition>
         <filters rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkTraffic"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PassiveCertificateAnalysis">
@@ -31764,8 +31752,8 @@ A know potential limitation of PACs concerns signing gadgets. Under certain circ
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessCodeSegmentVerification">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
-        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessCodeSegment"/>
         <rdfs:label>Process Code Segment Verification</rdfs:label>
+        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessCodeSegment"/>
         <kb-article>## How it works
 A process code segment is an executable portion of computer memory allocated to a particular process. Process Code Segment Verification implements verification to compare a process code segment to some expected value. 
 
@@ -31803,8 +31791,8 @@ False negatives can occur via alteration of the verification logic or source of 
 * Verification that requests an operation to be performed on a subset of the code segment could be evaded by performing that operation on a copy of the relevant bytes of the code segment.
 
 * Verification based on a system of record that can be altered may fail if that system of record is modifiable by a malicious user.</kb-article>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <definition>Comparing the &quot;text&quot; or &quot;code&quot; memory segments to a source of truth.</definition>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessEviction">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Evict"/>
@@ -31823,8 +31811,8 @@ For example, Microsoft Word may block execution of any subprocess that is not in
 * Processes may hide from various means of detection; an example on Linux is where a rootkit might remove key files for the process from its directory in /proc.
 * Zombie processes.</kb-article>
         <definition>Identification of suspicious processes executing on an end-point device by examining the ancestry and siblings of a process, and the associated metadata of each node on the tree, such as process execution, duration, and order relative to siblings and ancestors.</definition>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessTree"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessTree"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <rdfs:label>Process Lineage Analysis</rdfs:label>
     </rdf:Description>
@@ -31893,6 +31881,7 @@ Some POSIX OSes can spawn processes without forking, using ```posixspawn()``` or
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessTermination">
         <terminates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <todo>Research on the proprietary methods.  This might include directly overwriting process memory, altering system data structures which relate to processes, changing the operating system task scheduler, or other low-level nonstandard operations that cause a process to cease its own intended operation.</todo>
+        <definition>Terminating a running application process on a computer system.</definition>
         <kb-article>## How it works
 
 Processes are managed by the operating system kernel.  Different operating system kernels manage the creation and termination of processes in a different manner, and expose this functionality via the kernel API.
@@ -31981,7 +31970,6 @@ Systems which are only accessible via a remote in-band connection may become ina
 
 ### Subsystems
 Processes that are started in a subsystem might not be fully terminated if they are terminated using the command for that subsystem.  For example, in the Windows Subsystem for Linux (WSL), processes started and terminated via WSL calls such as with the `kill` command in Bash may still have an entry in the Windows process table.</kb-article>
-        <definition>Terminating a running application process on a computer system.</definition>
         <rdfs:label>Process Termination</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Evict"/>
     </rdf:Description>
@@ -32004,9 +31992,6 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#RPCTrafficAnalysis">
         <rdfs:label>RPC Traffic Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#RPCNetworkTraffic"/>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <definition>Monitoring the activity of remote procedure calls in communication traffic to establish standard protocol operations and potential attacker activities.</definition>
-        <skos:altLabel>RPC Protocol Analysis</skos:altLabel>
         <kb-article>## How it works
 A remote procedure call (RPC) enables one computer to execute a specific function on another computer, as if it were a local application process. There are numerous RPC specifications and implementations. RPC capabilities can be abused by attackers in order to achieve a variety of tactical objectives including execution, persistence, initial access, and more. RPC proxies may be used to collect and store RPC traffic. RPCs can occur over network sockets or named pipes.
 
@@ -32029,21 +32014,23 @@ Example RPC Protocols:
 
 ## Considerations
 * RPC is widely used in enterprise environments, and significant data filtering may be required in large environments to enable analytic processing.
-
 * RPC traffic may occur over a pipe, or within a host over loopback interface, thus making network collection difficult.</kb-article>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <definition>Monitoring the activity of remote procedure calls in communication traffic to establish standard protocol operations and potential attacker activities.</definition>
+        <skos:altLabel>RPC Protocol Analysis</skos:altLabel>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#RelayPatternAnalysis">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundInternetNetworkTraffic"/>
         <kb-article>## How it works
 A relay may use a variety of proxying, forwarding, or routing technologies to bridge a protected network with an external network. A defensive analytic to detect a relay network may compare the network sessions among multiple hosts. Hosts which have nearly similar network statistics may be part of a relay network. The statistics may include number of bytes sent to and from, time of session initiation, packet size, or packet arrival time data.
 
 ## Considerations
 
 Complex intranet VPNs or routing encapsulation may affect the detection analytics.  In addition, unwanted packets might not be forwarded, and additional packets may be added at the relay, further complicating detection.</kb-article>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundInternetNetworkTraffic"/>
         <skos:altLabel>Relay Network Detection</skos:altLabel>
-        <rdfs:label>Relay Pattern Analysis</rdfs:label>
         <definition>The detection of an internal host relaying traffic between the internal network and the external network.</definition>
+        <rdfs:label>Relay Pattern Analysis</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#RemoteTerminalSessionDetection">
         <kb-article>## How it works
@@ -32067,8 +32054,8 @@ Analysis algorithms look for patterns in the network traffic captured from the s
 * Full packet capture is required which can be process intensive to analyze
 * Attackers that move low and slow may blend in with existing traffic resulting in false negatives</kb-article>
         <rdfs:label>Remote Terminal Session Detection</rdfs:label>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkTraffic"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkTraffic"/>
         <definition>Detection of an unauthorized remote live terminal console session by examining network traffic to a network host.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ResourceAccessPatternAnalysis">
@@ -32129,8 +32116,8 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ScheduledJobAnalysis">
         <definition>Analysis of source files, processes, destination files, or destination servers associated with a scheduled job to detect unauthorized use of job scheduling.</definition>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <rdfs:label>Scheduled Job Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#TaskSchedule"/>
+        <rdfs:label>Scheduled Job Analysis</rdfs:label>
         <skos:altLabel>Scheduled Job Execution</skos:altLabel>
         <kb-article>## How it works
 Scheduled job execution can be utilized by adversaries for the purpose of persistence, conducting remote execution, or gaining privileges. Details of a scheduled job such as associated source files, processes, destination files, or destination servers are first identified and analyzed and then compared against an anti-malware signature database, whitelist, or reputation server. For example, a file associated with a scheduled job to be executed at a specified time or a remote server that is accessed as part of a scheduled task is compared against an anti-malware signature database, whitelist, or reputation server, and if a match is found, execution is denied and an alert is generated.
@@ -32176,6 +32163,7 @@ If an attacker wants to inject some data into the program, for example as a para
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SenderMTAReputationAnalysis">
         <definition>Characterizing the reputation of mail transfer agents (MTA) to determine the security risk in emails.</definition>
         <rdfs:label>Sender MTA Reputation Analysis</rdfs:label>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <kb-article>## How it works
 The sender message transfer agent (MTA) trust rating can be considered an indicator of the level of security risk and/or a trust level associated with sender MTAs in an email header.
 
@@ -32191,7 +32179,6 @@ For example, higher values for the length of time an MTA has interacted with the
 
 ## Considerations
 Legitimate emails from a sender MTA may receive a lower trust rating over time if the sender’s domain gets spoofed and is used to send unauthorized emails.</kb-article>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserToUserMessage"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Email"/>
     </rdf:Description>
@@ -32225,8 +32212,8 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceBinaryVerification">
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OperatingSystemFile"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceApplication"/>
         <definition>Analyzing changes in service binary files by comparing to a source of truth.</definition>
+        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceApplication"/>
         <rdfs:label>Service Binary Verification</rdfs:label>
         <kb-article>## How it works
 System service applications may originate from the operating system installation or third-party applications installed with administrative privileges. These services have an entry point of some executable file-- a binary or a script. Attackers sometimes modify these executables to launch their own code. Analyzing changes in these files may uncover unauthorized activity.
@@ -32246,8 +32233,8 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
 ## Considerations
 * Potential for false positives from anomalies that are not associated with malicious activity.
 * Attackers may not differentiate their session duration enough to trigger an alert.</kb-article>
-        <skos:altLabel>Session Duration Analytics</skos:altLabel>
         <definition>Analyzing the duration of user sessions in order to detect unauthorized  activity.</definition>
+        <skos:altLabel>Session Duration Analytics</skos:altLabel>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ShadowStackComparisons">
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#StackFrame"/>
@@ -32296,13 +32283,13 @@ A vulnerability such as a write-what-where condition that allows one to write da
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#StandaloneHoneynet">
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#IntranetNetwork"/>
+        <definition>An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems.</definition>
         <rdfs:label>Standalone Honeynet</rdfs:label>
         <kb-article>## How it works
 A standalone honeynet does not directly interact with the real enterprise environment. It may be located near or in some portion of the enterprise address space, but it does not interact with enterprise resources.
 
 ## Considerations
 A standalone honeynet is a lower risk to deploy compared to connected or integrated honeynets due to its isolation from the enterprise network. However, this comes at cost in loss of fidelity and realism. Significant extra effort must be made in order to make the environment look realistic.</kb-article>
-        <definition>An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems.</definition>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
         <manages rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyObjects"/>
     </rdf:Description>
@@ -32350,8 +32337,8 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
 [1] [Syscalls](http://man7.org/linux/man-pages/man2/syscalls.2.html)
 
 [2] [Hooking](https://en.wikipedia.org/wiki/Hooking)</kb-article>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <definition>Analyzing system calls to determine whether a process is exhibiting unauthorized behavior.</definition>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <rdfs:label>System Call Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemCall"/>
     </rdf:Description>
@@ -32402,6 +32389,7 @@ https://trustedcomputinggroup.org/wp-content/uploads/TCG_TNC_TAP_Use_Cases_v1r0p
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#TransferAgentAuthentication">
         <rdfs:label>Transfer Agent Authentication</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
+        <definition>Validating that server components of a messaging infrastructure are authorized to send a particular message.</definition>
         <kb-article>## How it works
 Transfer Agent Authentication can be accomplished in different ways for depending on the protocol. In Email,  Sender Policy Framework (SPF), Domain Key Identified Email (DKIM) or Domain-based Message Authentication Reporting and Conformance (DMARC) to validate sender domain ownership.
 
@@ -32419,7 +32407,6 @@ DMARC is an email policy and authentication protocol that seeks to ensure that t
 - Using SPF without DKIM and DMARC verifies the Return-Path domain however does not prevent spoofing of the displayed From: address. 
 - Parts of an email that are not signed or verified by email authentication methods, such as the message body or the header To: and Subject: fields, can be altered or modified. 
 - Email message authentication does not replace the need to do email content analysis since executables, attachments, or links or other parts of the email beyond the sender domain are not verified.</kb-article>
-        <definition>Validating that server components of a messaging infrastructure are authorized to send a particular message.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#URLAnalysis">
         <definition>Determining if a URL is benign or malicious by analyzing the URL or its components.</definition>
@@ -32456,9 +32443,9 @@ Additional techniques include:
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#UserBehaviorAnalysis">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <rdfs:label>User Behavior Analysis</rdfs:label>
-        <rdfs:comment>User behavior analytics (&quot;UBA&quot;) as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns—anomalies that indicate potential threats.&apos; Instead of tracking devices or security events, UBA tracks a system&apos;s users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats.</rdfs:comment>
         <definition>Analysis of user behavior and patterns for the purpose of detecting unauthorized user activity.</definition>
+        <rdfs:comment>User behavior analytics (&quot;UBA&quot;) as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns—anomalies that indicate potential threats.&apos; Instead of tracking devices or security events, UBA tracks a system&apos;s users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats.</rdfs:comment>
+        <rdfs:label>User Behavior Analysis</rdfs:label>
         <rdfs:isDefinedBy rdf:resource="http://dbpedia.org/page/User_behavior_analytics"/>
         <kb-article>## Technique Overview
 
@@ -32475,8 +32462,8 @@ Unusual data transfer activity may indicate unauthorized activity. Data transfer
 ## Considerations
 * There is a potential for false positives from anomalies that are not associated with unauthorized activity.
 * Attackers that move low and slow may not differentiate their data transfer behavior enough for an alert to trigger.</kb-article>
-        <rdfs:label>User Data Transfer Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ResourceAccess"/>
+        <rdfs:label>User Data Transfer Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <todo>improve kb-article</todo>
         <definition>Analyzing the amount of data transferred by a user.</definition>
@@ -32506,8 +32493,8 @@ Geolocation data for each user logon attempt is collected and used to create a b
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#WebSessionActivityAnalysis">
         <definition>Monitoring changes in user web session behavior by comparing current web session activity to a baseline behavior profile or a catalog of predetermined malicious behavior.</definition>
         <rdfs:label>Web Session Activity Analysis</rdfs:label>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#WebResourceAccess"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#WebResourceAccess"/>
         <kb-article>## How it works
 User web session data is collected over a period of time to create a user behavior profile. Data collected includes clicks made on a website, average time between clicks, filling out web forms, order in which pages are viewed, and downloading files. Current user web session behavior is then compared against the use behavior profile to identify anomalies and a likelihood that the current user web session is malicious. Current user web session behavior can also be compared to predetermined known malicious behavior profiles that are developed through analysis of malware in run time at a threat research facility. 
 
@@ -32529,8 +32516,8 @@ User web session data is collected over a period of time to create a user behavi
         <todo>For inference, If an object has a pointer (but is not a pointer itself), does it point to the target object of the pointer?  i.e., an image might hold a pointer pointing to some global address space, does the image itself point-to the address space?  Would we assert that directly ever or only infer it?</todo>
         <rdfs:comment>Relates a pointer value to another value by means of an address within some address space. The address space might be in a specific digital artifact, whether it be in memory, an image, or a persistent storage device.</rdfs:comment>
         <todo>InverseOf: addressed-by</todo>
-        <skos:altLabel>points-to</skos:altLabel>
         <rdfs:label>addresses</rdfs:label>
+        <skos:altLabel>points-to</skos:altLabel>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#adds">
         <todo>OK, add really needs more arguments as the place added is implicit as used.  So maybe reads (previously used accesses) and writes are all we can say here.  Adds would be a relation of something (program or user) adding something (the object) to some third thing (the destination).  This would require creating an Add/Addition individual.  Refactor uses of adds and accesses, to not use Add instances.  (&quot;drops&quot; writes/creates and reads operations).  read/remoteRead vice access.</todo>
