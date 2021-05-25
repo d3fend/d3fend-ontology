@@ -162,6 +162,22 @@
     
 
 
+    <!-- http://www.w3.org/2000/01/rdf-schema#associated-with -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#associated-with">
+        <rdfs:label>associated-with</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://www.w3.org/2000/01/rdf-schema#commenet -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#commenet">
+        <rdfs:label>commenet</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- http://www.w3.org/2000/01/rdf-schema#comment -->
 
     <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#comment">
@@ -174,6 +190,14 @@
 
     <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#comments">
         <rdfs:label>comments</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://www.w3.org/2000/01/rdf-schema#isDefinedBy -->
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#isDefinedBy">
+        <rdfs:label>isDefinedBy</rdfs:label>
     </owl:AnnotationProperty>
     
 
@@ -224,7 +248,8 @@
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with"/>
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-access"/>
         <rdfs:range rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkResource"/>
-        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An entity (process or user) accesses a resource.  Reads and writes are specific cases of accesses.</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x accesses y: An subject x takes the action of reading from, writing into, or executing the stored information in the object y. Reads, writes, and executes are specific cases of accesses.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/02673854-n"/>
         <rdfs:label>accesses</rdfs:label>
     </owl:ObjectProperty>
     
@@ -234,11 +259,11 @@
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#addressed-by">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with"/>
+        <owl:inverseOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#addresses"/>
         <rdfs:domain rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Resource"/>
         <rdfs:range rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Identifier"/>
-        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Relates a resource (e.g., network host, peripheral device, disk sector, a memory cell or other logical or physical entity) to a discrete address in an address space.</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x addressed-by y: Relates a resource x (e.g., network host, peripheral device, disk sector, a memory cell or other logical or physical entity) to a discrete address y in an address space that points to it.</rdfs:comment>
         <rdfs:label>addressed-by</rdfs:label>
-        <skos:altLabel>accessed-by</skos:altLabel>
     </owl:ObjectProperty>
     
 
@@ -250,8 +275,7 @@
         <rdfs:domain rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Identifier"/>
         <rdfs:range rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Resource"/>
         <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">For inference, If an object has a pointer (but is not a pointer itself), does it point to the target object of the pointer?  i.e., an image might hold a pointer pointing to some global address space, does the image itself point-to the address space?  Would we assert that directly ever or only infer it?</d3f:todo>
-        <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">InverseOf: addressed-by</d3f:todo>
-        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Relates a pointer value to another value by means of an address within some address space. The address space might be in a specific digital artifact, whether it be in memory, an image, or a persistent storage device.</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x addresses y: Relates a pointer x to a digital artifact y located in the address space to which x points. The address space is part of some digital store, whether it be in memory, an image, or a persistent storage device.</rdfs:comment>
         <rdfs:label>addresses</rdfs:label>
         <rdfs:seeAlso rdf:resource="http://dbpedia.org/page/Pointer_(computer_programming)"/>
         <skos:altLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">points-to</skos:altLabel>
@@ -264,8 +288,8 @@
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#adds">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with"/>
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-add"/>
-        <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">OK, add really needs more arguments as the place added is implicit as used.  So maybe reads (previously used accesses) and writes are all we can say here.  Adds would be a relation of something (program or user) adding something (the object) to some third thing (the destination).  This would require creating an Add/Addition individual.  Refactor uses of adds and accesses, to not use Add instances.  (&quot;drops&quot; writes/creates and reads operations).  read/remoteRead vice access.</d3f:todo>
-        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Adds a data object, such as a file, to an object containing or referring to the subject.  As in adding a file to a directory. or a domain entry to a DNS server.</rdfs:comment>
+        <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">OK, add really needs more arguments as the place added is implicit as used.  So maybe reads (previously used accesses) and writes are all we can say here.  Adds would be a relation of something (program or user) adding something (the object) to some third thing (the destination).  This would require creating an Add/Addition individual.  Refactor uses of adds and accesses, to not use Add instances.  (&quot;drops&quot; writes/creates and reads operations).  read/remoteRead vice access.  Maps to Act of Artifact Modification in CCO.</d3f:todo>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x adds y: The subject x adds a data object y, such as a file, to some other digital artifact, such as a directory. Examples include an agent or technique adding a record to a database. or a domain entry to a DNS server.</rdfs:comment>
         <rdfs:label>adds</rdfs:label>
     </owl:ObjectProperty>
     
@@ -275,6 +299,8 @@
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#analyzes">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x analyzes y: The subject x break down object y into components or essential features, assessing y by quantitative methods, qualitative methods, or both.  Usually the analysis is done in terms of some model or framework.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/00738221-v"/>
         <rdfs:label>analyzes</rdfs:label>
     </owl:ObjectProperty>
     
@@ -294,6 +320,7 @@
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-be-associated-with"/>
+        <rdfs:associated-with rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The subject and object entities are associated in some way.</rdfs:associated-with>
         <rdfs:label>associated-with</rdfs:label>
         <skos:altLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">associatedWith</skos:altLabel>
     </owl:ObjectProperty>
@@ -555,6 +582,8 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#executes">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#accesses"/>
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x executes y: The subject x takes the action of carrying out (executing) y, which is a process or program, as on a computer or a machine.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/02569242-v"/>
         <rdfs:label>executes</rdfs:label>
     </owl:ObjectProperty>
     
@@ -814,7 +843,11 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#injects">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#executes"/>
+        <d3f:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x injects y: The subject x takes the action of exploiting a security flaw by introducing (injecting) y, which is code or data that will change the course of execution or state of a computing process to an alternate course or state. Typically code injection is associated with adversaries intending the alternate course to facilitate a malevolent purpose; however, code injection can be unintentional or the intentions behind it may be good or benign.</d3f:comment>
+        <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">We use injects for IPC as well as more ordinary injection attacks, hence &quot;execution or state&quot; phrasing. Might distinguish after discussion and investigation.</d3f:todo>
         <rdfs:label>injects</rdfs:label>
+        <rdfs:seeAlso rdf:resource="http://wordnet-rdf.princeton.edu/id/00916722-v"/>
+        <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/Code_injection"/>
     </owl:ObjectProperty>
     
 
@@ -843,7 +876,12 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#executes"/>
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-invoke"/>
+        <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Calls in Wordnet can be function call or system / supervisor call; we may want to make this distinction in future.  So far, we have always used this in the second sense (system call.)</d3f:todo>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x invokes y: The subject x invokes a system service y by use of an instruction object y that interrupts the program being executed and passes control to the operating system to perform that operation.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/06599393-n"/>
         <rdfs:label>invokes</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/System_call"/>
+        <skos:altLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">calls</skos:altLabel>
     </owl:ObjectProperty>
     
 
@@ -936,6 +974,7 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#may-be-associated-with">
         <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The subject and object entities may be associated in some way.</rdfs:comment>
         <rdfs:label>may-be-associated-with</rdfs:label>
     </owl:ObjectProperty>
     
@@ -984,15 +1023,6 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#may-modify">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-be-associated-with"/>
         <rdfs:label>may-modify</rdfs:label>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#may-open -->
-
-    <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#may-open">
-        <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-be-associated-with"/>
-        <rdfs:label>may-open</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -1071,17 +1101,6 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#observes">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#associated-with"/>
         <rdfs:label>observes</rdfs:label>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#opens -->
-
-    <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#opens">
-        <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#accesses"/>
-        <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-open"/>
-        <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">No uses, presumably used in sense of opening a file</d3f:todo>
-        <rdfs:label>opens</rdfs:label>
     </owl:ObjectProperty>
     
 
@@ -1179,7 +1198,10 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#reads">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#accesses"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x reads y: The subject x takes the action of reading from a digital source y to acquire data and placing it into volatile memory for processing.</rdfs:comment>
         <rdfs:label>reads</rdfs:label>
+        <rdfs:seeAlso rdf:resource="http://wordnet-rdf.princeton.edu/id/00629157-v"/>
+        <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/Reading_(computer)"/>
     </owl:ObjectProperty>
     
 
@@ -1339,7 +1361,10 @@ E.g. the collection of vintage saxophones is covered by the Concept &apos;Saxoph
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#writes">
         <rdfs:subPropertyOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#accesses"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">x writes y: The subject x takes the action of writing to a digital artifact y to store data and placing it into persistent memory for later reference.</rdfs:comment>
         <rdfs:label>writes</rdfs:label>
+        <rdfs:seeAlso rdf:resource="http://wordnet-rdf.princeton.edu/id/01000931-v"/>
+        <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/Reading_(computer)"/>
     </owl:ObjectProperty>
     
 
@@ -4338,7 +4363,7 @@ Container images become containers at runtime and in the case of Docker containe
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OffensiveTechnique"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#enables"/>
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialAccess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
@@ -6643,12 +6668,6 @@ More generally, a name server is a computer application that implements a networ
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableScript"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-open"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DocumentFile"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An executable binary contains machine code instructions for a physical CPU. D3FEND also considers byte code for a virtual machine to be binary code.  This is in contrast to executable scripts written in a scripting language.</rdfs:comment>
         <rdfs:label>Executable Binary</rdfs:label>
         <rdfs:seeAlso rdf:resource="http://dbpedia.org/page/Executable"/>
@@ -8769,7 +8788,7 @@ Another way to capture the grouping would use either notion of tactics using com
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OffensiveTechnique"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#enables"/>
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InitialAccess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
@@ -29026,7 +29045,6 @@ Depending on the complexity of the data considered, outliers may not be obvious 
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#BroadcastDomainIsolation">
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Broadcast isolation restricts the number of computers a host can contact on their LAN.</d3f:definition>
-        <rdfs:label>Broadcast Domain Isolation</rdfs:label>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 Software Defined Networking, or other network encapsulation technologies intercept host broadcast traffic then route it to a specified destination per a configured policy.
 
@@ -29034,6 +29052,7 @@ This can be implemented within hypervisors, networking hardware (WAPs, switches,
 
 ## Considerations
 This technique is highly dependent on network infrastructure and networking requirements.</d3f:kb-article>
+        <rdfs:label>Broadcast Domain Isolation</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ByteSequenceEmulation">
         <rdfs:label>Byte Sequence Emulation</rdfs:label>
@@ -29150,7 +29169,6 @@ Another approach passively inspects network traffic with application protocol an
         <rdfs:label>Credential Access</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialCompromiseScopeAnalysis">
-        <rdfs:label>Credential Compromise Scope Analysis</rdfs:label>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 
 #### Memory
@@ -29187,6 +29205,7 @@ Detection of potential compromise of files on the hard disk could be done with a
 
 ## Considerations
 Effective implementation requires identifying any location that could end up containing credentials, and detecting an method of potential access to a source of credential data.</d3f:kb-article>
+        <rdfs:label>Credential Compromise Scope Analysis</rdfs:label>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Determining which credentials maybe have been compromised by analyzing the user logon history of a particular system.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialEviction">
@@ -29316,13 +29335,13 @@ Decoy objects are typically configured with detectable means of communication bu
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Decoy Object is created and deployed for the purposes of deceiving attackers.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyPersona">
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Establishing a fake online identity to misdirect, deceive, and or interact with adversaries.</d3f:definition>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 A false online identity is created for the purposes of interacting with adversaries in a direct or indirect manner. This includes the associated email addresses, social media accounts, and other online communication profiles.
 
 ## Considerations
 * Include phone numbers and online social profiles as well as automatically or manually responding to contact made to the persona to improve realism.
 * Continuous updating and managing the decoy personas and online activity streams to ensure personas do not become stale and outdated.</d3f:kb-article>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Establishing a fake online identity to misdirect, deceive, and or interact with adversaries.</d3f:definition>
         <rdfs:label>Decoy Persona</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyPublicRelease">
@@ -29397,8 +29416,8 @@ This technique can be accomplished in a number of ways:
         <rdfs:label>Driver Load Integrity Checking</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DynamicAnalysis">
-        <rdfs:label>Dynamic Analysis</rdfs:label>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Executing or opening a file in a synthetic &quot;sandbox&quot; environment to determine if the file is a malicious program or if the file exploits another program such as a document reader.</d3f:definition>
+        <rdfs:label>Dynamic Analysis</rdfs:label>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 Analyzing the interaction of a piece of code with a system while the code is being executed in a controlled environment such as a sandbox, virtual machine, or simulator. This exposes the natural behavior of the piece of code without requiring the code to be disassembled.
 
@@ -29412,8 +29431,8 @@ Analyzing the interaction of a piece of code with a system while the code is bei
 * [Cuckoo Sandbox](https://cuckoosandbox.org)</d3f:kb-article>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#EmulatedFileAnalysis">
-        <rdfs:label>Emulated File Analysis</rdfs:label>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Emulating instructions in a file looking for specific patterns.</d3f:definition>
+        <rdfs:label>Emulated File Analysis</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#EncryptedTunnels">
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Encrypted encapsulation of routable network traffic.</d3f:definition>
@@ -29530,9 +29549,9 @@ Certain file access actions may not be statistically different from benign activ
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FileAnalysis">
         <rdfs:label>File Analysis</rdfs:label>
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">File Analysis is an analytic process to determine a file&apos;s status. For example: virus, trojan, benign, malicious, trusted, unauthorized, sensitive, etc.</d3f:definition>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## Technique Overview
 Some techniques use file signatures or file metadata to compare against historical collections of malware. Files may also be compared against a source of ground truth such as cryptographic signatures. Examining files for potential malware using pattern matching against file contents/file behavior. Binary code may be dissembled and analyzed for predictive malware behavior, such as API call signatures. Analysis might occur within a protected environment such as a sandbox or live system.</d3f:kb-article>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">File Analysis is an analytic process to determine a file&apos;s status. For example: virus, trojan, benign, malicious, trusted, unauthorized, sensitive, etc.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FileCarving">
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">File Carving</rdfs:label>
@@ -29560,8 +29579,8 @@ Rules, often called signatures, are used for both generic and targeted malware d
  * YARA
  * ClamAV</d3f:kb-article>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Employing a pattern matching rule language to analyze files.</d3f:definition>
-        <skos:altLabel>File Content Signatures</skos:altLabel>
         <rdfs:label>File Content Rules</rdfs:label>
+        <skos:altLabel>File Content Signatures</skos:altLabel>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FileHashing">
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Employing file hash comparisons to detect known malware.</d3f:definition>
@@ -29740,7 +29759,6 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#IPCTrafficAnalysis">
         <skos:altLabel>IPC Analysis</skos:altLabel>
         <d3f:todo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Rec&apos;d delete analyzes itself (same class).  Intent was probably to capture target DAOs for IPC.  Some IPC is between processes on same machine, and not just process analysis.  System Calls/Streams/Pipes/Mesg Queues covered?</d3f:todo>
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.</d3f:definition>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 Inter process communication enables applications or threads to share data. This can involve one or more computers. Monitoring IPC in your environment can reveal abnormal or malicious activity.
 IPC can occur within a single computer or between multiple computers remotely through network protocols. Thus there are multiple ways to collect and monitor these exchanges between processes. A network protocol analyzer may monitor and parse SMB network traffic to record system activity. A host based monitoring agent may monitor IPC activity contained within a single host to look for deviations from standard usages.
@@ -29753,6 +29771,7 @@ IPC can occur within a single computer or between multiple computers remotely th
 ## Considerations
 * IPC can generate substantial amounts of data, and it may not be feasible to collect all of it. 
 * IPC may occur over loopback interfaces or direct memory access granted by the operating system.</d3f:kb-article>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.</d3f:definition>
         <rdfs:label>IPC Traffic Analysis</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#IdentifierAnalysis">
@@ -29763,12 +29782,12 @@ IPC can occur within a single computer or between multiple computers remotely th
         <rdfs:label>Impact</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundSessionVolumeAnalysis">
-        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inbound Session Volume Analysis</rdfs:label>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 Network appliances are configured to alert on certain packets that typically are involved in DoS attacks. Typical packets include ICMP packets and SYN requests that are commonly used to flood networks. A sampling period is used to define a time window in which collected counts of the identified packets can be measured. If the collected number of packets exceeds a predefined limit then an alert is generated.
 
 ## Considerations
 Scalability as volume of attacks increase; single servers may not have the memory and storage resources to handle high volumes of network traffic.</d3f:kb-article>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inbound Session Volume Analysis</rdfs:label>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Analyzing inbound network session or connection attempt volume.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundTrafficFiltering">
@@ -30049,8 +30068,6 @@ Operating System Monitoring Techniques have varied implementations including bui
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The operating system software, for D3FEND’s purposes, includes the kernel and its process management functions, hardware drivers, initialization or boot logic. It also includes and other key system daemons and their configuration. The monitoring or analysis of these components for unauthorized activity constitute **Operating System Monitoring**.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundTrafficFiltering">
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Restricting network traffic originating from a private host or enclave destined towards untrusted networks.</d3f:definition>
-        <rdfs:label>Outbound Traffic Filtering</rdfs:label>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 
 Outbound traffic, in this context, is network traffic originating from a private host or enclave destined towards untrusted networks.
@@ -30077,6 +30094,8 @@ There are various strategies for developing filtering rulesets:
 - iptables (Linux)
 - Windows Firewall
 - pf (BSD)</d3f:kb-article>
+        <rdfs:label>Outbound Traffic Filtering</rdfs:label>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Restricting network traffic originating from a private host or enclave destined towards untrusted networks.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PassiveCertificateAnalysis">
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
@@ -30149,7 +30168,6 @@ Monitored platform components includes system files and embedded devices such as
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Monitoring platform components such as operating systems software, hardware devices, or firmware.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PointerAuthentication">
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Verifying a pointer&apos;s value against a source of truth.</d3f:definition>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How It Works
 
 Pointer Authentication (frequently referred to as PAC, although the technique is properly Pointer Authentication) is a security feature to provide protection against attackers with memory read/write access.  A Pointer Authentication Code (PAC) is a cryptographic signature computed on the value of a pointer and some additional context information which can then provide a cryptographically strong guarantee about the likelihood that a pointer has been tampered with by an attacker. 
@@ -30163,7 +30181,8 @@ The ARM standard specifies a cryptographic algorithm called QARMA-64 (designed b
 In the ARM implementation, the mechanisms above for manipulating PACS are provided, but it is up to the code developer to manage the keys for the cryptographic algorithm.
 
 
-A know potential limitation of PACs concerns signing gadgets. Under certain circumstances PACs can be bypassed by forcing the system to run a signing gadget which will allow the signing of arbitrary pointers to occur.</d3f:kb-article>
+A known potential limitation of PACs concerns signing gadgets. Under certain circumstances PACs can be bypassed by forcing the system to run a signing gadget which will allow the signing of arbitrary pointers to occur.</d3f:kb-article>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Comparing the cryptographic hash of a pointer&apos;s value to an expected value.</d3f:definition>
         <rdfs:label>Pointer Authentication</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation">
@@ -30430,8 +30449,8 @@ A relay may use a variety of proxying, forwarding, or routing technologies to br
 
 Complex intranet VPNs or routing encapsulation may affect the detection analytics.  In addition, unwanted packets might not be forwarded, and additional packets may be added at the relay, further complicating detection.</d3f:kb-article>
         <skos:altLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Relay Network Detection</skos:altLabel>
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The detection of an internal host relaying traffic between the internal network and the external network.</d3f:definition>
         <rdfs:label>Relay Pattern Analysis</rdfs:label>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The detection of an internal host relaying traffic between the internal network and the external network.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#RemoteTerminalSessionDetection">
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
@@ -30598,13 +30617,13 @@ System service applications may originate from the operating system installation
 * The source of truth must not be corrupted in order for this method to work.</d3f:kb-article>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SessionDurationAnalysis">
-        <rdfs:label>Session Duration Analysis</rdfs:label>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 Detecting unauthorized user sessions by comparing the duration of a user logon session with a baseline behavior model. The behavior model comprises historical user session duration times.  Abnormalities between session duration and the behavior model may indicate suspicious activity.
 
 ## Considerations
 * Potential for false positives from anomalies that are not associated with malicious activity.
 * Attackers may not differentiate their session duration enough to trigger an alert.</d3f:kb-article>
+        <rdfs:label>Session Duration Analysis</rdfs:label>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Analyzing the duration of user sessions in order to detect unauthorized  activity.</d3f:definition>
         <skos:altLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Session Duration Analytics</skos:altLabel>
     </rdf:Description>
@@ -30651,12 +30670,12 @@ A vulnerability such as a write-what-where condition that allows one to write da
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#StandaloneHoneynet">
         <rdfs:label>Standalone Honeynet</rdfs:label>
-        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems.</d3f:definition>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## How it works
 A standalone honeynet does not directly interact with the real enterprise environment. It may be located near or in some portion of the enterprise address space, but it does not interact with enterprise resources.
 
 ## Considerations
 A standalone honeynet is a lower risk to deploy compared to connected or integrated honeynets due to its isolation from the enterprise network. However, this comes at cost in loss of fidelity and realism. Significant extra effort must be made in order to make the environment look realistic.</d3f:kb-article>
+        <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems.</d3f:definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#StrongPasswordPolicy">
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Modifying system configuration to increase password strength.</d3f:definition>
@@ -30794,9 +30813,9 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
         <rdfs:label>URL Analysis</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#UserBehaviorAnalysis">
+        <rdfs:label>User Behavior Analysis</rdfs:label>
         <d3f:definition rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Analysis of user behavior and patterns for the purpose of detecting unauthorized user activity.</d3f:definition>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">User behavior analytics (&quot;UBA&quot;) as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns—anomalies that indicate potential threats.&apos; Instead of tracking devices or security events, UBA tracks a system&apos;s users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats.</rdfs:comment>
-        <rdfs:label>User Behavior Analysis</rdfs:label>
         <rdfs:isDefinedBy rdf:resource="http://dbpedia.org/page/User_behavior_analytics"/>
         <d3f:kb-article rdf:datatype="http://www.w3.org/2001/XMLSchema#string">## Technique Overview
 
