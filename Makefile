@@ -65,7 +65,7 @@ build/d3fend-with-header.owl:	d3fend-webprotege.owl d3fend-prefixes.json
 	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "dcterms: http://purl.org/dc/terms/" \
 		--ontology-iri "http://d3fend.mitre.org/ontologies/d3fend.owl" \
-		--version-iri "http://d3fend.mitre.org/ontologies/d3fend-20210504.owl" \
+		--version-iri "http://d3fend.mitre.org/ontologies/d3fend/0.9.2/d3fend.owl" \
 		--annotation dcterms:license "MIT" \
 		--annotation dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature." \
 		--annotation dcterms:title "D3FEND™ - A knowledge graph of cybersecurity" \
