@@ -123,6 +123,7 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 		--term d3f:AnalysisCitation \
 		--term d3f:AssertionConfidence \
 		--term d3f:D3FENDAnalysisThing \
+		--term d3f:D3FENDAnalysis \
 		--term d3f:D3FENDAnalyst \
 		--term d3f:FormFactor \
 		--term d3f:License \
