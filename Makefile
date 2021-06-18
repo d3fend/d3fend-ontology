@@ -24,20 +24,37 @@ install-deps:
 # currently coded to not fail as some errors are not blockers
 # yet. These reports are done immediately after adding ontology header
 # annotations to output from Web Protege.
-general-report:	build/d3fend-with-header.owl ## Generate d3fend-full-robot-report.txt on ontology source issues
-	./bin/robot report -i build/d3fend-with-header.owl \
+reports/default-robot-report.txt:	build/d3fend-full.owl ## Generate d3fend-full-robot-report.txt on ontology source issues
+	./bin/robot report -i build/d3fend-full.owl \
 		--profile queries/custom-report-profile.txt \
 		--fail-on none > reports/default-robot-report.txt
 
-missing-def-tech-comment-report:	build/d3fend-with-header.owl
-	./bin/robot report -i build/d3fend-with-header.owl \
-		--profile queries/missing-def-tech-comment-profile.txt \
-		--fail-on none > reports/missing-def-tech-comment-report.txt
+# Note: At present some definitions are d3f:definition; most are defacto rdfs:comment
+reports/missing-d3fend-definition-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile queries/missing-d3fend-definition-profile.txt \
+		--fail-on none > reports/missing-d3fend-definition-report.txt
 
-missing-dao-comment-report:	build/d3fend-with-header.owl # 
-	./bin/robot report -i build/d3fend-with-header.owl \
-		--profile queries/missing-dao-comment-profile.txt \
-		--fail-on none > reports/missing-dao-comment-report.txt
+# Regression test, should not happen again.
+reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile queries/bogus-direct-subclassing-of-tactic-technique-profile.txt \
+		--fail-on ERROR > reports/bogus-direct-subclassing-of-tactic-technique-report.txt
+
+reports/missing-attack-id-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile queries/missing-attack-id-profile.txt \
+		--fail-on none > reports/missing-attack-id-report.txt
+
+reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile queries/inconsistent-iri-profile.txt \
+		--fail-on none > reports/inconsistent-iri-report.txt
+
+reports/unallowed-thing-report.txt:	build/d3fend-public.owl
+	./bin/robot report -i build/d3fend-public.owl \
+		--profile queries/unallowed-thing-profile.txt \
+		--fail-on ERROR > reports/unallowed-thing-report.txt
 
 ## Example robot conversion. ROBOT not used for this for build as it doesn't support JSON-LD serialization.
 #robot-to-ttl:	build/d3fend-with-header.owl # Convert from .owl to .ttl format (or parse post add-header breaks! (workaround and .ttl cleaner anyway)
@@ -150,7 +167,7 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 reportsdir:
 	mkdir -p reports/
 
-reports:	reportsdir general-report missing-def-tech-comment-report missing-dao-comment-report ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt ## Generates all reports for ontology quality checks
 
 robot:	add-header reports fix-has-links fix-whitespace-literals res-as-prop merge-prop public
 
@@ -160,14 +177,14 @@ builddir:
 make-techniques-table-and-deploy: ## Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
 	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py # TODO: refactor cert out of relative home/~?
 
-d3fend-architecture.owl:
+d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
-		--input d3fend-webprotege.owl \
+		--input build/d3fend-full.owl \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode" \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
 		--output d3fend-architecture.owl
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build: 	builddir build/d3fend-full.owl build/d3fend-public.owl reports/unallowed-thing-report.txt d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 process.py # expects a build/d3fend-public.owl file
 	cp build/d3fend-full.owl d3fend-full.owl
 
@@ -190,7 +207,7 @@ test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and use
 
 test-load-files:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
 
-all: clean build test-load-files make-techniques-table-and-deploy ## build & deploy as table (.csv)
+all: clean build test-load-files ## build all, check for unallowed content, and test load files
 
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
