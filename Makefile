@@ -1,7 +1,7 @@
 SHELL ?= /usr/local/bin/bash
 
 clean:
-	rm -f d3fend.*
+	rm -f d3fend.{json,owl,ttl}
 	rm -f d3fend-webprotege.json
 	rm -f build/d3fend.*
 	rm -f d3fend-architecture*
