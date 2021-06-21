@@ -125,8 +125,16 @@ build/d3fend-full.owl:	build/d3fend-res-as-prop.owl build/d3fend-trimmed-literal
 # 		--input build/d3fend-full.owl \
 # 	        --output build/d3fend-materialized.owl
 
-build/d3fend-public-no-private-annotations.owl: 	build/d3fend-full.owl
+# Must come before build/d3fend-public-no-private-annotations.owl because d3f:draft is a private annotation!
+build/d3fend-public-no-draft-kb-entries.owl:	build/d3fend-full.owl
 	./bin/robot remove --input build/d3fend-full.owl \
+	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
+		--add-prefix "dcterms: http://purl.org/dc/terms/" \
+		--select "d3f:draft='true'^^xsd:boolean" \
+	        --output build/d3fend-public-no-draft-kb-entries.owl
+
+build/d3fend-public-no-private-annotations.owl: 	build/d3fend-public-no-draft-kb-entries.owl
+	./bin/robot remove --input build/d3fend-public-no-draft-kb-entries.owl \
 	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "dcterms: http://purl.org/dc/terms/" \
 		--term d3f:d3fend-private-annotation \
