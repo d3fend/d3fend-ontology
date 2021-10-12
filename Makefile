@@ -56,6 +56,11 @@ reports/unallowed-thing-report.txt:	build/d3fend-public.owl
 		--profile queries/unallowed-thing-profile.txt \
 		--fail-on ERROR > reports/unallowed-thing-report.txt
 
+reports/missing-off-tech-artifacts-report.txt:	build/d3fend-public.owl
+	./bin/robot report -i build/d3fend-public.owl \
+		--profile queries/missing-off-tech-artifacts-profile.txt \
+		--fail-on ERROR > reports/missing-off-tech-artifacts-report.txt
+
 ## Example robot conversion. ROBOT not used for this for build as it doesn't support JSON-LD serialization.
 #robot-to-ttl:	build/d3fend-with-header.owl # Convert from .owl to .ttl format (or parse post add-header breaks! (workaround and .ttl cleaner anyway)
 #	./bin/robot convert --input build/d3fend-with-header.owl -output build/d3fend-with-header.ttl
