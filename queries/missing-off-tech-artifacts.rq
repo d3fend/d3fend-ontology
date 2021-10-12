@@ -1,0 +1,39 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+SELECT DISTINCT
+
+    ?technique
+
+WHERE {
+
+# Select techniques where:
+#   Ignore top level classes
+#   Ignore parent classes who have DA relationships defined on their children
+
+ 
+    ?technique rdfs:subClassOf* d3f:OffensiveTechnique .
+
+	FILTER NOT EXISTS {
+     ?technique ?p ?da .
+     ?da rdfs:subClassOf* d3f:Artifact .
+     ?p rdfs:subPropertyOf* d3f:may-be-associated-with .
+      
+	}
+    
+    #Filter the toplevel classes
+    FILTER NOT EXISTS {
+      ?technique rdfs:subClassOf d3f:OffensiveTechnique .
+
+    }
+
+	# Filter the parents whose children have DAs defined.               
+    FILTER NOT EXISTS {
+      ?subt rdfs:subClassOf* ?technique .
+      ?subt ?sp ?sda .
+      ?sda rdfs:subClassOf* d3f:Artifact .
+      ?sp rdfs:subPropertyOf* d3f:may-be-associated-with .
+    }
+
+}
