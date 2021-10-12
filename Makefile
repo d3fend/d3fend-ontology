@@ -180,7 +180,7 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 reportsdir:
 	mkdir -p reports/
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 
 robot:	add-header reports fix-has-links fix-whitespace-literals res-as-prop merge-prop public
 

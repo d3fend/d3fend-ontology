@@ -4,7 +4,7 @@ PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
 
 SELECT DISTINCT
 
-    ?technique
+    ?entity
 
 WHERE {
 
@@ -13,10 +13,10 @@ WHERE {
 #   Ignore parent classes who have DA relationships defined on their children
 
  
-    ?technique rdfs:subClassOf* d3f:OffensiveTechnique .
+    ?entity rdfs:subClassOf* d3f:OffensiveTechnique .
 
 	FILTER NOT EXISTS {
-     ?technique ?p ?da .
+     ?entity ?p ?da .
      ?da rdfs:subClassOf* d3f:Artifact .
      ?p rdfs:subPropertyOf* d3f:may-be-associated-with .
       
@@ -24,13 +24,13 @@ WHERE {
     
     #Filter the toplevel classes
     FILTER NOT EXISTS {
-      ?technique rdfs:subClassOf d3f:OffensiveTechnique .
+      ?entity rdfs:subClassOf d3f:OffensiveTechnique .
 
     }
 
 	# Filter the parents whose children have DAs defined.               
     FILTER NOT EXISTS {
-      ?subt rdfs:subClassOf* ?technique .
+      ?subt rdfs:subClassOf* ?entity .
       ?subt ?sp ?sda .
       ?sda rdfs:subClassOf* d3f:Artifact .
       ?sp rdfs:subPropertyOf* d3f:may-be-associated-with .
