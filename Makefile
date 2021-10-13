@@ -12,7 +12,10 @@ clean: ## cleans all build artifacts
 install-system-deps:
 	yum install make -y
 
-install-deps: ## install software deps
+install-python-deps:
+	pipenv install
+
+install-deps: install-python-deps ## install software deps
 	mkdir -p bin
 	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
 	chmod +x bin/robot
