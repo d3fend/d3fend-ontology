@@ -1,6 +1,6 @@
 SHELL ?= /usr/local/bin/bash
 
-clean:
+clean: ## cleans all build artifacts
 	rm -f d3fend.{json,owl,ttl}
 	rm -f d3fend-webprotege.json
 	rm -f build/d3fend.*
@@ -12,7 +12,7 @@ clean:
 install-system-deps:
 	yum install make -y
 
-install-deps:
+install-deps: ## install software deps
 	mkdir -p bin
 	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
 	chmod +x bin/robot
@@ -54,7 +54,7 @@ reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
 		--profile queries/inconsistent-iri-profile.txt \
 		--fail-on none > reports/inconsistent-iri-report.txt
 
-reports/unallowed-thing-report.txt:	build/d3fend-public.owl
+reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
 		--profile queries/unallowed-thing-profile.txt \
 		--fail-on ERROR > reports/unallowed-thing-report.txt
