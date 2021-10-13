@@ -9,6 +9,9 @@ clean:
 	rm -f build/*
 	rm -f reports/*
 
+install-system-deps:
+	yum install make -y
+
 install-deps:
 	mkdir -p bin
 	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
