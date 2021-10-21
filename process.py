@@ -54,7 +54,7 @@ if __name__ == "__main__":
     
     # Serialize to different formats
     base_uri = URIRef(_base)
-    g.serialize(destination=f"{output_fname}.owl", base=base_uri)
+    g.serialize(destination=f"{output_fname}.owl", base=base_uri, format="xml")
     log(f"Wrote: {output_fname}.owl")
     g.serialize(destination=f"{output_fname}.ttl", format="ttl")
     log(f"Wrote: {output_fname}.ttl")
