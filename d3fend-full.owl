@@ -383,6 +383,14 @@
     
 
 
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#configures -->
+
+    <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#configures">
+        <rdfs:label>configures</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#connects -->
 
     <owl:ObjectProperty rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#connects">
@@ -2551,6 +2559,12 @@ IEEE Std 1003.1-2017: A file that refers to a device. A block special file is no
 
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Collection">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OffensiveTactic"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#display-order"/>
+                <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</owl:hasValue>
+            </owl:Restriction>
+        </rdfs:subClassOf>
     </owl:Class>
     
 
@@ -2790,6 +2804,38 @@ Container images become containers at runtime and in the case of Docker containe
         <may-contain rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ApplicationConfiguration"/>
         <uses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Resource"/>
         <rdfs:label>Container Orchestration Software</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerProcess -->
+
+    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerProcess">
+        <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ApplicationProcess"/>
+        <contains rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessImage"/>
+        <process-image-path rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableBinary"/>
+        <process-user rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserAccount"/>
+        <runs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Application"/>
+        <rdfs:label>Container Process</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerRuntime -->
+
+    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerRuntime">
+        <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceApplication"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#runs"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerImage"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <contains rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
+        <may-contain rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ApplicationConfiguration"/>
+        <runs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerImage"/>
+        <uses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Resource"/>
+        <rdfs:label>Container Runtime</rdfs:label>
     </owl:Class>
     
 
@@ -4375,9 +4421,10 @@ Another way to capture the grouping would use either notion of tactics using com
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Firewall">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode"/>
         <runs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OperatingSystem"/>
-        <rdfs:comment>In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines.</rdfs:comment>
-        <rdfs:isDefinedBy rdf:resource="https://dbpedia.org/page/Firewall_(computing)"/>
+        <rdfs:comment>In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines. This definition refers to network firewalls.</rdfs:comment>
         <rdfs:label>Firewall</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://dbpedia.org/page/Firewall_(computing)"/>
+        <skos:altLabel>Network Firewall</skos:altLabel>
     </owl:Class>
     
 
@@ -4722,6 +4769,16 @@ Another way to capture the grouping would use either notion of tactics using com
         <rdfs:isDefinedBy rdf:resource="http://dbpedia.org/page/Host_(network)"/>
         <rdfs:label>Host</rdfs:label>
         <skos:altLabel>Network Host</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Host-basedFirewall -->
+
+    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Host-basedFirewall">
+        <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemSoftware"/>
+        <contains rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
+        <rdfs:label>Host-based Firewall</rdfs:label>
     </owl:Class>
     
 
@@ -6495,6 +6552,7 @@ Many operating systems, software frameworks and programs include a logging syste
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:comment>Per ATT&amp;CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf"/>
         <rdfs:label>Offensive Tactic</rdfs:label>
     </owl:Class>
     
@@ -6517,6 +6575,7 @@ Many operating systems, software frameworks and programs include a logging syste
                 <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
             </owl:Restriction>
         </rdfs:subClassOf>
+        <rdfs:isDefinedBy rdf:resource="https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf"/>
         <rdfs:label>Offensive Technique</rdfs:label>
     </owl:Class>
     
@@ -7173,6 +7232,14 @@ Many operating systems, software frameworks and programs include a logging syste
         <rdfs:label>Peripheral Firmware</rdfs:label>
         <rdfs:seeAlso rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Firmware"/>
         <rdfs:seeAlso rdf:resource="https://dbpedia.org/page/Peripheral"/>
+    </owl:Class>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#PeripheralFirmwareVerification -->
+
+    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PeripheralFirmwareVerification">
+        <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#FirmwareVerification"/>
     </owl:Class>
     
 
@@ -9013,6 +9080,12 @@ Another difference are the capabilities of the mechanism:
 
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemFirewallConfiguration">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OperatingSystemConfigurationComponent"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#configures"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Host-basedFirewall"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
         <todo>No SystemFirewall class specified in ontology to relate the configuration concept to... ahem.</todo>
         <rdfs:comment>The configuration for a individual host operating system&apos;s firewall.</rdfs:comment>
         <rdfs:label>System Firewall Configuration</rdfs:label>
@@ -9030,6 +9103,14 @@ Another difference are the capabilities of the mechanism:
         <rdfs:label>System Firmware</rdfs:label>
         <skos:altLabel>BIOS Firmware</skos:altLabel>
         <skos:altLabel>UEFI Firmware</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#SystemFirmwareVerification -->
+
+    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemFirmwareVerification">
+        <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#FirmwareVerification"/>
     </owl:Class>
     
 
@@ -10324,12 +10405,6 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalationTechnique"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
                 <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
@@ -10341,7 +10416,6 @@ Another difference are the capabilities of the mechanism:
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1053</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
@@ -10358,7 +10432,6 @@ Another difference are the capabilities of the mechanism:
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053.001">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053"/>
         <attack-id>T1053.001</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
@@ -10374,7 +10447,6 @@ Another difference are the capabilities of the mechanism:
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053.002">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053"/>
         <attack-id>T1053.002</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
@@ -10390,7 +10462,6 @@ Another difference are the capabilities of the mechanism:
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053.003">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053"/>
         <attack-id>T1053.003</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
@@ -10412,7 +10483,6 @@ Another difference are the capabilities of the mechanism:
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1053.004</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PropertyListFile"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
@@ -10429,7 +10499,6 @@ Another difference are the capabilities of the mechanism:
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053.005">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1053"/>
         <attack-id>T1053.005</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
@@ -10538,21 +10607,14 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1055"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemCall"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-create"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#may-invoke"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1055.004</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasion"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
-        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemCall"/>
-        <may-create rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+        <may-invoke rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <rdfs:label>Asynchronous Procedure Call</rdfs:label>
     </owl:Class>
     
@@ -10665,21 +10727,14 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1055"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
                 <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemCall"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1055.013</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasion"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
-        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemCall"/>
+        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <rdfs:label>Process Doppelgänging</rdfs:label>
     </owl:Class>
     
@@ -10716,13 +10771,6 @@ Another difference are the capabilities of the mechanism:
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#T1056">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CollectionTechnique"/>
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialAccessTechnique"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#accesses"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DigitalArtifact"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DigitalArtifact"/>
         <attack-id>T1056</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Collection"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialAccess"/>
@@ -10741,7 +10789,6 @@ Another difference are the capabilities of the mechanism:
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#KeyboardInputDevice"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DigitalArtifact"/>
         <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#KeyboardInputDevice"/>
         <attack-id>T1056.001</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Collection"/>
@@ -10761,7 +10808,6 @@ Another difference are the capabilities of the mechanism:
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#GraphicalUserInterface"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DigitalArtifact"/>
         <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#GraphicalUserInterface"/>
         <attack-id>T1056.002</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Collection"/>
@@ -10781,7 +10827,6 @@ Another difference are the capabilities of the mechanism:
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#WebServerApplication"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DigitalArtifact"/>
         <attack-id>T1056.003</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Collection"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialAccess"/>
@@ -10801,7 +10846,6 @@ Another difference are the capabilities of the mechanism:
                 <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessCodeSegment"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <accesses rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DigitalArtifact"/>
         <attack-id>T1056.004</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Collection"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CredentialAccess"/>
@@ -12658,8 +12702,8 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasionTechnique"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
@@ -12675,8 +12719,8 @@ Another difference are the capabilities of the mechanism:
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1140</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasion"/>
+        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <may-add rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
         <may-modify rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#EventLog"/>
         <rdfs:label>Deobfuscate/Decode Files or Information</rdfs:label>
@@ -13844,19 +13888,19 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#StoredProcedure"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#StoredProcedure"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1505.001</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#StoredProcedure"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
+        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <rdfs:label>SQL Stored Procedures</rdfs:label>
     </owl:Class>
     
@@ -14049,8 +14093,15 @@ Another difference are the capabilities of the mechanism:
 
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#T1531">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ImpactTechnique"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#modifies"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserAccount"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
         <attack-id>T1531</attack-id>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Impact"/>
+        <modifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserAccount"/>
         <rdfs:label>Account Access Removal</rdfs:label>
     </owl:Class>
     
@@ -14528,8 +14579,8 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1546"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
@@ -14545,9 +14596,9 @@ Another difference are the capabilities of the mechanism:
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1546.009</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
+        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <loads rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SharedLibraryFile"/>
         <modifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemConfigurationDatabaseRecord"/>
         <rdfs:label>AppCert DLLs</rdfs:label>
@@ -14561,8 +14612,8 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1546"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
@@ -14578,9 +14629,9 @@ Another difference are the capabilities of the mechanism:
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1546.010</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
+        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <loads rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SharedLibraryFile"/>
         <modifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemConfigurationDatabaseRecord"/>
         <rdfs:label>AppInit DLLs</rdfs:label>
@@ -14988,14 +15039,14 @@ Another difference are the capabilities of the mechanism:
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#T1548"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#creates"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#executes"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#executes"/>
-                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
+                <owl:onProperty rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes"/>
+                <owl:someValuesFrom rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
@@ -15005,10 +15056,10 @@ Another difference are the capabilities of the mechanism:
             </owl:Restriction>
         </rdfs:subClassOf>
         <attack-id>T1548.002</attack-id>
-        <creates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasion"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation"/>
         <executes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
+        <invokes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CreateProcess"/>
         <may-modify rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemConfigurationDatabaseRecord"/>
         <rdfs:label>Bypass User Access Control</rdfs:label>
     </owl:Class>
@@ -16926,6 +16977,14 @@ Another difference are the capabilities of the mechanism:
 
     <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#TPMBootIntegrity">
         <rdfs:subClassOf rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PlatformHardening"/>
+    </owl:Class>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#TRACEThing -->
+
+    <owl:Class rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#TRACEThing">
+        <rdfs:label>TRACE Thing</rdfs:label>
     </owl:Class>
     
 
@@ -20368,7 +20427,7 @@ It is a combination of VPN hardware and software technologies that provides VPN 
 
     <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive">
         <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefensiveTactic"/>
-        <display-order rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</display-order>
+        <display-order rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</display-order>
     </owl:NamedIndividual>
     
 
@@ -20555,7 +20614,7 @@ It is a combination of VPN hardware and software technologies that provides VPN 
 
     <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Evict">
         <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DefensiveTactic"/>
-        <display-order rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</display-order>
+        <display-order rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</display-order>
     </owl:NamedIndividual>
     
 
@@ -22638,6 +22697,14 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     
 
 
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#PeripheralFirmwareVerification -->
+
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PeripheralFirmwareVerification">
+        <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#FirmwareVerification"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence -->
 
     <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence">
@@ -22766,7 +22833,7 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessSegmentExecutionPrevention">
         <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ApplicationHardening"/>
         <kb-reference rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_MitigateThreatsByUsingWindows10SecurityFeatures:DataExecutionPrevention_Microsoft"/>
-        <kb-reference rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_WhatIsNX/XDFeature?[sic]_RedHat"/>
+        <kb-reference rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_WhatIsNX/XDFeature_RedHat"/>
         <d3fend-id>D3-PSEP</d3fend-id>
     </owl:NamedIndividual>
     
@@ -22873,6 +22940,24 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     
 
 
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-BiometricChallenge-ResponseAuthentication-Accenture -->
+
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-BiometricChallenge-ResponseAuthentication-Accenture">
+        <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PatentReference"/>
+        <kb-is-example-of rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Multi-factorAuthentication"/>
+        <has-link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://www.patentguru.com/US2021110015A1</has-link>
+        <kb-reference-title>Biometric Challenge-Response Authentication</kb-reference-title>
+        <kb-abstract>Secret biometric responses to authentication challenges for MFA.
+
+Methods, systems, and apparatus, including computer programs encoded on computer storage media, for authenticating users based on a sequence of biometric authentication challenges. In one aspect, a process includes receiving a first image of the face of the user and processing the first image according to a first authentication process to determine whether the face of the user shown in the first image matches the face of an authorized user. A second authentication process including a sequence of biometric authentication challenges is identified. The sequence includes at least one facial expression challenge. The user is authenticated in response to determining that the first authentication process is satisfied based on the face of the user shown in the first image matching the face of the authorized user and the second authentication process is satisfied based on the user providing a valid biometric response to each biometric authentication challenge.</kb-abstract>
+        <kb-author>Ben McCarty, Ellie Daw</kb-author>
+        <kb-mitre-analysis>MITRE Analysis was not found.</kb-mitre-analysis>
+        <kb-organization>Accenture</kb-organization>
+        <rdfs:label>Reference - Biometric Challenge-Response Authentication - Accenture</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-CertificateAndPublicKeyPinning -->
 
     <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-CertificateAndPublicKeyPinning">
@@ -22961,6 +23046,23 @@ These flaws weaken the reliability and effectiveness of encrypted Internet conne
         <kb-author>NIST</kb-author>
         <kb-organization>NIST</kb-organization>
         <rdfs:label>Reference - Digital Identity Guidelines 800-63-3</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EmbeddingContextsForOn-lineThreatsIntoResponsePolicyZones-VerisignInc -->
+
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EmbeddingContextsForOn-lineThreatsIntoResponsePolicyZones-VerisignInc">
+        <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PatentReference"/>
+        <kb-is-example-of rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#HierarchicalDomainDenylisting"/>
+        <has-link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://patents.google.com/patent/US10440059B1</has-link>
+        <kb-reference-title>Embedding contexts for on-line threats into response policy zones</kb-reference-title>
+        <kb-abstract>Hierarchical threat intelligence embedded in subdomain CNAMEs of a DNS denylist.
+
+In one embodiment, a response policy zone (RPZ) application generates an RPZ that includes contexts for the on-line threats that are associated with domain names. For a domain name that is associated with an on-line threat, the RPZ application determines a threat specification that describes a characteristic of the on-line threat. The RPZ application then generates an alias based on the domain name and the threat specification. Subsequently, the RPZ application generates a domain name system (DNS) resource record that maps the domain name to the alias, includes the resource record in the RPZ, and transmits the RPZ to a DNS name server that implements the RPZ. Upon receiving a DNS query associated with the domain name, the DNS name server generates a DNS response based on the alias. Because the domain name and the threat specification is reflected in the alias, the DNS response automatically provides a relevant context.</kb-abstract>
+        <kb-author>Ben McCarty</kb-author>
+        <kb-mitre-analysis>MITRE Analysis was not found.</kb-mitre-analysis>
+        <rdfs:label>Reference - Embedding contexts for on-line threats into response policy zones - Verisign Inc</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -23110,6 +23212,24 @@ to inject intrusion detection functionality into the firmware of the device.</kb
         <kb-abstract>A stackable filesystem that transparently tracks process file writes for forensic analysis. The filesystem comprises a base filesystem, and an overlay filesystem. Processes see the union of the upper and lower filesystems, but process writes are only reflected in the overlay. By providing per-process views of the filesystem using this stackable approach, a forensic analyzer can record a process&apos;s file-based activity—i.e., file creation, deletion, modification. These activities are then analyzed to identify indicators of compromise (IoCs). These indicators are then fed into a forensics analysis engine, which then quickly decides whether a subject (e.g., process, user) is malicious. If so, the system takes some proactive action to alert a proper authority, to quarantine the potential attack, or to provide other remediation. The approach enables forensic analysis without requiring file access mediation, or conducting system event-level collection and analysis, making it a lightweight, and non-intrusive solution.</kb-abstract>
         <kb-author>Frederico Araujo; Anne E. Kohlbrenner; Marc Philippe Stoecklin; Teryl Paul Taylor</kb-author>
         <rdfs:label>Reference - Identification and extraction of key forensics indicators of compromise using subject-specific filesystem views</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IdentificationOfVisualInternationalDomainNameCollisions-VerisignInc -->
+
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IdentificationOfVisualInternationalDomainNameCollisions-VerisignInc">
+        <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PatentReference"/>
+        <kb-is-example-of rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#HomoglyphDetection"/>
+        <has-link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://patents.google.com/patent/US10599836B2/en</has-link>
+        <kb-reference-title>Identification of visual international domain name collisions</kb-reference-title>
+        <kb-abstract>Fuzzy OCR to detect domain name homoglyph attacks.
+
+Various embodiments of the invention disclosed herein provide techniques for detecting a homograph attack. An IDN collision detection server retrieves a first domain name that includes a punycode element. The IDN collision detection server converts the first domain into a second domain name that includes a Unicode character corresponding to the punycode element. The IDN collision detection server converts the second domain name into an image. The IDN collision detection server performs one or more optical character recognition operations on the image to generate a textual string associated with the image. The IDN collision detection server determines that the textual string matches at least a portion of a third domain name.</kb-abstract>
+        <kb-author>Ben McCarty, Preston Zeh</kb-author>
+        <kb-mitre-analysis>MITRE Analysis was not found.</kb-mitre-analysis>
+        <kb-organization>Verisign Inc</kb-organization>
+        <rdfs:label>Reference - Identification of visual international domain name collisions - Verisign Inc</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -25968,6 +26088,14 @@ Network packet capture data is collected and metadata is extracted. Aggregate da
     
 
 
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#SystemFirmwareVerification -->
+
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemFirmwareVerification">
+        <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#FirmwareVerification"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#TCGTrustedAttestationProtocolUseCasesForTPMFamilies1.2And2.0AndDICE -->
 
     <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#TCGTrustedAttestationProtocolUseCasesForTPMFamilies1.2And2.0AndDICE">
@@ -27239,6 +27367,24 @@ delivery, up to message rejection.</kb-abstract>
         <kb-author>M. Kucherawy, E. Zwicky</kb-author>
         <kb-organization>Internet Engineering Task Force (IETF)</kb-organization>
         <rdfs:label>Reference – RFC 7489: Domain-based Message Authentication, Reporting, and Conformance (DMARC) – IETF</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference%E2%80%93TechniquesForImpedingAndDetectingNetworkThreats%E2%80%93VerisignInc -->
+
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference%E2%80%93TechniquesForImpedingAndDetectingNetworkThreats%E2%80%93VerisignInc">
+        <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#PatentReference"/>
+        <kb-is-example-of rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyNetworkResource"/>
+        <has-link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://patents.google.com/patent/US10904273B1/</has-link>
+        <kb-reference-title>Techniques for impeding and detecting network threats</kb-reference-title>
+        <kb-abstract>Infinite DNS decoy trap resource to catch threats scanning for network resources to attack.
+
+In various embodiments, a name server transmits a canonical name as resolution to another canonical name. In operation, when a resource name is requested for resolution, a determination is made that the resource name corresponds to a trap resource name. A first canonical name is transmitted as resolution to the trap resource name. The first canonical name is requested for resolution, and a second canonical name is transmitted as resolution. By providing trap canonical names as resolutions to trap canonical names, unauthorized software making the resolution requests is kept occupied with requesting resolution of canonical name after canonical name, impeding the ability of the unauthorized software from traversing a network.</kb-abstract>
+        <kb-author>Ben McCarty, James Graham</kb-author>
+        <kb-mitre-analysis>MITRE Analysis was not found.</kb-mitre-analysis>
+        <kb-organization>Verisign Inc</kb-organization>
+        <rdfs:label>Reference – Techniques for impeding and detecting network threats – Verisign Inc</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -28674,9 +28820,9 @@ order to constitute a complete standard. For a complete definition of all requir
     
 
 
-    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_WhatIsNX/XDFeature?[sic]_RedHat -->
+    <!-- http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_WhatIsNX/XDFeature_RedHat -->
 
-    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_WhatIsNX/XDFeature?[sic]_RedHat">
+    <owl:NamedIndividual rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_WhatIsNX/XDFeature_RedHat">
         <rdf:type rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InternetArticleReference"/>
         <kb-is-example-of rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessSegmentExecutionPrevention"/>
         <has-link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://access.redhat.com/solutions/2936741</has-link>
@@ -28692,7 +28838,7 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
         <kb-organization>Red Hat</kb-organization>
         <todo>MITRE Analysis was not found</todo>
         <todo>No authors provided for reference</todo>
-        <rdfs:label>Reference - What is NX/XD feature ? [sic] - Red Hat</rdfs:label>
+        <rdfs:label>Reference - What is NX/XD feature?</rdfs:label>
     </owl:NamedIndividual>
     
 
@@ -28860,8 +29006,8 @@ Depending on the complexity of the data considered, outliers may not be obvious 
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#BootloaderAuthentication">
         <definition>Cryptographically authenticating the bootloader software before system boot.</definition>
         <authenticates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#BootLoader"/>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <rdfs:label>Bootloader Authentication</rdfs:label>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <synonym>Secure Boot</synonym>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#BroadcastDomainIsolation">
@@ -28911,11 +29057,11 @@ Byte sequences containing code that is never used as machine code are still anal
         <synonym>Shellcode Transmission Detection</synonym>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#CertificateAnalysis">
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CertificateFile"/>
         <kb-article>## How it works
 Certificate Analysis ensures that the data elements of the certificate are current and anchored in a known trust model. Certificate authorities, revocation lists, and third-party secure logs are used in the analysis. Analysis includes detection of server impersonation, phishing domains, and forged certificates.
 
 TLS certificates are designed to expire to ensure that the cryptographic keys are forced to be changed on a regular basis. The certificates in the trust path also expire and can cause a break in the trust chain. This means that even if a server certificate is updated correctly, intermediate certificates can expire and the trust chain is not maintained. This can cause services to become unavailable.</kb-article>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#CertificateFile"/>
         <definition>Analyzing Public Key Infrastructure certificates to detect if they have been misconfigured or spoofed using both network traffic, certificate fields and third-party logs.</definition>
         <rdfs:label>Certificate Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
@@ -29084,6 +29230,7 @@ For example, a DNS policy can be created for blocking DNS queries for FQDNs that
         <rdfs:label>DNS Traffic Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundInternetDNSLookupTraffic"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <synonym>Domain Name Analysis</synonym>
         <kb-article>## How it works
 This technique can be accomplished in a number of ways. 
 
@@ -29097,12 +29244,11 @@ This technique does not check for content hosted at the domain.
 
 * DNS produces a large amount of traffic which can be resource-intensive to analyze in real time.
 * If a server is compromised, for example, as part of a watering hole attack, but the DNS information pointing to that server is not altered, this technique would not catch such an incident.</kb-article>
-        <synonym>Domain Name Analysis</synonym>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DatabaseQueryStringAnalysis">
         <rdfs:label>Database Query String Analysis</rdfs:label>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <definition>Analyzing database queries to detect [SQL Injection](https://capec.mitre.org/data/definitions/66.html).</definition>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DatabaseQuery"/>
         <kb-article>## How it works
 
@@ -29192,8 +29338,8 @@ A false online identity is created for the purposes of interacting with adversar
 * Include phone numbers and online social profiles as well as automatically or manually responding to contact made to the persona to improve realism.
 * Continuous updating and managing the decoy personas and online activity streams to ensure personas do not become stale and outdated.</kb-article>
         <definition>Establishing a fake online identity to misdirect, deceive, and or interact with adversaries.</definition>
-        <rdfs:label>Decoy Persona</rdfs:label>
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#User"/>
+        <rdfs:label>Decoy Persona</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyPublicRelease">
@@ -29204,8 +29350,8 @@ Publicly released media includes press release, videos, or other marketing colla
 * Information used in decoy public released media must contain enough realism to deceive and provide interaction from adversaries.
 * Continuous development, creation, and distribution of media and identifiers are needed to ensure adversary interaction continues over time.
 * Decoy public releases could be placed on platforms with different degrees of ownership, including entirely enterprise-owned infrastructure, IaaS, and SaaS (including social applications). Platforms that are not entirely enterprise-owned may be more likely to gather information</kb-article>
-        <rdfs:label>Decoy Public Release</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
+        <rdfs:label>Decoy Public Release</rdfs:label>
         <definition>Issuing publicly released media to deceive adversaries.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoySessionToken">
@@ -29225,7 +29371,6 @@ Usage of decoy session tokens may be monitored to track attacker behavior or oth
         <rdfs:label>Decoy User Credential</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Credential"/>
-        <definition>A Credential created for the purpose of deceiving an adversary.</definition>
         <kb-article>## How it works
 A detection analytic is developed to determine when a user uses decoy credentials. Subsequent actions by that user may be monitored or controlled by the defender.
 
@@ -29236,6 +29381,7 @@ A credential may be:
 ## Considerations
 * Decoy credentials should be integrated with a larger decoy environment to ensure that when decoy credentials are compromised, the credentials are used to interact with a decoy asset that is being monitored.
 * Continuous maintenance and updates are needed to ensure the legitimacy of the larger decoy environment and specifically the assets that utilize the decoy credentials.</kb-article>
+        <definition>A Credential created for the purpose of deceiving an adversary.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#DefenseEvasion">
         <rdfs:label>Defense Evasion</rdfs:label>
@@ -29283,6 +29429,7 @@ This technique can be accomplished in a number of ways:
         <synonym>Malware Sandbox</synonym>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DocumentFile"/>
+        <synonym>Malware Detonation</synonym>
         <kb-article>## How it works
 Analyzing the interaction of a piece of code with a system while the code is being executed in a controlled environment such as a sandbox, virtual machine, or simulator. This exposes the natural behavior of the piece of code without requiring the code to be disassembled.
 
@@ -29294,11 +29441,10 @@ Analyzing the interaction of a piece of code with a system while the code is bei
 
 ## Implementations
 * [Cuckoo Sandbox](https://cuckoosandbox.org)</kb-article>
-        <synonym>Malware Detonation</synonym>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#EmulatedFileAnalysis">
-        <rdfs:label>Emulated File Analysis</rdfs:label>
         <definition>Emulating instructions in a file looking for specific patterns.</definition>
+        <rdfs:label>Emulated File Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DocumentFile"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
@@ -29306,8 +29452,8 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#EncryptedTunnels">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <isolates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#IntranetNetwork"/>
-        <definition>Encrypted encapsulation of routable network traffic.</definition>
         <rdfs:label>Encrypted Tunnels</rdfs:label>
+        <definition>Encrypted encapsulation of routable network traffic.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#EndpointHealthBeacon">
         <definition>Monitoring the security status of an endpoint by sending periodic messages with health status, where absence of a response may indicate that the endpoint has been compromised.</definition>
@@ -29371,11 +29517,12 @@ This technique may be invoked when deciding whether to execute a file.
 
 Organizations which download or create high volumes of software make management complex, in particular engineering or scientific organizations.</kb-article>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
-        <synonym>File Signature Authentication</synonym>
         <definition>Using a digital signature to authenticate a file before opening.</definition>
+        <synonym>File Signature Authentication</synonym>
         <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableBinary"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableDenylisting">
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <kb-article>## How it works
 
 #### Criteria
@@ -29416,11 +29563,10 @@ The policy-enforcing program may work by running in kernel mode, and [intercepti
 
 ## Examples
 On a Windows machine the Windows Defender Application Control (WDAC) policy enforcement is run in the kernel and allows for restricting applications.</kb-article>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <synonym>Executable Blacklisting</synonym>
         <definition>Blocking the execution of files on a host in accordance with defined application policy rules.</definition>
-        <rdfs:label>Executable Denylisting</rdfs:label>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ExecutableFile"/>
+        <rdfs:label>Executable Denylisting</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Execution">
         <rdfs:label>Execution</rdfs:label>
@@ -29493,8 +29639,8 @@ This technique requires a list of hashes to compare a file against.
 ## Considerations
 Performance on large files or very large numbers of files.</kb-article>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#File"/>
         <rdfs:label>File Hashing</rdfs:label>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#File"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#FirmwareBehaviorAnalysis">
         <rdfs:label>Firmware Behavior Analysis</rdfs:label>
@@ -29588,8 +29734,8 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
 * This technique must be implemented logically between the application that receives the response and the server which sent the response.
   * DNS responses sent in an encrypted manner, such as those using DoH or DoT, will require interception of the TLS connections in order to determine the IP address(es) in the response.
 * Replacing the response is not effective in the case that the nameserver uses a technique to provide integrity of its responses, such as DNSSEC for DNS responses.</kb-article>
-        <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundInternetDNSResponseTraffic"/>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DNSNetworkTraffic"/>
+        <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundInternetDNSResponseTraffic"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden">
         <rdfs:label>Harden</rdfs:label>
@@ -29613,9 +29759,9 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
 ## Implementations: 
  * Intel Virtualization Technology for Directed I/O (Intel VT-d)
  * Firecracker</kb-article>
-        <rdfs:label>Hardware-based Process Isolation</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <synonym>Virtualization</synonym>
+        <rdfs:label>Hardware-based Process Isolation</rdfs:label>
         <definition>Preventing one process from writing to the memory space of another process through hardware based address manager implementations.</definition>
         <isolates rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
     </rdf:Description>
@@ -29633,14 +29779,14 @@ Hierarchical domain blacklisting considers the blacklisting of second level doma
         <rdfs:label>Hierarchical Domain Denylisting</rdfs:label>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DNSNetworkTraffic"/>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundInternetDNSLookupTraffic"/>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <synonym>Hierarchical Domain Blacklisting</synonym>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#HomoglyphDenylisting">
         <definition>Blocking DNS queries that are deceptively similar to legitimate domain names.</definition>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundInternetDNSLookupTraffic"/>
-        <rdfs:label>Homoglyph Denylisting</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
+        <rdfs:label>Homoglyph Denylisting</rdfs:label>
         <kb-article>## How it works
 
 Homoglyph domain blacklisting considers the domain and subdomain structure of a lookup and compares the named components to blacklisted named components. The blacklisted named components are typically crafted modifications of known good domains, e.g., gooogle.com versus google.com. The blacklisted domains typically resemble trusted domains, but have been altered slightly to deceive users.
@@ -29674,6 +29820,8 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#IPCTrafficAnalysis">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <todo>Rec&apos;d delete analyzes itself (same class).  Intent was probably to capture target DAOs for IPC.  Some IPC is between processes on same machine, and not just process analysis.  System Calls/Streams/Pipes/Mesg Queues covered?</todo>
+        <definition>Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.</definition>
         <kb-article>## How it works
 Inter process communication enables applications or threads to share data. This can involve one or more computers. Monitoring IPC in your environment can reveal abnormal or malicious activity.
 IPC can occur within a single computer or between multiple computers remotely through network protocols. Thus there are multiple ways to collect and monitor these exchanges between processes. A network protocol analyzer may monitor and parse SMB network traffic to record system activity. A host based monitoring agent may monitor IPC activity contained within a single host to look for deviations from standard usages.
@@ -29686,8 +29834,6 @@ IPC can occur within a single computer or between multiple computers remotely th
 ## Considerations
 * IPC can generate substantial amounts of data, and it may not be feasible to collect all of it. 
 * IPC may occur over loopback interfaces or direct memory access granted by the operating system.</kb-article>
-        <definition>Analyzing standard inter process communication (IPC) protocols to detect deviations from normal protocol activity.</definition>
-        <todo>Rec&apos;d delete analyzes itself (same class).  Intent was probably to capture target DAOs for IPC.  Some IPC is between processes on same machine, and not just process analysis.  System Calls/Streams/Pipes/Mesg Queues covered?</todo>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#IntranetIPCNetworkTraffic"/>
         <synonym>IPC Analysis</synonym>
         <rdfs:label>IPC Traffic Analysis</rdfs:label>
@@ -29840,10 +29986,10 @@ An attacker with control of a system on an Integrated Honeynet could:
 * try to attack other connected hosts on the network, its IP range of internal hosts not properly configured to react to connections from machines on the integrated honeynet, or position behind the firewall.
 * exploit its position by eavesdropping on network traffic
 If an attacker manages to stop the processes used to log an attack without setting off any alarms.</kb-article>
-        <rdfs:label>Integrated Honeynet</rdfs:label>
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#IntranetNetwork"/>
-        <definition>The practice of setting decoys in a production environment to entice interaction from attackers.</definition>
+        <rdfs:label>Integrated Honeynet</rdfs:label>
         <manages rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DecoyObjects"/>
+        <definition>The practice of setting decoys in a production environment to entice interaction from attackers.</definition>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Deceive"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate">
@@ -29851,12 +29997,12 @@ If an attacker manages to stop the processes used to log an attack without setti
         <rdfs:label>Isolate</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#JobFunctionAccessPatternAnalysis">
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authorization"/>
         <kb-article>## How it works
 Peer group analysis identifies functionally similar groups of actors (users or resources) based on categorizations such as job title, organizational hierarchy, or other attribute that indicates similarity of job function. Current user access activity is then compared to the appropriate peer group behavior profile to identify anomalies.
 
 ## Considerations
 Potential for false positives from anomalies that are not associated with malicious activity.</kb-article>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authorization"/>
         <definition>Detecting anomalies in user access patterns by comparing user access activity to behavioral profiles that categorize users by role such as job title, function, department.</definition>
         <rdfs:label>Job Function Access Pattern Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
@@ -29914,12 +30060,12 @@ Initial planning of access model and continuous monitoring of the available user
         <definition>Controlling access to local computer system resources with kernel-level capabilities.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#MemoryBoundaryTracking">
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <kb-article>## How it works
 This technique monitors for indicators of whether a return address is outside memory previously allocated for an object (i.e. function, module, process, or thread). If so, code that the return address points to is treated as malicious code.
 
 ## Considerations
 Kernel malware can manipulate memory contents, for example modifying pointers to hide processes, and thereby impact the accuracy of memory allocation information used to perform the analysis.</kb-article>
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessCodeSegment"/>
         <rdfs:label>Memory Boundary Tracking</rdfs:label>
         <definition>Analyzing a call stack for return addresses which point to unexpected  memory locations.</definition>
@@ -30052,8 +30198,8 @@ Operating System Monitoring Techniques have varied implementations including bui
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#OutboundTrafficFiltering">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
-        <rdfs:label>Outbound Traffic Filtering</rdfs:label>
         <definition>Restricting network traffic originating from a private host or enclave destined towards untrusted networks.</definition>
+        <rdfs:label>Outbound Traffic Filtering</rdfs:label>
         <kb-article>## How it works
 
 Outbound traffic, in this context, is network traffic originating from a private host or enclave destined towards untrusted networks.
@@ -30129,6 +30275,11 @@ Aggregate pull vs. push ratios from metadata are used to develop a baseline for 
 Collection and analysis of large network packet captures requires large storage and intensive computing power. The time windows used to calculate the ratio may vary in implementations, this consideration should take into account a threat model and likely effects (impacts) delivered by an adversary.</kb-article>
         <rdfs:label>Per Host Download-Upload Ratio Analysis</rdfs:label>
     </rdf:Description>
+    <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PeripheralFirmwareVerification">
+        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Firmware"/>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <rdfs:label>Peripheral Firmware Verification</rdfs:label>
+    </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#Persistence">
         <rdfs:label>Persistence</rdfs:label>
     </rdf:Description>
@@ -30174,8 +30325,8 @@ In the ARM implementation, the mechanisms above for manipulating PACS are provid
 
 A known potential limitation of PACs concerns signing gadgets. Under certain circumstances PACs can be bypassed by forcing the system to run a signing gadget which will allow the signing of arbitrary pointers to occur.</kb-article>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
-        <definition>Comparing the cryptographic hash or derivative of a pointer&apos;s value to an expected value.</definition>
         <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Pointer"/>
+        <definition>Comparing the cryptographic hash or derivative of a pointer&apos;s value to an expected value.</definition>
         <rdfs:label>Pointer Authentication</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#PrivilegeEscalation">
@@ -30215,7 +30366,7 @@ False positives commonly occur in the case that the layout of code in the proces
 
 * Process code segments may be written to modify themselves or other process code segments; however, this goes against widely-accepted current practices in software development.
 
-### False Negatives
+### False negatives
 
 False negatives can occur via alteration of the verification logic or source of truth, or insufficient verification logic.
 
@@ -30245,9 +30396,9 @@ For example, Microsoft Word may block execution of any subprocess that is not in
 * Processes may hide from various means of detection; an example on Linux is where a rootkit might remove key files for the process from its directory in /proc.
 * Zombie processes.</kb-article>
         <definition>Identification of suspicious processes executing on an end-point device by examining the ancestry and siblings of a process, and the associated metadata of each node on the tree, such as process execution, duration, and order relative to siblings and ancestors.</definition>
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <synonym>Process Tree Analysis</synonym>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessTree"/>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Process"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <rdfs:label>Process Lineage Analysis</rdfs:label>
     </rdf:Description>
@@ -30272,12 +30423,12 @@ Non-hardware process data segment execution prevention is more susceptible to be
 Different implementations of this defense have been in place since the 1980s, but implementation stalled when larger 16-bit programs began stuffing code in the segments usually reserved for data. Many modern programs follow the best practice of separation of code and data, are able to run under this defense.
 
 ROP or ret2libc/return-to-function attacks could bypass this defense, as although they may pass attacker-controlled data or stack frames to a function, they abuse functions that are legitimately located in the .text segment (code segment) of the program.  For those, more advanced defenses such as a table of valid jump addresses, function call analysis, or return depth analysis could be used.</kb-article>
-        <synonym>No Execute</synonym>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
+        <synonym>No Execute</synonym>
         <rdfs:label>Process Segment Execution Prevention</rdfs:label>
-        <synonym>Execute Disable</synonym>
         <definition>Preventing execution of any address in a memory region other than the code segment.</definition>
         <neutralizes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessSegment"/>
+        <synonym>Execute Disable</synonym>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ProcessSelf-ModificationDetection">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
@@ -30479,7 +30630,7 @@ An external attacker takes remote control of a host inside a company or organiza
 Network traffic from internal hosts is the main concern and focus for the traffic inspection. The network traffic is collected into inspection groups. The groups of traffic are assembled into distinct pair flows (outbound/inbound) and the pair flows are further divided into sessions. Only sessions originated inside of the network are considered for the inspection. Traffic inspection includes analysis to determine if a human is involved in the session exchanges. Time-based statistics are captured for each session being analyzed by the detection engine.
 
 ### Algorithm Analysis Description
-Analysis algorithms look for patterns in the network traffic captured from the session data.  A detection engine groups the session traffic data, between the hosts, into rapid exchange instances. Analyze of rapid exchange traffic patterns can lead to the discovery of abnormal behavior which is indicative of a compromised internal host. The analysis algorithms look for patterns in the traffic the correlate to known activity (e.g., relay attacks, bot activity, bit coin mining). Some metrics used during inspection include the following.
+Analysis algorithms look for patterns in the network traffic captured from the session data.  A detection engine groups the session traffic data, between the hosts, into rapid exchange instances. Analysis of rapid exchange traffic patterns can lead to the discovery of abnormal behavior which is indicative of a compromised internal host. The analysis algorithms look for patterns in the traffic which correlate to known activity (e.g., relay attacks, bot activity, bitcoin mining). Some metrics used during inspection include the following.
 
 * Number of rapid-exchange instances
 * Time interval between packets
@@ -30498,6 +30649,7 @@ Analysis algorithms look for patterns in the network traffic captured from the s
         <definition>Detection of an unauthorized remote live terminal console session by examining network traffic to a network host.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ResourceAccessPatternAnalysis">
+        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authorization"/>
         <kb-article>## How it works
 This technique analyzes a user&apos;s resource accesses by comparing the user’s recent activity against a baseline activity model. Major differences between the current activity and the baseline model might indicate unauthorized activity if they are severe enough.
 
@@ -30505,15 +30657,14 @@ This technique analyzes a user&apos;s resource accesses by comparing the user’
 ## Considerations
 * Potential for false positives from anomalies that are not associated with malicious activity.
 * Attackers that move low and slow may not differentiate their resource access activity behavior enough to trigger an alert.</kb-article>
-        <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authorization"/>
         <rdfs:label>Resource Access Pattern Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <definition>Analyzing the resources accessed by a user to identify unauthorized activity.</definition>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authentication"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ReverseResolutionDomainDenylisting">
-        <synonym>Reverse Resolution Domain Blacklisting</synonym>
         <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#InboundInternetDNSResponseTraffic"/>
+        <synonym>Reverse Resolution Domain Blacklisting</synonym>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Isolate"/>
         <kb-article>## How it works
 
@@ -30532,8 +30683,8 @@ The DNS response can either be blocked by dropping the network traffic with an i
 * This technique must be deployed between the application that receives the response and the server which sent the response.
   * DNS responses sent in an encrypted manner, such as using DoH or DoT, will require interception of the TLS connections in order to determine the domain name(s) in the response.
 * Replacing the response is not effective in the case that the nameserver uses a technique to provide integrity of its responses, such as DNSSEC for DNS responses.</kb-article>
-        <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DNSNetworkTraffic"/>
         <definition>Blocking a reverse DNS lookup&apos;s answer’s domain name value.</definition>
+        <blocks rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#DNSNetworkTraffic"/>
         <rdfs:label>Reverse Resolution Domain Denylisting</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ReverseResolutionIPDenylisting">
@@ -30557,8 +30708,8 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ScheduledJobAnalysis">
         <definition>Analysis of source files, processes, destination files, or destination servers associated with a scheduled job to detect unauthorized use of job scheduling.</definition>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <rdfs:label>Scheduled Job Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#TaskSchedule"/>
+        <rdfs:label>Scheduled Job Analysis</rdfs:label>
         <synonym>Scheduled Job Execution</synonym>
         <kb-article>## How it works
 Scheduled job execution can be utilized by adversaries for the purpose of persistence, conducting remote execution, or gaining privileges. Details of a scheduled job such as associated source files, processes, destination files, or destination servers are first identified and analyzed and then compared against an anti-malware signature database, whitelist, or reputation server. For example, a file associated with a scheduled job to be executed at a specified time or a remote server that is accessed as part of a scheduled task is compared against an anti-malware signature database, whitelist, or reputation server, and if a match is found, execution is denied and an alert is generated.
@@ -30580,8 +30731,8 @@ List of known unauthorized script files or regular expression patterns must be k
         <rdfs:label>Script Execution Analysis</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SegmentAddressOffsetRandomization">
-        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <rdfs:label>Segment Address Offset Randomization</rdfs:label>
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <kb-article>## How it works
 
 Many application exploits rely on an attacker specifying a location in memory, which points to data or code used by the attacker.  If the addresses are changed each time the program is run, then it becomes more difficult for the attacker to determine the location that will contain the code they wish to run.
@@ -30653,8 +30804,8 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceBinaryVerification">
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OperatingSystemFile"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceApplication"/>
         <definition>Analyzing changes in service binary files by comparing to a source of truth.</definition>
+        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ServiceApplication"/>
         <rdfs:label>Service Binary Verification</rdfs:label>
         <kb-article>## How it works
 System service applications may originate from the operating system installation or third-party applications installed with administrative privileges. These services have an entry point of some executable file-- a binary or a script. Attackers sometimes modify these executables to launch their own code. Analyzing changes in these files may uncover unauthorized activity.
@@ -30667,13 +30818,13 @@ System service applications may originate from the operating system installation
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authorization"/>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Authentication"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <rdfs:label>Session Duration Analysis</rdfs:label>
         <kb-article>## How it works
 Detecting unauthorized user sessions by comparing the duration of a user logon session with a baseline behavior model. The behavior model comprises historical user session duration times.  Abnormalities between session duration and the behavior model may indicate suspicious activity.
 
 ## Considerations
 * Potential for false positives from anomalies that are not associated with malicious activity.
 * Attackers may not differentiate their session duration enough to trigger an alert.</kb-article>
+        <rdfs:label>Session Duration Analysis</rdfs:label>
         <definition>Analyzing the duration of user sessions in order to detect unauthorized  activity.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#ShadowStackComparisons">
@@ -30729,8 +30880,8 @@ A vulnerability such as a write-what-where condition that allows one to write da
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#StandaloneHoneynet">
         <spoofs rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#IntranetNetwork"/>
-        <definition>An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems.</definition>
         <rdfs:label>Standalone Honeynet</rdfs:label>
+        <definition>An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems.</definition>
         <kb-article>## How it works
 A standalone honeynet does not directly interact with the real enterprise environment. It may be located near or in some portion of the enterprise address space, but it does not interact with enterprise resources.
 
@@ -30742,8 +30893,8 @@ A standalone honeynet is a lower risk to deploy compared to connected or integra
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#StrongPasswordPolicy">
         <strengthens rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Password"/>
         <definition>Modifying system configuration to increase password strength.</definition>
-        <strengthens rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserAccount"/>
         <rdfs:label>Strong Password Policy</rdfs:label>
+        <strengthens rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#UserAccount"/>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
         <kb-article>## How it works
 Password strength guidelines include increasing password length, permitting passwords that contain ASCII or Unicode characters, and requiring systems to screen new passwords against lists of commonly used or compromised passwords.
@@ -30806,9 +30957,14 @@ This technique ensures the integrity of system owned file resources. System file
 * False positives are a concern with this technique and filtering will need to be given additional thought.
 * A baseline or snapshot of file checksums should be established for future comparison.</kb-article>
         <rdfs:label>System File Analysis</rdfs:label>
-        <definition>Monitoring system files such as authentication databases, registry keys, system logs, and system executables, for modification or tampering.</definition>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#OperatingSystemFile"/>
+        <definition>Monitoring system files such as authentication databases, configuration files, system logs, and system executables for modification or tampering.</definition>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#SystemFirmwareVerification">
+        <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
+        <rdfs:label>System Firmware Verification</rdfs:label>
+        <verifies rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Firmware"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#TPMBootIntegrity">
         <synonym>STRM</synonym>
@@ -30833,6 +30989,7 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#TransferAgentAuthentication">
         <rdfs:label>Transfer Agent Authentication</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Harden"/>
+        <definition>Validating that server components of a messaging infrastructure are authorized to send a particular message.</definition>
         <kb-article>## How it works
 Transfer Agent Authentication can be accomplished in different ways for depending on the protocol. In Email,  Sender Policy Framework (SPF), Domain Key Identified Email (DKIM) or Domain-based Message Authentication Reporting and Conformance (DMARC) to validate sender domain ownership.
 
@@ -30850,7 +31007,6 @@ DMARC is an email policy and authentication protocol that seeks to ensure that t
 - Using SPF without DKIM and DMARC verifies the Return-Path domain however does not prevent spoofing of the displayed From: address. 
 - Parts of an email that are not signed or verified by email authentication methods, such as the message body or the header To: and Subject: fields, can be altered or modified. 
 - Email message authentication does not replace the need to do email content analysis since executables, attachments, or links or other parts of the email beyond the sender domain are not verified.</kb-article>
-        <definition>Validating that server components of a messaging infrastructure are authorized to send a particular message.</definition>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#URLAnalysis">
         <kb-article>## How it works
@@ -30887,9 +31043,9 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#UserBehaviorAnalysis">
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
-        <rdfs:comment>User behavior analytics (&quot;UBA&quot;) as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns—anomalies that indicate potential threats.&apos; Instead of tracking devices or security events, UBA tracks a system&apos;s users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats.</rdfs:comment>
         <rdfs:label>User Behavior Analysis</rdfs:label>
         <definition>Analysis of user behavior and patterns for the purpose of detecting unauthorized user activity.</definition>
+        <rdfs:comment>User behavior analytics (&quot;UBA&quot;) as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns—anomalies that indicate potential threats.&apos; Instead of tracking devices or security events, UBA tracks a system&apos;s users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats.</rdfs:comment>
         <rdfs:isDefinedBy rdf:resource="http://dbpedia.org/page/User_behavior_analytics"/>
         <synonym>Credential Monitoring</synonym>
         <kb-article>## Technique Overview
@@ -30906,8 +31062,8 @@ Unusual data transfer activity may indicate unauthorized activity. Data transfer
 ## Considerations
 * There is a potential for false positives from anomalies that are not associated with unauthorized activity.
 * Attackers that move low and slow may not differentiate their data transfer behavior enough for an alert to trigger.</kb-article>
-        <rdfs:label>User Data Transfer Analysis</rdfs:label>
         <analyzes rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#ResourceAccess"/>
+        <rdfs:label>User Data Transfer Analysis</rdfs:label>
         <enables rdf:resource="http://d3fend.mitre.org/ontologies/d3fend.owl#Detect"/>
         <todo>improve kb-article</todo>
         <definition>Analyzing the amount of data transferred by a user.</definition>
@@ -31106,8 +31262,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
         <rdfs:label>interprets</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#invokes">
-        <skos:altLabel>calls</skos:altLabel>
         <rdfs:label>invokes</rdfs:label>
+        <skos:altLabel>calls</skos:altLabel>
         <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/06599393-n"/>
         <rdfs:comment>x invokes y: The subject x invokes a system service y by use of an instruction object y that interrupts the program being executed and passes control to the operating system to perform that operation.</rdfs:comment>
         <rdfs:seeAlso rdf:resource="https://en.wikipedia.org/wiki/System_call"/>
@@ -31169,8 +31325,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#modifies">
         <rdfs:label>modifies</rdfs:label>
         <skos:altLabel>alters</skos:altLabel>
-        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/00126072-v"/>
         <rdfs:comment>x modifies y: A technique or agent x causes a digital object y to change; become different; or undertake a transformation.  Afterwards, the data or state held by a digital object is changed.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/00126072-v"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#monitors">
         <rdfs:comment>x monitors y: The technique or agent x keep tabs on; keeps an eye on; or keep the digital artifact y under surveillance.</rdfs:comment>
@@ -31222,8 +31378,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#records">
         <rdfs:label>records</rdfs:label>
-        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/01002259-v"/>
         <rdfs:seeAlso rdf:resource="http://wordnet-rdf.princeton.edu/id/01003181-v"/>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/01002259-v"/>
         <rdfs:comment>x records y: The digital artifact x makes a record of events y; set down in permanent form.</rdfs:comment>
         <todo>a log doesn&apos;t summarize an event, it records it; it logs it in the sense of holding the records; it contains it in sense of a record in a historical list of records, maybe---but if we model loggers we might want to reserve &apos;log&apos; to say they &apos;log&apos; the event.  The chronological order of the log events (log event records to be exact) would suggest &apos;chronicles&apos; but that verb might be too twee for first D3FEND release.</todo>
     </rdf:Description>
@@ -31277,8 +31433,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
         <rdfs:label>validates</rdfs:label>
     </rdf:Description>
     <rdf:Description rdf:about="http://d3fend.mitre.org/ontologies/d3fend.owl#verifies">
-        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/00666401-v"/>
         <rdfs:seeAlso rdf:resource="http://wordnet-rdf.princeton.edu/id/00665271-v"/>
+        <rdfs:isDefinedBy rdf:resource="http://wordnet-rdf.princeton.edu/id/00666401-v"/>
         <rdfs:seeAlso rdf:resource="https://dbpedia.org/page/Formal_verification"/>
         <rdfs:label>verifies</rdfs:label>
         <rdfs:seeAlso rdf:resource="https://dbpedia.org/page/Runtime_verification"/>
