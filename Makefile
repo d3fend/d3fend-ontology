@@ -74,7 +74,7 @@ reports/missing-off-tech-artifacts-report.txt:	build/d3fend-public.owl
 #robot-to-ttl:	build/d3fend-with-header.owl # Convert from .owl to .ttl format (or parse post add-header breaks! (workaround and .ttl cleaner anyway)
 #	./bin/robot convert --input build/d3fend-with-header.owl -output build/d3fend-with-header.ttl
 
-build/d3fend-prefixes.json: ## create d3fend-specific prefix file for use with ROBOT
+build/d3fend-prefixes.json: builddir ## create d3fend-specific prefix file for use with ROBOT
 	./bin/robot --noprefixes \
 		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#" \
@@ -212,7 +212,7 @@ test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parsea
 test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
 	-./bin/robot validate-profile --profile DL --input build/d3fend-full.owl --output reports/full-validation.txt > reports/full-validation-stdout.txt
 
-test-load-files:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
+test:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
 
 dist: build distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
@@ -222,7 +222,7 @@ dist: build distdir
 	cp build/d3fend.csv dist/public/d3fend.csv
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
 
-all: clean build test-load-files dist ## build all, check for unallowed content, and test load files
+all: build test dist ## build all, check for unallowed content, and test load files
 
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
