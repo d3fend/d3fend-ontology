@@ -47,7 +47,7 @@ for node in d3fend:
 # lines.insert(0, ",D3FEND Tactic,D3FEND Technique," + tech_depth_header + ",Definition" )
 
 
-with open("d3fend.csv", "w") as f:
+with open("build/d3fend.csv", "w") as f:
 
     #             0                1                   2                           3                           4
     fieldnames = ["D3FEND Tactic", "D3FEND Technique", "D3FEND Technique Level 0", "D3FEND Technique Level 1", "Definition"]

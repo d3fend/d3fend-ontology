@@ -1,12 +1,12 @@
 SHELL ?= /usr/local/bin/bash
 
 clean: ## cleans all build artifacts
-	rm -f d3fend.{json,owl,ttl}
-	rm -f d3fend-webprotege.json
-	rm -f build/d3fend.*
-	rm -f d3fend-architecture*
-	rm -f d3fend-full.owl
-	rm -f build/*
+	# rm -f d3fend.{json,owl,ttl}
+	# rm -f d3fend-webprotege.json
+	# rm -f d3fend-architecture*
+	# rm -f d3fend-full.owl
+	rm -rf build/
+	rm -rf dist/
 	rm -f reports/*
 
 install-system-deps:
@@ -21,63 +21,60 @@ install-deps: install-python-deps ## install software deps
 	chmod +x bin/robot
 	curl https://d3fend.pages.mitre.org/deps/robot/robot.jar > bin/robot.jar
 
+download-attack:
+	mkdir data
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-10.0.json
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/
 # 
 # A copy of robot's default_profile.txt extracted from robot.jar and
-# placed in queries/ as convenient reference.  The report target is
+# placed in src/queries/ as convenient reference.  The report target is
 # currently coded to not fail as some errors are not blockers
 # yet. These reports are done immediately after adding ontology header
 # annotations to output from Web Protege.
 reports/default-robot-report.txt:	build/d3fend-full.owl ## Generate d3fend-full-robot-report.txt on ontology source issues
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile queries/custom-report-profile.txt \
+		--profile src/queries/custom-report-profile.txt \
 		--fail-on none > reports/default-robot-report.txt
 
 # Note: At present some definitions are d3f:definition; most are defacto rdfs:comment
 reports/missing-d3fend-definition-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile queries/missing-d3fend-definition-profile.txt \
+		--profile src/queries/missing-d3fend-definition-profile.txt \
 		--fail-on none > reports/missing-d3fend-definition-report.txt
 
 # Regression test, should not happen again.
 reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile queries/bogus-direct-subclassing-of-tactic-technique-profile.txt \
+		--profile src/queries/bogus-direct-subclassing-of-tactic-technique-profile.txt \
 		--fail-on ERROR > reports/bogus-direct-subclassing-of-tactic-technique-report.txt
 
 reports/missing-attack-id-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile queries/missing-attack-id-profile.txt \
+		--profile src/queries/missing-attack-id-profile.txt \
 		--fail-on none > reports/missing-attack-id-report.txt
 
 reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile queries/inconsistent-iri-profile.txt \
+		--profile src/queries/inconsistent-iri-profile.txt \
 		--fail-on none > reports/inconsistent-iri-report.txt
 
 reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
-		--profile queries/unallowed-thing-profile.txt \
+		--profile src/queries/unallowed-thing-profile.txt \
 		--fail-on ERROR > reports/unallowed-thing-report.txt
 
 reports/missing-off-tech-artifacts-report.txt:	build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
-		--profile queries/missing-off-tech-artifacts-profile.txt \
+		--profile src/queries/missing-off-tech-artifacts-profile.txt \
 		--fail-on ERROR > reports/missing-off-tech-artifacts-report.txt
 
 ## Example robot conversion. ROBOT not used for this for build as it doesn't support JSON-LD serialization.
 #robot-to-ttl:	build/d3fend-with-header.owl # Convert from .owl to .ttl format (or parse post add-header breaks! (workaround and .ttl cleaner anyway)
 #	./bin/robot convert --input build/d3fend-with-header.owl -output build/d3fend-with-header.ttl
 
-#robot-rename:	build/d3fend-with-header.owl
-#	./bin/robot -vvv rename --input build/d3fend-with-header.owl \
-#		--prefix-mappings prefix-mappings.tsv \
-#		--output build/d3fend-renamed.owl
-#	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
-
-d3fend-prefixes.json: ## create d3fend-specific prefix file for use with ROBOT
+build/d3fend-prefixes.json: ## create d3fend-specific prefix file for use with ROBOT
 	./bin/robot --noprefixes \
 		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#" \
@@ -86,10 +83,10 @@ d3fend-prefixes.json: ## create d3fend-specific prefix file for use with ROBOT
 		--add-prefix "owl: http://www.w3.org/2002/07/owl#"  \
 		--add-prefix "skos: http://www.w3.org/2004/02/skos/core#" \
 		--add-prefix "dcterms: http://purl.org/dc/terms/" \
-		export-prefixes --output d3fend-prefixes.json
+		export-prefixes --output build/d3fend-prefixes.json
 
-build/d3fend-with-header.owl:	d3fend-webprotege.owl d3fend-prefixes.json
-	./bin/robot annotate --input d3fend-webprotege.owl \
+build/d3fend-with-header.owl:	src/ontology/d3fend-webprotege.owl build/d3fend-prefixes.json
+	./bin/robot annotate --input src/ontology/d3fend-webprotege.owl \
 	        --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "dcterms: http://purl.org/dc/terms/" \
 		--ontology-iri "http://d3fend.mitre.org/ontologies/d3fend.owl" \
@@ -103,17 +100,17 @@ build/d3fend-with-header.owl:	d3fend-webprotege.owl d3fend-prefixes.json
 
 build/d3fend-with-links.owl:	build/d3fend-with-header.owl ## converts d3f:has-link xsd:string to xsd:anyURI and fixes WebProtege ontology IRI to d3fend.mitre.org path.
 	./bin/robot query --input build/d3fend-with-header.owl \
-		--update queries/make-has-links-anyURI.rq \
+		--update src/queries/make-has-links-anyURI.rq \
 		--output build/d3fend-with-links.owl
 
 build/d3fend-trimmed-literals.owl:	build/d3fend-with-links.owl
 	./bin/robot query --input build/d3fend-with-links.owl \
-		--update queries/trimming.rq \
+		--update src/queries/trimming.rq \
 		--output build/d3fend-trimmed-literals.owl
 
 build/d3fend-res-as-prop.owl:	build/d3fend-trimmed-literals.owl ## Extracts and translates just restrictions -> object property assertions
 	./bin/robot query --input build/d3fend-trimmed-literals.owl \
-		--query queries/restrictions-as-objectproperties.rq build/d3fend-res-as-prop.owl
+		--query src/queries/restrictions-as-objectproperties.rq build/d3fend-res-as-prop.owl
 
 build/d3fend-full.owl:	build/d3fend-res-as-prop.owl build/d3fend-trimmed-literals.owl ## Adds in object property assertions for class property restrictions
 	./bin/robot merge --input build/d3fend-trimmed-literals.owl \
@@ -171,18 +168,6 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 		--select instances \
 	        --output build/d3fend-public.owl
 
-# Got todo and comment through inheritance
-#		--term d3f:todo \
-#		--term d3f:comment \
-# For some reason can't get rid of people by name either way.
-#               --select "owl:NamedIndividual=d3f:ChrisThorpe" \
-#		--term d3f:JayVora \
-#		--term d3f:MichaelSmith \
-#		--term d3f:ParkerGarrison \
-#		--term d3f:PeterKaloroumakis \
-# Trimming doesn't help
-#		--trim true \
-
 reportsdir:
 	mkdir -p reports/
 
@@ -191,42 +176,53 @@ reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-defi
 robot:	add-header reports fix-has-links fix-whitespace-literals res-as-prop merge-prop public
 
 builddir:
-	mkdir -p build/
+	mkdir -p build
 
-make-techniques-table-and-deploy: ## Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python makecsv.py # TODO: refactor cert out of relative home/~?
+distdir:
+	mkdir -p dist/public dist/private
 
-d3fend-architecture.owl:	build/d3fend-full.owl
+build/d3fend.csv: ## Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py # TODO: refactor cert out of relative home/~?
+
+build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
 		--input build/d3fend-full.owl \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode" \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
-		--output d3fend-architecture.owl
+		--output build/d3fend-architecture.owl
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl reports/unallowed-thing-report.txt d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
-	pipenv run python3 process.py # expects a build/d3fend-public.owl file
-	cp build/d3fend-full.owl d3fend-full.owl
+build: 	builddir build/d3fend-full.owl build/d3fend-public.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend.csv ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
+
 
 # Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
 test-load-owl:	reportsdir ## Used to check d3fend.owl file as parseable and useable for DL profile.
-	-./bin/robot validate-profile --prefixes d3fend-prefixes.json --profile DL --input d3fend.owl --output reports/owl-validation.txt > reports/owl-validation-stdout.txt
+	-./bin/robot validate-profile --prefixes build/d3fend-prefixes.json --profile DL --input d3fend.owl --output reports/owl-validation.txt > reports/owl-validation-stdout.txt
 
 # Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
 test-load-ttl:	reportsdir ## Used to check d3fend.ttl file as parseable and useable for DL profile.
-	-./bin/robot validate-profile --profile DL --input d3fend.ttl --output reports/ttl-validation.txt > reports/ttl-validation-stdout.txt
+	-./bin/robot validate-profile --profile DL --input build/d3fend-public.ttl --output reports/ttl-validation.txt > reports/ttl-validation-stdout.txt
 
 test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
 #	./bin/robot validate-profile --profile DL --input d3fend.json --output reports/json-validation.txt # JSON-LD serialized by RDFlib not read by ROBOT or Protege
-	pipenv run python3 test_load_json.py
+	pipenv run python3 src/tests/test_load_json.py build/d3fend-public.json
 	echo "RDFLib parsed d3fend.json successfully" > reports/json-validation.txt
 
 # Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
 test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
-	-./bin/robot validate-profile --profile DL --input d3fend-full.owl --output reports/full-validation.txt > reports/full-validation-stdout.txt
+	-./bin/robot validate-profile --profile DL --input build/d3fend-full.owl --output reports/full-validation.txt > reports/full-validation-stdout.txt
 
 test-load-files:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
 
-all: clean build test-load-files ## build all, check for unallowed content, and test load files
+dist: build distdir
+	cp build/d3fend-full.owl dist/private/d3fend-full.owl
+	cp build/d3fend-public.owl dist/public/d3fend.owl
+	cp build/d3fend-public.ttl dist/public/d3fend.ttl
+	cp build/d3fend-public.json dist/public/d3fend.json
+	cp build/d3fend.csv dist/public/d3fend.csv
+	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
+
+all: clean build test-load-files dist ## build all, check for unallowed content, and test load files
 
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

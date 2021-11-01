@@ -3,6 +3,7 @@ from rdflib import Graph, Namespace, URIRef
 import pyld
 
 PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public.owl"
+PUBLIC_DEST_DIR = "build/"
 
 class colors:
     HEADER = '\033[95m'
@@ -32,7 +33,7 @@ def get_graph():
 
     
 if __name__ == "__main__":
-    output_fname = "d3fend"
+    output_fname = "d3fend-public"
 
     g = get_graph()
 
@@ -54,13 +55,15 @@ if __name__ == "__main__":
     
     # Serialize to different formats
     base_uri = URIRef(_base)
-    g.serialize(destination=f"{output_fname}.owl", base=base_uri, format="xml")
-    log(f"Wrote: {output_fname}.owl")
-    g.serialize(destination=f"{output_fname}.ttl", format="ttl")
+
+    # taking robot's output over this now
+    # g.serialize(destination=f"{output_fname}.owl", base=base_uri, format="xml")
+    # log(f"Wrote: {output_fname}.owl")
+
+    g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.ttl", format="ttl")
     log(f"Wrote: {output_fname}.ttl")
 
-    
-    g.serialize(destination=f"{output_fname}.json", format="json-ld")
+    g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.json", format="json-ld")
     log(f"wrote: {output_fname}.json")
 
     log(f"The graph now has {len(g)} triples", info=True)
