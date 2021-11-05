@@ -1,10 +1,6 @@
 SHELL ?= /usr/local/bin/bash
 
 clean: ## cleans all build artifacts
-	# rm -f d3fend.{json,owl,ttl}
-	# rm -f d3fend-webprotege.json
-	# rm -f d3fend-architecture*
-	# rm -f d3fend-full.owl
 	rm -rf build/
 	rm -rf dist/
 	rm -f reports/*
@@ -24,6 +20,7 @@ install-deps: install-python-deps ## install software deps
 download-attack:
 	mkdir data
 	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-10.0.json
+
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/
@@ -194,23 +191,19 @@ build/d3fend-architecture.owl:	build/d3fend-full.owl
 build: 	builddir build/d3fend-full.owl build/d3fend-public.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend.csv ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
 
+test-load-owl:	reportsdir build/d3fend-public.owl ## Used to check d3fend.owl file as parseable and useable for DL profile.
+	./bin/robot validate-profile --prefixes build/d3fend-prefixes.json --profile DL --input build/d3fend-public.owl --output reports/owl-validation.txt > reports/owl-validation-stdout.txt
 
-# Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
-test-load-owl:	reportsdir ## Used to check d3fend.owl file as parseable and useable for DL profile.
-	-./bin/robot validate-profile --prefixes build/d3fend-prefixes.json --profile DL --input d3fend.owl --output reports/owl-validation.txt > reports/owl-validation-stdout.txt
-
-# Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
-test-load-ttl:	reportsdir ## Used to check d3fend.ttl file as parseable and useable for DL profile.
-	-./bin/robot validate-profile --profile DL --input build/d3fend-public.ttl --output reports/ttl-validation.txt > reports/ttl-validation-stdout.txt
+test-load-ttl:	reportsdir build/d3fend-public.ttl ## Used to check d3fend.ttl file as parseable and useable for DL profile.
+	./bin/robot validate-profile --profile DL --input build/d3fend-public.ttl --output reports/ttl-validation.txt > reports/ttl-validation-stdout.txt
 
 test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
 #	./bin/robot validate-profile --profile DL --input d3fend.json --output reports/json-validation.txt # JSON-LD serialized by RDFlib not read by ROBOT or Protege
 	pipenv run python3 src/tests/test_load_json.py build/d3fend-public.json
 	echo "RDFLib parsed d3fend.json successfully" > reports/json-validation.txt
 
-# Continue make even on ROBOT fail, as it fails on bogus undeclared annotation property PROFILE VALIDATION ERROR about dcterms:{description,title,license}
 test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
-	-./bin/robot validate-profile --profile DL --input build/d3fend-full.owl --output reports/full-validation.txt > reports/full-validation-stdout.txt
+	./bin/robot validate-profile --profile DL --input build/d3fend-full.owl --output reports/full-validation.txt > reports/full-validation-stdout.txt
 
 test:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
 
