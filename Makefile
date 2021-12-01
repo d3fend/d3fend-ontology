@@ -71,6 +71,9 @@ reports/missing-off-tech-artifacts-report.txt:	build/d3fend-public.owl
 #robot-to-ttl:	build/d3fend-with-header.owl # Convert from .owl to .ttl format (or parse post add-header breaks! (workaround and .ttl cleaner anyway)
 #	./bin/robot convert --input build/d3fend-with-header.owl -output build/d3fend-with-header.ttl
 
+builddir:
+	mkdir -p build
+
 build/d3fend-prefixes.json: builddir ## create d3fend-specific prefix file for use with ROBOT
 	./bin/robot --noprefixes \
 		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
@@ -91,7 +94,7 @@ build/d3fend-with-header.owl:	src/ontology/d3fend-webprotege.owl build/d3fend-pr
 		--annotation dcterms:license "MIT" \
 		--annotation dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature." \
 		--annotation dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures" \
-		--annotation rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) whcih is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Sotware and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2021 The MITRE Corporation." \
+		--annotation rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Sotware and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2021 The MITRE Corporation." \
 		--output build/d3fend-with-header.owl
 #		--prefixes d3fend-prefixes.json \ # This use of prefixes context not working with ROBOT as desired for annotate, so adding d3f with --add-prefix instead
 
@@ -165,19 +168,6 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 		--select instances \
 	        --output build/d3fend-public.owl
 
-reportsdir:
-	mkdir -p reports/
-
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
-
-robot:	add-header reports fix-has-links fix-whitespace-literals res-as-prop merge-prop public
-
-builddir:
-	mkdir -p build
-
-distdir:
-	mkdir -p dist/public dist/private
-
 build/d3fend.csv: ## Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
 	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py # TODO: refactor cert out of relative home/~?
 
@@ -188,8 +178,22 @@ build/d3fend-architecture.owl:	build/d3fend-full.owl
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
 		--output build/d3fend-architecture.owl
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend.csv ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build/d3fend-public-mapped.owl: build/d3fend-public.owl
+	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
+
+build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend.csv ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
+
+reportsdir:
+	mkdir -p reports/
+
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+
+robot:	add-header reports fix-has-links fix-whitespace-literals res-as-prop merge-prop public
+
+distdir:
+	mkdir -p dist/public dist/private
+
 
 test-load-owl:	reportsdir build/d3fend-public.owl ## Used to check d3fend.owl file as parseable and useable for DL profile.
 	./bin/robot validate-profile --prefixes build/d3fend-prefixes.json --profile DL --input build/d3fend-public.owl --output reports/owl-validation.txt > reports/owl-validation-stdout.txt
@@ -210,6 +214,7 @@ test:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all on
 dist: build distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public.owl dist/public/d3fend.owl
+	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
 	cp build/d3fend-public.ttl dist/public/d3fend.ttl
 	cp build/d3fend-public.json dist/public/d3fend.json
 	cp build/d3fend.csv dist/public/d3fend.csv
