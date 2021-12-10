@@ -1,4 +1,4 @@
-SHELL ?= /usr/local/bin/bash
+SHELL=/bin/bash
 
 clean: ## cleans all build artifacts
 	rm -rf build/
@@ -63,9 +63,11 @@ reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 		--fail-on ERROR > reports/unallowed-thing-report.txt
 
 reports/missing-off-tech-artifacts-report.txt:	build/d3fend-public.owl
-	./bin/robot report -i build/d3fend-public.owl \
-		--profile src/queries/missing-off-tech-artifacts-profile.txt \
-		--fail-on ERROR > reports/missing-off-tech-artifacts-report.txt
+#	TODO robot bug prevents this ; issue #86
+#	./bin/robot report -i build/d3fend-public.owl \
+#		--profile src/queries/missing-off-tech-artifacts-profile.txt \
+#		--fail-on none > reports/missing-off-tech-artifacts-report.txt
+	./bin/robot query --format tsv -i build/d3fend-public.owl --query src/queries/missing-off-tech-artifacts.rq reports/missing-off-tech-artifacts-report.txt
 
 ## Example robot conversion. ROBOT not used for this for build as it doesn't support JSON-LD serialization.
 #robot-to-ttl:	build/d3fend-with-header.owl # Convert from .owl to .ttl format (or parse post add-header breaks! (workaround and .ttl cleaner anyway)
@@ -221,6 +223,9 @@ dist: build distdir
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
 
 all: build test dist ## build all, check for unallowed content, and test load files
+
+print-new-techniques:
+	diff -y -W 500 dist/public/d3fend.csv <(curl -s https://d3fend.mitre.org/ontologies/d3fend.csv) | grep \< | sed  "s/\<//g"
 
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
