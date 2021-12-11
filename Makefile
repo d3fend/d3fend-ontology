@@ -11,11 +11,15 @@ install-system-deps:
 install-python-deps:
 	pipenv install
 
-install-deps: install-python-deps ## install software deps
+bindir:
 	mkdir -p bin
+
+bin/robot.jar: bindir
 	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
 	chmod +x bin/robot
 	curl https://d3fend.pages.mitre.org/deps/robot/robot.jar > bin/robot.jar
+
+install-deps: install-python-deps bin/robot.jar ## install software deps
 
 download-attack:
 	mkdir data
