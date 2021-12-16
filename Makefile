@@ -226,7 +226,7 @@ dist: build distdir
 	cp build/d3fend.csv dist/public/d3fend.csv
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
 
-all: build test dist ## build all, check for unallowed content, and test load files
+all: build dist ## build all, check for unallowed content, and test load files
 
 print-new-techniques:
 	diff -y -W 500 dist/public/d3fend.csv <(curl -s https://d3fend.mitre.org/ontologies/d3fend.csv) | grep \< | sed  "s/\<//g"
