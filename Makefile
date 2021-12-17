@@ -187,6 +187,9 @@ build/d3fend-architecture.owl:	build/d3fend-full.owl
 build/d3fend-public-mapped.owl: build/d3fend-public.owl
 	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
 
+build/d3fend-inferred-relationships.csv:
+	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
+
 build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend.csv ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
 
@@ -228,8 +231,8 @@ dist: build distdir
 
 all: build test dist ## build all, check for unallowed content, and test load files
 
-print-new-techniques:
-	diff -y -W 500 dist/public/d3fend.csv <(curl -s https://d3fend.mitre.org/ontologies/d3fend.csv) | grep \< | sed  "s/\<//g"
+print-new-techniques: build/d3fend.csv ## compare local build against current public version
+	diff -y -W 500 build/d3fend.csv <(curl -s https://d3fend.mitre.org/ontologies/d3fend.csv) | grep \< | sed  "s/\<//g"
 
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
