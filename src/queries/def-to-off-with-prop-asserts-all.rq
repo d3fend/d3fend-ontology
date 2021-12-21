@@ -1,0 +1,78 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT
+    ?def_tactic_label
+    ?def_tactic_rel_label
+    ?def_tech_label
+    ?def_artifact_rel_label
+    ?def_artifact_label # defensive artifact is special case of defensive artifact
+    ?sc
+    ?off_artifact_label
+    ?off_artifact_rel_label
+    ?off_tech_label
+    ?off_tech_parent_label
+    ?off_tech_parent_is_toplevel
+    ?off_tactic_rel_label
+    ?off_tactic_label
+
+    ?def_tactic
+    ?def_tactic_rel
+    ?tactic_def_tech
+    ?def_tech
+    ?def_artifact_rel
+    ?def_artifact
+    ?off_artifact
+    ?off_artifact_rel
+    ?off_tech
+    ?off_tech_parent
+    ?off_tactic_rel
+    ?off_tactic
+
+WHERE {
+    
+    #hint:Query hint:optimizer "None" .
+
+    ?def_tech rdfs:subClassOf* d3f:DefensiveTechnique .
+
+	# BIND ('-<-' AS ?sc) . 
+  
+    ?tactic_def_tech rdfs:subClassOf+ d3f:DefensiveTechnique .
+    ?def_tech rdfs:subClassOf* ?tactic_def_tech .
+    ?tactic_def_tech ?def_tactic_rel ?def_tactic .
+    ?def_tactic rdfs:subClassOf+ d3f:DefensiveTactic .
+  
+    ?def_artifact rdfs:subClassOf+ d3f:DigitalArtifact .
+
+    ?off_artifact rdfs:subClassOf* ?def_artifact .
+    ?off_tech rdfs:subClassOf+ d3f:OffensiveTechnique .
+    ?off_tech ?off_artifact_rel ?off_artifact .
+
+    ?def_tech ?def_artifact_rel ?def_artifact .
+    
+    ?off_tactic rdfs:subClassOf+ d3f:OffensiveTactic .
+    ?off_tech ?off_tactic_rel ?off_tactic .
+
+    ?off_tech rdfs:subClassOf ?off_tech_parent .
+    ?off_tech_parent rdfs:subClassOf* d3f:OffensiveTechnique .
+
+
+     ?def_tactic rdfs:label ?def_tactic_label .
+     ?def_tactic_rel rdfs:label ?def_tactic_rel_label .
+     ?off_tech_parent rdfs:label ?off_tech_parent_label .
+     ?def_tech rdfs:label ?def_tech_label .
+     ?def_artifact_rel rdfs:label ?def_artifact_rel_label .
+     ?def_artifact rdfs:label ?def_artifact_label .
+     ?off_artifact rdfs:label ?off_artifact_label .
+     ?off_artifact_rel rdfs:label ?off_artifact_rel_label .
+     ?off_tech rdfs:label ?off_tech_label .
+     ?off_tactic_rel rdfs:label ?off_tactic_rel_label .
+     ?off_tactic rdfs:label ?off_tactic_label .
+	 BIND (xsd:boolean
+          (EXISTS{?off_tech_parent rdfs:subClassOf d3f:OffensiveTechnique})
+          AS ?off_tech_parent_is_toplevel) .
+}    
+
+#LIMIT 1000
