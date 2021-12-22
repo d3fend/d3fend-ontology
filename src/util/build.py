@@ -2,8 +2,23 @@ import json
 from rdflib import Graph, Namespace, URIRef
 import pyld
 
+
 PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public.owl"
 PUBLIC_DEST_DIR = "build/"
+
+DEFAULT_CONTEXT = {
+    "d3f": "http://d3fend.mitre.org/ontologies/d3fend.owl#",
+    "dbr" : "http://dbpedia.org/resource/",
+    "dc" : "http://purl.org/dc/elements/1.1/",
+    "dcterms" : "http://purl.org/dc/terms/",
+    "owl" : "http://www.w3.org/2002/07/owl#",
+    "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xml" : "http://www.w3.org/XML/1998/namespace",
+    "xsd" : "http://www.w3.org/2001/XMLSchema#"
+}
+
 
 class colors:
     HEADER = '\033[95m'
@@ -56,14 +71,13 @@ if __name__ == "__main__":
     # Serialize to different formats
     base_uri = URIRef(_base)
 
-    # taking robot's output over this now
-    # g.serialize(destination=f"{output_fname}.owl", base=base_uri, format="xml")
-    # log(f"Wrote: {output_fname}.owl")
 
-    g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.ttl", format="ttl")
+    g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.ttl", format="ttl", auto_compact=True)
     log(f"Wrote: {output_fname}.ttl")
 
-    g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.json", format="json-ld")
+    #g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.json", context={k:v for k, v in g.namespaces()}, format="json-ld")
+    g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.json", context=DEFAULT_CONTEXT, format="json-ld")
+
     log(f"wrote: {output_fname}.json")
 
     log(f"The graph now has {len(g)} triples", info=True)
