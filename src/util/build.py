@@ -65,8 +65,8 @@ if __name__ == "__main__":
     d3f = Namespace(_xmlns)
     g.namespace_manager.bind('d3f', d3f, override=True, replace=True)
 
-    for ns in g.namespaces():
-        log('%s:%s' % (ns), info=True)
+    # for ns in g.namespaces():
+    #     log('%s:%s' % (ns), info=True)
     
     # Serialize to different formats
     base_uri = URIRef(_base)

@@ -1,4 +1,30 @@
+MAKEFLAGS += --silent
+
 SHELL=/bin/bash
+
+# define standard colors
+ifneq (,$(findstring xterm,${TERM}))
+	BLACK        := $(shell tput -Txterm setaf 0)
+	RED          := $(shell tput -Txterm setaf 1)
+	GREEN        := $(shell tput -Txterm setaf 2)
+	YELLOW       := $(shell tput -Txterm setaf 3)
+	LIGHTPURPLE  := $(shell tput -Txterm setaf 4)
+	PURPLE       := $(shell tput -Txterm setaf 5)
+	BLUE         := $(shell tput -Txterm setaf 6)
+	WHITE        := $(shell tput -Txterm setaf 7)
+	RESET := $(shell tput -Txterm sgr0)
+else
+	BLACK        := ""
+	RED          := ""
+	GREEN        := ""
+	YELLOW       := ""
+	LIGHTPURPLE  := ""
+	PURPLE       := ""
+	BLUE         := ""
+	WHITE        := ""
+	RESET        := ""
+endif
+
 
 clean: ## cleans all build artifacts
 	rm -rf build/
@@ -174,8 +200,8 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 		--select instances \
 	        --output build/d3fend-public.owl
 
-build/d3fend.csv: ## Broken out for non-deploy builds (and esp. for ~/MITRE.crt unavail.)
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py # TODO: refactor cert out of relative home/~?
+build/d3fend.csv: build/d3fend-public.owl ## make D3FEND csv, not part of build or all targets
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py
 
 build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
@@ -190,7 +216,7 @@ build/d3fend-public-mapped.owl: build/d3fend-public.owl
 build/d3fend-inferred-relationships.csv:
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend.csv ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
 
 reportsdir:
@@ -220,13 +246,13 @@ test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and use
 
 test:	test-load-owl test-load-ttl test-load-json test-load-full ## Checks all ontology build files as parseable and DL-compatible.
 
-dist: build distdir
+dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public.owl dist/public/d3fend.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
 	cp build/d3fend-public.ttl dist/public/d3fend.ttl
 	cp build/d3fend-public.json dist/public/d3fend.json
-	cp build/d3fend.csv dist/public/d3fend.csv
+	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: D3FEND CSV NOT FOUND TO INCLUDE IN DIST ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
 
 all: build dist ## build all, check for unallowed content, and test load files
@@ -237,6 +263,6 @@ print-new-techniques: build/d3fend.csv ## compare local build against current pu
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: help
+.PHONY: all help clean build dist test robot
 
 .DEFAULT_GOAL := help
