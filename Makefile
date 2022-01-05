@@ -255,7 +255,7 @@ dist: distdir
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: D3FEND CSV NOT FOUND TO INCLUDE IN DIST ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
 
-all: build dist ## build all, check for unallowed content, and test load files
+all: build dist test ## build all, check for unallowed content, and test load files
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version
 	diff -y -W 500 build/d3fend.csv <(curl -s https://d3fend.mitre.org/ontologies/d3fend.csv) | grep \< | sed  "s/\<//g"
