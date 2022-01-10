@@ -56,7 +56,7 @@ bindir:
 
 bin/jena: bindir
 	mkdir -p bin/jena
-	curl https://dlcdn.apache.org/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz | tar xf - -C bin/jena
+	curl https://dlcdn.apache.org/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz | tar xzf - -C bin/jena
 	$(END)
 
 bin/robot.jar: bindir
