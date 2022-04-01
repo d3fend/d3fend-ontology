@@ -66,6 +66,15 @@ These files are located in the src, build, or dist directories.
 - Ontology version is specified in `Makefile` as `D3FEND_VERSION`
 - Ontology style guide/conventions [here](./CONVENTIONS.md) (work in progress).
 
+## Build with docker
+
+If you have docker and docker-compose, you can build a distribution
+in the dist/ folder running
+
+```bash
+docker-compose up d3fend-ontology
+```
+
 ## NOTICE
 
 Use of the MITRE D3FEND™ Knowledge Graph and website is subject to the Terms of Use. Use of the MITRE D3FEND website is subject to the MITRE D3FEND Privacy Policy. MITRE D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC), which is operated by The MITRE Corporation. MITRE D3FEND; and the MITRE D3FEND logo are trademarks of The MITRE Corporation. MITRE ATT&CK® and ATT&CK® are registered trademarks of The MITRE Corporation. MITRE ATT&CK content is subject to the MITRE ATT&CK terms of use.
