@@ -8,6 +8,8 @@ JENA_VERSION := 4.4.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
+ROBOT_URL := "https://d3fend.pages.mitre.org/deps/robot/robot.jar"
+
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
 	BLACK        := $(shell tput -Txterm setaf 0)
@@ -60,9 +62,8 @@ bin/jena: bindir
 	$(END)
 
 bin/robot.jar: bindir
-	curl https://d3fend.pages.mitre.org/deps/robot/robot > bin/robot
-	chmod +x bin/robot
-	curl https://d3fend.pages.mitre.org/deps/robot/robot.jar > bin/robot.jar
+	echo -ne '#!/bin/bash\njava -jar bin/robot.jar "$$@"\n' > bin/robot && chmod +x bin/robot
+	curl -L $(ROBOT_URL) > bin/robot.jar
 	$(END)
 
 install-deps: install-python-deps bin/robot.jar bin/jena ## install software deps
