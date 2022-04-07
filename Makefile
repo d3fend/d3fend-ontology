@@ -293,6 +293,7 @@ dist: distdir
 	cp build/d3fend-public.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
+	chmod 644 dist/public/d3fend.ttl
 	$(END)
 
 all: build dist test ## build all, check for unallowed content, and test load files
