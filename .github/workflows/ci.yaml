@@ -1,0 +1,31 @@
+name: Tests & Build
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+  workflow_dispatch:
+
+jobs:
+  test-job:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        docker-compose build  --pull --force-rm d3fend-ontology
+
+    - name: Test
+      run:  docker-compose run --rm d3fend-ontology
+
+    - name: Cleanup
+      run: docker-compose down && docker-compose rm --force
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: d3fend.ttl
+        path: dist/public/d3fend.ttl
