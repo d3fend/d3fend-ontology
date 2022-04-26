@@ -2654,6 +2654,48 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
                         rdfs:label "Capability Feature Claim" ;
                         <http://www.w3.org/2004/02/skos/core#altLabel> "Provider Claim" .
 
+:ContainerOrchestrationSoftware-claim a :DefensiveTechniqueClaim ;
+               rdfs:subClassOf :DefensiveTechniqueClaim ;
+              :implemented-by :ContainerOrchestrationSoftware ;
+              :claims :Kernel-basedProcessIsolation ;
+              :comments """Using a container orchestration software
+              provides Kernel-based process isolation.
+                """ .
+
+:ContainerRuntime-claim a :DefensiveTechniqueClaim ;
+               rdfs:subClassOf :DefensiveTechniqueClaim ;
+              :implemented-by :ContainerRuntime ;
+              :claims :Kernel-basedProcessIsolation ;
+              :comments """Using a container runtime
+              provides Kernel-based process isolation.
+                """ .
+
+:DynamicAnalysisTool-claim a :DefensiveTechniqueClaim ;
+               rdfs:subClassOf :DefensiveTechniqueClaim ;
+              :implemented-by :DynamicAnalysisTool ;
+              :claims :DynamicApplicationSecurityTesting ;
+              :comments """A DAT supports DynamicApplicationSecurityTesting.
+               FIXME: DAT includes a category of testing tools and practices
+               such as Unit|Integration Testing. This claim should be restricted
+               to DAST Tools only.
+                """ .
+
+:StaticAnalysisTool-claim a :DefensiveTechniqueClaim ;
+               rdfs:subClassOf :DefensiveTechniqueClaim ;
+              :implemented-by :StaticAnalysisTool ;
+              :claims :StaticApplicationSecurityTesting ;
+              :comments """A SAT supports StaticApplicationSecurityTesting.
+                """ .
+
+:Linter-claim a :DefensiveTechniqueClaim ;
+               rdfs:subClassOf :DefensiveTechniqueClaim ;
+              :implemented-by :StaticAnalysisTool ;
+              :claims :StaticApplicationSecurityTesting ;
+              :comments """A DAT supports DynamicApplicationSecurityTesting.
+               FIXME: DAT includes a category of testing tools and practices
+               such as Unit|Integration Testing. This claim should be restricted
+               to DAST Tools only.
+                """ .
 
 ###  http://d3fend.mitre.org/ontologies/d3fend.owl#CapabilityImplementation
 :CapabilityImplementation rdf:type owl:Class ;
@@ -2858,7 +2900,7 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
 
 ###  http://d3fend.mitre.org/ontologies/d3fend.owl#CodeAnalyzer
 :CodeAnalyzer rdf:type owl:Class ;
-              rdfs:subClassOf :DeveloperApplication ;
+              rdfs:subClassOf :DeveloperApplication, :CapabilityImplementation ;
               :todo "Damn these wikipedia articles are present, but not that great; riffing and borrowing parts, not exact defs." ;
               rdfs:comment "Code analyzers automatically analyze the composition or behavior of computer programs regarding a property such as correctness, robustness, security, and safety. Program analysis can be performed without executing the program (static program analysis), during runtime (dynamic program analysis) or in a combination of both." ;
               rdfs:label "Code Analyzer" ;
@@ -3064,7 +3106,8 @@ Container images become containers at runtime and in the case of Docker containe
 
 ###  http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerOrchestrationSoftware
 :ContainerOrchestrationSoftware rdf:type owl:Class ;
-                                rdfs:subClassOf :ServiceApplication ;
+                                rdfs:subClassOf :ServiceApplication,
+                                                :CapabilityImplementation ;
                                 rdfs:comment "A d3f:Software which manages and coordinates running one or more d3f:ContainerProcess." ;
                                 rdfs:label "Container Orchestration Software" .
 
@@ -3078,7 +3121,8 @@ Container images become containers at runtime and in the case of Docker containe
 
 ###  http://d3fend.mitre.org/ontologies/d3fend.owl#ContainerRuntime
 :ContainerRuntime rdf:type owl:Class ;
-                  rdfs:subClassOf :ServiceApplication ,
+                  rdfs:subClassOf :ServiceApplication , 
+                                  :CapabilityImplementation,
                                   [ rdf:type owl:Restriction ;
                                     owl:onProperty :runs ;
                                     owl:someValuesFrom :ContainerImage
