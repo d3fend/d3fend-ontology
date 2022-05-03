@@ -38,6 +38,44 @@ START = echo "${BLUE}$@ started ${RESET}"
 END = echo "${GREEN}$@ done ${RESET}"
 FAIL = echo "${RED}$@ failed ${RESET}"
 
+DB_LOCAL := "http://127.0.0.1:9899"
+DB_PROD := "http://PRODUCTIONSERVER.local:9899"
+DB_REST_PATH := "/blazegraph/namespace/d3fend/sparql"
+DB_REST_PATH_INF := "/blazegraph/namespace/d3fend_inf/sparql"
+DB_REST_PATH_BD := "/bigdata/namespace/d3fend/sparql"
+DB_REST_PATH_BD_INF := "/bigdata/namespace/d3fend_inf/sparql"
+DB_REST_PATH_TEST := "/bigdata/namespace/d3fend-test/sparql"
+
+db-delete-local:
+	@curl -s -o /dev/null -w "deleted ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n"  ${DB_LOCAL}${DB_REST_PATH} --data-urlencode "update=DROP ALL;"
+	@curl -s -o /dev/null -w "deleted ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" ${DB_LOCAL}${DB_REST_PATH_INF} --data-urlencode "update=DROP ALL;"
+
+db-delete-prod:
+	@curl -s -o /dev/null -w "deleted ${DB_PROD}${DB_REST_PATH} %{http_code}\n"  ${DB_PROD}${DB_REST_PATH_BD} --data-urlencode "update=DROP ALL;"
+	@curl -s -o /dev/null -w "deleted ${DB_PROD}${DB_REST_PATH_BD_INF} %{http_code}\n" ${DB_PROD}${DB_REST_PATH_BD_INF} --data-urlencode "update=DROP ALL;"
+
+db-sync-local: db-delete-local db-load-local
+
+db-load-local:
+	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_LOCAL}${DB_REST_PATH}
+	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_LOCAL}${DB_REST_PATH_INF}
+
+db-load-prod:
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_PROD}${DB_REST_PATH_BD}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_PROD}${DB_REST_PATH_BD_INF}
+
+db-sync-prod: db-delete-prod db-load-prod
+
+db-load-prod-restore:
+	curl -D- -H 'Content-Type:application/rdf+xml' -v -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH_BD}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH_INF}
+
+# run make-onto again at end to rebuild the csv with latest data
+db-sync-all: db-delete-local db-load-local db-delete-prod db-load-prod ## sync local and prod dbs with current ontology
+
+
+
 clean: ## cleans all build artifacts
 	rm -rf build/
 	rm -rf dist/
