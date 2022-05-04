@@ -6391,7 +6391,7 @@ Many operating systems, software frameworks and programs include a logging syste
 
 ###  http://d3fend.mitre.org/ontologies/d3fend.owl#PlatformHardening
 :PlatformHardening rdf:type owl:Class ;
-                   rdfs:subClassOf :DefensiveTechnique ,
+                   rdfs:subClassOf :IdentifierAnalysis ,
                                    [ rdf:type owl:Restriction ;
                                      owl:onProperty :enables ;
                                      owl:someValuesFrom :Harden
@@ -19310,9 +19310,9 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
                       rdfs:label "Application Hardening" .
 
 
-:Authentication rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00155053-n> ,
-                             <http://dbpedia.org/resource/Authentication> ;
+:Authentication rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00155053-n> ;
                 rdfs:label "Authentication" ;
+                rdfs:seeAlso <http://dbpedia.org/resource/Authentication> ;
                 rdfs:comment "A request-response comprising a user credential presentation to a system and a verification response." .
 
 
@@ -19376,14 +19376,14 @@ Depending on the complexity of the data considered, outliers may not be obvious 
 
 :BroadcastDomainIsolation :synonym "Network Segmentation" ;
                           :definition "Broadcast isolation restricts the number of computers a host can contact on their LAN." ;
-                          rdfs:label "Broadcast Domain Isolation" ;
                           :kb-article """## How it works
 Software Defined Networking, or other network encapsulation technologies intercept host broadcast traffic then route it to a specified destination per a configured policy.
 
 This can be implemented within hypervisors, networking hardware (WAPs, switches, routers), or virutal hardware.
 
 ## Considerations
-This technique is highly dependent on network infrastructure and networking requirements.""" .
+This technique is highly dependent on network infrastructure and networking requirements.""" ;
+                          rdfs:label "Broadcast Domain Isolation" .
 
 
 :ByteSequenceEmulation rdfs:label "Byte Sequence Emulation" ;
@@ -19429,7 +19429,9 @@ TLS certificates are designed to expire to ensure that the cryptographic keys ar
                      rdfs:label "Certificate Analysis" .
 
 
-:CertificatePinning :kb-article """## How it works
+:CertificatePinning :definition "Persisting either a server's X509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections." ;
+                    rdfs:label "Certificate Pinning" ;
+                    :kb-article """## How it works
 Pinning allows for a trusted copy of a certificate or public key to be associated with a server and thus reducing the likelihood of frequently visited sites being subjected to man-in-the-middle attacks. Certificates or public keys can be pinned after a trusted connection has been established or the pinning can be preloaded in an application, which is the preferred method for mobile applications.
 
 Pinning can take the form of certificate pinning or public key pinning.
@@ -19447,9 +19449,8 @@ An extension of PKP is Subject Public Key Information Pinning (SPKI) includes pu
 
 * With pinned certificates whenever a server updates its certificate, the pinned certificates will also need to be updated
 * With pinned public keys the extracted key may be subject to key refresh policies but much less frequently
-* Websites can become unavailable if pinned objects are set and not updated with the rotated identities. This may require a pinning strategy to be developed.""" ;
-                    :definition "Persisting either a server's X509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections." ;
-                    rdfs:label "Certificate Pinning" .
+* Servers can become unavailable if pinned objects are set and not updated with the rotated identities. This may require a pinning strategy to be developed.
+* The application of this technique within web browser applications has been [deprecated](https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning) by  popular web browser developers. They now favor certificate analysis via public certificate transparency logs, and the EXPECT-CT HTTP header.""" .
 
 
 :Client-serverPayloadProfiling rdfs:label "Client-server Payload Profiling" ;
@@ -19576,12 +19577,13 @@ For example, a DNS policy can be created for blocking DNS queries for FQDNs that
 - Continuous maintenance of unauthorized domain lists is needed to keep up to date with possible site content changes.
 - File sharing or content delivery networks may require other filtering techniques that are more fine-grained (URL blocking). 
 - Access to malicious websites or other network resources directly by IP instead of by DNS record, or after alteration of local DNS hosts file, may not result in DNS network traffic.""" ;
-                :definition "Blocking DNS Network Traffic based on criteria such as IP address, domain name, or DNS query type." ;
-                :synonym "DNS Blacklisting" .
+                :synonym "DNS Blacklisting" ;
+                :definition "Blocking DNS Network Traffic based on criteria such as IP address, domain name, or DNS query type." .
 
 
 :DNSTrafficAnalysis :definition "Analysis of domain name metadata, including name and DNS records, to determine whether the domain is likely to resolve to an undesirable host." ;
                     rdfs:label "DNS Traffic Analysis" ;
+                    :synonym "Domain Name Analysis" ;
                     :kb-article """## How it works
 This technique can be accomplished in a number of ways. 
 
@@ -19594,8 +19596,7 @@ This technique does not check for content hosted at the domain.
 ## Considerations
 
 * DNS produces a large amount of traffic which can be resource-intensive to analyze in real time.
-* If a server is compromised, for example, as part of a watering hole attack, but the DNS information pointing to that server is not altered, this technique would not catch such an incident.""" ;
-                    :synonym "Domain Name Analysis" .
+* If a server is compromised, for example, as part of a watering hole attack, but the DNS information pointing to that server is not altered, this technique would not catch such an incident.""" .
 
 
 :DatabaseQueryStringAnalysis rdfs:label "Database Query String Analysis" ;
@@ -19762,8 +19763,8 @@ This technique can be accomplished in a number of ways:
                              rdfs:label "Driver Load Integrity Checking" .
 
 
-:DynamicAnalysis :definition "Executing or opening a file in a synthetic \"sandbox\" environment to determine if the file is a malicious program or if the file exploits another program such as a document reader." ;
-                 rdfs:label "Dynamic Analysis" ;
+:DynamicAnalysis rdfs:label "Dynamic Analysis" ;
+                 :definition "Executing or opening a file in a synthetic \"sandbox\" environment to determine if the file is a malicious program or if the file exploits another program such as a document reader." ;
                  :kb-article """## How it works
 Analyzing the interaction of a piece of code with a system while the code is being executed in a controlled environment such as a sandbox, virtual machine, or simulator. This exposes the natural behavior of the piece of code without requiring the code to be disassembled.
 
@@ -19779,8 +19780,8 @@ Analyzing the interaction of a piece of code with a system while the code is bei
                           "Malware Detonation" .
 
 
-:EmulatedFileAnalysis :definition "Emulating instructions in a file looking for specific patterns." ;
-                      rdfs:label "Emulated File Analysis" .
+:EmulatedFileAnalysis rdfs:label "Emulated File Analysis" ;
+                      :definition "Emulating instructions in a file looking for specific patterns." .
 
 
 :EncryptedTunnels :definition "Encrypted encapsulation of routable network traffic." ;
@@ -20128,8 +20129,7 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
           rdfs:isDefinedBy <http://dbpedia.org/resource/Hostname> .
 
 
-:IOPortRestriction rdfs:label "IO Port Restriction" ;
-                   :kb-article """## How It works
+:IOPortRestriction :kb-article """## How It works
 
 Software-based restriction uses agent software installed on a computer system. The agent software monitors all IO port system traffic. The agent software is configurable to limit the use of certain devices connected to IO ports. The restriction software can also be configured to limit the access to files and applications on external storage devices connected to IO ports.
 
@@ -20145,6 +20145,7 @@ Types of restrictions that may be applied:
 ## Considerations
  * Agent software will need to be installed on host systems
  * Configurations for allow/deny for devices and files will need to be maintained""" ;
+                   rdfs:label "IO Port Restriction" ;
                    :definition "Limiting access to computer input/output (IO) ports to restrict unauthorized devices." .
 
 
@@ -20176,12 +20177,12 @@ IPC can occur within a single computer or between multiple computers remotely th
 :ImpersonateUser rdfs:label "Impersonate User" .
 
 
-:InboundSessionVolumeAnalysis rdfs:label "Inbound Session Volume Analysis" ;
-                              :kb-article """## How it works
+:InboundSessionVolumeAnalysis :kb-article """## How it works
 Network appliances are configured to alert on certain packets that typically are involved in DoS attacks. Typical packets include ICMP packets and SYN requests that are commonly used to flood networks. A sampling period is used to define a time window in which collected counts of the identified packets can be measured. If the collected number of packets exceeds a predefined limit then an alert is generated.
 
 ## Considerations
 Scalability as volume of attacks increase; single servers may not have the memory and storage resources to handle high volumes of network traffic.""" ;
+                              rdfs:label "Inbound Session Volume Analysis" ;
                               :definition "Analyzing inbound network session or connection attempt volume." .
 
 
@@ -20504,8 +20505,7 @@ Operating System Monitoring Techniques have varied implementations including bui
                            :definition "The operating system software, for D3FEND's purposes, includes the kernel and its process management functions, hardware drivers, initialization or boot logic. It also includes and other key system daemons and their configuration. The monitoring or analysis of these components for unauthorized activity constitute **Operating System Monitoring**." .
 
 
-:OutboundTrafficFiltering :definition "Restricting network traffic originating from a private host or enclave destined towards untrusted networks." ;
-                          rdfs:label "Outbound Traffic Filtering" ;
+:OutboundTrafficFiltering rdfs:label "Outbound Traffic Filtering" ;
                           :kb-article """## How it works
 
 Outbound traffic, in this context, is network traffic originating from a private host or enclave destined towards untrusted networks.
@@ -20531,7 +20531,8 @@ There are various strategies for developing filtering rulesets:
 ## Implementations
 - iptables (Linux)
 - Windows Firewall
-- pf (BSD)""" .
+- pf (BSD)""" ;
+                          :definition "Restricting network traffic originating from a private host or enclave destined towards untrusted networks." .
 
 
 :PassiveCertificateAnalysis :kb-article """## How it works
@@ -20602,7 +20603,8 @@ Platforms includes components such as:
 * Hardware security devices such as Trusted Platform Modules
 * Boot process logic or code
 * Kernel software components""" ;
-                   :synonym "System Hardening" ;
+                   :synonym "Endpoint Hardening" ,
+                            "System Hardening" ;
                    rdfs:label "Platform Hardening" .
 
 
@@ -20690,8 +20692,7 @@ False negatives can occur via alteration of the verification logic or source of 
                  rdfs:label "Process Eviction" .
 
 
-:ProcessLineageAnalysis :definition "Identification of suspicious processes executing on an end-point device by examining the ancestry and siblings of a process, and the associated metadata of each node on the tree, such as process execution, duration, and order relative to siblings and ancestors." ;
-                        :kb-article """## How it works
+:ProcessLineageAnalysis :kb-article """## How it works
 Process tree analysis techniques gather information on how a process was initiated to determine if a process is malicious. For example, if a process was not initiated from boot or not initiated by another process, that process is identified as suspicious. Also, if a new process was started before a process initiated by the device (ex. during boot) and that new process was not initiated by a user (which can be determined by examining process parameters such as type of process, its creator, source, etc.) the process is identified as suspicious. 
 
 For example, Microsoft Word may block execution of any subprocess that is not in an approved path.
@@ -20700,6 +20701,7 @@ For example, Microsoft Word may block execution of any subprocess that is not in
 * Attackers may spoof the parent PID (https://attack.mitre.org/techniques/T1502/), rendering such after-the-fact analysis on process lineage ineffective.
 * Processes may hide from various means of detection; an example on Linux is where a rootkit might remove key files for the process from its directory in /proc.
 * Zombie processes.""" ;
+                        :definition "Identification of suspicious processes executing on an end-point device by examining the ancestry and siblings of a process, and the associated metadata of each node on the tree, such as process execution, duration, and order relative to siblings and ancestors." ;
                         :synonym "Process Tree Analysis" ;
                         rdfs:label "Process Lineage Analysis" .
 
@@ -20765,7 +20767,6 @@ Some attributes of interest are:
 
 
 :ProcessTermination :todo "Research on the proprietary methods.  This might include directly overwriting process memory, altering system data structures which relate to processes, changing the operating system task scheduler, or other low-level nonstandard operations that cause a process to cease its own intended operation." ;
-                    :definition "Terminating a running application process on a computer system." ;
                     :kb-article """## How it works
 
 Processes are managed by the operating system kernel.  Different operating system kernels manage the creation and termination of processes in a different manner, and expose this functionality via the kernel API.
@@ -20854,6 +20855,7 @@ Systems which are only accessible via a remote in-band connection may become ina
 
 ### Subsystems
 Processes that are started in a subsystem might not be fully terminated if they are terminated using the command for that subsystem.  For example, in the Windows Subsystem for Linux (WSL), processes started and terminated via WSL calls such as with the `kill` command in Bash may still have an entry in the Windows process table.""" ;
+                    :definition "Terminating a running application process on a computer system." ;
                     rdfs:label "Process Termination" .
 
 
@@ -20905,8 +20907,8 @@ A relay may use a variety of proxying, forwarding, or routing technologies to br
 
 Complex intranet VPNs or routing encapsulation may affect the detection analytics.  In addition, unwanted packets might not be forwarded, and additional packets may be added at the relay, further complicating detection.""" ;
                       :synonym "Relay Network Detection" ;
-                      :definition "The detection of an internal host relaying traffic between the internal network and the external network." ;
-                      rdfs:label "Relay Pattern Analysis" .
+                      rdfs:label "Relay Pattern Analysis" ;
+                      :definition "The detection of an internal host relaying traffic between the internal network and the external network." .
 
 
 :RemoteTerminalSessionDetection :kb-article """## How it works
@@ -20966,7 +20968,8 @@ The DNS response can either be blocked by dropping the network traffic with an i
                                     rdfs:label "Reverse Resolution Domain Denylisting" .
 
 
-:ReverseResolutionIPDenylisting :kb-article """## How it works
+:ReverseResolutionIPDenylisting :definition "Blocking a reverse lookup based on the query's IP address value." ;
+                                :kb-article """## How it works
 This technique prevents a client from learning domains deemed to be potentially malicious, which would have been delivered via reverse resolution responses over the DNS protocol.
 
 Queries for reverse resolution requests (that is, requests where IP(s) are sent and a domain is returned) are collected, and the IP address(es) included in the query are examined. If the IP address(es) are in a range included in the blacklist, then the query is dropped.
@@ -20976,7 +20979,6 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
 - DNS query traffic can be transmitted over many different protocols, which presents a challenge to implementing methods to extract all DNS query IP address value(s). 
   - DNS has historically used UDP port 53, with TCP port 53 instead used for responses over 512 bytes or after a lack of response over UDP.
   - Usage of new protocols to provide confidentiality for DNS traffic, such as DoH (DNS over HTTPS) and DoT (DNS over TLS), complicates collection of the IP address(es) in DNS queries. These protocols have often been enabled in browser settings transparently after a browser update, with DNS queries proxied over one of these cryptographic protocols through a specified host.""" ;
-                                :definition "Blocking a reverse lookup based on the query's IP address value." ;
                                 rdfs:label "Reverse Resolution IP Denylisting" ;
                                 :synonym "Reverse Resolution IP Blacklisting" .
 
@@ -21080,13 +21082,13 @@ System service applications may originate from the operating system installation
 * The source of truth must not be corrupted in order for this method to work.""" .
 
 
-:SessionDurationAnalysis rdfs:label "Session Duration Analysis" ;
-                         :kb-article """## How it works
+:SessionDurationAnalysis :kb-article """## How it works
 Detecting unauthorized user sessions by comparing the duration of a user logon session with a baseline behavior model. The behavior model comprises historical user session duration times.  Abnormalities between session duration and the behavior model may indicate suspicious activity.
 
 ## Considerations
 * Potential for false positives from anomalies that are not associated with malicious activity.
 * Attackers may not differentiate their session duration enough to trigger an alert.""" ;
+                         rdfs:label "Session Duration Analysis" ;
                          :definition "Analyzing the duration of user sessions in order to detect unauthorized  activity." .
 
 
@@ -21138,13 +21140,13 @@ A vulnerability such as a write-what-where condition that allows one to write da
                             rdfs:label "Stack Frame Canary Validation" .
 
 
-:StandaloneHoneynet rdfs:label "Standalone Honeynet" ;
-                    :definition "An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems." ;
-                    :kb-article """## How it works
+:StandaloneHoneynet :kb-article """## How it works
 A standalone honeynet does not directly interact with the real enterprise environment. It may be located near or in some portion of the enterprise address space, but it does not interact with enterprise resources.
 
 ## Considerations
-A standalone honeynet is a lower risk to deploy compared to connected or integrated honeynets due to its isolation from the enterprise network. However, this comes at cost in loss of fidelity and realism. Significant extra effort must be made in order to make the environment look realistic.""" .
+A standalone honeynet is a lower risk to deploy compared to connected or integrated honeynets due to its isolation from the enterprise network. However, this comes at cost in loss of fidelity and realism. Significant extra effort must be made in order to make the environment look realistic.""" ;
+                    rdfs:label "Standalone Honeynet" ;
+                    :definition "An environment created for the purpose of attracting attackers and eliciting their behaviors that is not connected to any production enterprise systems." .
 
 
 :StrongPasswordPolicy :definition "Modifying system configuration to increase password strength." ;
@@ -21196,8 +21198,8 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
                      rdfs:label "System Call Filtering" .
 
 
-:SystemConfigurationPermissions :todo "write kb-article" ;
-                                :definition "Restricting system configuration modifications to a specific user or group of users." ;
+:SystemConfigurationPermissions :definition "Restricting system configuration modifications to a specific user or group of users." ;
+                                :todo "write kb-article" ;
                                 rdfs:label "System Configuration Permissions" .
 
 
@@ -21207,7 +21209,8 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
 Attackers may manipulate system settings or services to disable system logging or monitoring of security tools and events. Firewall and antivirus services are popular targets for attackers. Disabling system logs will also allow an attacker's actions to go unnoticed. Analysis of logs, registries, and process monitoring help defenders locate signs of tampering. Two possible approaches are to monitor hardened system services or to monitor registry updates for modifications to security settings.""" .
 
 
-:SystemFileAnalysis :kb-article """## How it works
+:SystemFileAnalysis rdfs:label "System File Analysis" ;
+                    :kb-article """## How it works
 This technique ensures the integrity of system owned file resources. System files can impact the behavior below the user level.
 
 
@@ -21215,7 +21218,6 @@ This technique ensures the integrity of system owned file resources. System file
 * Need to manage the size of log file analysis.
 * False positives are a concern with this technique and filtering will need to be given additional thought.
 * A baseline or snapshot of file checksums should be established for future comparison.""" ;
-                    rdfs:label "System File Analysis" ;
                     :definition "Monitoring system files such as authentication databases, configuration files, system logs, and system executables for modification or tampering." .
 
 
@@ -21242,8 +21244,7 @@ When system firmware verification fails a set of predefined responses is typical
            rdfs:label "Token Impersonation/Theft" .
 
 
-:TPMBootIntegrity :synonym "STRM" ;
-                  :kb-article """## How it works
+:TPMBootIntegrity :kb-article """## How it works
 During the boot process, the BIOS boot block (which with this defense enabled, is the Core Root of Trust for Measurement) measures boot components (firmware, ROM). The TPM hashes those measurements and stores the hashes in Platform Configuration Registers (PCRs).  Upon a subsequent boot, these hashes are provided to a verifier which compares the stored measurements to the new boot measurements. Integrity of the boot components is assured if they match.  
 
 Attestation of the secure boot occurs when a verifying entity requests a Quote which is a concatenation of the requested PCR values, hashed and signed by the TPM's unique RSA key.  The TPM signature is trusted because the private key is stored securely in hardware and never leaves the TPM.
@@ -21256,6 +21257,7 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
 ## Citations
 [1] [TPM 2.0 Library](https://trustedcomputinggroup.org/resource/tpm-library-specification/)
 [2] [TCG Trusted Attestation Protocol (TAP) Use Cases for TPM Families 1.2 and 2.0 and DICE](https://trustedcomputinggroup.org/wp-content/uploads/TCG_TNC_TAP_Use_Cases_v1r0p35_published.pdf)""" ;
+                  :synonym "STRM" ;
                   rdfs:label "TPM Boot Integrity" ;
                   :definition "Assuring the integrity of a platform by demonstrating that the boot process starts from a trusted combination of hardware and software and continues until the operating system has fully booted and applications are running.  Sometimes called Static Root of Trust Measurement (STRM)." ;
                   :synonym "Static Root of Trust Measurement" .
@@ -21317,16 +21319,16 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
                         :definition "Restricting a user account's access to resources." .
 
 
-:UserBehaviorAnalysis rdfs:label "User Behavior Analysis" ;
-                      :definition "Analysis of user behavior and patterns for the purpose of detecting unauthorized user activity." ;
-                      :synonym "Credential Monitoring" ;
+:UserBehaviorAnalysis :definition "Analysis of user behavior and patterns for the purpose of detecting unauthorized user activity." ;
+                      rdfs:label "User Behavior Analysis" ;
                       :kb-article """## Technique Overview
 
 Some techniques monitor patterns of human behavior and then apply algorithms and to identify patterns such as repeated login attempts from a single IP address or large file downloads, or abnormal accesses.
 
 Other techniques may have explicit or rigid definitions of \"bad behavior\" which are then matched against instances in a computer network environment.""" ;
-                      :synonym "UBA" ;
+                      :synonym "Credential Monitoring" ;
                       rdfs:comment "User behavior analytics (\"UBA\") as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns-anomalies that indicate potential threats.' Instead of tracking devices or security events, UBA tracks a system's users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats." ;
+                      :synonym "UBA" ;
                       rdfs:isDefinedBy <http://dbpedia.org/resource/User_behavior_analytics> .
 
 
