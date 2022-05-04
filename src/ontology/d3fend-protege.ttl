@@ -4530,18 +4530,25 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
 :InboundInternetMailTraffic a owl:Class ;
     rdfs:label "Inbound Internet Mail Traffic" ;
     rdfs:subClassOf :InboundInternetNetworkTraffic,
+        :InboundNetworkTraffic,
         :MailNetworkTraffic ;
     rdfs:comment "Inbound internet mail traffic is network traffic that is: (a) coming from a host outside a given network via an incoming connection to a host inside that same network, and (b) using a standard protocol for email." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Internetworking> .
 
 :InboundInternetNetworkTraffic a owl:Class ;
     rdfs:label "Inbound Internet Network Traffic" ;
-    rdfs:subClassOf :InternetNetworkTraffic,
+    rdfs:subClassOf :InboundNetworkTraffic,
+        :InternetNetworkTraffic,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :NetworkTraffic ] ;
     rdfs:comment "Inbound internet traffic is network traffic from a host outside a given network initiated on an incoming connection to a host inside that network." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Internetworking> .
+
+:InboundNetworkTraffic a owl:Class ;
+    rdfs:label "Inbound Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic ;
+    rdfs:comment "Inbound traffic is network traffic originating from another host (client), to the host of interest (server)." .
 
 :InboundSessionVolumeAnalysis a :NetworkTrafficAnalysis,
         owl:Class,
@@ -4564,14 +4571,14 @@ Scalability as volume of attacks increase; single servers may not have the memor
         <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-ProtectingAgainstDistributedNetworkFloodAttacks-JuniperNetworksInc.>,
         :Reference_DETECTINGDDoSATTACKUSINGSnort_ .
 
-:InboundTrafficFiltering a :NetworkIsolation,
+:InboundTrafficFiltering a :NetworkTrafficFiltering,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Inbound Traffic Filtering" ;
-    rdfs:subClassOf :NetworkIsolation,
+    rdfs:subClassOf :NetworkTrafficFiltering,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :InboundTrafficFiltering ] ;
     :d3fend-id "D3-ITF" ;
     :definition "Restricting network traffic originating from untrusted networks destined towards a private host or enclave." ;
     :kb-article """## How it works
@@ -5677,8 +5684,7 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     rdfs:comment "Network traffic or data traffic is the data, or alternatively the amount of data, moving across a network at a given point of time.  Network data in computer networks is mostly encapsulated in network packets, which provide the load in the network." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Network_traffic> .
 
-:NetworkTrafficAnalysis a :DefensiveTechnique,
-        :NetworkTrafficAnalysis,
+:NetworkTrafficAnalysis a :NetworkTrafficAnalysis,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Network Traffic Analysis" ;
@@ -5707,6 +5713,17 @@ Hosts/users within a computer network are analyzed to identify communities of ho
 * Potential for false positives in very dynamic network environments.
 * Attackers that move low and slow may not differentiate their behavior enough to trigger an alert.""" ;
     :kb-reference :Reference_SystemForImplementingThreatDetectionUsingDailyNetworkTrafficCommunityOutliers_VECTRANETWORKSInc .
+
+:NetworkTrafficFiltering a :NetworkIsolation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Traffic Filtering" ;
+    rdfs:subClassOf :NetworkIsolation,
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :d3fend-id "D3-NTF" ;
+    :definition "Restricting network traffic originating from any location." .
 
 :NewsArticle a owl:Class ;
     rdfs:label "News Article" ;
@@ -5974,6 +5991,7 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
     rdfs:subClassOf :DNSNetworkTraffic,
         :OutboundInternetNetworkTraffic,
+        :OutboundNetworkTraffic,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DNSLookup ] ;
@@ -6004,6 +6022,7 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:label "Outbound Internet File Transfer Traffic" ;
     rdfs:subClassOf :FileTransferNetworkTraffic,
         :OutboundInternetNetworkTraffic,
+        :OutboundNetworkTraffic,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :File ] ;
@@ -6020,13 +6039,15 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :OutboundInternetNetworkTraffic a owl:Class ;
     rdfs:label "Outbound Internet Network Traffic" ;
-    rdfs:subClassOf :InternetNetworkTraffic ;
+    rdfs:subClassOf :InternetNetworkTraffic,
+        :OutboundNetworkTraffic ;
     rdfs:comment "Outbound internet network traffic is network traffic on an outgoing connection initiated from a host within a network to a host outside the network." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Internetworking> .
 
 :OutboundInternetRPCTraffic a owl:Class ;
     rdfs:label "Outbound Internet RPC Traffic" ;
     rdfs:subClassOf :OutboundInternetNetworkTraffic,
+        :OutboundNetworkTraffic,
         :RPCNetworkTraffic ;
     rdfs:comment "Outbound internet RPC traffic is RPC traffic that is: (a) on an outgoing connection initiated from a host within a network to a host outside the network, and (b) using a standard RPC protocol." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Internetworking>,
@@ -6042,14 +6063,19 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:comment "Outbound internet web traffic is network traffic that is: (a) on an outgoing connection initiated from a host within a network to a host outside the network, and (b) using a standard web protocol." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Internetworking> .
 
-:OutboundTrafficFiltering a :NetworkIsolation,
+:OutboundNetworkTraffic a owl:Class ;
+    rdfs:label "Outbound Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic ;
+    rdfs:comment "Outbound traffic is network traffic originating from a host of interest (client), to another host (server)." .
+
+:OutboundTrafficFiltering a :NetworkTrafficFiltering,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Outbound Traffic Filtering" ;
-    rdfs:subClassOf :NetworkIsolation,
+    rdfs:subClassOf :NetworkTrafficFiltering,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :OutboundNetworkTraffic ] ;
     :d3fend-id "D3-OTF" ;
     :definition "Restricting network traffic originating from a private host or enclave destined towards untrusted networks." ;
     :kb-article """## How it works
