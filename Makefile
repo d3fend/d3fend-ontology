@@ -344,6 +344,9 @@ print-new-techniques: build/d3fend.csv ## compare local build against current pu
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+format:
+	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
+
 .PHONY: all help clean build dist test robot
 
 .DEFAULT_GOAL := help
