@@ -4,7 +4,7 @@ SHELL=/bin/bash
 
 D3FEND_VERSION :=0.10.0-BETA-2
 
-JENA_VERSION := 4.4.0
+JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
@@ -96,7 +96,7 @@ bindir:
 
 bin/jena: bindir
 	mkdir -p bin/jena
-	curl https://dlcdn.apache.org/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz | tar xzf - -C bin/jena
+	curl https://archive.apache.org/dist/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz | tar xzf - -C bin/jena
 	$(END)
 
 bin/robot.jar: bindir
