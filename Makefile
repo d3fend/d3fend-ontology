@@ -115,7 +115,7 @@ download-attack:
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/
-# 
+#
 # A copy of robot's default_profile.txt extracted from robot.jar and
 # placed in src/queries/ as convenient reference.  The report target is
 # currently coded to not fail as some errors are not blockers

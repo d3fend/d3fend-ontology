@@ -1,11 +1,11 @@
-from rdflib import Graph, plugin
-import sys, json
-from rdflib.plugin import register, Serializer
+import sys
+
+from rdflib import Graph
 
 g = Graph()
-try: 
+try:
     g.parse(sys.argv[1], format="json-ld")
-    print('Rdflib Parsed d3fend.json successfully.')
+    print("Rdflib Parsed d3fend.json successfully.")
 except Exception as e:
-    sys.exit('Rdflib failed to parse d3fend.json: '+ str(e))
+    sys.exit("Rdflib failed to parse d3fend.json: " + str(e))
 g.close()

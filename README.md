@@ -8,7 +8,7 @@ This repository holds the necessary content to produce the D3FEND ontology distr
 
 ## Overview
 
-> **Note**: before sending a merge request changes to `src/ontology/d3fend-protege.ttl` please always run 
+> **Note**: before sending a merge request changes to `src/ontology/d3fend-protege.ttl` please always run
 `make format` **before** you commit changes or will will not be able to accept the request. :eyes:
 
 The basic workflow is to edit the `d3fend-protege.ttl` file, save your changes, then simply
