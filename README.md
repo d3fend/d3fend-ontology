@@ -8,8 +8,7 @@ This repository holds the necessary content to produce the D3FEND ontology distr
 
 ## Overview
 
-> **Note**: before sending a merge request changes to `src/ontology/d3fend-protege.ttl` please always run
-`make format` **before** you commit changes or will will not be able to accept the request. :eyes:
+> **Note:** if you are looking for the latest D3FEND ontology release please find it [here](https://d3fend.mitre.org/resources/ontology/).
 
 The basic workflow is to edit the `d3fend-protege.ttl` file, save your changes, then simply
 run `make all` in this directory. This is designed to accommodate both plain text editing
@@ -18,8 +17,7 @@ and Protege Ontology IDE modifications.
 When making changes with a text editor please avoid introducing unsubstantial changes
 to many lines in the file. This enables efficient code reviews.
 
-> **Note:** if you are looking for the latest D3FEND ontology release please find it
-[here](https://d3fend.mitre.org/resources/ontology/).
+> **Note**: before sending a merge request changes to `src/ontology/d3fend-protege.ttl` please always run `make pre-commit` **before** you commit changes or will will not be able to accept the request. :eyes: You can run this automatically (and only against staged files) every commit with `make pre-commit-install`.
 
 ## System Dependencies
 

@@ -347,6 +347,14 @@ help: ##print out this message
 format:
 	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
 
+# requires https://pre-commit.com/#install
+pre-commit-install:
+	pre-commit install
+
+pre-commit:
+	pre-commit run --all-files
+
+
 .PHONY: all help clean build dist test robot
 
 .DEFAULT_GOAL := help
