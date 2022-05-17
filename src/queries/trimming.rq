@@ -5,18 +5,18 @@ DELETE { ?s ?p ?o }
 INSERT { ?s ?p ?cleaned_with_lang }
 WHERE {
   ?s ?p ?o .
-  
+
   FILTER(isLiteral(?o))
-  
+
   BIND('^\\s+(.*?)\\s*$|^(.*?)\\s+$' AS ?regexp)
   FILTER(REGEX(?o, ?regexp))
   BIND(REPLACE(?o, ?regexp, '$1$2') AS ?cleaned)
   BIND(lang(?o) AS ?lang)
-  
+
   BIND(
     IF(
       ?lang = '',
-      ?cleaned, 
-      STRLANG(?cleaned, ?lang)) 
+      ?cleaned,
+      STRLANG(?cleaned, ?lang))
     AS ?cleaned_with_lang)
 }
