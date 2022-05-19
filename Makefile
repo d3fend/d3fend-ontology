@@ -2,7 +2,8 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION :=0.10.0-BETA-2
+D3FEND_VERSION :=0.10.1-BETA-1
+D3FEND_RELEASE_DATE :="2022-05-18T00:00:00.000Z"
 
 JENA_VERSION := 4.5.0
 
@@ -183,6 +184,8 @@ build/d3fend-prefixes.json: builddir ## create d3fend-specific prefix file for u
 build/d3fend-with-header.owl:	src/ontology/d3fend-protege.ttl
 	./bin/robot annotate --input src/ontology/d3fend-protege.ttl \
 		--version-iri "http://d3fend.mitre.org/ontologies/d3fend/${D3FEND_VERSION}/d3fend.owl" \
+		--typed-annotation "http://d3fend.mitre.org/ontologies/d3fend.owl#release-date" ${D3FEND_RELEASE_DATE} xsd:dateTime \
+		--annotation owl:versionInfo ${D3FEND_VERSION} \
 		--output build/d3fend-with-header.owl
 	$(END)
 
