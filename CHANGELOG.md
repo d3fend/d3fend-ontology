@@ -1,6 +1,6 @@
 # D3FEND Change Log
 
-## Version - 0.10.0-BETA-3 - 2022-05-18
+## Version - 0.10.1-BETA-1 - 2022-05-18
 
 - Ontology now supports docker builds, thanks @ioggstream. (#5)
 - Ontology has Github CI builds, thanks @ioggstream. (#7)
