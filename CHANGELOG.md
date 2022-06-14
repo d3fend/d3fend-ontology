@@ -1,6 +1,6 @@
 # D3FEND Change Log
 
-## Version - 0.10.1-BETA-1 - 2022-05-18
+## Version - 0.10.1-BETA-1 - 2022-06-13
 
 - Ontology now supports docker builds, thanks @ioggstream. (#5)
 - Ontology has Github CI builds, thanks @ioggstream. (#7)
@@ -14,6 +14,13 @@
 - Reviewed and modified Credential Access Technique, Brute Force, and Brute Force subclasses to indicate more precisely the main digital artifacts being accessed (here tested by some means of trial and error.) Result with query from D3-SPP now results in new matches the the password-specific classes under Brute Force. (#30)
 - Added grounding references to D3-RRDD Reverse Resolution Domain Denylisting; now it will not be filtered in the D3FEND matrix presentation. (#33)
 - Added full pre-commit checks for code linting, syntax checking, and other hooks, thanks @ioggstream. (#35)
+- Added Lure as synonym for Decoy Object. (#47)
+- New reference for D3-RFS. (#46)
+- Corrected definition on D3-FAPA. (#41)
+- Changed relation on T1114.001 to 'reads' vs 'accesses'. (#17)
+- Additional reference for D3-SPP. (#39)
+- Defined additional artifact on D3-IOPR. (#48)
+- Fixed capitalization issue on Kerberos Ticket digital artifact. (#51)
 
 ## Version - 0.10.0-BETA-2 - 2022-01-31
 
