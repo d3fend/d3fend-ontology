@@ -3,7 +3,7 @@ MAKEFLAGS += --silent
 SHELL=/bin/bash
 
 D3FEND_VERSION :=0.10.1-BETA-1
-D3FEND_RELEASE_DATE :="2022-05-18T00:00:00.000Z"
+D3FEND_RELEASE_DATE :="2022-06-13T00:00:00.000Z"
 
 JENA_VERSION := 4.5.0
 
@@ -109,8 +109,8 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 	$(END)
 
 download-attack:
-	mkdir data
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-10.0.json
+	mkdir -p data
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-11.2.json
 	$(END)
 
 # See also how to configure one's own checks and labels for checks for report:
