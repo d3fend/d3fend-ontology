@@ -113,6 +113,10 @@ download-attack:
 	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-11.2.json
 	$(END)
 
+update-attack:
+	bash src/util/update_attack.sh
+	$(END)
+
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/

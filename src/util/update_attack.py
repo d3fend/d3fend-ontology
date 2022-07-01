@@ -1,5 +1,7 @@
+import string
 import json
 import re
+import csv
 
 from rdflib import URIRef, Literal
 from build import get_graph, _xmlns
@@ -22,21 +24,41 @@ def recursive_extract(dictionary, key):
 with open("data/enterprise-attack-11.2.json") as f:
     stix = json.loads(f.read())
 
+
+def kcp_to_class(kcp):
+    return str("d3f:" + string.capwords(kcp.replace("-", " ")) + " Technique").replace(
+        " ", ""
+    )
+
+
 attack_ids = set()
 deprecated_attack_ids = set()
 count_deprecated = 0  # total, could have duplicates...
-for o in stix["objects"]:
-    if "external_references" in o:
-        for r in o["external_references"]:
-            if r.get("source_name", None) == "mitre-attack":
-                if "external_id" in r:
-                    if re.match("^T[0-9]", r["external_id"]):
-                        if o.get("x_mitre_deprecated", None) is True:
-                            deprecated_attack_ids.add(r["external_id"])
-                            count_deprecated += 1
-                        else:
-                            attack_ids.add(r["external_id"])
+technique_meta = {}
+for o in filter(lambda x: x["type"] == "attack-pattern", stix["objects"]):
+    for r in filter(
+        lambda x: x["source_name"] == "mitre-attack", o["external_references"]
+    ):
+        if re.match("^T[0-9]", r["external_id"]):  # ensure we are getting techniques...
+            attack_id = r["external_id"]
+            technique_meta[attack_id] = {}
+            technique_meta[attack_id]["name"] = o["name"]
 
+            if "." in attack_id:  # subtechniques go under techniques...
+                superclasses = ["d3f:" + attack_id.split(".")[0]]
+            else:
+                superclasses = [
+                    kcp_to_class(p["phase_name"]) for p in o["kill_chain_phases"]
+                ]
+            technique_meta[attack_id]["superclasses"] = superclasses
+
+            if o.get("x_mitre_deprecated", None) is True:
+                technique_meta[attack_id]["deprecated"] = True
+                deprecated_attack_ids.add(attack_id)
+                count_deprecated += 1
+            else:
+                technique_meta[attack_id]["deprecated"] = False
+                attack_ids.add(attack_id)
 
 attack_ids = list(attack_ids)
 
@@ -90,7 +112,30 @@ _print("Valid ATT&CK ids found in stix document:", len(attack_ids))
 _print("Valid ATT&CK ids in D3FEND graph:", incount)
 
 _print("Valid ATT&CK ids not in D3FEND graph: ", nincount)
-report_writer("reports/attack_update-missing_attack_ids.txt", list(missing))
+report_writer("reports/attack_update-missing_attack_ids.txt", sorted(list(missing)))
+with open("reports/attack_update-missing_attack_ids-robot_template.csv", "w") as f:
+    # spamwriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    # spamwriter = csv.writer(f)
+    spamwriter = csv.writer(f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    # ID & LABEL are reserved words in robot template command, both are required
+    # to be unique. ID is unique, however, rdfs:label is never expected to be unique in D3FEND.
+    spamwriter.writerow(["id", "name", "SC"])
+    # see docs for explanation   http://robot.obolibrary.org/template
+    spamwriter.writerow(["ID", "A rdfs:label", "AI rdfs:subClassOf SPLIT=|"])
+    # spamwriter.writerow(['ID', 'LABEL', 'SC'])
+    for attack_id in sorted(missing):
+        if "." in attack_id:
+            superclass = "d3f:" + attack_id.split(".")[0]
+        else:
+            superclass = "d3f:TODO"
+        # spamwriter.writerow(["d3f:" + attack_id, technique_meta[attack_id]["name"], superclass])
+        spamwriter.writerow(
+            [
+                "d3f:" + attack_id,
+                technique_meta[attack_id]["name"],
+                "|".join(technique_meta[attack_id]["superclasses"]),
+            ]
+        )
 
 _print("Deprecated ATT&CK total:", count_deprecated)
 
@@ -98,5 +143,6 @@ _print("Deprecated ATT&CK deduped:", len(deprecated_attack_ids))
 
 _print("Deprecated ATT&CK ids in D3FEND:", dnincount)
 report_writer(
-    "reports/attack_update-deprecated_attack_in_d3fend.txt", list(deprecated_in_d3)
+    "reports/attack_update-deprecated_attack_in_d3fend.txt",
+    sorted(list(deprecated_in_d3)),
 )
