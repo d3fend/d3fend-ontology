@@ -1,10 +1,10 @@
 #
 # Build the d3fend-ontology docker image.
 #
-FROM rockylinux:latest
+FROM rockylinux:9
 
 ARG ROBOT_URL
-RUN dnf -y install python38 java-17-openjdk-headless make
+RUN dnf -y install python39 java-17-openjdk-headless make python3-pip
 VOLUME [ "/dist" ]
 RUN pip3 install pipenv
 COPY . /app
