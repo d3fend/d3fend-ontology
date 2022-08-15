@@ -11,6 +11,8 @@ pipenv run python src/util/update_attack.py
 sed -e "s/\^\^xsd\:string//g" src/ontology/_attack_update.ttl > src/ontology/attack_update.ttl
 
 ./bin/robot merge \
+    --add-prefix "dcterms: http://purl.org/dc/terms/" \
+    --add-prefix "skos: http://www.w3.org/2004/02/skos/core#" \
     -i src/ontology/d3fend-protege.ttl \
     -i src/ontology/attack_update.ttl \
     -o src/ontology/d3fend-protege.attack_update.ttl \

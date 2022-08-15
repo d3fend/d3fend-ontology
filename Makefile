@@ -9,7 +9,7 @@ JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL := "https://github.com/ontodev/robot/releases/tag/v1.9.0/robot.jar"
+ROBOT_URL := "https://github.com/ontodev/robot/releases/download/v1.9.0/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -290,7 +290,7 @@ build/d3fend-inferred-relationships.csv:
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
 	$(END)
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
 	$(END)
 

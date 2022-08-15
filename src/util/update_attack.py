@@ -8,6 +8,8 @@ from build import get_graph, _xmlns
 
 g = get_graph(filename="src/ontology/d3fend-protege.ttl")
 
+d3f_prefix = "d3f:"
+
 
 def recursive_extract(dictionary, key):
     if type(dictionary) != dict:
@@ -26,9 +28,9 @@ with open("data/enterprise-attack-11.2.json") as f:
 
 
 def kcp_to_class(kcp):
-    return str("d3f:" + string.capwords(kcp.replace("-", " ")) + " Technique").replace(
-        " ", ""
-    )
+    return str(
+        d3f_prefix + string.capwords(kcp.replace("-", " ")) + " Technique"
+    ).replace(" ", "")
 
 
 attack_ids = set()
@@ -45,7 +47,7 @@ for o in filter(lambda x: x["type"] == "attack-pattern", stix["objects"]):
             technique_meta[attack_id]["name"] = o["name"]
 
             if "." in attack_id:  # subtechniques go under techniques...
-                superclasses = ["d3f:" + attack_id.split(".")[0]]
+                superclasses = [d3f_prefix + attack_id.split(".")[0]]
             else:
                 superclasses = [
                     kcp_to_class(p["phase_name"]) for p in o["kill_chain_phases"]
@@ -114,26 +116,29 @@ _print("Valid ATT&CK ids in D3FEND graph:", incount)
 _print("Valid ATT&CK ids not in D3FEND graph: ", nincount)
 report_writer("reports/attack_update-missing_attack_ids.txt", sorted(list(missing)))
 with open("reports/attack_update-missing_attack_ids-robot_template.csv", "w") as f:
-    # spamwriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    # spamwriter = csv.writer(f)
-    spamwriter = csv.writer(f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    # csvwriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    # csvwriter = csv.writer(f)
+    csvwriter = csv.writer(f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
     # ID & LABEL are reserved words in robot template command, both are required
     # to be unique. ID is unique, however, rdfs:label is never expected to be unique in D3FEND.
-    spamwriter.writerow(["id", "name", "SC"])
+    csvwriter.writerow(["id", "name", "SC", "attack id"])
     # see docs for explanation   http://robot.obolibrary.org/template
-    spamwriter.writerow(["ID", "A rdfs:label", "AI rdfs:subClassOf SPLIT=|"])
-    # spamwriter.writerow(['ID', 'LABEL', 'SC'])
+    # csvwriter.writerow(["ID", "A rdfs:label", "AI rdfs:subClassOf SPLIT=|", "A " + d3f_prefix + "attack-id"])
+    csvwriter.writerow(
+        ["ID", "A rdfs:label", "SC % SPLIT=|", "A " + d3f_prefix + "attack-id"]
+    )
+    # csvwriter.writerow(['ID', 'LABEL', 'SC'])
     for attack_id in sorted(missing):
         if "." in attack_id:
-            superclass = "d3f:" + attack_id.split(".")[0]
+            superclass = d3f_prefix + attack_id.split(".")[0]
         else:
-            superclass = "d3f:TODO"
-        # spamwriter.writerow(["d3f:" + attack_id, technique_meta[attack_id]["name"], superclass])
-        spamwriter.writerow(
+            superclass = d3f_prefix + "TODO"
+        csvwriter.writerow(
             [
-                "d3f:" + attack_id,
+                d3f_prefix + attack_id,
                 technique_meta[attack_id]["name"],
                 "|".join(technique_meta[attack_id]["superclasses"]),
+                attack_id,
             ]
         )
 
