@@ -9,7 +9,7 @@ JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL := "https://github.com/ontodev/robot/releases/tag/v1.9.0/robot.jar"
+ROBOT_URL := "https://github.com/ontodev/robot/releases/download/v1.9.0/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
