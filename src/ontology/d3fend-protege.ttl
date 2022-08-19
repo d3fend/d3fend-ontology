@@ -1416,6 +1416,10 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:comment "A list of permissions attached to an object." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> .
 
+:AccessModeling a owl:Class ;
+    rdfs:label "Access Modeling" ;
+    rdfs:subClassOf :OperationalActivityMapping .
+
 :AccessToken a owl:Class ;
     rdfs:label "Access Token" ;
     skos:altLabel "Ticket",
@@ -1484,6 +1488,10 @@ Using either Certificate Revocation Lists (CRLs) or Online Certificate Status Pr
 * Revoked certificates give the appearance of valid certificates until they are published to a trusted revocation service (OCSP or CRL)
 * The revocation service (OCSP or CRL) may be down during our connection and a browser will need to make a decision will need to be made about trusting the connection""" ;
     :kb-reference :Reference-SecuringWebTransactions .
+
+:ActiveNetworkMapping a owl:Class ;
+    rdfs:label "Active Network Mapping" ;
+    rdfs:subClassOf :LogicalNetworkMapping .
 
 :AdminFeatureAssessment a owl:Class ;
     rdfs:label "Admin Feature Assessment" ;
@@ -1682,6 +1690,10 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:seeAlso "d3f:Shim",
         <http://dbpedia.org/resource/Shim_(computing)#Examples> .
 
+:ArchitectureMapping a owl:Class ;
+    rdfs:label "2 Architecture Mapping" ;
+    rdfs:subClassOf :DefensiveModelingTechnique .
+
 :ArchiveFile a owl:Class ;
     rdfs:label "Archive File" ;
     rdfs:subClassOf :File ;
@@ -1726,13 +1738,17 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
 :AssetInventory a :DefensiveTechnique,
         owl:Class,
         owl:NamedIndividual ;
-    rdfs:label "Asset Inventory" ;
-    rdfs:subClassOf :DefensiveTechnique,
+    rdfs:label "1 Asset Inventory" ;
+    rdfs:subClassOf :DefensiveModelingTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Model ] ;
     :definition "..." ;
     :synonym "Asset Inventorying" .
+
+:AssetVulnerabilityAssessment a owl:Class ;
+    rdfs:label "Asset Vulnerability Assessment" ;
+    rdfs:subClassOf :AssetInventory .
 
 :AsymmetricKey a owl:Class ;
     rdfs:label "Asymmetric Key" ;
@@ -2532,6 +2548,10 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:comment "A file containing Information used to configure the parameters and initial settings for some computer programs. They are used for user applications, server processes and operating system settings." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Configuration_file> .
 
+:ConfigurationTracking a owl:Class ;
+    rdfs:label "Configuration Tracking" ;
+    rdfs:subClassOf :SystemMapping .
+
 :ConnectedHoneynet a :DecoyEnvironment,
         owl:Class,
         owl:NamedIndividual ;
@@ -2866,6 +2886,10 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:comment "A database server is a server which uses a database application that provides database services to other computer programs or to computers, as defined by the client-server model. Database management systems (DBMSs) frequently provide database-server functionality, and some database management systems (such as MySQL) rely exclusively on the client-server model for database access (while others e.g. SQLite are meant for using as an embedded database). For clarification, a database server is simply a server that maintains services related to clients via database applications." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Database_server> .
 
+:DataInventory a owl:Class ;
+    rdfs:label "Data Inventory" ;
+    rdfs:subClassOf :AssetInventory .
+
 :DeadCodeElimination a :ApplicationHardening,
         owl:Class,
         owl:NamedIndividual ;
@@ -3090,6 +3114,12 @@ A credential may be:
             owl:onProperty :enables ;
             owl:someValuesFrom :DefenseEvasion ] .
 
+:DefensiveModelingTechnique a owl:Class ;
+    rdfs:label "Defensive Modeling Technique" ;
+    rdfs:subClassOf :DefensiveTechnique ;
+    rdfs:comment "For temporary dev convenience.  Organizes all the Model tactic's techniques under one taxonomy." ;
+    :todo "Remove this parent class and promote children before release." .
+
 :DefensiveTactic a owl:Class ;
     rdfs:label "Defensive Tactic" ;
     rdfs:subClassOf :D3FENDThing,
@@ -3106,7 +3136,6 @@ A credential may be:
     rdfs:label "Defensive Technique" ;
     rdfs:subClassOf :CapabilityFeature,
         :D3FENDThing,
-        :DefensiveTechnique,
         :Technique,
         [ a owl:Restriction ;
             owl:onProperty :d3fend-id ;
@@ -4083,6 +4112,10 @@ Performance on large files or very large numbers of files.""" ;
     rdfs:comment "In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines. This definition refers to network firewalls." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> .
 
+:FirewallMapping a owl:Class ;
+    rdfs:label "Firewall Mapping" ;
+    rdfs:subClassOf :NetworkMapping .
+
 :Firmware a owl:Class ;
     rdfs:label "Firmware" ;
     rdfs:subClassOf :Software ;
@@ -4340,6 +4373,25 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
             owl:someValuesFrom :HardwareDevice ] ;
     rdfs:comment "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> .
+
+:HardwareInventory a owl:Class ;
+    rdfs:label "Hardware Inventory" ;
+    rdfs:subClassOf :AssetInventory ;
+    :kb-article """## How it works
+Administrators collect information on hardware items in their architecture using a variety of administrative and management tools that query network devices and nodes for information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to include host discovery and scanning for active ports and services.
+
+## Considerations
+* Scanning and probing techniques using mapping tools can result in side effects to operational systems (ICS/SCADA) 
+* An adversary conducting network enumeration may engage in activities that parallel normal inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
+
+## Examples
+*Link-layer discovery
+** Link-layer Discovery Protocol (LDP)
+** Cisco Discovery Protocol (CDP)
+
+*Application-layer discovery
+** Web-based Enterprise Management (WBEM)
+** Windows Management Instrumentation (WMI)""" .
 
 :HeapSegment a owl:Class ;
     rdfs:label "Heap Segment" ;
@@ -4674,6 +4726,11 @@ Identification of potential ROP exploit execution includes:
             owl:onProperty :archived-at ;
             owl:someValuesFrom xsd:anyURI ] ;
     rdfs:isDefinedBy "BFO, Cyc equiv, SUMO equiv, [Ontology Works] equiv" .
+
+:InformationExchangeMapping a owl:Class ;
+    rdfs:label "Data Exchange Mapping" ;
+    rdfs:subClassOf :NetworkMapping ;
+    :synonym "Information Exchange Mapping" .
 
 :InitialAccess a :OffensiveTactic,
         owl:Class,
@@ -5179,6 +5236,9 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     rdfs:subClassOf :InformationContentEntity ;
     rdfs:seeAlso "http://dbpedia.org/resource/Software_license" .
 
+:Link-layerDiscovery a owl:Class ;
+    rdfs:subClassOf :HardwareInventory .
+
 :LocalAccountMonitoring a owl:Class,
         owl:NamedIndividual,
         :UserBehaviorAnalysis ;
@@ -5278,6 +5338,11 @@ A transaction log is a file (i.e., log) of the communications between a system a
 Many operating systems, software frameworks and programs include a logging system. A widely used logging standard is syslog, defined in Internet Engineering Task Force (IETF) RFC 5424). The syslog standard enables a dedicated, standardized subsystem to generate, filter, record, and analyze log messages. This relieves software developers of having to design and code their own ad hoc logging systems.""" ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Log_file> ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/06515875-n> .
+
+:LogicalNetworkMapping a owl:Class ;
+    rdfs:label "Logical Network Mapping" ;
+    rdfs:subClassOf :NetworkMapping ;
+    :definition "Logical network mapping creates a model of network node connectivity using network (IP) layer data." .
 
 :LoginSession a owl:Class ;
     rdfs:label "Login Session" ;
@@ -5626,6 +5691,10 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     :d3fend-id "D3-NI" ;
     :definition "Network Isolation techniques prevent network hosts from accessing non-essential system network resources." ;
     :enables :Isolate .
+
+:NetworkMapping a owl:Class ;
+    rdfs:label "Network Mapping" ;
+    rdfs:subClassOf :ArchitectureMapping .
 
 :NetworkNode a owl:Class ;
     rdfs:label "Network Node" ;
@@ -5981,6 +6050,18 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:comment "An operating system shared library file is a shared library file that is part of the operating system and that incorporates common operating system code for use by any application or to provide operating system services." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Library_(computing)#Shared_libraries> .
 
+:OperationalActivityMapping a owl:Class ;
+    rdfs:label "3 Operational Activity Mapping" ;
+    rdfs:subClassOf :DefensiveModelingTechnique .
+
+:OperationalDecomposition a owl:Class ;
+    rdfs:label "Operational Decomposition" ;
+    rdfs:subClassOf :OperationalActivityMapping .
+
+:OperationalDependencyMapping a owl:Class ;
+    rdfs:label "Operational Dependency Mapping" ;
+    rdfs:subClassOf :OperationalActivityMapping .
+
 :OperationsCenterComputer a owl:Class ;
     rdfs:label "Operations Center Computer" ;
     skos:altLabel "Mainframe" ;
@@ -6018,6 +6099,10 @@ Operating System Monitoring Techniques have varied implementations including bui
 :Organization a owl:Class ;
     rdfs:label "Organization" ;
     rdfs:subClassOf :Agent .
+
+:OrganizationMapping a owl:Class ;
+    rdfs:label "Organization Mapping" ;
+    rdfs:subClassOf :OperationalActivityMapping .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
@@ -6220,6 +6305,10 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     :kb-reference :Reference-CertificateTransparency,
         :Reference-StreamingPhish .
 
+:PassiveNetworkMapping a owl:Class ;
+    rdfs:label "Passive Network Mapping" ;
+    rdfs:subClassOf :LogicalNetworkMapping .
+
 :Password a owl:Class ;
     rdfs:label "Password" ;
     skos:altLabel "Passcode" ;
@@ -6344,6 +6433,10 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     rdfs:label "Physical Artifact" ;
     rdfs:subClassOf :Artifact,
         :PhysicalObject .
+
+:PhysicalLinkMapping a owl:Class ;
+    rdfs:label "Physical Link Mapping" ;
+    rdfs:subClassOf :NetworkMapping .
 
 :PhysicalLocation a owl:Class ;
     rdfs:label "Physical Location" ;
@@ -7666,6 +7759,10 @@ Another difference are the capabilities of the mechanism:
     rdfs:subClassOf :ServiceApplication ;
     rdfs:comment "Software that coordinates the deployment process of software to systems, typically remotely." .
 
+:SoftwareInventory a owl:Class ;
+    rdfs:label "Software Inventory" ;
+    rdfs:subClassOf :AssetInventory .
+
 :SoftwarePackagingTool a owl:Class ;
     rdfs:label "Software Packaging Tool" ;
     rdfs:subClassOf :BuildTool ;
@@ -8069,6 +8166,14 @@ Attackers may manipulate system settings or services to disable system logging o
         :Reference_MethodUsingKernelModeAssistanceForTheDetectionAndRemovalOfThreatsWhichAreActivelyPreventingDetectionAndRemovalFromARunningSystem_SymantecCorporation,
         :UserActivityFromStoppingWindowsDefensiveServices_MITRE .
 
+:SystemDecomposition a owl:Class ;
+    rdfs:label "System Decomposition" ;
+    rdfs:subClassOf :SystemMapping .
+
+:SystemDependencyMapping a owl:Class ;
+    rdfs:label "System Dependency Mapping" ;
+    rdfs:subClassOf :SystemMapping .
+
 :SystemFileAnalysis a :OperatingSystemMonitoring,
         owl:Class,
         owl:NamedIndividual ;
@@ -8169,6 +8274,14 @@ When system firmware verification fails a set of predefined responses is typical
         :SystemInitConfiguration ;
     rdfs:comment "A script used to initialize and configure elements of the system's environment, applications, services, or its operating system." .
 
+:SystemInventory a owl:Class ;
+    rdfs:label "System Inventory" ;
+    rdfs:subClassOf :AssetInventory .
+
+:SystemMapping a owl:Class ;
+    rdfs:label "System Mapping" ;
+    rdfs:subClassOf :ArchitectureMapping .
+
 :SystemPasswordDatabase a owl:Class ;
     rdfs:label "System Password Database" ;
     rdfs:subClassOf :PasswordDatabase ;
@@ -8204,6 +8317,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "System Utilization Record" ;
     rdfs:subClassOf :Record ;
     rdfs:comment "A system utilization record is a record for the tracking of resource utilization e.g. CPU, Disk, Network, Memory Bandwidth, GPU, or other resources for a given time period." .
+
+:SystemVulnerabilityAssessment a owl:Class ;
+    rdfs:label "System Vulnerability Assessment" ;
+    rdfs:subClassOf :SystemMapping .
 
 :T1001 a owl:Class ;
     rdfs:label "Data Obfuscation" ;
