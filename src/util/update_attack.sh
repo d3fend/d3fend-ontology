@@ -1,4 +1,14 @@
-pipenv run python src/util/update_attack.py
+##
+## This script creates a D3FEND ontology update from ATT&CK STIX JSON document
+## for any missing ATT&CK techniques and puts them under the correct parent
+## classes.
+##
+## After running this script, the developer needs to manually add:
+##  - Attack Tactics and relate them to the "Tactic-Technique" classes.
+##  - Remove any deprecated techniques as necessary.
+##
+
+pipenv run python src/util/update_attack.py || exit 1
 
 ./bin/robot template \
     --template reports/attack_update-missing_attack_ids-robot_template.csv \

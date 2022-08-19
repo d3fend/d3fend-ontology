@@ -2,6 +2,7 @@ import string
 import json
 import re
 import csv
+import sys
 
 from rdflib import URIRef, Literal
 from build import get_graph, _xmlns
@@ -23,8 +24,12 @@ def recursive_extract(dictionary, key):
             recursive_extract(v, key)
 
 
-with open("data/enterprise-attack-11.2.json") as f:
-    stix = json.loads(f.read())
+try:
+    with open("data/enterprise-attack-11.2.json") as f:
+        stix = json.loads(f.read())
+except FileNotFoundError:
+    print("please run: make download-attack")
+    sys.exit(1)
 
 
 def kcp_to_class(kcp):
