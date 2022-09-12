@@ -4229,6 +4229,11 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
     rdfs:label "Get Open Windows" ;
     rdfs:subClassOf :SystemCall .
 
+:GetSystemConfigValue a owl:Class ;
+    rdfs:label "Get System Config Value" ;
+    rdfs:subClassOf :SystemCall ;
+    rdfs:seeAlso "https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexa" .
+
 :GetSystemTime a owl:Class ;
     rdfs:label "Get System Time" ;
     rdfs:subClassOf :SystemCall ;
@@ -7583,6 +7588,11 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_System,Method,AndComputerProgramProductForDetectingAndAssessingSecurityRisksInANetwork_ExabeamInc>,
         :Reference_MethodAndApparatusForNetworkFraudDetectionAndRemediationThroughAnalytics_IdaptiveLLC .
 
+:SetSystemConfigValue a owl:Class ;
+    rdfs:label "Set System Config Value" ;
+    rdfs:subClassOf :SystemCall ;
+    rdfs:seeAlso "https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetvalueexa" .
+
 :ShadowStackComparisons a owl:Class,
         owl:NamedIndividual,
         :ProcessAnalysis ;
@@ -8404,7 +8414,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1012 a owl:Class ;
     rdfs:label "Query Registry" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetSystemConfigValue ] ;
     :attack-id "T1012" .
 
 :T1013 a owl:Class ;
