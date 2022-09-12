@@ -4225,6 +4225,10 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
     :kb-reference :Reference-UseDNSPolicyForApplyingFiltersOnDNSQueries ;
     :synonym "Forward Resolution IP Blacklisting" .
 
+:GetOpenWindows a owl:Class ;
+    rdfs:label "Get Open Windows" ;
+    rdfs:subClassOf :SystemCall .
+
 :GetSystemTime a owl:Class ;
     rdfs:label "Get System Time" ;
     rdfs:subClassOf :SystemCall ;
@@ -7034,7 +7038,9 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:comment "A program that needs to access data from a file stored in a file system uses the read system call. The file is identified by a file descriptor that is normally obtained from a previous call to open. This system call reads in data in bytes, the number of which is specified by the caller, from the file and stores then into a buffer supplied by the calling process." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Read_(system_call)> .
 
-:ReconnaissanceTechnique a owl:Class .
+:ReconnaissanceTechnique a owl:Class ;
+    rdfs:label "Reconnaissance Technique" ;
+    rdfs:subClassOf :OffensiveTechnique .
 
 :Record a owl:Class ;
     rdfs:label "Record" ;
@@ -7192,7 +7198,9 @@ This technique analyzes a user's resource accesses by comparing the user's recen
         :Reference_ModelingUserAccessToComputerResources_DaedalusGroupLLC,
         :Reference_SystemAndMethodThereofForIdentifyingAndRespondingToSecurityIncidentsBasedOnPreemptiveForensics_PaloAltoNetworksInc .
 
-:ResourceDevelopmentTechnique a owl:Class .
+:ResourceDevelopmentTechnique a owl:Class ;
+    rdfs:label "Resource Development Technique" ;
+    rdfs:subClassOf :OffensiveTechnique .
 
 :ResourceFork a owl:Class ;
     rdfs:label "Resource Fork" ;
@@ -8372,7 +8380,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1010 a owl:Class ;
     rdfs:label "Application Window Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetOpenWindows ] ;
     :attack-id "T1010" .
 
 :T1011 a owl:Class ;
@@ -8418,6 +8432,12 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-modify ;
             owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1014" .
+
+:T1015 a owl:Class ;
+    rdfs:label "Accessibility Features" ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :PrivilegeEscalationTechnique ;
+    :attack-id "T1015" .
 
 :T1016 a owl:Class ;
     rdfs:label "System Network Configuration Discovery" ;
