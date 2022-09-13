@@ -259,6 +259,20 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:comment "x deletes y: A technique or agent x wipes out the digitally or magnetically recorded information of digital object y." ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/01001860-v> .
 
+:dependent a owl:ObjectProperty ;
+    rdfs:label "dependent" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00729216-a" ;
+    :definition "x dependent y: A dependent y is an entity that requires the fulfillment of the requirements specified in dependency x." .
+
+:dependsOn a owl:ObjectProperty ;
+    rdfs:label "depends-on" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :has-dependent ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00729216-a",
+        "x depends-on y: The entity x is contingent on y being available; x relies on y." ;
+    rdfs:seeAlso "https://www.cisa.gov/what-are-dependencies" .
+
 :detects a owl:ObjectProperty ;
     rdfs:label "detects" ;
     rdfs:subPropertyOf :counters,
@@ -311,6 +325,15 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :end a owl:ObjectProperty ;
     rdfs:subPropertyOf :d3fend-process-object-property .
+
+:evaluated-by a owl:ObjectProperty ;
+    rdfs:label "evaluated-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :evaluates .
+
+:evaluates a owl:ObjectProperty ;
+    rdfs:label "evaluates" ;
+    rdfs:subPropertyOf :associated-with .
 
 :evaluator a owl:ObjectProperty ;
     rdfs:label "evaluator" ;
@@ -389,6 +412,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :has-contributor a owl:ObjectProperty ;
     rdfs:subPropertyOf :d3fend-kb-object-property .
 
+:has-dependent a owl:ObjectProperty ;
+    rdfs:label "has-dependent" ;
+    rdfs:subPropertyOf :associated-with .
+
 :has-evidence a owl:ObjectProperty ;
     rdfs:label "has-evidence" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property .
@@ -444,6 +471,13 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:range :DigitalArtifact ;
     rdfs:comment "x hides y: A technique or operation x conceals the digital artifact y." .
 
+:identified-by a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :identified-by .
+
+:identifies a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with .
+
 :impairs a owl:ObjectProperty ;
     rdfs:label "impairs" ;
     rdfs:subPropertyOf :associated-with .
@@ -479,6 +513,15 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
         :may-interpret ;
     rdfs:comment "x interprets y: The subject x interprets the executable script y. The sense of interprets is here 'Parse the source code and perform its behavior directly.'" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Interpreter_(computing)> .
+
+:inventoried-by a owl:ObjectProperty ;
+    rdfs:label "inventoried-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :inventories .
+
+:inventories a owl:ObjectProperty ;
+    rdfs:label "inventories" ;
+    rdfs:subPropertyOf :associated-with .
 
 :invoked-by a owl:ObjectProperty ;
     rdfs:label "invoked-by" ;
@@ -558,6 +601,15 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     rdfs:comment "x manages y: The technique or agent x watches and directs the use of a digital artifact y." ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/02447914-v> .
+
+:mapped-by a owl:ObjectProperty ;
+    rdfs:label "mapped-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :maps .
+
+:maps a owl:ObjectProperty ;
+    rdfs:label "maps" ;
+    rdfs:subPropertyOf :associated-with .
 
 :may-access a owl:ObjectProperty ;
     rdfs:label "may-access" ;
@@ -716,6 +768,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-be-associated-with ;
     rdfs:comment "x may-produce y: They entity x may produce the thing y; that is, 'x produces y' may be true." .
 
+:may-query a owl:ObjectProperty ;
+    rdfs:label "may-query" ;
+    rdfs:subPropertyOf :may-be-associated-with .
+
 :may-run a owl:ObjectProperty ;
     rdfs:label "may-run" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -848,6 +904,13 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:seeAlso "creates" ;
     :todo "Make definition of produces more generic to match sense of Product Developer produces Product (so generalize to any object really, not just computery digital stuff.)" .
 
+:provider a owl:ObjectProperty ;
+    rdfs:label "provider" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/05901034-n" ;
+    :definition "x provider y: A provider y is an entity that supplies a service, system, or data resources to a dependent entity x." ;
+    rdfs:seeAlso "http://wordnet-rdf.princeton.edu/id/10696710-n" .
+
 :provides a owl:ObjectProperty ;
     rdfs:label "provides" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property .
@@ -863,7 +926,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :queries a owl:ObjectProperty ;
     rdfs:label "queries" ;
-    rdfs:subPropertyOf :associated-with .
+    rdfs:subPropertyOf :associated-with,
+        :may-query .
 
 :reads a owl:ObjectProperty ;
     rdfs:label "reads" ;
@@ -1120,7 +1184,7 @@ dcterms:title a owl:AnnotationProperty ;
     :todo "make a d3fend-kb-data-property" .
 
 :kb-organization a owl:AnnotationProperty ;
-    rdfs:label "kb-mitre-analysis" ;
+    rdfs:label "kb-organization" ;
     rdfs:subPropertyOf :d3fend-kb-annotation-property ;
     rdfs:comment "x kb-organization y: The reference x was created or owned by the organization y." ;
     :todo "Eventually would be best to resolve these to Organization instances in KB.  This might be kept as kb-organization-string.  Also, we might choose to drop kb- prefix on many of these.",
@@ -1416,9 +1480,17 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:comment "A list of permissions attached to an object." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> .
 
-:AccessModeling a owl:Class ;
+:AccessModeling a :OperationalActivityMapping,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Access Modeling" ;
-    rdfs:subClassOf :OperationalActivityMapping .
+    rdfs:subClassOf :OperationalActivityMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :AccessControlConfiguration ] ;
+    :d3fend-id "D3-AM" ;
+    :definition "Access modeling identifies and records the access permissions granted to administrators, users, groups, and systems." ;
+    :kb-reference :Reference_RFC7642SystemForCrossDomainIdentityManagementDefinitionsOverviewConceptsAndRequirements .
 
 :AccessToken a owl:Class ;
     rdfs:label "Access Token" ;
@@ -1489,9 +1561,57 @@ Using either Certificate Revocation Lists (CRLs) or Online Certificate Status Pr
 * The revocation service (OCSP or CRL) may be down during our connection and a browser will need to make a decision will need to be made about trusting the connection""" ;
     :kb-reference :Reference-SecuringWebTransactions .
 
-:ActiveNetworkMapping a owl:Class ;
-    rdfs:label "Active Network Mapping" ;
-    rdfs:subClassOf :LogicalNetworkMapping .
+:ActiveLogicalLinkMapping a :LogicalLinkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Active Logical Link Mapping" ;
+    rdfs:subClassOf :LogicalLinkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :may-query ;
+            owl:someValuesFrom :CollectorAgent ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :d3fend-id "D3-ALLM" ;
+    :definition "Active logical link mapping sends and receives network traffic as a means to map the whole data link layer, where the links represent logical data flows rather than physical connection" ;
+    :kb-article """## How it works
+
+Active logical link mapping establishes awareness of logical links in the network by sending data over the network to gather information about logical connections in the network.
+
+Typically this will be achieved through network telemetry coordinated for network management and monitoring and will use a link layer discovery protocol such as LLDP and the information gathered and aggregated a higher levels using an application protocol such as SNMP.  The information may be polled by network management softare or configured once and then pushed from network sensors (or agents.)
+
+Another means of establishing network connectivity is by means of sendingn traffic through the use of a tool such as traceroute, to determine the logical paths through the network architecture.
+
+## Considerations
+
+* Best practice is to encrypte network monitoring data and require authentication for queries or admin/management functions.
+* Push notifications reduce bandwidth necessary to capture and maintain information if reliable transport is used.
+* Special consideration should be made before using of active scanning in OT networks and OT-safe options chosen where available.""" ;
+    :kb-reference :Reference_IdentificationOfTracerouteNodesAndAssociatedDevices,
+        :Reference_SNMPNetworkAutoDiscovery .
+
+:ActivePhysicalLinkMapping a owl:Class,
+        owl:NamedIndividual,
+        :PhysicalLinkMapping ;
+    rdfs:label "Active Physical Link Mapping" ;
+    rdfs:subClassOf :PhysicalLinkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :may-query ;
+            owl:someValuesFrom :CollectorAgent ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    owl:disjointWith :PassivePhysicalLinkMapping ;
+    :d3fend-id "D3-APLM" ;
+    :definition "Active physical link mapping sends and receives network traffic as a means to map the physical layer." ;
+    :kb-reference :Reference_IdentificationOfTracerouteNodesAndAssociatedDevices,
+        :Reference_UsingSpanningTreeProtocolSTPToEnhanceLayer2NetworkTopologyMaps ;
+    :synonym "Active Physical Layer Mapping" .
+
+:ActivityDependency a owl:Class ;
+    rdfs:label "Activity Dependency" ;
+    rdfs:subClassOf :Dependency ;
+    :definition "An activity dependency is a dependency that indicates an activity has an activity or agent which relies on it in order to be functional." .
 
 :AdminFeatureAssessment a owl:Class ;
     rdfs:label "Admin Feature Assessment" ;
@@ -1597,7 +1717,7 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 
 :ApplicationConfigurationDatabase a owl:Class ;
     rdfs:label "Application Configuration Database" ;
-    rdfs:subClassOf :Database,
+    rdfs:subClassOf :ConfigurationDatabase,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ApplicationConfigurationDatabaseRecord ] ;
@@ -1606,7 +1726,7 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 :ApplicationConfigurationDatabaseRecord a owl:Class ;
     rdfs:label "Application Configuration Database Record" ;
     rdfs:subClassOf :ApplicationConfiguration,
-        :Record ;
+        :ConfigurationDatabaseRecord ;
     rdfs:comment "A database record holding information used to configure the parameters and initial settings for an application." .
 
 :ApplicationConfigurationFile a owl:Class ;
@@ -1690,10 +1810,6 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:seeAlso "d3f:Shim",
         <http://dbpedia.org/resource/Shim_(computing)#Examples> .
 
-:ArchitectureMapping a owl:Class ;
-    rdfs:label "2 Architecture Mapping" ;
-    rdfs:subClassOf :DefensiveModelingTechnique .
-
 :ArchiveFile a owl:Class ;
     rdfs:label "Archive File" ;
     rdfs:subClassOf :File ;
@@ -1738,17 +1854,33 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
 :AssetInventory a :DefensiveTechnique,
         owl:Class,
         owl:NamedIndividual ;
-    rdfs:label "1 Asset Inventory" ;
-    rdfs:subClassOf :DefensiveModelingTechnique,
+    rdfs:label "Asset Inventory" ;
+    rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Model ] ;
-    :definition "..." ;
-    :synonym "Asset Inventorying" .
+    :d3fend-id "D3-AI" ;
+    :definition "Asset inventorying is identifies and records the organization's assets and enriching each inventory item with knowledge about their vulnerabilities." ;
+    :display-order 1 ;
+    :synonym "Asset Discovery",
+        "Asset Inventorying" .
 
-:AssetVulnerabilityAssessment a owl:Class ;
+:AssetVulnerabilityAssessment a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Asset Vulnerability Assessment" ;
-    rdfs:subClassOf :AssetInventory .
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :evaluates ;
+            owl:someValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :Vulnerability ] ;
+    :d3fend-id "D3-AVA" ;
+    :definition "Asset vulnerability assessment enriches inventory items with knowledge identifying their vulnerabilities." ;
+    :kb-reference :Reference_AutomatedComputerVulnerabilityResolutionSystem,
+        :Reference_SecurityVulnerabilityInformationAggregation,
+        :Reference_SystemAndMethodForVulnerabilityRiskAssessment .
 
 :AsymmetricKey a owl:Class ;
     rdfs:label "Asymmetric Key" ;
@@ -2461,6 +2593,12 @@ Profiling request and response payloads across multiple clients to a single serv
             owl:onProperty :enables ;
             owl:someValuesFrom :Collection ] .
 
+:CollectorAgent a owl:Class ;
+    rdfs:label "Network Agent" ;
+    rdfs:subClassOf :Software ;
+    :definition "A network agent is software installed on a network node or device that transmits information back to a collector agent or management system.  Kinds of network agents include SNMP Agent, IPMI agents, WBEM agents, and many proprietary agents capturing network monitoring and management information." ;
+    :synonym "Exporter" .
+
 :Command a owl:Class ;
     rdfs:label "Command" ;
     rdfs:subClassOf :DigitalArtifact,
@@ -2541,6 +2679,19 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:subClassOf :Resource ;
     rdfs:comment "Information used to configure a system including software and hardware." .
 
+:ConfigurationDatabase a owl:Class ;
+    rdfs:label "Configuration Database" ;
+    rdfs:subClassOf :ConfigurationBearingEntity,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ConfigurationDatabaseRecord ] .
+
+:ConfigurationDatabaseRecord a owl:Class ;
+    rdfs:label "Configuration Database Record" ;
+    rdfs:subClassOf :ConfigurationBearingEntity,
+        :Record ;
+    :synonym "Configuration Record" .
+
 :ConfigurationFile a owl:Class ;
     rdfs:label "Configuration File" ;
     skos:altLabel "Settings File" ;
@@ -2548,9 +2699,37 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:comment "A file containing Information used to configure the parameters and initial settings for some computer programs. They are used for user applications, server processes and operating system settings." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Configuration_file> .
 
-:ConfigurationTracking a owl:Class ;
+:ConfigurationManagementDatabase a owl:Class ;
+    rdfs:label "Configuration Management Database" ;
+    rdfs:subClassOf :ConfigurationDatabase,
+        :ConfigurationManagementDatabase ;
+    rdfs:isDefinedBy "https://web.archive.org/web/20111201040529/http://www.best-management-practice.com/gempdf/itil_glossary_v3_1_24.pdf" ;
+    :definition "A database used to store configuration records throughout their lifecycle. The Configuration Management System (CMS) maintains one or more CMDBs, and each CMDB stores attributes of configuration items (CIs), and relationships with other CIs." ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Configuration_management_database",
+        "https://wiki.en.it-processmaps.com/index.php/ITIL_Glossary/_ITIL_Terms_C#Config_Management_Database_.28CMDB.29",
+        "https://www.dmtf.org/standards/cmdbf" .
+
+:ConfigurationTracking a owl:Class,
+        owl:NamedIndividual,
+        :SystemMapping ;
     rdfs:label "Configuration Tracking" ;
-    rdfs:subClassOf :SystemMapping .
+    rdfs:subClassOf :SystemMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :ApplicationConfigurationDatabase ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :SystemConfigurationDatabase ],
+        [ a owl:Restriction ;
+            owl:onProperty :updates ;
+            owl:someValuesFrom :ConfigurationManagementDatabase ] ;
+    :d3fend-id "D3-SYSCT" ;
+    :definition "Configuration tracking identifies and records the configuration of software and hardware systems and their components throughout the organization." ;
+    :kb-article """## How it works
+
+The organization retrieves configuration information through means of SNMP (MIB records), WBEM (CIM records), and other protocols and captures that information in a repository, typically known as a Configuration Management Database (CMDB)."
+""" ;
+    :kb-reference :Reference_Windows-Management-Instrumentation .
 
 :ConnectedHoneynet a :DecoyEnvironment,
         owl:Class,
@@ -2886,9 +3065,66 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:comment "A database server is a server which uses a database application that provides database services to other computer programs or to computers, as defined by the client-server model. Database management systems (DBMSs) frequently provide database-server functionality, and some database management systems (such as MySQL) rely exclusively on the client-server model for database access (while others e.g. SQLite are meant for using as an embedded database). For clarification, a database server is simply a server that maintains services related to clients via database applications." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Database_server> .
 
-:DataInventory a owl:Class ;
+:DataDependency a owl:Class ;
+    rdfs:label "Data Dependency" ;
+    rdfs:subClassOf :Dependency ;
+    :synonym "Transactional Dependency" .
+
+:DataExchangeMapping a :NetworkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Data Exchange Mapping" ;
+    rdfs:subClassOf :SystemMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :DataDependency ] ;
+    :d3fend-id "D3-DEM" ;
+    :definition "Information exchange mapping identifies and models the organization's intended design for the exchange of the data types, formats, and volumes between systems at the application layer." ;
+    :kb-reference :Reference_CatiaUAFPlugin,
+        :Reference_TivoliApplicationDependencyDiscoverManager7_3_0DependenciesBetweenResources,
+        :Reference_UnifiedArchitectureFrameworkUAF ;
+    :synonym "Information Exchange Mapping" .
+
+:DataInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Data Inventory" ;
-    rdfs:subClassOf :AssetInventory .
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :ArtifactServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :Database ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :DatabaseServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :FileServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :MailServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :MediaServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :NetworkFileShareResource ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :NetworkService ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :Storage ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :Volume ] ;
+    :d3fend-id "D3-DI" ;
+    :definition "Data inventorying is identifies and records the schemas, formats, volumes, and locations of data stored and used on the organization's architecture." ;
+    :kb-reference :Reference_DataProcessingAndScanningSystemsForGeneratingAndPopulatingADataInventory ;
+    :synonym "Data Discovery",
+        "Data Inventorying" .
 
 :DeadCodeElimination a :ApplicationHardening,
         owl:Class,
@@ -3116,12 +3352,6 @@ A credential may be:
             owl:onProperty :enables ;
             owl:someValuesFrom :DefenseEvasion ] .
 
-:DefensiveModelingTechnique a owl:Class ;
-    rdfs:label "Defensive Modeling Technique" ;
-    rdfs:subClassOf :DefensiveTechnique ;
-    rdfs:comment "For temporary dev convenience.  Organizes all the Model tactic's techniques under one taxonomy." ;
-    :todo "Remove this parent class and promote children before release." .
-
 :DefensiveTactic a owl:Class ;
     rdfs:label "Defensive Tactic" ;
     rdfs:subClassOf :D3FENDThing,
@@ -3134,7 +3364,8 @@ A credential may be:
     rdfs:comment "a plan for attaining a particular goal" ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/05913746-n> .
 
-:DefensiveTechnique a owl:Class ;
+:DefensiveTechnique a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Defensive Technique" ;
     rdfs:subClassOf :CapabilityFeature,
         :D3FENDThing,
@@ -3210,6 +3441,19 @@ A credential may be:
             owl:onProperty :claims ;
             owl:someValuesFrom :DefensiveTechnique ] .
 
+:Dependency a owl:Class ;
+    rdfs:label "Dependency" ;
+    rdfs:subClassOf :DigitalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :dependent ;
+            owl:someValuesFrom :D3FENDThing ],
+        [ a owl:Restriction ;
+            owl:onProperty :provider ;
+            owl:someValuesFrom :D3FENDThing ] ;
+    rdfs:comment "A dependency is the relationship of relying on or being controlled by someone or something else.  This class reifies dependencies that correspond to the object property depends-on." ;
+    rdfs:seeAlso "http://wordnet-rdf.princeton.edu/id/14024833-n",
+        "https://www.cisa.gov/what-are-dependencies" .
+
 :DesktopComputer a owl:Class ;
     rdfs:label "Desktop Computer" ;
     rdfs:subClassOf :PersonalComputer ;
@@ -3258,7 +3502,8 @@ A credential may be:
 
 :DigitalSystem a owl:Class ;
     rdfs:label "Digital System" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalArtifact,
+        :System ;
     rdfs:comment "A digital system is a group of interacting or interrelated digital artifacts that act according to a set of rules to form a unified whole. A digital system, surrounded and influenced by its environment, is described by its boundaries, structure and purpose and expressed in its functioning. Systems are the subjects of study of systems theory." ;
     rdfs:seeAlso <http://dbpedia.org/resource/System> .
 
@@ -3914,12 +4159,9 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     rdfs:subClassOf :ProcessAnalysis,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
-            owl:someValuesFrom :LocalResourceAccess ],
-        [ a owl:Restriction ;
-            owl:onProperty :analyzes ;
-            owl:someValuesFrom :ReadFile ] ;
+            owl:someValuesFrom :LocalResourceAccess ] ;
     :d3fend-id "D3-FAPA" ;
-    :definition "Analyzing the way a process accesses local files to identify unauthorized activity." ;
+    :definition "Analyzing the files accessed by a process to identify unauthorized activity." ;
     :kb-article """## How it works
 File modifying malware such as wipers and ransomware are detected by identifying file access patterns that are associated with a malicious process. Examples of file access patterns include accessing a large number of files, accessing multiple file types, files being accessed located in multiple locations in a directory, and copying a file and encrypting the contents of that file into a copy.
 
@@ -4117,9 +4359,20 @@ Performance on large files or very large numbers of files.""" ;
     rdfs:comment "In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines. This definition refers to network firewalls." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> .
 
-:FirewallMapping a owl:Class ;
+:FirewallMapping a :NetworkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Firewall Mapping" ;
-    rdfs:subClassOf :NetworkMapping .
+    rdfs:subClassOf :NetworkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :AccessControlConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :queries ;
+            owl:someValuesFrom :CollectorAgent ] ;
+    :d3fend-id "D3-FM" ;
+    :definition "Firewall mapping identifies and models the allowed pathways of data at the network, tranport, and/or application levels." ;
+    :kb-reference :Reference_CiscoASR9000AccessListCommands .
 
 :Firmware a owl:Class ;
     rdfs:label "Firmware" ;
@@ -4379,24 +4632,41 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
     rdfs:comment "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> .
 
-:HardwareInventory a owl:Class ;
+:HardwareInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Hardware Inventory" ;
-    rdfs:subClassOf :AssetInventory ;
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :HardwareDevice ],
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :NetworkNode ] ;
+    :d3fend-id "D3-HWI" ;
+    :definition "Hardware inventorying identifies and records the hardware items in the organization's architecture." ;
     :kb-article """## How it works
 Administrators collect information on hardware items in their architecture using a variety of administrative and management tools that query network devices and nodes for information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to include host discovery and scanning for active ports and services.
 
 ## Considerations
-* Scanning and probing techniques using mapping tools can result in side effects to operational systems (ICS/SCADA) 
-* An adversary conducting network enumeration may engage in activities that parallel normal inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
+* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
+* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
 
 ## Examples
-*Link-layer discovery
-** Link-layer Discovery Protocol (LDP)
-** Cisco Discovery Protocol (CDP)
-
-*Application-layer discovery
-** Web-based Enterprise Management (WBEM)
-** Windows Management Instrumentation (WMI)""" .
+* Link-layer discovery
+   * Link-layer Discovery Protocol (LLDP)
+   * Cisco Discovery Protocol (CDP)
+* Application-layer discovery
+   * Simple Network Management Protocol (SNMP) collects MIB information
+   * Web-based Enterprise Management (WBEM) collects CIM information
+      * Windows Management Instrumentation (WMI)
+      * Windows Management Infrastructure (MI)""" ;
+    :kb-reference :Reference_IEEE-802_1AB-2016,
+        :Reference_QualysNetworkPassiveSensorGettingStartedGuide,
+        :Reference_RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks,
+        :Reference_Web-BasedEnterpriseManagement ;
+    :synonym "Hardware Discovery",
+        "Hardware Inventorying" .
 
 :HeapSegment a owl:Class ;
     rdfs:label "Heap Segment" ;
@@ -4732,11 +5002,6 @@ Identification of potential ROP exploit execution includes:
             owl:someValuesFrom xsd:anyURI ] ;
     rdfs:isDefinedBy "BFO, Cyc equiv, SUMO equiv, [Ontology Works] equiv" .
 
-:InformationExchangeMapping a owl:Class ;
-    rdfs:label "Data Exchange Mapping" ;
-    rdfs:subClassOf :NetworkMapping ;
-    :synonym "Information Exchange Mapping" .
-
 :InitialAccess a :OffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
@@ -5001,9 +5266,6 @@ Intrusion prevention systems are considered extensions of intrusion detection sy
     rdfs:subClassOf :ExecutionIsolation,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :HardwareDevice ],
-        [ a owl:Restriction ;
-            owl:onProperty :filters ;
             owl:someValuesFrom :InputDevice ],
         [ a owl:Restriction ;
             owl:onProperty :filters ;
@@ -5233,6 +5495,14 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
             owl:onProperty :enables ;
             owl:someValuesFrom :LateralMovement ] .
 
+:Layer-2Link a owl:Class ;
+    rdfs:label "Layer-2 Link" ;
+    rdfs:subClassOf :Link ;
+    :definition "A communication link between two network devices connected directly at the physical layer and on the same network segment; i.e., an OSI Layer 2 link." ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Link_layer" ;
+    :synonym "Data Link Layer Link",
+        "Link Layer Link" .
+
 :LegacySystem a owl:Class ;
     rdfs:label "Legacy System" ;
     rdfs:subClassOf :DigitalSystem ;
@@ -5244,8 +5514,9 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     rdfs:subClassOf :InformationContentEntity ;
     rdfs:seeAlso "http://dbpedia.org/resource/Software_license" .
 
-:Link-layerDiscovery a owl:Class ;
-    rdfs:subClassOf :HardwareInventory .
+:Link a owl:Class ;
+    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Link" .
 
 :LocalAccountMonitoring a owl:Class,
         owl:NamedIndividual,
@@ -5347,10 +5618,26 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:isDefinedBy <http://dbpedia.org/resource/Log_file> ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/06515875-n> .
 
-:LogicalNetworkMapping a owl:Class ;
-    rdfs:label "Logical Network Mapping" ;
-    rdfs:subClassOf :NetworkMapping ;
-    :definition "Logical network mapping creates a model of network node connectivity using network (IP) layer data." .
+:LogicalLink a owl:Class ;
+    rdfs:label "Network Link" ;
+    rdfs:subClassOf :Link ;
+    :definition "A network link is a link within the network layer, which is responsible for packet forwarding including routing through intermediate routers." ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Network_layer",
+        "https://www.techtarget.com/searchnetworking/definition/Network-layer" ;
+    :synonym "Layer-3 Link",
+        "Network Layer Link" .
+
+:LogicalLinkMapping a :NetworkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Logical Link Mapping" ;
+    rdfs:subClassOf :NetworkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Layer-2Link ] ;
+    :d3fend-id "D3-NLM" ;
+    :definition "Logical link mapping creates a model of network node connectivity using network-layer data or metadata." ;
+    :kb-reference :Reference_LibreNMSDocsNetworkMapExtension .
 
 :LoginSession a owl:Class ;
     rdfs:label "Login Session" ;
@@ -5700,9 +5987,19 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     :definition "Network Isolation techniques prevent network hosts from accessing non-essential system network resources." ;
     :enables :Isolate .
 
-:NetworkMapping a owl:Class ;
+:NetworkMapping a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Network Mapping" ;
-    rdfs:subClassOf :ArchitectureMapping .
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Model ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :d3fend-id "D3-NM" ;
+    :definition "Network mapping encompasses the techniques to identify and model the physical layer, network layer, and data exchange layers of the organization's network and their physical location, and determine allowed pathways through that network." ;
+    :display-order 3 .
 
 :NetworkNode a owl:Class ;
     rdfs:label "Network Node" ;
@@ -5833,6 +6130,21 @@ Hosts/users within a computer network are analyzed to identify communities of ho
         :Reference_FWTK-FirewallToolkit_,
         :Reference_MethodForControllingComputerNetworkSecurity_CheckpointSoftwareTechnologiesLtd,
         :Reference_NetworkFirewallWithProxy_SecureComputingLLC .
+
+:NetworkVulnerabilityAssessment a :NetworkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Vulnerability Assessment" ;
+    rdfs:subClassOf :NetworkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :evaluates ;
+            owl:someValuesFrom :Network ],
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :Vulnerability ] ;
+    rdfs:comment "Network vulnerability assessment relates all the vulnerabilities of a network's components in the context of their configuration and interdependencies and can also include assessing risk emerging from the network's design as a whole, not just the sum of individual network node or network segment vulnerabilities." ;
+    :d3fend-id "D3-NVA" ;
+    :kb-reference :Reference_SystemAndMethodForManagedSecurityAssessmentAndMitigation .
 
 :NewsArticle a owl:Class ;
     rdfs:label "News Article" ;
@@ -6058,17 +6370,56 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:comment "An operating system shared library file is a shared library file that is part of the operating system and that incorporates common operating system code for use by any application or to provide operating system services." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Library_(computing)#Shared_libraries> .
 
-:OperationalActivityMapping a owl:Class ;
-    rdfs:label "3 Operational Activity Mapping" ;
-    rdfs:subClassOf :DefensiveModelingTechnique .
+:OperationalActivityMapping a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Operational Activity Mapping" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Model ] ;
+    rdfs:comment "Identifying staff and organizational structure is part of operational activity mapping.  One inventories assets; people are *not* assets, but are resources.  Grasping operations and activities (missions) and mapping them to people is (notionally) last phase of modeling architecture." ;
+    :d3fend-id "D3-OAM" ;
+    :definition "Operational activity mapping identifies activities of the organization and the organization's suborganizations, groups, roles, and individuals that carry out the activities and then establishes the dependencies of the activities on the systems and people that perform those activities." ;
+    :kb-reference :Reference_CatiaUAFPlugin ;
+    :synonym "Mission Mapping" .
 
-:OperationalDecomposition a owl:Class ;
-    rdfs:label "Operational Decomposition" ;
-    rdfs:subClassOf :OperationalActivityMapping .
-
-:OperationalDependencyMapping a owl:Class ;
+:OperationalDependencyMapping a :OperationalActivityMapping,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Operational Dependency Mapping" ;
-    rdfs:subClassOf :OperationalActivityMapping .
+    rdfs:subClassOf :OperationalActivityMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Dependency ] ;
+    :d3fend-id "D3-ODM" ;
+    :definition "Operational dependency mapping identifies and models the dependencies of the organization's activities on each other and on the organization's performers (people, systems, and services.)  This may include modeling the higher- and lower-level activities of an organization forming a hierarchy, or layering, of the dependencies in an organization's activities." ;
+    :kb-reference :Reference_CatiaUAFPlugin,
+        :Reference_CyberCommandSystemCYCS,
+        :Reference_DaggerFactSheet,
+        :Reference_DaggerModelingAndVisualizationForMissionImpactSituationalAwareness,
+        :Reference_MissionDependencyModelingForCyberSituationalAwareness,
+        :Reference_UnifiedArchitectureFrameworkUAF .
+
+:OperationalRiskAssessment a :OperationalActivityMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Operational Risk Assessment" ;
+    rdfs:subClassOf :OperationalActivityMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :evaluates ;
+            owl:someValuesFrom :Organization ],
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :Vulnerability ] ;
+    :d3fend-id "D3-OVA" ;
+    :definition "Operational risk assessment identifies and models the vulnerabilities of, and risks to, an organization's activities individually and as a whole." ;
+    :kb-reference :Reference-MGT516ManagingSecurityVulnerabilitiesEnterpriseAndCloud,
+        :Reference-NIST-RMF-Quick-Start-Guide-Assess-Step-FAQ,
+        :Reference-NIST-Special-Publication-800-37-Revision-2,
+        :Reference-NIST-Special-Publication-800-53A-Revision-5,
+        :Reference-NIST-Special-Publication-800-160-Volume-1,
+        :Reference-NISTIR-8011-Volume-1 ;
+    :synonym "Mission Risk Assessment" .
 
 :OperationsCenterComputer a owl:Class ;
     rdfs:label "Operations Center Computer" ;
@@ -6108,9 +6459,20 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:label "Organization" ;
     rdfs:subClassOf :Agent .
 
-:OrganizationMapping a owl:Class ;
+:OrganizationMapping a :OperationalActivityMapping,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Organization Mapping" ;
-    rdfs:subClassOf :OperationalActivityMapping .
+    rdfs:subClassOf :OperationalActivityMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Dependency ] ;
+    :d3fend-id "D3-OM" ;
+    :definition "Organization mapping identifies and models the people, roles, and groups with an organization and the relations between them." ;
+    :display-order 4 ;
+    :kb-reference :Reference_CatiaUAFPlugin,
+        :Reference_OrganizationalManagementInSAPERPHCM,
+        :Reference_UnifiedArchitectureFrameworkUAF .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
@@ -6313,9 +6675,25 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     :kb-reference :Reference-CertificateTransparency,
         :Reference-StreamingPhish .
 
-:PassiveNetworkMapping a owl:Class ;
-    rdfs:label "Passive Network Mapping" ;
-    rdfs:subClassOf :LogicalNetworkMapping .
+:PassiveLogicalLinkMapping a :LogicalLinkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Passive Logical Link Mapping" ;
+    rdfs:subClassOf :LogicalLinkMapping ;
+    :d3fend-id "D3-PLLM" ;
+    :definition "Passive logical link mapping only listens to network traffic as a means to map the the whole data link layer, where the links represent logical data flows rather than physical connections." ;
+    :kb-reference :Reference_TenablePassiveNetworkMonitoring ;
+    :synonym "Passive Logical Layer Mapping" .
+
+:PassivePhysicalLinkMapping a owl:Class,
+        owl:NamedIndividual,
+        :PhysicalLinkMapping ;
+    rdfs:label "Passive Physical Link Mapping" ;
+    rdfs:subClassOf :PhysicalLinkMapping ;
+    :d3fend-id "D3-PPLM" ;
+    :definition "Passive physical link mapping only listens to network traffic as a means to map the physical layer." ;
+    :kb-reference :Reference_TenablePassiveNetworkMonitoring ;
+    :synonym "Passive Physical Layer Mapping" .
 
 :Password a owl:Class ;
     rdfs:label "Password" ;
@@ -6442,9 +6820,29 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     rdfs:subClassOf :Artifact,
         :PhysicalObject .
 
-:PhysicalLinkMapping a owl:Class ;
+:PhysicalLink a owl:Class ;
+    rdfs:label "Physical Link" ;
+    rdfs:subClassOf :Link ;
+    :definition """A physical link is a dedicated connection for communication that uses some physical media (electrical, electromagnetic, optical, to include clear spaces or vacuums.)  A physical link represents only a single hop (link) in any larger communcations path, circuit, or network.
+
+NOTE: not synonymous with data link as a data link can be over a telecommunications circuit, which may be a virtual circuit composed of multiple phyical links.""" ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Physical_layer" ;
+    :synonym "Layer-1 Link" .
+
+:PhysicalLinkMapping a :NetworkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Physical Link Mapping" ;
-    rdfs:subClassOf :NetworkMapping .
+    rdfs:subClassOf :NetworkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :PhysicalLink ] ;
+    :d3fend-id "D3-LM" ;
+    :definition "Physical link mapping identifies and models the link connectivity of the network devices within a physical network." ;
+    :kb-reference :Reference_LibreNMSDocsNetworkMapExtension ;
+    :synonym "Data Link Layer Mapping",
+        "Layer 2 Mapping",
+        "Link Layer Mapping" .
 
 :PhysicalLocation a owl:Class ;
     rdfs:label "Physical Location" ;
@@ -7441,6 +7839,13 @@ Example RPC Protocols:
     rdfs:comment "A saved instruction pointer points to the instruction that generated an exception (trap or fault)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Exception_handling> .
 
+:Scan a :DefensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Scan" ;
+    rdfs:subClassOf :DefensiveTactic ;
+    :display-order 0 .
+
 :ScheduledJobAnalysis a :OperatingSystemMonitoring,
         owl:Class,
         owl:NamedIndividual ;
@@ -7634,6 +8039,33 @@ System service applications may originate from the operating system installation
 * The source of truth must not be corrupted in order for this method to work.""" ;
     :kb-reference :ServiceBinaryModifications_MITRE .
 
+:ServiceDependency a owl:Class ;
+    rdfs:label "Service Dependency" ;
+    rdfs:subClassOf :Dependency ;
+    :definition "A service dependency indicates a service has an activity, agent, or another service which relies on it in order to be functional." .
+
+:ServiceDependencyMapping a owl:Class,
+        owl:NamedIndividual,
+        :SystemMapping ;
+    rdfs:label "Service Dependency Mapping" ;
+    rdfs:subClassOf :SystemMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :ServiceDependency ] ;
+    :d3fend-id "D3-SYSDM" ;
+    :definition "Service dependency mapping determines the services on which each given service relies." ;
+    :kb-article """## How it works
+The organization collects and models architectural information about the services and consumers of services and maps the dependencies between the services.
+
+## Considerations
+* Architectural design artifacts and SMEs may need to be consulted to determine if dependencies are intended or otherwise essential.
+* Service dependencies for critical systems--those supporting critical organizational activities--should be prioritized for supply chain risk analysis.
+* Service dependencies in cloud or microservice architectures may be discovered using distributed tracing capabilities""" ;
+    :kb-reference :Reference_CatiaUAFPlugin,
+        :Reference_TivoliApplicationDependencyDiscoverManager7_3_0DependenciesBetweenResources,
+        :Reference_UnifiedArchitectureFrameworkUAF ;
+    :synonym "Distributed Tracing" .
+
 :ServiceProvider a owl:Class ;
     rdfs:label "Service Provider" ;
     rdfs:subClassOf :Provider,
@@ -7772,9 +8204,36 @@ Another difference are the capabilities of the mechanism:
     rdfs:subClassOf :ServiceApplication ;
     rdfs:comment "Software that coordinates the deployment process of software to systems, typically remotely." .
 
-:SoftwareInventory a owl:Class ;
+:SoftwareInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Software Inventory" ;
-    rdfs:subClassOf :AssetInventory .
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :Software ] ;
+    :d3fend-id "D3-SWI" ;
+    :definition "Software inventorying identifies and records the software items in the organization's architecture." ;
+    :kb-article """## How it works
+Administrators collect information on software items in their architecture using a variety of administrative and management tools that query network nodes for information.  In limited cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to determine services responding on network nodes."
+
+## Considerations
+* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
+* An adversary conducting network enumeration may engage in activities that parallel normal software inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools.
+
+## Examples
+
+Application-layer discovery:
+
+* Simple Network Management Protocol (SNMP) collects MIB information
+* Web-based Enterprise Management (WBEM) collects CIM information
+   * Windows Management Instrumentation (WMI)
+   * Windows Management Infrastructure (MI)""" ;
+    :kb-reference :Reference_Web-BasedEnterpriseManagement,
+        :Reference_Windows-Management-Infrastructure,
+        :Reference_Windows-Management-Instrumentation ;
+    :synonym "Software Discovery",
+        "Software Inventorying" .
 
 :SoftwarePackagingTool a owl:Class ;
     rdfs:label "Software Packaging Tool" ;
@@ -8048,6 +8507,12 @@ Extremely complex password requirements may lead users to saving passwords in te
     rdfs:comment "A symmetric key is a single key used for both encryption and decryption and used with a symmetric-key algorithm. Symmetric-key algorithms are algorithms for cryptography that use the same cryptographic keys for both encryption of plaintext and decryption of ciphertext. The keys may be identical or there may be a simple transformation to go between the two keys. The keys, in practice, represent a shared secret between two or more parties that can be used to maintain a private information link. This requirement that both parties have access to the secret key is one of the main drawbacks of symmetric key encryption, in comparison to public-key encrytption (also known as asymmetric key encryption)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Symmetric-key_algorithm> .
 
+:System a owl:Class ;
+    rdfs:label "System" ;
+    rdfs:subClassOf :Artifact ;
+    rdfs:comment "An artifact (instrumentality) that combines interrelated interacting artifacts designed to work as a coherent entity;" ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/04384144-n" .
+
 :SystemCall a owl:Class ;
     rdfs:label "System Call" ;
     rdfs:subClassOf :DigitalArtifact,
@@ -8133,8 +8598,8 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
 
 :SystemConfigurationDatabaseRecord a owl:Class ;
     rdfs:label "System Configuration Database Record" ;
-    rdfs:subClassOf :OperatingSystemConfigurationComponent,
-        :Record ;
+    rdfs:subClassOf :ConfigurationDatabaseRecord,
+        :OperatingSystemConfigurationComponent ;
     rdfs:comment "A database record holding information used to configure the services, parameters, and initial settings for an operating system." .
 
 :SystemConfigurationInitDatabaseRecord a owl:Class ;
@@ -8180,13 +8645,38 @@ Attackers may manipulate system settings or services to disable system logging o
         :Reference_MethodUsingKernelModeAssistanceForTheDetectionAndRemovalOfThreatsWhichAreActivelyPreventingDetectionAndRemovalFromARunningSystem_SymantecCorporation,
         :UserActivityFromStoppingWindowsDefensiveServices_MITRE .
 
-:SystemDecomposition a owl:Class ;
-    rdfs:label "System Decomposition" ;
-    rdfs:subClassOf :SystemMapping .
+:SystemDependency a owl:Class ;
+    rdfs:label "System Dependency" ;
+    rdfs:subClassOf :Dependency ;
+    :definition "A system dependency indicates a system has an activity, agent, or another system which relies on it in order to be functional." ;
+    rdfs:seeAlso "https://dl.acm.org/doi/10.1145/960116.53994",
+        "https://r-docs.synapse.org/articles/systemDependencies.html",
+        "https://www.ibm.com/docs/en/taddm/7.3.0?topic=model-dependencies-between-resources" .
 
-:SystemDependencyMapping a owl:Class ;
+:SystemDependencyMapping a owl:Class,
+        owl:NamedIndividual,
+        :SystemMapping ;
     rdfs:label "System Dependency Mapping" ;
-    rdfs:subClassOf :SystemMapping .
+    rdfs:subClassOf :SystemMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :SystemDependency ] ;
+    :d3fend-id "D3-SYSDM" ;
+    :definition "System dependency mapping identifies and models the dependencies of system components on each other to carry out their function." ;
+    :kb-article """## How it works
+The organization collects and models architectural information about the software, hardware, and products and maps the dependencies between systems, including each system's internal components and dependencies.
+
+## Considerations
+* Data exchanges identified in the network mapping efforts usually indicate such dependencies, but may not be part of the intended design.
+* Architectural design artifacts and SMEs may need to be consulted to determine if dependencies are intended or otherwise essential.
+* System depedency mapping can identify internal dependencies of standard and pre-built systems that should be incorporated into a complete system dependency model.
+* System dependencies for critical systems--those supporting critical organizational activities--should be prioritized for supply chain risk analysis.
+* System dependencies should identify the integral components of a given named system and their structure to form a system.
+* System dependencies with a given system may be fixed by a particular product's configuration, and leveraging external knowledge bases about dependencies available (e.g., from package managers) is essential.""" ;
+    :kb-reference :Reference_CatiaUAFPlugin,
+        :Reference_SoftwareVulnerabilityGraphDatabase,
+        :Reference_TivoliApplicationDependencyDiscoverManager7_3_0DependenciesBetweenResources,
+        :Reference_UnifiedArchitectureFrameworkUAF .
 
 :SystemFileAnalysis a :OperatingSystemMonitoring,
         owl:Class,
@@ -8288,13 +8778,55 @@ When system firmware verification fails a set of predefined responses is typical
         :SystemInitConfiguration ;
     rdfs:comment "A script used to initialize and configure elements of the system's environment, applications, services, or its operating system." .
 
-:SystemInventory a owl:Class ;
+:SystemInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "System Inventory" ;
-    rdfs:subClassOf :AssetInventory .
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :DigitalSystem ] ;
+    :d3fend-id "D3-SYSI" ;
+    :definition "System inventorying identifies and records all the systems in the organization's architecture." ;
+    :kb-article """## How it works
+Administrators collect information on systems in their architecture using a variety of administrative and management tools that query network devices and nodes for information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to include host discovery and scanning for active ports and services.
 
-:SystemMapping a owl:Class ;
+## Considerations
+* Systems in a large architecture may be large systems of systems and not be identified directly by common inventory managment systems and may require manual specification or reference to organizaion architectural specifications.
+** Often inventory of system components will be collected by asset management systems but may need to be mapped to larger systems in an organization's architecture.
+* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
+* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
+
+## Examples
+* Link-layer discovery
+   * Link-layer Discovery Protocol (LLDP)
+   * Cisco Discovery Protocol (CDP)
+* Application-layer discovery
+   * Simple Network Management Protocol (SNMP) collects MIB information
+   * Web-based Enterprise Management (WBEM) collects CIM information
+      * Windows Management Instrumentation (WMI)
+      * Windows Management Infrastructure (MI)""" ;
+    :kb-reference :Reference_AdvancedDeviceMatchingSystem,
+        :Reference_IEEE-802_1AB-2016,
+        :Reference_QualysNetworkPassiveSensorGettingStartedGuide,
+        :Reference_RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks,
+        :Reference_Web-BasedEnterpriseManagement,
+        :Reference_Windows-Management-Infrastructure,
+        :Reference_Windows-Management-Instrumentation ;
+    :synonym "System Discovery",
+        "System Inventorying" .
+
+:SystemMapping a :DefensiveTechnique,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "System Mapping" ;
-    rdfs:subClassOf :ArchitectureMapping .
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Model ] ;
+    :d3fend-id "D3-SYSM" ;
+    :definition "System mapping encompasses the techniques to identify the organization's systems, how they are configured and decomposed into subsystems and components, how they are dependent on one another, and where they are physically located." ;
+    :display-order 2 .
 
 :SystemPasswordDatabase a owl:Class ;
     rdfs:label "System Password Database" ;
@@ -8332,9 +8864,20 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :Record ;
     rdfs:comment "A system utilization record is a record for the tracking of resource utilization e.g. CPU, Disk, Network, Memory Bandwidth, GPU, or other resources for a given time period." .
 
-:SystemVulnerabilityAssessment a owl:Class ;
+:SystemVulnerabilityAssessment a owl:Class,
+        owl:NamedIndividual,
+        :SystemMapping ;
     rdfs:label "System Vulnerability Assessment" ;
-    rdfs:subClassOf :SystemMapping .
+    rdfs:subClassOf :SystemMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :evaluates ;
+            owl:someValuesFrom :DigitalSystem ],
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :Vulnerability ] ;
+    :d3fend-id "D3-SYSVA" ;
+    :definition "System vulnerability assessment relates all the vulnerabilities of a system's components in the context of their configuration and internal dependencies and can also include assessing risk emerging from the system's design as a whole, not just the sum of individual component vulnerabilities." ;
+    :kb-reference :Reference_SoftwareVulnerabilityGraphDatabase .
 
 :T1001 a owl:Class ;
     rdfs:label "Data Obfuscation" ;
@@ -13860,6 +14403,9 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:isDefinedBy <https://www.techopedia.com/definition/30750/vpn-server> ;
     rdfs:seeAlso <http://dbpedia.org/resource/Virtual_private_network> .
 
+:Vulnerability a owl:Class ;
+    rdfs:subClassOf :D3FENDThing .
+
 :WebApplicationFirewall a owl:Class ;
     rdfs:label "Web Application Firewall" ;
     skos:altLabel "WAF" ;
@@ -14029,6 +14575,16 @@ User web session data is collected over a period of time to create a user behavi
     :kb-reference-title "CAR-2019-08-002: Active Directory Dumping via NTDSUtil" ;
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
+
+:ActiveLogicalNetworkMapping a owl:NamedIndividual .
+
+:ActiveNetworkMapping a :NetworkMapping,
+        owl:NamedIndividual ;
+    :d3fend-id "D3-ANM" ;
+    :kb-reference :Reference_IdentificationOfTracerouteNodesAndAssociatedDevices,
+        :Reference_SNMPNetworkAutoDiscovery .
+
+:ActivePhysicalNetworkMapping a owl:NamedIndividual .
 
 :AdobePDFFile1.3 a :DocumentFile,
         owl:NamedIndividual ;
@@ -14294,7 +14850,7 @@ Because these commands are built in, they may be run frequently by power users o
 <http://d3fend.mitre.org/ontologies/d3fend.owl#'Reference_ReverseDNSBlocking_BarracudaNetworks> a owl:NamedIndividual,
         :UserManualReference ;
     rdfs:label "Reference - Reverse DNS Blocking - Barracuda Networks" ;
-    :has-link "https://campus.barracuda.com/product/emailsecuritygateway/doc/39819732/reverse-dns-blocking/" ;
+    :has-link "https://campus.barracuda.com/product/emailsecuritygateway/doc/39819732/reverse-dns-blocking/"^^xsd:anyURI ;
     :kb-author "campus.barracuda.com" ;
     :kb-mitre-analysis "Inbound corporate traffic SMTP traffic on port 25 can be routed through Barracuda Email Security Gateway before reaching the corporate mail server, acting as a traffic filter based on reverse DNS lookups and a denylist for blocking domains." ;
     :kb-reference-of :ReverseResolutionDomainDenylisting ;
@@ -14374,6 +14930,16 @@ In order to convince the potential attacker that the deception environment is th
     :kb-reference-of :Hardware-basedProcessIsolation ;
     :kb-reference-title "Isolation of applications within a virtual machine" ;
     :todo "MITRE Analysis was not found" .
+
+<http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_Qualys¯NetworkPassiveSensorGettingStartedGuide> a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Qualys Network Passive Sensor Getting Started Guide" ;
+    :has-link "https://www.qualys.com/passive-scanning-sensor/"^^xsd:anyURI ;
+    :kb-abstract "Qualys Passive Scanning Sensor (PS) continuously monitors all network traffic and flags any asset activity. It identifies and profiles devices the moment they connect to the network, including those difficult to scan, corporate owned, brought by employees, and rogue IT. The data is sent immediately to the Qualys Cloud Platform for centralized analysis." ;
+    :kb-organization "Qualsys" ;
+    :kb-reference-of :HardwareInventory,
+        :SystemInventory ;
+    :kb-reference-title "Qualys Network Passive Sensor Getting Started Guide" .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_SupplyChainCyber-deception_Cymmetria,Inc.> a owl:NamedIndividual,
         :PatentReference ;
@@ -14857,6 +15423,11 @@ While this analytic does not take the user into account, doing so could generate
     :kb-reference-title "CAR-2014-11-002: Outlier Parents of Cmd" ;
     :todo "Examine reference for additional techniques",
         "MITRE Analysis was not found" .
+
+:PassiveNetworkMapping a :NetworkMapping,
+        owl:NamedIndividual ;
+    :d3fend-id "D3-PNM" ;
+    :kb-reference :Reference_TenablePassiveNetworkMonitoring .
 
 :PE32ExecutableFile a :ExecutableBinary,
         owl:NamedIndividual ;
@@ -15801,6 +16372,16 @@ Columbia University""" ;
     :kb-reference-of :FileEncryption ;
     :kb-reference-title "Method for file encryption" .
 
+:Reference-MGT516ManagingSecurityVulnerabilitiesEnterpriseAndCloud a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - MGT516: Managing Security Vulnerabilities: Enterprise and Cloud" ;
+    :has-link "https://www.sans.org/cyber-security-courses/managing-enterprise-cloud-security-vulnerabilities/"^^xsd:anyURI ;
+    :kb-abstract "Vulnerability, patch, and configuration management are not new security topics. In fact, they are some of the oldest security functions. Yet, we still struggle to manage these capabilities effectively. The quantity of outstanding vulnerabilities for most large organizations is overwhelming, and all organizations struggle to keep up with the never-ending onslaught of new vulnerabilities in their infrastructure and applications. When you add in the cloud and the increasing speed with which all organizations must deliver systems, applications, and features to both their internal and external customers, security may seem unachievable. This course will show you the most effective ways to mature your vulnerability management program and move from identifying vulnerabilities to successfully treating them. 16 Cyber42 and lab exercises" ;
+    :kb-author "Jonathan Risto and David Hazar" ;
+    :kb-organization "SANS" ;
+    :kb-reference-of :OperationalRiskAssessment ;
+    :kb-reference-title "MGT516: Managing Security Vulnerabilities: Enterprise and Cloud" .
+
 :Reference-Munin a owl:NamedIndividual,
         :SourceCodeReference ;
     rdfs:label "Reference - Munin" ;
@@ -15815,6 +16396,53 @@ Columbia University""" ;
     :kb-author "Michalis Polychronakis" ;
     :kb-reference-of :ByteSequenceEmulation ;
     :kb-reference-title "Network-level polymorphic shellcode detection using emulation" .
+
+:Reference-NIST-RMF-Quick-Start-Guide-Assess-Step-FAQ a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST RMF Quick Start Guide - Assess Step - Frequently Asked Questions (FAQ)" ;
+    :has-link "https://csrc.nist.gov/CSRC/media/Projects/risk-management/documents/05-Assess%20Step/NIST%20RMF%20Assess%20Step-FAQs.pdf"^^xsd:anyURI ;
+    :kb-abstract "Once security and privacy controls are implemented, they need to be evaluated for correctness and effectiveness. After the initial assessment is completed and the system enters the operations/maintenance phase of the system development life cycle, the controls are assessed on an ongoing basis according to the organization and system’s continuous monitoring plans. The ongoing assessment supports the authorizing official’s decision to continue or discontinue the system’s authorization to operate. Control effectiveness assessments are performed by an independent third-party assessor or assessment team if the system categorization is moderate or high." ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :OperationalRiskAssessment ;
+    :kb-reference-title "NIST RMF Quick Start Guide - Assess Step - Frequently Asked Questions (FAQ)" .
+
+:Reference-NIST-Special-Publication-800-37-Revision-2 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-37 Revision 2 - Risk Management Framework for Information Systems and Organizations" ;
+    :has-link "https://doi.org/10.6028/NIST.SP.800-37r2"^^xsd:anyURI ;
+    :kb-abstract "This publication describes the Risk Management Framework (RMF) and provides guidelines for applying the RMF to information systems and organizations. The RMF provides a disciplined, structured, and flexible process for managing security and privacy risk that includes information security categorization; control selection, implementation, and assessment; system and common control authorizations; and continuous monitoring. The RMF includes activities to prepare organizations to execute the framework at appropriate risk management levels. The RMF also promotes near real-time risk management and ongoing information system and common control authorization through the implementation of continuous monitoring processes; provides senior leaders and executives with the necessary information to make efficient, cost-effective, risk management decisions about the systems supporting their missions and business functions; and incorporates security and privacy into the system development life cycle. Executing the RMF tasks links essential risk management processes at the system level to risk management processes at the organization level. In addition, it establishes responsibility and accountability for the controls implemented within an organization’s information systems and inherited by those systems." ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :OperationalRiskAssessment ;
+    :kb-reference-title "NIST Special Publication 800-37 Revision 2 - Risk Management Framework for Information Systems and Organizations" .
+
+:Reference-NIST-Special-Publication-800-53A-Revision-5 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-53A Revision 5 - Assessing Security and Privacy Controls in Information Systems and Organizations" ;
+    :has-link "https://doi.org/10.6028/NIST.SP.800-53Ar5"^^xsd:anyURI ;
+    :kb-abstract "This publication provides a methodology and set of procedures for conducting assessments of security and privacy controls employed within systems and organizations within an effective risk management framework. The assessment procedures, executed at various phases of the system development life cycle, are consistent with the security and privacy controls in NIST Special Publication 800-53, Revision 5. The procedures are customizable and can be easily tailored to provide organizations with the needed flexibility to conduct security and privacy control assessments that support organizational risk management processes and are aligned with the stated risk tolerance of the organization. Information on building effective security and privacy assessment plans is also provided with guidance on analyzing assessment results." ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :OperationalRiskAssessment ;
+    :kb-reference-title "NIST Special Publication 800-53A Revision 5 - Assessing Security and Privacy Controls in Information Systems and Organizations" .
+
+:Reference-NIST-Special-Publication-800-160-Volume-1 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-160 Volume 1 - System Security Engineering" ;
+    :has-link "https://doi.org/10.6028/NIST.SP.800-160v1"^^xsd:anyURI ;
+    :kb-abstract "With the continuing frequency, intensity, and adverse consequences of cyber-attacks, disruptions, hazards, and other threats to federal, state, and local governments, the military, businesses, and the critical infrastructure, the need for trustworthy secure systems has never been more important to the long-term economic and national security interests of the United States. Engineering-based solutions are essential to managing the growing complexity, dynamicity, and interconnectedness of today’s systems, as exemplified by cyber-physical systems and systems-of-systems, including the Internet of Things. This publication addresses the engineering-driven perspective and actions necessary to develop more defensible and survivable systems, inclusive of the machine, physical, and human components that compose the systems and the capabilities and services delivered by those systems. It starts with and builds upon a set of well-established International Standards for systems and software engineering published by the International Organization for Standardization (ISO), the International Electrotechnical Commission (IEC), and the Institute of Electrical and Electronics Engineers (IEEE) and infuses systems security engineering methods, practices, and techniques into those systems and software engineering activities. The objective is to address security issues from a stakeholder protection needs, concerns, and requirements perspective and to use established engineering processes to ensure that such needs, concerns, and requirements are addressed with appropriate fidelity and rigor, early and in a sustainable manner throughout the life cycle of the system." ;
+    :kb-author "Ron Ross, Michael McEvilley, and Janet Carrier Oren" ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :OperationalRiskAssessment ;
+    :kb-reference-title "NIST Special Publication 800-160 Volume 1 - Systems Security Engineering" .
+
+:Reference-NISTIR-8011-Volume-1 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NISTIR 8011 Volume 1 - Automation Support for Security Control Assessments" ;
+    :has-link "https://doi.org/10.6028/NIST.IR.8011-1"^^xsd:anyURI ;
+    :kb-abstract "This volume introduces concepts to support automated assessment of most of the security controls in NIST Special Publication (SP) 800-53. Referencing SP 800-53A, the controls are divided into more granular parts (determination statements) to be assessed. The parts of the control assessed by each determination statement are called control items. The control items are then grouped into the appropriate security capabilities. As suggested by SP 800-53 Revision 4, security capabilities are groups of controls that support a common purpose. For effective automated assessment, testable defect checks are defined that bridge the determination statements to the broader security capabilities to be achieved and to the SP 800-53 security control items themselves. The defect checks correspond to security sub-capabilities—called sub-capabilities because each is part of a larger capability. Capabilities and sub-capabilities are both designed with the purpose of addressing a series of attack steps. Automated assessments (in the form of defect checks) are performed using the test assessment method defined in SP 800-53A by comparing a desired and actual state (or behavior)." ;
+    :kb-author "Kelley Dempsey, Paul Eavy, and George Moore" ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :OperationalRiskAssessment ;
+    :kb-reference-title "NIST Interagency Report 8011 Volume 1 - Automation Support for Security Control Assessments" .
 
 :Reference-OSQueryWindowsUserCollectionCode a owl:NamedIndividual ;
     rdfs:label "Reference - OS Query Windows User Collection Code" ;
@@ -16014,6 +16642,15 @@ significant outages to web applications and services-such as government services
     :kb-reference-of :ProcessTermination ;
     :kb-reference-title "Use Rkill to Stop Malware Processes" .
 
+:Reference-Web-BasedEnterpriseManagement a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Web-Based Enterprise Management" ;
+    :has-link "https://www.dmtf.org/standards/wbem"^^xsd:anyURI ;
+    :kb-organization "Distributed Management Task Force (DMTF)" ;
+    :kb-reference-of :HardwareInventory,
+        :SoftwareInventory ;
+    :kb-reference-title "Web-Based Enterprise Management" .
+
 :Reference-Windows10STIG a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Windows 10 STIG" ;
@@ -16024,7 +16661,7 @@ significant outages to web applications and services-such as government services
 
 :Reference_-_Securing_Web_Transactions__TLS_Server_Certificate_Management_Appendix_A_Passive_Inspection a owl:NamedIndividual ;
     rdfs:label "Reference - Securing Web Transactions TLS Server Certificate Management - Appendix A Passive Inspection" ;
-    :has-link "https://www.nccoe.nist.gov/publication/1800-16/VolD/vol-d-appendix.html" ;
+    :has-link "https://www.nccoe.nist.gov/publication/1800-16/VolD/vol-d-appendix.html"^^xsd:anyURI ;
     :kb-abstract "The example implementation demonstrates the ability to perform passive inspection of encrypted TLS connections. The question of whether or not to perform such an inspection is complex. There are important tradeoffs between traffic security and traffic visibility that each organization should consider. Some organizations prefer to decrypt internal TLS traffic, so it can be inspected to detect attacks that may be hiding within encrypted connections. Such inspection can detect intrusion, malware, and fraud, and can conduct troubleshooting, forensics, and performance monitoring. For these organizations, TLS inspection may serve as both a standard practice and a critical component of their threat detection and service assurance strategies." ;
     :kb-author "NIST" ;
     :kb-reference-of :PassiveCertificateAnalysis ;
@@ -16070,6 +16707,17 @@ significant outages to web applications and services-such as government services
     :kb-reference-title "Active firewall system and methodology" ;
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
+
+:Reference_AdvancedDeviceMatchingSystem a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Advanced device matching system" ;
+    :has-link " https://patents.google.com/patent/US10892951B2/"^^xsd:anyURI ;
+    :kb-abstract """Disclosed is a device management system for discovery and management of components added to computer systems and sub-systems. The device management system provides for recognizing a newly added component, and determining if the newly added component is already a part of the system inventory. The newly added component is matched with a component currently on the system, based on at least one matching attribute. A point total is calculated for each match level and a final match score is provided. The match score is compared with an aggressiveness level to determine if a match does indeed exist.
+""" ;
+    :kb-author "Rajneesh Jalan, Joseph M. Schmitt, and Marco Simoes" ;
+    :kb-organization "Device42 Inc" ;
+    :kb-reference-of :SystemInventory ;
+    :kb-reference-title "Advanced device matching system" .
 
 :Reference_AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation a :AcademicPaperReference,
         owl:NamedIndividual ;
@@ -16117,7 +16765,7 @@ Outlier data values which deviate from behavioral profile by more than a predete
 
 :Reference_ApparatusForToProvideContentToAndQueryAReverseDomainNameSystemServer a owl:NamedIndividual ;
     rdfs:label "Reference - Apparatus for to provide content to and query a reverse domain name system server - Barrracuda Networks" ;
-    :has-link "https://patents.google.com/patent/US20100174829A1/en?oq=20100174829" ;
+    :has-link "https://patents.google.com/patent/US20100174829A1/en?oq=20100174829"^^xsd:anyURI ;
     :kb-abstract "An apparatus is disclosed for to provide content to and query a reverse domain name system (DNS) server without depending on the kindness of domain name system registrars, registrants. DNS replies are observed by firewalls or filters, analyzed, and transmitted to a reverse domain name system server. An embodiment of the present invention can be within a DNS server or SMTP server." ;
     :kb-author "Dean Danko" ;
     :kb-mitre-analysis "This patent includes the description of a method of blocking email traffic from untrusted domains by analyzing the TCP/IP source IP addresses and blocking traffic for IPs whose reverse lookup response FQDN matches a denylist." ;
@@ -16135,6 +16783,16 @@ Outlier data values which deviate from behavioral profile by more than a predete
     :kb-reference-of :MandatoryAccessControl ;
     :kb-reference-title "Architecture of transparent network security for application containers" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference_AutomatedComputerVulnerabilityResolutionSystem a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Automated computer vulnerability resolution system" ;
+    :has-link "https://patents.google.com/patent/US7308712B2"^^xsd:anyURI ;
+    :kb-abstract "A system and process for addressing computer security vulnerabilities. The system and process generally comprise aggregating vulnerability information on a plurality of computer vulnerabilities; constructing a remediation database of said plurality of computer vulnerabilities; constructing a remediation signature to address the computer vulnerabilities; and deploying said remediation signature to a client computer. The remediation signature essentially comprises a sequence of actions to address a corresponding vulnerability. A managed automated approach to the process is contemplated in which the system is capable of selective deployment of remediation signatures; selective resolution of vulnerabilities; scheduled deployment of remediation signatures; and scheduled scanning of client computers for vulnerabilities." ;
+    :kb-author "Carl E. Banzhof" ;
+    :kb-organization "McAfee LLC" ;
+    :kb-reference-of :AssetVulnerabilityAssessment ;
+    :kb-reference-title "Automated computer vulnerability resolution system" .
 
 :Reference_AutomaticallyGeneratingNetworkResourceGroupsAndAssigningCustomizedDecoyPoliciesThereto_IllusiveNetworksLtd a owl:NamedIndividual,
         :PatentReference ;
@@ -16190,6 +16848,29 @@ Although the description details how to detect remote WMI precisely, a decent es
         "MITRE Analysis was not found",
         "No URL provided for reference" .
 
+:Reference_CatiaUAFPlugin a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Catia UAF Plugin" ;
+    :has-link "https://www.3ds.com/products-services/catia/products/no-magic/addons/uaf-plugin/"^^xsd:anyURI ;
+    :kb-abstract "MagicDraw offers the most robust standards compliant [Unified Architecture Framework (UAF)], DoDAF 2.0, MODAF 1.2, NAF 3, and NAF 4 via a UAF standardized solution. And what's more, No Magic fully supports all architectural framework products ensuring you achieve project results. No Magic also leads the industry in usability and interoprability, ensuring that you avoid unnecessary cost, schedule and performance risk." ;
+    :kb-organization "Dassault Systemes" ;
+    :kb-reference-of :DataExchangeMapping,
+        :OperationalActivityMapping,
+        :OperationalDependencyMapping,
+        :OrganizationMapping,
+        :ServiceDependencyMapping,
+        :SystemDependencyMapping ;
+    :kb-reference-title "Catia UAF Plugin" .
+
+:Reference_CiscoASR9000AccessListCommands a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Cisco ASR 9000 Series Aggregation Services Routers - Access List Commands" ;
+    :has-link "https://www.cisco.com/c/en/us/td/docs/routers/asr9000/software/asr9k_r4-0/addr_serv/command/reference/ir40asrbook_chapter1.html"^^xsd:anyURI ;
+    :kb-abstract "An access control list (ACL) consists of one or more access control entries (ACEs) that collectively define the network traffic profile. This profile can then be referenced by Cisco IOS XR Software software features such as traffic filtering, priority or custom queueing, and dynamic access control. Each ACL includes an action element (permit or deny) and a filter element based on criteria such as source address, destination address, protocol, and protocol-specific parameters." ;
+    :kb-organization "Cisco" ;
+    :kb-reference-of :FirewallMapping ;
+    :kb-reference-title "Cisco ASR 9000 Series Aggregation Services Routers - Access List Commands" .
+
 :Reference_ComputationalModelingAndClassificationOfDataStreams_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Computational modeling and classification of data streams - Crowdstrike Inc" ;
@@ -16222,6 +16903,45 @@ Although the description details how to detect remote WMI precisely, a decent es
     :kb-organization "FireEye Inc" ;
     :kb-reference-of :FileCarving ;
     :kb-reference-title "Computer Worm Defense System and Method" .
+
+:Reference_CyberCommandSystemCYCS a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Cyber Command System (CYCS)" ;
+    :has-link "https://www.mitre.org/research/technology-transfer/technology-licensing/cyber-command-system-cycs"^^xsd:anyURI ;
+    :kb-abstract "MITRE’s Cyber Command System (CyCS) tool addresses the objective of improved mission assurance in cyberspace by enabling the mapping of mission operations to the network operations that support those missions. This tool provides mission-impact assessment through situational awareness and impact analysis. CyCS addresses mission-assurance challenges for highly distributed enterprise systems of systems through vulnerability, threat, and consequence management." ;
+    :kb-organization "MITRE" ;
+    :kb-reference-of :OperationalDependencyMapping ;
+    :kb-reference-title "Cyber Command System (CYCS)" .
+
+:Reference_DaggerFactSheet a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Dagger Fact Sheet" ;
+    :has-link "https://www.jhuapl.edu/dagger/documents/DaggerFactSheet.pdf"^^xsd:anyURI ;
+    :kb-abstract "Dagger is a modeling and visualization tool suite that shows how system failures impact mission status. Updated with manual or real-time status, Dagger is used for mission/system planning, situational awareness during mission execution, and course-of-action analysis." ;
+    :kb-author "Jackie Soenneker" ;
+    :kb-organization "JHU APL" ;
+    :kb-reference-of :OperationalDependencyMapping ;
+    :kb-reference-title "Dagger Fact Sheet" .
+
+:Reference_DaggerModelingAndVisualizationForMissionImpactSituationalAwareness a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Dagger: Modeling and visualization for mission impact situational awareness" ;
+    :has-link "https://ieeexplore.ieee.org/document/7795296"^^xsd:anyURI ;
+    :kb-abstract "Dagger is a modeling and visualization framework that addresses the challenge of representing knowledge and information for decision-makers, enabling them to better comprehend the operational context of network security data. It allows users to answer critical questions such as “Given that I care about mission X, is there any reason I should be worried about what is going on in cyberspace?” or “If this system fails, will I still be able to accomplish my mission?”." ;
+    :kb-author "Elisha Peterson" ;
+    :kb-organization "JHU APL" ;
+    :kb-reference-of :OperationalDependencyMapping ;
+    :kb-reference-title "Dagger: Modeling and visualization for mission impact situational awareness" .
+
+:Reference_DataProcessingAndScanningSystemsForGeneratingAndPopulatingADataInventory a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Data processing and scanning systems for generating and populating a data inventory" ;
+    :has-link "https://patents.google.com/patent/US11240273B2/"^^xsd:anyURI ;
+    :kb-abstract "In particular embodiments, a data processing data inventory generation system is configured to: (1) generate a data model (e.g., a data inventory) for one or more data assets utilized by a particular organization; (2) generate a respective data inventory for each of the one or more data assets; and (3) map one or more relationships between one or more aspects of the data inventory, the one or more data assets, etc. within the data model. In particular embodiments, a data asset (e.g., data system, software application, etc.) may include, for example, any entity that collects, processes, contains, and/or transfers personal data (e.g., such as a software application, “internet of things” computerized device, database, website, data-center, server, etc.). The system may be configured to identify particular data assets and/or personal data in data repositories using any suitable intelligent identity scanning technique." ;
+    :kb-author "Kabir A. Barday, Mihir S. Karanjkar, Steven W. Finch, Ken A. Browne, Nathan W. Heard, Aakash H. Patel, Jason L. Sabourin, Richard L. Daniel, Dylan D. Patton-Kuhl, Jonathan Blake Brannon" ;
+    :kb-organization "OneTrust LLC" ;
+    :kb-reference-of :DataInventory ;
+    :kb-reference-title "Data processing and scanning systems for generating and populating a data inventory" .
 
 :Reference_Deception-BasedResponsesToSecurityAttacks_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
@@ -16600,6 +17320,26 @@ The user interaction and the code process executed during the user session are m
     :kb-reference-title "How ASLR protects Linux systems from buffer overflow attacks" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference_IdentificationOfTracerouteNodesAndAssociatedDevices a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Identification of traceroute nodes and associated devices" ;
+    :has-link "https://patents.google.com/patent/US10079749B2/en"^^xsd:anyURI ;
+    :kb-abstract "Various embodiments pertain to communication network systems. In particular, various embodiments relate to multi-path probing in communication network systems that can be used to estimate the complete topology of the network. A method includes receiving data at a source node from a tracerouting probe in a network. The data includes information about at least one network node. The method also includes determining an identification for the at least one network node based on information. In addition, the method includes using the identification of the at least one network node to determine an identification of at least one device." ;
+    :kb-author "Tomas KUBIK, Lan Li, Tomas RYBKA, Karlo ZATYLNY, Chris O'Brien" ;
+    :kb-organization "SolarWinds Worldwide LLC" ;
+    :kb-reference-of :ActiveLogicalNetworkMapping,
+        :ActiveNetworkMapping,
+        :ActivePhysicalNetworkMapping ;
+    :kb-reference-title "Identification of traceroute nodes and associated devices" .
+
+:Reference_IEEE-802_1AB-2016 a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - IEEE Standard for Local and Metropolitan Area Networks - Station and Media Access Control Connectivity Discovery" ;
+    :has-link "https://standards.ieee.org/ieee/802.1AB/6047/"^^xsd:anyURI ;
+    :kb-organization "IEEE" ;
+    :kb-reference-of :HardwareInventory ;
+    :kb-reference-title "IEEE Standard for Local and Metropolitan Area Networks - Station and Media Access Control Connectivity Discovery" .
+
 :Reference_InferentialExploitAttemptDetection_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Inferential exploit attempt detection - Crowdstrike Inc" ;
@@ -16658,6 +17398,30 @@ A disappearance of the heartbeat from the endpoint may indicate that the endpoin
     :kb-organization "Sophos Ltd" ;
     :kb-reference-of :EndpointHealthBeacon ;
     :kb-reference-title "Intrusion detection using a heartbeat" .
+
+:Reference_LibreNMSDocsNetworkMapExtension a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Libre NMS - Network Map Extension" ;
+    :has-link "https://docs.librenms.org/Extensions/Network-Map/"^^xsd:anyURI ;
+    :kb-abstract """LibreNMS has the ability to show you a network map based on:
+* xDP Discovery
+* MAC addresses""" ;
+    :kb-organization "LibreNMS.org" ;
+    :kb-reference-of :NetworkMapping ;
+    :kb-reference-title "Libre NMS - Network Map Extension" .
+
+:Reference_LibreNMSDocsOxidizedExtension a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Libre NMS - Oxidized Extension" ;
+    :has-link "https://docs.librenms.org/Extensions/Oxidized/"^^xsd:anyURI ;
+    :kb-abstract """Integrating LibreNMS with Oxidized brings the following benefits:
+
+* Config viewing: Current, History, and Diffs all under the Configs tab of each device
+* Automatic addition of devices to Oxidized: Including filtering and grouping to ease credential management
+* Configuration searching""" ;
+    :kb-organization "LibreNMS.org" ;
+    :kb-reference-of :DiskEncryption ;
+    :kb-reference-title "LibreNMSDocs - Oxidized Extension" .
 
 :Reference_MaliciousRelayDetectionOnNetworks_VECTRANETWORKSInc a owl:NamedIndividual,
         :PatentReference ;
@@ -16885,6 +17649,16 @@ Some examples of data inputs:
     :kb-reference-of :SystemDaemonMonitoring ;
     :kb-reference-title "Method using kernel mode assistance for the detection and removal of threats which are actively preventing detection and removal from a running system" .
 
+:Reference_MissionDependencyModelingForCyberSituationalAwareness a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Mission Dependency Modeling for Cyber Situational Awareness" ;
+    :has-link "https://csis.gmu.edu/noel/pubs/2016_NATO_IST_148.pdf"^^xsd:anyURI ;
+    :kb-abstract "This paper describes a hierarchical graph-based model that captures mission dependencies at various levels of abstraction, showing interdependencies among mission objectives, tasks, information, and cyber assets. For this work, we employ established tools within a structured methodology for cyber resiliency analysis. Our model is focused on a strategic-level military scenario defined in a formal Request for Information (RFI) to industry and research partners by the NATO Multinational Cyber Defense Capability Development (MN CD2) Work Package 2 (WP2). We enhance this scenario with additional mission and operational context, and then build a mission dependency model for the enhanced scenario. It is anticipated that our mission dependency model will be part of an upcoming demonstration of cyber defense situational awareness capabilities in a NATO Communications and Information (NCI) Agency test environment, integrated with data sources that represent the operational military environment." ;
+    :kb-author "William Heinbockel, Steven Noel, James Curbo" ;
+    :kb-organization "JHU APL" ;
+    :kb-reference-of :OperationalDependencyMapping ;
+    :kb-reference-title "Mission Dependency Modeling for Cyber Situational Awareness" .
+
 :Reference_MockAttackCybersecurityTrainingSystemAndMethods_WOMBATSECURITYTECHNOLOGIESInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Mock attack cybersecurity training system and methods - WOMBAT SECURITY TECHNOLOGIES Inc" ;
@@ -16968,6 +17742,15 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-of :DecoyFile ;
     :kb-reference-title "Open source intelligence deceptions" .
 
+:Reference_OrganizationalManagementInSAPERPHCM a :BookReference,
+        owl:NamedIndividual ;
+    rdfs:label "Organizational Management in SAP ERP HCM" ;
+    :has-link "https://www.sap-press.com/organizational-management-in-sap-erp-hcm_3996/"^^xsd:anyURI ;
+    :kb-author "Soham Ray" ;
+    :kb-organization "SAP Press" ;
+    :kb-reference-of :OrganizationMapping ;
+    :kb-reference-title "Organization Mapping in SAP ERP HCM" .
+
 :Reference_PlatformFirmwareResiliencyGuidelines_NIST a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Platform Firmware Resiliency Guidelines - NIST" ;
@@ -17039,6 +17822,27 @@ Rules are created that specify the type and location of the API call. For exampl
     :kb-reference-title "Protected computing environment" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference_QualysNetworkPassiveSensorGettingStartedGuide a owl:NamedIndividual .
+
+:Reference_RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - An Architecture for Describing Simple Network Management Protocol (SNMP) Management Frameworks" ;
+    :has-link "https://https://datatracker.ietf.org/doc/html/rfc3411"^^xsd:anyURI ;
+    :kb-author "D. Harrington, R. Presuhn, B. Wijnen" ;
+    :kb-organization "Internet Engineering Task Force (IETF)" ;
+    :kb-reference-of :HardwareInventory ;
+    :kb-reference-title "An Architecture for Describing Simple Network Management Protocol (SNMP) Management Frameworks" .
+
+:Reference_RFC7642SystemForCrossDomainIdentityManagementDefinitionsOverviewConceptsAndRequirements a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - RFC 7642: System for Cross-domain Identity Management: Definitions, Overview, Concepts, and Requirements" ;
+    :has-link "https://datatracker.ietf.org/doc/html/rfc7642"^^xsd:anyURI ;
+    :kb-abstract "The System for Cross-domain Identity Management (SCIM) specification is designed to manage user identity in cloud-based applications and services in a standardized way to enable interoperability, security, and scalability.  The specification suite seeks to build upon experience with existing schemas and deployments, placing specific emphasis on simplicity of development and integration, while applying existing authentication, authorization, and privacy models.  The intent of the SCIM specification is to reduce the cost and complexity of user management operations by providing a common user schema and extension model, as well as binding documents to provide patterns for exchanging this schema using standard protocols.  In essence, make it fast, cheap, and easy to move users in to, out of, and around the cloud." ;
+    :kb-author "K. LI, B. Khasnabish, A. Nadalin, Z. Zeltsan" ;
+    :kb-organization "IETF" ;
+    :kb-reference-of :AccessModeling ;
+    :kb-reference-title "RFC7642: System for Cross-domain Identity Management: Definitions, Overview, Concepts, and Requirements" .
+
 :Reference_RPCCallInterception_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - RPC call interception - Crowdstrike Inc" ;
@@ -17088,6 +17892,16 @@ Rules are created that specify the type and location of the API call. For exampl
     :kb-reference-of :IPCTrafficAnalysis ;
     :kb-reference-title "Security System with Methodology for Interprocess Communication Control" .
 
+:Reference_SecurityVulnerabilityInformationAggregation a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Security vulnerability information aggregation" ;
+    :has-link "https://patents.google.com/patent/US8544098B2"^^xsd:anyURI ;
+    :kb-abstract "Security vulnerability information aggregation techniques are disclosed. Vulnerability information associated with one or more security vulnerabilities is obtained from multiple sources and aggregated into respective unified vulnerability definitions for the one or more security vulnerabilities. Aggregation may involve format conversion, content aggregation, or both in some embodiments. Unified vulnerability definitions may be distributed to vulnerability information consumers in accordance with consumer-specific policies. Storage of vulnerability information received from the sources may allow the aggregation process to be performed on existing vulnerability information “retro-actively”. Related data structures and Graphical User Interfaces (GUIs) are also disclosed." ;
+    :kb-author "Christophe Gustave, Stanley Taihai Chow, Douglas Wiemer" ;
+    :kb-organization "Nokia Technologies Oy" ;
+    :kb-reference-of :AssetVulnerabilityAssessment ;
+    :kb-reference-title "Security vulnerability information aggregation" .
+
 :Reference_SinkholingBadNetworkDomainsByRegisteringTheBadNetworkDomainsOnTheInternet_PaloAltoNetworksInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Sinkholing bad network domains by registering the bad network domains on the internet - Palo Alto Networks Inc" ;
@@ -17098,6 +17912,28 @@ Rules are created that specify the type and location of the API call. For exampl
     :kb-organization "Palo Alto Networks Inc" ;
     :kb-reference-of :DNSTrafficAnalysis ;
     :kb-reference-title "Sinkholing bad network domains by registering the bad network domains on the internet" .
+
+:Reference_SNMPNetworkAutoDiscovery a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - SNMP - Network Auto-Discovery" ;
+    :has-link "https://docs.device42.com/auto-discovery/network-auto-discovery/"^^xsd:anyURI ;
+    :kb-abstract "SNMP, or Simple Network Management Protocol, is a protocol and a standard that is supported by just about any managed network-connected hardware. There are three widely deployed versions: SNMP v1, v2c (most commonly used), and v3. SNMP is typically utilized read-only, but supports read/write, and by default utilized port 161. SNMP exposes management data in the form of ‘variables’, which are organized in what is known as a MIB, or “Management Information Base”. A MIB essentially describes the variables available on a given system, each of which can be remotely queried via SNMP." ;
+    :kb-organization "Device 42" ;
+    :kb-reference-of :ActiveLogicalLinkMapping,
+        :ActiveNetworkMapping ;
+    :kb-reference-title "SNMP - Network Auto Discovery" .
+
+:Reference_SoftwareVulnerabilityGraphDatabase a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Software vulnerability graph database" ;
+    :has-link "https://patents.google.com/patent/WO2020028535A1"^^xsd:anyURI ;
+    :kb-abstract "To analyze open-source code at a large scale, a security domain graph language (\"GL\") has been created that functions as a vulnerability description language and facilitates program analysis queries. The SGL facilitates building and maintaining a graph database to catalogue vulnerabilities found in open-source components. This graphical database can be accessed via a database interface directly or accessed by an agent that interacts with the database interface. To build the graph database, a database interface processes an open-source component and creates graph structures which represent relationships present in the open-source component. The database interface transforms a vulnerability description into a canonical form based on a schema for the graph database and updates the database based on a determination of whether the vulnerability is a duplicate. This ensures quality and consistency of the vulnerability dataset maintained in the graph database." ;
+    :kb-author "Darius Tsien Wei FOO, Ming Yi ANG, Asankhaya Sharma, Jie Shun YEO" ;
+    :kb-organization "Veracode, Inc." ;
+    :kb-reference-of :AssetVulnerabilityAssessment,
+        :SystemDependencyMapping,
+        :SystemVulnerabilityAssessment ;
+    :kb-reference-title "Software vulnerability graph database" .
 
 :Reference_SynchronizingAHoneyNetworkConfigurationToReflectATargetNetworkEnvironment_PaloAltoNetworksInc a owl:NamedIndividual,
         :PatentReference ;
@@ -17181,6 +18017,16 @@ and deploy decoy physical or virtual endpoints.""" ;
     :kb-reference-of :DatabaseQueryStringAnalysis ;
     :kb-reference-title "System and method for internet security" .
 
+:Reference_SystemAndMethodForManagedSecurityAssessmentAndMitigation a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - System and method for managed security assessment and mitigation" ;
+    :has-link "https://patents.google.com/patent/US9544324B2"^^xsd:anyURI ;
+    :kb-abstract "In an embodiment of the invention, a system for assessing vulnerabilities includes: a security management system; a network device in a system under test (SUT), wherein the network device is privy to traffic in the SUT; and wherein the SMS is privy to traffic that is known by the network device and/or to one or more traffic observations that is known by the network device." ;
+    :kb-author "Scott Parcel" ;
+    :kb-organization "Cenzic Inc, Trustwave Holdings Inc" ;
+    :kb-reference-of :NetworkVulnerabilityAssessment ;
+    :kb-reference-title "System and method for managed security assessment and mitigation" .
+
 :Reference_SystemAndMethodForNetworkSecurityIncludingDetectionOfAttacksThroughPartnerWebsites_EMCIPHoldingCoLLC a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - System and Method for Network Security Including Detection of Attacks Through Partner Websites - EMC IP Holding Co LLC" ;
@@ -17227,6 +18073,16 @@ and deploy decoy physical or virtual endpoints.""" ;
     :kb-reference-of :ProcessCodeSegmentVerification ;
     :kb-reference-title "System and method for validating in-memory integrity of executable files to identify malicious activity" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference_SystemAndMethodForVulnerabilityRiskAssessment a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - System and method for vulnerability risk analysis" ;
+    :has-link "https://patents.google.com/patent/US9317692B2"^^xsd:anyURI ;
+    :kb-abstract "Embodiments of the present invention are directed to a method and system for automated risk analysis. The method includes accessing host configuration information of a host and querying a vulnerability database based on the host configuration information. The method further includes receiving a list of vulnerabilities and accessing a plurality of vulnerability scores. The list of vulnerabilities corresponds to vulnerabilities of the host. Vulnerabilities can be removed from the list based on checking for installed fixes corresponding to vulnerability. A composite risk score can then be determined for the host a nd each software product of the host based on the plurality of vulnerability scores. An aggregate risk score can then be determined for the host and each software product of the host based on the plurality of vulnerability scores." ;
+    :kb-author "Matthew Cruz Elder, Darrell Martin Kienzle, Pratyusa K. Manadhata, Ryan Kumar Persaud" ;
+    :kb-organization "CA Inc" ;
+    :kb-reference-of :AssetVulnerabilityAssessment ;
+    :kb-reference-title "System and method for vulnerability risk analysis" .
 
 :Reference_SystemAndMethodsThereofForCausalityIdentificationAndAttributionsDeterminationOfProcessesInANetwork_PaloAltoNetworksIncCyberSecdoLtd a owl:NamedIndividual,
         :PatentReference ;
@@ -17418,6 +18274,17 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-reference-of :DecoyNetworkResource ;
     :kb-reference-title "Techniques for impeding and detecting network threats" .
 
+:Reference_TenablePassiveNetworkMonitoring a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Tenable Passive Network Monitoring" ;
+    :has-link "https://www.tenable.com/sites/default/files/solution-briefs/SB-Passive-Network-Monitoring.pdf"^^xsd:anyURI ;
+    :kb-abstract "Tenable Nessus® Network Monitor (NNM), a passive monitoring sensor, continuously discovers active assets on the network and assesses them for vulnerabilities. NNM is based on patented network discovery and vulnerability analysis technology that continuously monitors and profiles non-intrusively. It monitors IPv4, IPv6 and mixed network traffic at the packet layer to determine topology, services and vulnerabilities." ;
+    :kb-organization "Tenable" ;
+    :kb-reference-of :PassiveLogicalLinkMapping,
+        :PassiveNetworkMapping,
+        :PassivePhysicalLinkMapping ;
+    :kb-reference-title "Tenable Passive Network Monitoring" .
+
 :Reference_ThreatDetectionForReturnOrientedProgramming_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Threat detection for return oriented programming - Crowdstrike Inc" ;
@@ -17441,6 +18308,16 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-reference-title "Threat detection through the accumulated detection of threat characteristics" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference_TivoliApplicationDependencyDiscoverManager7_3_0DependenciesBetweenResources a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Tivoli Application Dependency Discovery Manager 7.3.0 - Dependencies between resources" ;
+    :has-link "https://www.ibm.com/docs/en/taddm/7.3.0?topic=model-dependencies-between-resources"^^xsd:anyURI ;
+    :kb-organization "IBM" ;
+    :kb-reference-of :DataExchangeMapping,
+        :ServiceDependencyMapping,
+        :SystemDependencyMapping ;
+    :kb-reference-title "Tivoli Application Dependency Discovery Manager 7.3.0 - Dependencies between resources" .
+
 :Reference_TrustedCommunicationsWithChildProcesses_MicrosoftTechnologyLicensingLLC a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Trusted Communications With Child Processes - Microsoft Technology Licensing LLC" ;
@@ -17450,6 +18327,20 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-mitre-analysis "This patent describes a technique for detecting malicious processes that claim to be the child process of a legitimate parent process. During the spawning of a child process, a child process identifier is generated. The child process identifier is a unique identifier that can be used to identify a child process. The child process identifier is transmitted by the security system of the operating system to the parent process. The parent process keeps track of the child process identifier. When a new child-initiated communications request is received by the parent process, the parent process checks if the requesting child process identifier and the child process identifier that the parent process is tracking are the same. If the identifiers are not the same, the parent process refuses the request." ;
     :kb-organization "Microsoft Technology Licensing LLC" ;
     :kb-reference-title "Trusted Communications With Child Processes" .
+
+:Reference_UnifiedArchitectureFrameworkUAF a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Unified Architecture Framework (UAF)" ;
+    :has-link "https://www.omg.org/spec/UAF/"^^xsd:anyURI ;
+    :kb-abstract "UAF is an OMG standard that assists in development of architectural descriptions in commercial industry firms, federal government agencies and defense organizations. UAF has a variety of use cases from Enterprise and Mission architecting, to System of Systems (SoS) and Cyber-physical Systems engineering, as well as being an enabler for Digital Transformation efforts and for Department of Defense Architecture Framework (DoDAF) and NATO Architecture Framework (NAF) modeling. Architectural Descriptions in UAF are aligned with ISO/IEC/IEEE 42010:2011, Systems and software engineering -- Architecture description. " ;
+    :kb-organization "OMG" ;
+    :kb-reference-of :DataExchangeMapping,
+        :OperationalActivityMapping,
+        :OperationalDependencyMapping,
+        :OrganizationMapping,
+        :ServiceDependencyMapping,
+        :SystemDependencyMapping ;
+    :kb-reference-title "Unified Architecture Framework (UAF)" .
 
 :Reference_UseOfAnApplicationControllerToMonitorAndControlSoftwareFileAndApplicationEnvironments_SophosLtd a owl:NamedIndividual,
         :PatentReference ;
@@ -17462,6 +18353,16 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-reference-of :DynamicAnalysis ;
     :kb-reference-title "Use of an application controller to monitor and control software file and application environments" .
 
+:Reference_UsingSpanningTreeProtocolSTPToEnhanceLayer2NetworkTopologyMaps a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Using spanning tree protocol (STP) to enhance layer-2 topology maps" ;
+    :has-link "https://"^^xsd:anyURI ;
+    :kb-abstract "Spanning Tree Protocol (STP) data is obtained via network switch (SNMP) queries to enhance identification of switch-to-switch links in Layer-2 mapping. In particular, by analyzing the STP data, ambiguity in determining switch uplink ports may be reduced. Specifically, the STP data can be used in conjunction with other topography data to provide Layer-2 connectivity for nodes on a network topology. Layer-2 address mapping tables are collected from a topology mapping, and STP data is collected, along with address translation tables (ARP) tables. Using this information, switches are identified using Layer-2 address tables. The STP data can be correlated by comparing data in switches, identifying switch ports directly connected to other switch ports, and eliminating direct switch-to-switch port connections from consideration for further Layer-2 node mappings." ;
+    :kb-author "Michael Jon Swan" ;
+    :kb-organization "SolarWinds Worldwide LLC" ;
+    :kb-reference-of :ActivePhysicalLinkMapping ;
+    :kb-reference-title "Using spanning tree protocol (STP) to enhance layer-2 topology maps" .
+
 :Reference_VirtualizedProcessIsolation_AdvancedMicroDevicesInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Virtualized process isolation - Advanced Micro Devices Inc" ;
@@ -17473,6 +18374,8 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-reference-of :Hardware-basedProcessIsolation ;
     :kb-reference-title "Virtualized process isolation" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference_Web-BasedEnterpriseManagement a owl:NamedIndividual .
 
 :Reference_WhatIsNX_XDFeature_RedHat a :InternetArticleReference,
         owl:NamedIndividual ;
@@ -17491,6 +18394,27 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     :kb-reference-title "What is NX/XD feature?" ;
     :todo "MITRE Analysis was not found",
         "No authors provided for reference" .
+
+:Reference_Windows-Management-Infrastructure a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Windows Management Infrastructure (MI)" ;
+    :has-link "https://docs.microsoft.com/en-us/previous-versions/windows/desktop/wmi_v2/windows-management-infrastructure"^^xsd:anyURI ;
+    :kb-organization "Microsoft" ;
+    :kb-reference-of :HardwareInventory,
+        :SoftwareInventory,
+        :SystemInventory ;
+    :kb-reference-title "Windows Management Infrastructure" .
+
+:Reference_Windows-Management-Instrumentation a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Windows Management Instrumentation (WMI)" ;
+    :has-link "https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page"^^xsd:anyURI ;
+    :kb-organization "Microsoft" ;
+    :kb-reference-of :ConfigurationTracking,
+        :HardwareInventory,
+        :SoftwareInventory,
+        :SystemInventory ;
+    :kb-reference-title "Windows Management Instrumentation" .
 
 :Reference_www.biometric-solutions.com_keystroke-dynamics a :InternetArticleReference,
         owl:NamedIndividual ;
