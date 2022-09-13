@@ -2,14 +2,11 @@
 
 This repository holds the necessary content to produce the D3FEND ontology distribution.
 
+- > If you are looking for the latest release of the ontology, please find it [here](https://d3fend.mitre.org/resources/ontology/).
+
+- > If you are interested in contributing to this project, please see our [contribution guidelines](CONTRIBUTING.md).
+
 ## Overview
-
-The basic workflow is to edit the `d3fend-protege.ttl` file, save your changes, then simply
-run `make all` in this directory. This is designed to accomodate both plain text editing
-and Protege Ontology IDE modifications. 
-
-When making changes with a text editor please avoid introducing unsubstantive changes
-to many lines in the file. This enables efficient code reviews.
 
 > **Note:** if you are looking for the latest D3FEND ontology release please find it [here](https://d3fend.mitre.org/resources/ontology/).
 
