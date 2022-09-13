@@ -1470,7 +1470,7 @@ skos:altLabel a owl:AnnotationProperty ;
 
 :AccessControlConfiguration a owl:Class ;
     rdfs:label "Access Control Configuration" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :ConfigurationResource ;
     rdfs:comment "Information about what access permissions are granted to particular users for particular objects" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Access-control_list> .
 
@@ -1711,7 +1711,7 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 
 :ApplicationConfiguration a owl:Class ;
     rdfs:label "Application Configuration" ;
-    rdfs:subClassOf :ConfigurationBearingEntity ;
+    rdfs:subClassOf :ConfigurationResource ;
     rdfs:comment "Information used to configure the parameters and initial settings for an application." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/05739724-n> .
 
@@ -1851,6 +1851,13 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/05741528-n> ;
     :comment "This is really an assessment result. If we need to model the assessment as a process in the future we will append Result to these classes." .
 
+:Asset a owl:Class ;
+    rdfs:label "Asset" ;
+    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:comment "Item, thing, or entity that can be used to acquire, process, store, and distribute digital information and has potential or actual value to an organization. See full defintion of \"IT Asset\" in entry 3.25 in ISO/IEC 19770-1:2017(en)" ;
+    rdfs:isDefinedBy "https://www.iso.org/obp/ui/#iso:std:iso-iec:19770:-1:ed-3:v1:en" ;
+    :synonym "IT Asset" .
+
 :AssetInventory a :DefensiveTechnique,
         owl:Class,
         owl:NamedIndividual ;
@@ -1872,7 +1879,7 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :AssetInventory,
         [ a owl:Restriction ;
             owl:onProperty :evaluates ;
-            owl:someValuesFrom :DigitalArtifact ],
+            owl:someValuesFrom :Asset ],
         [ a owl:Restriction ;
             owl:onProperty :identifies ;
             owl:someValuesFrom :Vulnerability ] ;
@@ -2510,7 +2517,7 @@ Profiling request and response payloads across multiple clients to a single serv
 :CloudConfiguration a owl:Class ;
     rdfs:label "Cloud Configuration" ;
     skos:altLabel "Cloud Configuration Information" ;
-    rdfs:subClassOf :ConfigurationBearingEntity ;
+    rdfs:subClassOf :ConfigurationResource ;
     rdfs:comment "Information used to configure the services, parameters, and initial settings for a virtual server instance running in a cloud service.." .
 
 :CloudInstanceMetadata a owl:Class ;
@@ -2674,21 +2681,16 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:label "Conference Paper" ;
     rdfs:subClassOf :AcademicArticle .
 
-:ConfigurationBearingEntity a owl:Class ;
-    rdfs:label "Configuration Bearing Entity" ;
-    rdfs:subClassOf :Resource ;
-    rdfs:comment "Information used to configure a system including software and hardware." .
-
 :ConfigurationDatabase a owl:Class ;
     rdfs:label "Configuration Database" ;
-    rdfs:subClassOf :ConfigurationBearingEntity,
+    rdfs:subClassOf :ConfigurationResource,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ConfigurationDatabaseRecord ] .
 
 :ConfigurationDatabaseRecord a owl:Class ;
     rdfs:label "Configuration Database Record" ;
-    rdfs:subClassOf :ConfigurationBearingEntity,
+    rdfs:subClassOf :ConfigurationResource,
         :Record ;
     :synonym "Configuration Record" .
 
@@ -2698,6 +2700,21 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:subClassOf :File ;
     rdfs:comment "A file containing Information used to configure the parameters and initial settings for some computer programs. They are used for user applications, server processes and operating system settings." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Configuration_file> .
+
+:ConfigurationInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Configuration Inventory" ;
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :ConfigurationResource ] ;
+    :d3fend-id "D3-SYSCT" ;
+    :definition "Configuration inventory identifies and records the configuration of software and hardware and their components throughout the organization." ;
+    :kb-article """## How it works
+
+The organization retrieves configuration information through means of SNMP (MIB records), WBEM (CIM records), other protocols, or custom scripts and captures that information in a repository, typically known as a Configuration Management Database (CMDB).\"""" ;
+    :kb-reference :Reference_Windows-Management-Instrumentation .
 
 :ConfigurationManagementDatabase a owl:Class ;
     rdfs:label "Configuration Management Database" ;
@@ -2709,27 +2726,10 @@ Profiling request and response payloads across multiple clients to a single serv
         "https://wiki.en.it-processmaps.com/index.php/ITIL_Glossary/_ITIL_Terms_C#Config_Management_Database_.28CMDB.29",
         "https://www.dmtf.org/standards/cmdbf" .
 
-:ConfigurationTracking a owl:Class,
-        owl:NamedIndividual,
-        :SystemMapping ;
-    rdfs:label "Configuration Tracking" ;
-    rdfs:subClassOf :SystemMapping,
-        [ a owl:Restriction ;
-            owl:onProperty :reads ;
-            owl:someValuesFrom :ApplicationConfigurationDatabase ],
-        [ a owl:Restriction ;
-            owl:onProperty :reads ;
-            owl:someValuesFrom :SystemConfigurationDatabase ],
-        [ a owl:Restriction ;
-            owl:onProperty :updates ;
-            owl:someValuesFrom :ConfigurationManagementDatabase ] ;
-    :d3fend-id "D3-SYSCT" ;
-    :definition "Configuration tracking identifies and records the configuration of software and hardware systems and their components throughout the organization." ;
-    :kb-article """## How it works
-
-The organization retrieves configuration information through means of SNMP (MIB records), WBEM (CIM records), and other protocols and captures that information in a repository, typically known as a Configuration Management Database (CMDB)."
-""" ;
-    :kb-reference :Reference_Windows-Management-Instrumentation .
+:ConfigurationResource a owl:Class ;
+    rdfs:label "Configuration Resource" ;
+    rdfs:subClassOf :Resource ;
+    rdfs:comment "A resource used to configure a system including software and hardware." .
 
 :ConnectedHoneynet a :DecoyEnvironment,
         owl:Class,
@@ -3070,9 +3070,9 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:subClassOf :Dependency ;
     :synonym "Transactional Dependency" .
 
-:DataExchangeMapping a :NetworkMapping,
-        owl:Class,
-        owl:NamedIndividual ;
+:DataExchangeMapping a owl:Class,
+        owl:NamedIndividual,
+        :SystemMapping ;
     rdfs:label "Data Exchange Mapping" ;
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
@@ -3092,34 +3092,16 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:subClassOf :AssetInventory,
         [ a owl:Restriction ;
             owl:onProperty :inventories ;
-            owl:someValuesFrom :ArtifactServer ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
             owl:someValuesFrom :Database ],
         [ a owl:Restriction ;
             owl:onProperty :inventories ;
-            owl:someValuesFrom :DatabaseServer ],
+            owl:someValuesFrom :DocumentFile ],
         [ a owl:Restriction ;
             owl:onProperty :inventories ;
-            owl:someValuesFrom :FileServer ],
+            owl:someValuesFrom :Email ],
         [ a owl:Restriction ;
             owl:onProperty :inventories ;
-            owl:someValuesFrom :MailServer ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :MediaServer ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :NetworkFileShareResource ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :NetworkService ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :Storage ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :Volume ] ;
+            owl:someValuesFrom :MultimediaDocumentFile ] ;
     :d3fend-id "D3-DI" ;
     :definition "Data inventorying is identifies and records the schemas, formats, volumes, and locations of data stored and used on the organization's architecture." ;
     :kb-reference :Reference_DataProcessingAndScanningSystemsForGeneratingAndPopulatingADataInventory ;
@@ -5919,6 +5901,12 @@ When logging into an account users present two or more credentials that fall int
 MFA configuration steps may vary across accounts and in some cases left up to users to activate and implement.""" ;
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_MethodAndApparatusForUtilizingATokenForResourceAccess_RsaSecurityInc.> .
 
+:MultimediaDocumentFile a owl:Class ;
+    rdfs:label "Multimedia Document File" ;
+    rdfs:subClassOf :DocumentFile ;
+    rdfs:comment "Digital video files which often contain audio." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Multimedia" .
+
 :Network a owl:Class ;
     rdfs:label "Network" ;
     skos:altLabel "Computer Network" ;
@@ -5993,10 +5981,7 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Model ],
-        [ a owl:Restriction ;
-            owl:onProperty :reads ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :Model ] ;
     :d3fend-id "D3-NM" ;
     :definition "Network mapping encompasses the techniques to identify and model the physical layer, network layer, and data exchange layers of the organization's network and their physical location, and determine allowed pathways through that network." ;
     :display-order 3 .
@@ -6291,7 +6276,7 @@ Additionally, after the code file is printed, it could be recovered from the sys
 
 :OperatingSystemConfiguration a owl:Class ;
     rdfs:label "Operating System Configuration" ;
-    rdfs:subClassOf :ConfigurationBearingEntity ;
+    rdfs:subClassOf :ConfigurationResource ;
     rdfs:comment "Information used to configure the services, parameters, and initial settings for an operating system." .
 
 :OperatingSystemConfigurationComponent a owl:Class ;
@@ -8052,7 +8037,7 @@ System service applications may originate from the operating system installation
         [ a owl:Restriction ;
             owl:onProperty :maps ;
             owl:someValuesFrom :ServiceDependency ] ;
-    :d3fend-id "D3-SYSDM" ;
+    :d3fend-id "D3-SVCDM" ;
     :definition "Service dependency mapping determines the services on which each given service relies." ;
     :kb-article """## How it works
 The organization collects and models architectural information about the services and consumers of services and maps the dependencies between the services.
@@ -12203,7 +12188,7 @@ Administrators collect information on systems in their architecture using a vari
             owl:someValuesFrom :PropertyListFile ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :ConfigurationBearingEntity ] ;
+            owl:someValuesFrom :ConfigurationResource ] ;
     :attack-id "T1546.014" .
 
 :T1546.015 a owl:Class ;
@@ -13853,7 +13838,7 @@ Administrators collect information on systems in their architecture using a vari
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
-            owl:someValuesFrom :ConfigurationBearingEntity ] ;
+            owl:someValuesFrom :ConfigurationResource ] ;
     :attack-id "T1614" .
 
 :T1614.001 a owl:Class ;
@@ -14577,12 +14562,6 @@ User web session data is collected over a period of time to create a user behavi
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
 :ActiveLogicalNetworkMapping a owl:NamedIndividual .
-
-:ActiveNetworkMapping a :NetworkMapping,
-        owl:NamedIndividual ;
-    :d3fend-id "D3-ANM" ;
-    :kb-reference :Reference_IdentificationOfTracerouteNodesAndAssociatedDevices,
-        :Reference_SNMPNetworkAutoDiscovery .
 
 :ActivePhysicalNetworkMapping a owl:NamedIndividual .
 
@@ -15423,11 +15402,6 @@ While this analytic does not take the user into account, doing so could generate
     :kb-reference-title "CAR-2014-11-002: Outlier Parents of Cmd" ;
     :todo "Examine reference for additional techniques",
         "MITRE Analysis was not found" .
-
-:PassiveNetworkMapping a :NetworkMapping,
-        owl:NamedIndividual ;
-    :d3fend-id "D3-PNM" ;
-    :kb-reference :Reference_TenablePassiveNetworkMonitoring .
 
 :PE32ExecutableFile a :ExecutableBinary,
         owl:NamedIndividual ;
@@ -17328,7 +17302,6 @@ The user interaction and the code process executed during the user session are m
     :kb-author "Tomas KUBIK, Lan Li, Tomas RYBKA, Karlo ZATYLNY, Chris O'Brien" ;
     :kb-organization "SolarWinds Worldwide LLC" ;
     :kb-reference-of :ActiveLogicalNetworkMapping,
-        :ActiveNetworkMapping,
         :ActivePhysicalNetworkMapping ;
     :kb-reference-title "Identification of traceroute nodes and associated devices" .
 
@@ -17919,8 +17892,7 @@ Rules are created that specify the type and location of the API call. For exampl
     :has-link "https://docs.device42.com/auto-discovery/network-auto-discovery/"^^xsd:anyURI ;
     :kb-abstract "SNMP, or Simple Network Management Protocol, is a protocol and a standard that is supported by just about any managed network-connected hardware. There are three widely deployed versions: SNMP v1, v2c (most commonly used), and v3. SNMP is typically utilized read-only, but supports read/write, and by default utilized port 161. SNMP exposes management data in the form of ‘variables’, which are organized in what is known as a MIB, or “Management Information Base”. A MIB essentially describes the variables available on a given system, each of which can be remotely queried via SNMP." ;
     :kb-organization "Device 42" ;
-    :kb-reference-of :ActiveLogicalLinkMapping,
-        :ActiveNetworkMapping ;
+    :kb-reference-of :ActiveLogicalLinkMapping ;
     :kb-reference-title "SNMP - Network Auto Discovery" .
 
 :Reference_SoftwareVulnerabilityGraphDatabase a owl:NamedIndividual,
@@ -18281,7 +18253,6 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-abstract "Tenable Nessus® Network Monitor (NNM), a passive monitoring sensor, continuously discovers active assets on the network and assesses them for vulnerabilities. NNM is based on patented network discovery and vulnerability analysis technology that continuously monitors and profiles non-intrusively. It monitors IPv4, IPv6 and mixed network traffic at the packet layer to determine topology, services and vulnerabilities." ;
     :kb-organization "Tenable" ;
     :kb-reference-of :PassiveLogicalLinkMapping,
-        :PassiveNetworkMapping,
         :PassivePhysicalLinkMapping ;
     :kb-reference-title "Tenable Passive Network Monitoring" .
 
@@ -18410,7 +18381,7 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     rdfs:label "Reference - Windows Management Instrumentation (WMI)" ;
     :has-link "https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page"^^xsd:anyURI ;
     :kb-organization "Microsoft" ;
-    :kb-reference-of :ConfigurationTracking,
+    :kb-reference-of :ConfigurationInventory,
         :HardwareInventory,
         :SoftwareInventory,
         :SystemInventory ;
