@@ -438,6 +438,9 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://www.ontologyrepository.com/CommonCoreOntologies/has_sender> ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/10598214-n> .
 
+:has-weakness a owl:ObjectProperty ;
+    rdfs:subPropertyOf :may-have-weakness .
+
 :hides a owl:ObjectProperty ;
     rdfs:label "hides" ;
     rdfs:subPropertyOf :associated-with ;
@@ -641,6 +644,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :comment "Most/all of these properties are (will be) realized via inference over chain property path axioms and atomic assertions. Promote this to regular comment once definitions no longer in comments." ;
     :todo "Needs name change... With the right name change to better capture definition can keep this definition" .
 
+:may-be-weakness-of a owl:ObjectProperty ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    rdfs:domain :Weakness ;
+    rdfs:range :Artifact .
+
 :may-contain a owl:ObjectProperty,
         owl:TransitiveProperty ;
     rdfs:label "may-contain" ;
@@ -689,6 +697,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-counter-attack ;
     :pref-label "may harden" ;
     :todo "Need to identify verbs for hardening, don't want modifies o modified-by patterns as these are evictions." .
+
+:may-have-weakness a owl:ObjectProperty ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    rdfs:domain :Artifact ;
+    rdfs:range :Weakness .
 
 :may-interpret a owl:ObjectProperty ;
     rdfs:label "may-interpret" ;
@@ -1003,6 +1016,9 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
         <http://dbpedia.org/resource/Runtime_verification>,
         <http://wordnet-rdf.princeton.edu/id/00665271-v> ;
     :todo "verifies and validates both share common parent confirms ala Wordnet (they are siblings). Might be useful parent, but leave out until it is clear it is helpful.  Wordnet 'checks' might also be in play here, though in our world spec of verifies as in http://wordnet-rdf.princeton.edu/id/00665271-v, or is that checks more like validates?  Eschewing altLabel 'checks' for either for now." .
+
+:weakness-of a owl:ObjectProperty ;
+    rdfs:subPropertyOf :may-be-weakness-of .
 
 :writes a owl:ObjectProperty ;
     rdfs:label "writes" ;
@@ -1642,6 +1658,10 @@ Hardening an application's configuration involves analyzing not only the applica
 Exploits may, for example, rely on knowledge of addresses in a process's memory, they may alter memory contents, and they may cause a program to use instructions in a way that they were not intended.  By, for example, including code that dynamically changes the memory address of data or code on each run, introducing logic to validating the memory contents before certain potentially dangerous flows are executed, or monitoring a program for unusual sequence of instructions, this makes it harder for an attacker to craft a working exploit.""" ;
     :synonym "Process Hardening" .
 
+:ApplicationInstaller a owl:Class ;
+    rdfs:label "Application Installer" ;
+    rdfs:subClassOf :UserApplication .
+
 :ApplicationInventorySensor a owl:Class ;
     rdfs:label "Application Inventory Sensor" ;
     rdfs:subClassOf :EndpointSensor,
@@ -1830,6 +1850,10 @@ This technique covers statistical outliers. Though depending on the complexity o
         :SimultaneousLoginsOnAHost_MITRE,
         :UserLoggedInToMultipleHosts_MITRE,
         :UserLoginActivityMonitoring_MITRE .
+
+:AuthenticationFunction a owl:Class ;
+    rdfs:label "Authentication Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :AuthenticationLog a owl:Class ;
     rdfs:label "Authentication Log" ;
@@ -2571,6 +2595,10 @@ Another approach passively inspects network traffic with application protocol an
     rdfs:comment "The connect socket system call connects the socket to a target address." ;
     rdfs:seeAlso <https://man7.org/linux/man-pages/man2/connect.2.html> .
 
+:ConsoleOutputFunction a owl:Class ;
+    rdfs:label "Console Output Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :ContainerBuildTool a owl:Class ;
     rdfs:label "Container Build Tool" ;
     rdfs:subClassOf :SoftwarePackagingTool ;
@@ -2610,6 +2638,10 @@ Container images become containers at runtime and in the case of Docker containe
         [ a owl:Restriction ;
             owl:onProperty :has-contributor ;
             owl:someValuesFrom :Agent ] .
+
+:CopyMemoryFunction a owl:Class ;
+    rdfs:label "Copy Memory Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :CopyToken a :CopyToken,
         owl:Class,
@@ -2775,6 +2807,185 @@ Effective implementation requires identifying any location that could end up con
     rdfs:label "Custom Archive File" ;
     rdfs:subClassOf :ArchiveFile ;
     rdfs:comment "A custom archive file is an archive file conforming to a custom format; that is, an archive file that does not conform to a common standard." .
+
+:CWE-20 a owl:Class ;
+    rdfs:label "Improper Input Validation" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-22 a owl:Class ;
+    rdfs:label "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-77 a owl:Class ;
+    rdfs:label "Improper Neutralization of Special Elements used in a Command ('Command Injection')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-78 a owl:Class ;
+    rdfs:label "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-weakness-of ;
+            owl:someValuesFrom :EvalFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-weakness-of ;
+            owl:someValuesFrom :ProcessStartFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-79 a owl:Class ;
+    rdfs:label "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-89 a owl:Class ;
+    rdfs:label "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-94 a owl:Class ;
+    rdfs:label "Improper Control of Generation of Code ('Code Injection')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-weakness-of ;
+            owl:someValuesFrom :EvalFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-119 a owl:Class ;
+    rdfs:label "Improper Restriction of Operations within the Bounds of a Memory Buffer" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :RawMemoryAccessFunction ] .
+
+:CWE-125 a owl:Class ;
+    rdfs:label "Out-of-bounds Read" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :RawMemoryAccessFunction ] .
+
+:CWE-190 a owl:Class ;
+    rdfs:label "Integer Overflow or Wraparound" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :MathematicalFunction ] .
+
+:CWE-276 a owl:Class ;
+    rdfs:label "Incorrect Default Permissions" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :ApplicationInstaller ] .
+
+:CWE-287 a owl:Class ;
+    rdfs:label "Improper Authentication" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :AuthenticationFunction ] .
+
+:CWE-306 a owl:Class ;
+    rdfs:label "Missing Authentication for Critical Function" ;
+    rdfs:subClassOf :Weakness ;
+    :comment "Too broad to map to digital artifacts as it could consume any resource." .
+
+:CWE-352 a owl:Class ;
+    rdfs:label "Cross-Site Request Forgery (CSRF)" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-362 a owl:Class ;
+    rdfs:label "Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :SharedResourceAccessFunction ] .
+
+:CWE-400 a owl:Class ;
+    rdfs:label "Uncontrolled Resource Consumption" ;
+    rdfs:subClassOf :Weakness ;
+    :comment "Cannot directly relate to artifacts due to breadth. Resource monitoring and limiting allocation is an approach to counter." .
+
+:CWE-416 a owl:Class ;
+    rdfs:label "Use After Free" ;
+    rdfs:subClassOf :Weakness ;
+    :todo "Model these memory artifacts." .
+
+:CWE-434 a owl:Class ;
+    rdfs:label "Unrestricted Upload of File with Dangerous Type" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
+
+:CWE-476 a owl:Class ;
+    rdfs:label "NULL Pointer Dereference" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :PointerDereferencingFunction ] .
+
+:CWE-502 a owl:Class ;
+    rdfs:label "Deserialization of Untrusted Data" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-weakness-of ;
+            owl:someValuesFrom :UserInputFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :DeserializationFunction ] .
+
+:CWE-611 a owl:Class ;
+    rdfs:label "Improper Restriction of XML External Entity Reference" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :ExternalContentInclusionFunction ] .
+
+:CWE-787 a owl:Class ;
+    rdfs:label "Out-of-bounds Write" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :RawMemoryAccessFunction ] .
+
+:CWE-798 a owl:Class ;
+    rdfs:label "Use of Hard-coded Credentials" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :AuthenticationFunction ] .
+
+:CWE-862 a owl:Class ;
+    rdfs:label "Broad and could apply to all resource accesses.",
+        "Missing Authorization" ;
+    rdfs:subClassOf :Weakness .
+
+:CWE-918 a owl:Class ;
+    rdfs:label "Server-Side Request Forgery (SSRF)" ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] .
 
 :D3FENDCatalogThing a owl:Class ;
     rdfs:label "D3FEND Catalog Thing" ;
@@ -3169,6 +3380,10 @@ A credential may be:
         [ a owl:Restriction ;
             owl:onProperty :claims ;
             owl:someValuesFrom :DefensiveTechnique ] .
+
+:DeserializationFunction a owl:Class ;
+    rdfs:label "Deserialization Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :DesktopComputer a owl:Class ;
     rdfs:label "Desktop Computer" ;
@@ -3624,6 +3839,10 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
     rdfs:label "Endpoint Sensor" ;
     rdfs:subClassOf :Sensor .
 
+:EvalFunction a owl:Class ;
+    rdfs:label "Eval Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :EventLog a owl:Class ;
     rdfs:label "Event Log" ;
     rdfs:subClassOf :Log ;
@@ -3831,6 +4050,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
             owl:onProperty :enables ;
             owl:someValuesFrom :Exfiltration ] .
 
+:ExternalContentInclusionFunction a owl:Class ;
+    rdfs:label "External Content Inclusion Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :ExternalKnowledgeBase a owl:Class ;
     rdfs:label "External Knowledge Base" ;
     rdfs:subClassOf :InformationContentEntity,
@@ -4001,6 +4224,13 @@ This technique requires a list of hashes to compare a file against.
 ## Considerations
 Performance on large files or very large numbers of files.""" ;
     :kb-reference :Reference-Munin .
+
+:FilePathOpenFunction a owl:Class ;
+    rdfs:label "File Path Open Function" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :File ] .
 
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
@@ -4526,6 +4756,13 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
     rdfs:label "Impersonate User" ;
     rdfs:subClassOf :SystemCall .
 
+:ImportLibraryFunction a owl:Class ;
+    rdfs:label "Import Library Function" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :SharedLibraryFile ] .
+
 :In-memoryPasswordStore a owl:Class ;
     rdfs:label "In-memory Password Store" ;
     rdfs:subClassOf :PasswordStore ;
@@ -4758,6 +4995,10 @@ Network traffic is suddenly routed through a new external device, and nearly the
 Given some example of legitimate behavioral input patterns, attackers could mimic those input patterns, a technique which has been used in popular culture in the creation of Deepfake videos and [This Person Does Not Exist](https://thispersondoesnotexist.com).""" ;
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_ContinuousAuthenticationByAnalysisOfKeyboardTypingCharacteristics_BradfordUniv.,UK>,
         :Reference_www.biometric-solutions.com_keystroke-dynamics .
+
+:InputFunction a owl:Class ;
+    rdfs:label "Input Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :InstantMessagingClient a owl:Class ;
     rdfs:label "Instant Messaging Client" ;
@@ -5282,6 +5523,10 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:comment "In computing, a login session is the period of activity between a user logging in and logging out of a (multi-user) system. On Unix and Unix-like operating systems, a login session takes one of two main forms: (a) When a textual user interface is used, a login session is represented as a kernel session -- a collection of process groups with the logout action managed by a session leader, and (b) Where an X display manager is employed, a login session is considered to be the lifetime of a designated user process that the display manager invokes." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Login_session> .
 
+:LogMessageFunction a owl:Class ;
+    rdfs:label "Log Message Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :LogonUser a owl:Class ;
     rdfs:label "Logon User" ;
     rdfs:subClassOf :SystemCall .
@@ -5370,11 +5615,19 @@ Initial planning of access model and continuous monitoring of the available user
     :kb-reference :Reference_AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation,
         :Reference_ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc .
 
+:MathematicalFunction a owl:Class ;
+    rdfs:label "Mathematical Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :MediaServer a owl:Class ;
     rdfs:label "Media Server" ;
     rdfs:subClassOf :Server ;
     rdfs:comment "A media server is a computer appliance or an application software that stores digital media (video, audio or images) and makes it available over a network. Media servers range from servers that provide video on demand to smaller personal computers or NAS (Network Attached Storage) for the home." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Media_server> .
+
+:MemoryAllocationFunction a owl:Class ;
+    rdfs:label "Memory Allocation Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :MemoryBoundaryTracking a :OperatingSystemMonitoring,
         owl:Class,
@@ -5392,6 +5645,10 @@ This technique monitors for indicators of whether a return address is outside me
 ## Considerations
 Kernel malware can manipulate memory contents, for example modifying pointers to hide processes, and thereby impact the accuracy of memory allocation information used to perform the analysis.""" ;
     :kb-reference :Reference_InferentialExploitAttemptDetection_CrowdstrikeInc .
+
+:MemoryFreeFunction a owl:Class ;
+    rdfs:label "Memory Free Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :MessageAnalysis a :DefensiveTechnique,
         owl:Class,
@@ -6446,6 +6703,13 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
     :kb-reference :Reference-PointerAuthenticationOnARMv8.3,
         :Reference-PointerAuthenticationProjectZero .
 
+:PointerDereferencingFunction a owl:Class ;
+    rdfs:label "Pointer Dereferencing Function" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :addresses ;
+            owl:someValuesFrom :Pointer ] .
+
 :Policy a owl:Class ;
     rdfs:label "Policy" ;
     rdfs:subClassOf :Document .
@@ -6833,6 +7097,10 @@ Some attributes of interest are:
         :SuspiciousArguments_,
         :SuspiciousRunLocations_ .
 
+:ProcessStartFunction a owl:Class ;
+    rdfs:label "Process Start Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :ProcessTermination a owl:Class,
         owl:NamedIndividual,
         :ProcessEviction ;
@@ -7018,6 +7286,10 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:subClassOf :Modem ;
     rdfs:comment "A radio modem provides the means to send digital data wirelessly.  Radio modems are used to communicate by direct broadcast satellite, WiFi, WiMax, mobile phones, GPS, Bluetooth and NFC. Modern telecommunications and data networks also make extensive use of radio modems where long distance data links are required. Such systems are an important part of the PSTN, and are also in common use for high-speed computer network links to outlying areas where fiber optic is not economical." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Modem#Radio> .
+
+:RawMemoryAccessFunction a owl:Class ;
+    rdfs:label "Raw Memory Access Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :RDPSession a owl:Class ;
     rdfs:label "RDP Session" ;
@@ -7493,6 +7765,10 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
     rdfs:label "Sensor" ;
     rdfs:subClassOf :D3FENDThing .
 
+:SerializationFunction a owl:Class ;
+    rdfs:label "Serialization Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :Server a owl:Class ;
     rdfs:label "Server" ;
     rdfs:subClassOf :Host,
@@ -7605,6 +7881,10 @@ If the threshold for detecting a stack anomaly is low, it may not detect a retur
     rdfs:subClassOf :ObjectFile ;
     rdfs:comment "A shared library file is a file that is intended to be shared by executable files and further shared library (object) files. Modules used by a program are loaded from individual shared objects into memory at load time or runtime, rather than being copied by a linker when it creates a single monolithic executable file for the program" ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Library_(computing)#Shared_libraries> .
+
+:SharedResourceAccessFunction a owl:Class ;
+    rdfs:label "Shared Resource Access Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :Shim a owl:Class ;
     rdfs:label "Shim" ;
@@ -7883,6 +8163,10 @@ A standalone honeynet is a lower risk to deploy compared to connected or integra
     rdfs:subClassOf :Subroutine ;
     rdfs:comment "A stored procedure (also termed proc, storp, sproc, StoPro, StoredProc, StoreProc, sp, or SP) is a subroutine available to applications that access a relational database management system (RDBMS). Such procedures are stored in the database data dictionary." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Stored_procedure> .
+
+:StringFormatFunction a owl:Class ;
+    rdfs:label "String Format Function" ;
+    rdfs:subClassOf :Subroutine .
 
 :StrongPasswordPolicy a :CredentialHardening,
         owl:Class,
@@ -13309,6 +13593,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:comment "A thin client is a lightweight computer that has been optimized for establishing a remote connection with a server-based computing environment. The server does most of the work, which can include launching software programs, performing calculations, and storing data. This contrasts with a fat client or a conventional personal computer; the former is also intended for working in a client-server model but has significant local processing power, while the latter aims to perform its function mostly locally. Thin clients are shared computers as the thin client's computing resources are provided by a remote server." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Thin_client> .
 
+:ThreadStartFunction a owl:Class ;
+    rdfs:label "Thread Start Function" ;
+    rdfs:subClassOf :Subroutine .
+
 :TicketGrantingTicket a owl:Class ;
     rdfs:label "Ticket Granting Ticket" ;
     skos:altLabel "Golden Ticket" ;
@@ -13601,6 +13889,10 @@ Geolocation data for each user logon attempt is collected and used to create a b
         :UserLogonInitResource ;
     rdfs:comment "A script used to initialize and configure elements of the user's applications and user environment." .
 
+:UserInputFunction a owl:Class ;
+    rdfs:label "User Input Function" ;
+    rdfs:subClassOf :InputFunction .
+
 :UserInterface a owl:Class ;
     rdfs:label "User Interface" ;
     skos:altLabel "UI" ;
@@ -13730,6 +14022,12 @@ Geolocation data for each user logon attempt is collected and used to create a b
 It is a combination of VPN hardware and software technologies that provides VPN clients with connectivity to a secure and/or private network, or rather, the VPN.""" ;
     rdfs:isDefinedBy <https://www.techopedia.com/definition/30750/vpn-server> ;
     rdfs:seeAlso <http://dbpedia.org/resource/Virtual_private_network> .
+
+:Weakness a owl:Class ;
+    rdfs:label "Weakness" ;
+    rdfs:subClassOf :D3FENDThing ;
+    rdfs:comment "A type of behavior that has the potential for allowing an attacker to violate the intended security policy, if the behavior is made accessible to the attacker. For example, an unbounded strcpy() call is a weakness, since it might be subject to a buffer overflow if an attacker can provide an input buffer that is larger than the output buffer. (CWE)",
+        "Logic present in hardware or software which enables an attacker to violate the intended security policy." .
 
 :WebApplicationFirewall a owl:Class ;
     rdfs:label "Web Application Firewall" ;
