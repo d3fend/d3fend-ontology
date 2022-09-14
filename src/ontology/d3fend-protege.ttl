@@ -2676,7 +2676,13 @@ Container images become containers at runtime and in the case of Docker containe
             owl:someValuesFrom :Credential ],
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :CredentialAccess ] .
+            owl:someValuesFrom :CredentialAccess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :PasswordFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ] .
 
 :CredentialCompromiseScopeAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -2817,6 +2823,10 @@ Effective implementation requires identifying any location that could end up con
     rdfs:comment "A database is an organized collection of data, generally stored and accessed electronically from a computer system. Where databases are more complex they are often developed using formal design and modeling techniques." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Database> ;
     rdfs:seeAlso <http://dbpedia.org/resource/Database> .
+
+:DatabaseFile a owl:Class ;
+    rdfs:label "Database File" ;
+    rdfs:subClassOf :File .
 
 :DatabaseQuery a owl:Class ;
     rdfs:label "Database Query" ;
@@ -3692,7 +3702,10 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
     rdfs:subClassOf :ExecutionIsolation,
         [ a owl:Restriction ;
             owl:onProperty :blocks ;
-            owl:someValuesFrom :ExecutableFile ] ;
+            owl:someValuesFrom :ExecutableFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-EAL" ;
     :definition "Using a digital signature to authenticate a file before opening." ;
     :kb-article """## How it works
@@ -3731,7 +3744,10 @@ Organizations which download or create high volumes of software make management 
     rdfs:subClassOf :ExecutionIsolation,
         [ a owl:Restriction ;
             owl:onProperty :blocks ;
-            owl:someValuesFrom :ExecutableFile ] ;
+            owl:someValuesFrom :ExecutableFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-EDL" ;
     :definition "Blocking the execution of files on a host in accordance with defined application policy rules." ;
     :kb-article """## How it works
@@ -4225,14 +4241,30 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
     :kb-reference :Reference-UseDNSPolicyForApplyingFiltersOnDNSQueries ;
     :synonym "Forward Resolution IP Blacklisting" .
 
+:GetOpenSockets a owl:Class ;
+    rdfs:label "Get Open Sockets" ;
+    rdfs:subClassOf :SystemCall .
+
 :GetOpenWindows a owl:Class ;
     rdfs:label "Get Open Windows" ;
+    rdfs:subClassOf :SystemCall .
+
+:GetRunningProcesses a owl:Class ;
+    rdfs:label "Get Running Processes" ;
+    rdfs:subClassOf :SystemCall .
+
+:GetScreenCapture a owl:Class ;
+    rdfs:label "Get Screen Capture" ;
     rdfs:subClassOf :SystemCall .
 
 :GetSystemConfigValue a owl:Class ;
     rdfs:label "Get System Config Value" ;
     rdfs:subClassOf :SystemConfigSystemCall ;
     rdfs:seeAlso "https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexa" .
+
+:GetSystemNetworkConfigValue a owl:Class ;
+    rdfs:label "Get System Network Config Value" ;
+    rdfs:subClassOf :GetSystemConfigValue .
 
 :GetSystemTime a owl:Class ;
     rdfs:label "Get System Time" ;
@@ -4302,7 +4334,10 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
     rdfs:subClassOf :ExecutionIsolation,
         [ a owl:Restriction ;
             owl:onProperty :isolates ;
-            owl:someValuesFrom :Process ] ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-HBPI" ;
     :definition "Preventing one process from writing to the memory space of another process through hardware based address manager implementations." ;
     :kb-article """## How it works
@@ -5337,7 +5372,10 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:subClassOf :Kernel-basedProcessIsolation,
         [ a owl:Restriction ;
             owl:onProperty :isolates ;
-            owl:someValuesFrom :Process ] ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-MAC" ;
     :definition "Controlling access to local computer system resources with kernel-level capabilities." ;
     :kb-article """## How it works
@@ -8071,6 +8109,9 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
     rdfs:subClassOf :PlatformHardening,
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
+            owl:someValuesFrom :SystemConfigurationDatabase ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
             owl:hasValue :M1028 ] ;
     :d3fend-id "D3-SCP" ;
     :definition "Restricting system configuration modifications to a specific user or group of users." ;
@@ -8376,7 +8417,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1007 a owl:Class ;
     rdfs:label "System Service Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetRunningProcesses ] ;
     :attack-id "T1007" .
 
 :T1008 a owl:Class ;
@@ -8420,6 +8467,9 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Query Registry" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :SystemConfigurationDatabase ],
+        [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
             owl:someValuesFrom :GetSystemConfigValue ] ;
     :attack-id "T1012" .
@@ -8458,7 +8508,16 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1016 a owl:Class ;
     rdfs:label "System Network Configuration Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetSystemNetworkConfigValue ] ;
     :attack-id "T1016" .
 
 :T1016.001 a owl:Class ;
@@ -8473,7 +8532,19 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1018 a owl:Class ;
     rdfs:label "Remote System Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :OperatingSystemConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateSocket ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1018" .
 
 :T1019 a owl:Class ;
@@ -8652,7 +8723,25 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1033 a owl:Class ;
     rdfs:label "System Owner/User Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DirectoryService ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :GetSystemConfigValue ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :PasswordFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :ProcessSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CopyToken ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T1033" .
 
 :T1035 a owl:Class ;
@@ -8833,7 +8922,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1047 a owl:Class ;
     rdfs:label "Windows Management Instrumentation Execution" ;
-    rdfs:subClassOf :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :IntranetAdministrativeNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T1047" .
 
 :T1048 a owl:Class ;
@@ -8873,7 +8968,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1049 a owl:Class ;
     rdfs:label "System Network Connections Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetOpenSockets ] ;
     :attack-id "T1049" .
 
 :T1050 a owl:Class ;
@@ -9104,7 +9202,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1057 a owl:Class ;
     rdfs:label "Process Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetRunningProcesses ] ;
     :attack-id "T1057" .
 
 :T1058 a owl:Class ;
@@ -9357,8 +9461,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Local Data Staging" ;
     rdfs:subClassOf :T1074,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :LocalResource ] ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateFile ] ;
     :attack-id "T1074.001" .
 
 :T1074.002 a owl:Class ;
@@ -9453,12 +9560,24 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1082 a owl:Class ;
     rdfs:label "System Information Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DecoyArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T1082" .
 
 :T1083 a owl:Class ;
     rdfs:label "File and Directory Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Directory ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :File ] ;
     :attack-id "T1083" .
 
 :T1084 a owl:Class ;
@@ -9809,8 +9928,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Screen Capture" ;
     rdfs:subClassOf :CollectionTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :accesses ;
-            owl:someValuesFrom :DisplayServer ] ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DisplayServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetScreenCapture ] ;
     :attack-id "T1113" .
 
 :T1114 a owl:Class ;
@@ -9906,7 +10028,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1124 a owl:Class ;
     rdfs:label "System Time Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetSystemTime ] ;
     :attack-id "T1124" .
 
 :T1125 a owl:Class ;
@@ -10174,7 +10302,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1142 a owl:Class ;
     rdfs:label "Keychain" ;
-    rdfs:subClassOf :CredentialAccessTechnique ;
+    rdfs:subClassOf :CredentialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :EncryptedCredential ] ;
     :attack-id "T1142" .
 
 :T1143 a owl:Class ;
@@ -11220,7 +11351,10 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :SystemConfigurationDatabaseRecord ],
         [ a owl:Restriction ;
             owl:onProperty :may-access ;
-            owl:someValuesFrom :SystemFirewallConfiguration ] ;
+            owl:someValuesFrom :SystemFirewallConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetRunningProcesses ] ;
     :attack-id "T1518.001" .
 
 :T1519 a owl:Class ;
@@ -11928,7 +12062,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :CredentialAccessTechnique,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
-            owl:someValuesFrom :PasswordStore ] ;
+            owl:someValuesFrom :PasswordStore ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DatabaseFile ] ;
     :attack-id "T1555" .
 
 :T1555.001 a owl:Class ;
@@ -11951,8 +12088,14 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Credentials from Web Browsers" ;
     rdfs:subClassOf :T1555,
         [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DatabaseFile ],
+        [ a owl:Restriction ;
             owl:onProperty :may-access ;
-            owl:someValuesFrom :In-memoryPasswordStore ] ;
+            owl:someValuesFrom :In-memoryPasswordStore ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :ReadFile ] ;
     :attack-id "T1555.003" .
 
 :T1555.004 a owl:Class ;
