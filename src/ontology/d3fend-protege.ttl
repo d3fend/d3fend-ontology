@@ -1784,6 +1784,10 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:comment "An application firewall is a form of firewall that controls input, output, and/or access from, to, or by an application or service. It operates by monitoring and potentially blocking the input, output, or system service calls that do not meet the configured policy of the firewall. The application firewall is typically built to control all network traffic on any OSI layer up to the application layer. It is able to control applications or services specifically, unlike a stateful network firewall, which is - without additional software - unable to control network traffic regarding a specific application. There are two primary categories of application firewalls, network-based application firewalls and host-based application firewalls." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Application_firewall> .
 
+:ApplicationLayerLink a owl:Class ;
+    rdfs:label "Application Layer Link" ;
+    rdfs:subClassOf :LogicalLink .
+
 :ApplicationProcess a owl:Class ;
     rdfs:label "Application Process" ;
     rdfs:subClassOf :UserProcess,
@@ -3107,6 +3111,15 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     :kb-reference :Reference_DataProcessingAndScanningSystemsForGeneratingAndPopulatingADataInventory ;
     :synonym "Data Discovery",
         "Data Inventorying" .
+
+:DataLinkLink a owl:Class ;
+    rdfs:label "Data Link Link" ;
+    rdfs:subClassOf :LogicalLink ;
+    :definition "A communication link between two network devices connected directly at the physical layer and on the same network segment; i.e., an OSI Layer 2 link." ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Link_layer" ;
+    :synonym "Data Link Layer Link",
+        "Layer-2 Link",
+        "Link Layer Link" .
 
 :DeadCodeElimination a :ApplicationHardening,
         owl:Class,
@@ -5477,14 +5490,6 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
             owl:onProperty :enables ;
             owl:someValuesFrom :LateralMovement ] .
 
-:Layer-2Link a owl:Class ;
-    rdfs:label "Layer-2 Link" ;
-    rdfs:subClassOf :Link ;
-    :definition "A communication link between two network devices connected directly at the physical layer and on the same network segment; i.e., an OSI Layer 2 link." ;
-    rdfs:seeAlso "https://dbpedia.org/resource/Link_layer" ;
-    :synonym "Data Link Layer Link",
-        "Link Layer Link" .
-
 :LegacySystem a owl:Class ;
     rdfs:label "Legacy System" ;
     rdfs:subClassOf :DigitalSystem ;
@@ -5601,13 +5606,8 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/06515875-n> .
 
 :LogicalLink a owl:Class ;
-    rdfs:label "Network Link" ;
-    rdfs:subClassOf :Link ;
-    :definition "A network link is a link within the network layer, which is responsible for packet forwarding including routing through intermediate routers." ;
-    rdfs:seeAlso "https://dbpedia.org/resource/Network_layer",
-        "https://www.techtarget.com/searchnetworking/definition/Network-layer" ;
-    :synonym "Layer-3 Link",
-        "Network Layer Link" .
+    rdfs:label "Logical Link" ;
+    rdfs:subClassOf :Link .
 
 :LogicalLinkMapping a :NetworkMapping,
         owl:Class,
@@ -5616,7 +5616,7 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:subClassOf :NetworkMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :Layer-2Link ] ;
+            owl:someValuesFrom :LogicalLink ] ;
     :d3fend-id "D3-NLM" ;
     :definition "Logical link mapping creates a model of network node connectivity using network-layer data or metadata." ;
     :kb-reference :Reference_LibreNMSDocsNetworkMapExtension .
@@ -5974,6 +5974,15 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     :d3fend-id "D3-NI" ;
     :definition "Network Isolation techniques prevent network hosts from accessing non-essential system network resources." ;
     :enables :Isolate .
+
+:NetworkLink a owl:Class ;
+    rdfs:label "Network Link" ;
+    rdfs:subClassOf :LogicalLink ;
+    :definition "A network link is a link within the network layer, which is responsible for packet forwarding including routing through intermediate routers." ;
+    rdfs:seeAlso "https://dbpedia.org/resource/Network_layer",
+        "https://www.techtarget.com/searchnetworking/definition/Network-layer" ;
+    :synonym "Layer-3 Link",
+        "Network Layer Link" .
 
 :NetworkMapping a owl:Class,
         owl:NamedIndividual ;
@@ -6664,7 +6673,10 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Passive Logical Link Mapping" ;
-    rdfs:subClassOf :LogicalLinkMapping ;
+    rdfs:subClassOf :LogicalLinkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :d3fend-id "D3-PLLM" ;
     :definition "Passive logical link mapping only listens to network traffic as a means to map the the whole data link layer, where the links represent logical data flows rather than physical connections." ;
     :kb-reference :Reference_TenablePassiveNetworkMonitoring ;
@@ -14034,6 +14046,10 @@ DMARC is an email policy and authentication protocol that seeks to ensure that t
     :kb-reference :Reference-DomainKeysIdentifiedMail-Signatures-IETF,
         :Reference-RFC7208-SenderPolicyFramework-SPF-ForAuthorizingUseOfDomainsInEmail-IETF,
         :Reference-RFC7489-Domain-basedMessageAuthentication-Reporting-AndConformance-DMARC .
+
+:TransportLink a owl:Class ;
+    rdfs:label "Transport Link" ;
+    rdfs:subClassOf :LogicalLink .
 
 :TrustStore a owl:Class ;
     rdfs:label "Trust Store" ;
