@@ -36,4 +36,12 @@ WHERE {
       ?sp rdfs:subPropertyOf* d3f:may-be-associated-with .
     }
 
-}
+    # Filter the children whose parents have DAs defined.
+	FILTER NOT EXISTS {
+      ?pentity ?pp ?pda .
+      ?pda rdfs:subClassOf* d3f:Artifact .
+      ?pp rdfs:subPropertyOf* d3f:may-be-associated-with .
+      ?entity rdfs:subClassOf* ?p_entity .
+    }
+
+} ORDER BY ?value
