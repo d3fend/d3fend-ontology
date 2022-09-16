@@ -306,7 +306,7 @@ extensions: build build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 	cat build/d3fend-public.ttl > build/d3fend-public-with-controls.ttl
 	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
-	pipenv run ttlfmt build/d3fend-public-with-controls.ttl	
+	pipenv run ttlfmt build/d3fend-public-with-controls.ttl
 
 reportsdir:
 	mkdir -p reports/
