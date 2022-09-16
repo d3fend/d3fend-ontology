@@ -8,7 +8,7 @@ mapping file that is folded back into the ontology by a command shell script
 that calls this script.
 """
 
-go = get_ontology("dist/public/d3fend.owl").load() # Only needed for defensive technique lookups
+go = get_ontology("d3fend-protege.owl").load() # Only needed for defensive technique lookups
 
 relation_map = {
     "broader" : ":broader",
@@ -62,14 +62,15 @@ def write_cci_mappings(f, publishdate, control_id, contributor, status, definiti
     if status != "deprecated":
         # Comes in as pandas.Timestamp, which is fine for d3f:published, which is xsd:dateTime
         # publishdate = publishdate.date() # If using as xsd:date
-        print('<{}>, <{}>, <{}>, <{}>, <{}>, <{}>, <{}>, <{}>\n'.format(type(publishdate), publishdate, control_id, contributor, status, definition, relation, techniques_string))
+        publishdate = str(publishdate).replace(" ", "T") # default not quite ISO; not quite xsd:dateTime worthy
+        # print('<{}>, <{}>, <{}>, <{}>, <{}>, <{}>, <{}>, <{}>\n'.format(type(publishdate), publishdate, control_id, contributor, status, definition, relation, techniques_string))
         control_iri_name = get_cci_iri(control_id)
         # Write individual representing NIST control and provide annotation and data properties
         f.write(':{} a :CCIControl ;\n'.format(control_iri_name))
         f.write('    rdfs:label "{}" ;\n'.format(control_id))
         f.write('    :published "{}"^^xsd:dateTime ;\n'.format(publishdate))
-        f.write('    :contributor "{}" .\n'.format(contributor))
-        f.write('    :definition "{}" ;\n'.format(definition))
+        f.write('    :contributor "{}" ;\n'.format(contributor))
+        f.write('    :definition "{}" .\n'.format(definition))
         # Write relations of this control to D3FEND countermeasures mapped in mapping file.
         if isinstance(relation, str): relation = relation.lower() # make lower for robust matching, but not if nan
         if relation: # np.nan or non-empty string
@@ -95,6 +96,17 @@ df = df[df['D3FEND'].str.contains('Duplicate')==False]
 df = df[df['D3FEND'].str.contains('Review')==False]
 
 with open('cci-to-d3fend-mapping.ttl', 'w') as f:
+#     f.write("""@prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+# @prefix owl: <http://www.w3.org/2002/07/owl#> .
+# @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+# @prefix xml: <http://www.w3.org/XML/1998/namespace> .
+# @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+# @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+# @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+# @prefix dcterms: <http://purl.org/dc/terms/> .
+# @base <http://d3fend.mitre.org/ontologies/d3fend.owl> .
+    
+# """)
     df.apply(lambda x: write_cci_mappings(f,
                                           # no versioning on CCI data; pub date instead; versions are on NIST pubs
                                           x['publishdate'], # Just the date, no time

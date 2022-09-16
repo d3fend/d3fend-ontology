@@ -8,7 +8,7 @@ mapping file that may be folded back into the ontology with a
 companion shell script.
 """
 
-go = get_ontology("dist/public/d3fend.owl").load() # Only needed for defensive technique lookups
+go = get_ontology("d3fend-protege.owl").load() # Only needed for defensive technique lookups
 
 relation_map = {
     "broader" : ":broader",

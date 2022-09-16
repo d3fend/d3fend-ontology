@@ -4,24 +4,22 @@
 ## them into the d3fend ontology.  Updates to the sheet would require
 ## re-running.
 ##
-## CAUTION: This will overwrite the prior d3fend-protege.ttl file with
-## the mappings merged.  Roll back with git if you encounter problems
-## loading the merged ontology.
-##
+## After inspection, promote the d3fend_protege.nist.ttl file to d3fend_protege
 
+echo creating d3fend-protege.owl for owlready2...
+bin/robot convert --input src/ontology/d3fend-protege.ttl --output d3fend-protege.owl
+
+echo creating NIST mappings in ttl...
 pipenv run python extensions/nist/create_nist_mappings.py || exit 1
 
-./bin/robot merge \
-    --add-prefix "dcterms: http://purl.org/dc/terms/" \
-    --add-prefix "skos: http://www.w3.org/2004/02/skos/core#" \
-    -i src/ontology/d3fend-protege.ttl \
-    -i extensions/nist/sp800-53r5-control-to-d3fend-mapping.ttl \
-    -o src/ontology/d3fend-protege.ttl \
+echo concatenating ttl for merge of controls with ontology...
+cat src/ontology/d3fend-protege.ttl > src/ontology/d3fend-protege.nist.ttl
+cat sp800-53r5-control-to-d3fend-mapping.ttl >> src/ontology/d3fend-protege.nist.ttl
 
-pipenv run ttlfmt src/ontology/d3fend-protege.ttl
+echo reformatting ttl...
+pipenv run ttlfmt src/ontology/d3fend-protege.nist.ttl
 
-echo Overwrote ontology file with updates on: src/ontology/d3fend-protege.ttl
-echo CAUTION: If you encounter problems, rollback with git
+echo Created new ontology with NIST control mappings with updates here: src/ontology/d3fend-protege.nist.ttl
 
 function cleanup(){
     echo -e "\t deleting: $1"
@@ -29,4 +27,5 @@ function cleanup(){
 }
 
 echo cleaning up:
-cleanup extensions/nist/sp800-53r5-control-to-d3fend-mapping.ttl
+cleanup d3fend-protege.owl # was JIT creation at start for owlready use.
+cleanup sp800-53r5-control-to-d3fend-mapping.ttl # now merged

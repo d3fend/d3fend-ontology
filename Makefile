@@ -117,11 +117,11 @@ update-attack:
 	bash src/util/update_attack.sh
 	$(END)
 
-create-cci-mappings: ## Inline add of CCI control mappings to d3fend, direct to d3fend-protege.ttl 
+cci-mapping: ## Inline add of CCI control mappings to d3fend, direct to d3fend-protege.ttl 
 	bash extensions/cci/create_cci_mappings.sh
 	$(END)
 
-create-nist-mappings: ## Inline add of NIST control mappings to d3fend, direct to d3fend-protege.ttl 
+nist-mapping: ## Inline add of NIST control mappings to d3fend, direct to d3fend-protege.ttl 
 	bash extensions/nist/create_nist_mappings.sh
 	$(END)
 
