@@ -76,7 +76,7 @@ def write_nist_control_mappings(f, version, control_id, control_name, relation, 
 
             
 # Corrected D3-LIC to D3-DLIC        
-df = pandas.read_excel(io='sp800-53r5-control-catalog-d3fend-mapping.xlsx', sheet_name='SP 800-53 Revision 5--d3fend')
+df = pandas.read_excel(io='extensions/nist/sp800-53r5-control-catalog-d3fend-mapping.xlsx', sheet_name='SP 800-53 Revision 5--d3fend')
 techniques_column = 'D3FEND Techniques' # Corrected typo 'qes'->'ques' on column name original in spreadsheet
 
 df = df[~df[techniques_column].isnull()]

@@ -84,7 +84,7 @@ def write_cci_mappings(f, publishdate, control_id, contributor, status, definiti
         f.write('\n')
 
 
-df = pandas.read_excel(io='CCI_Mapping.xlsx', sheet_name='U_CCI_List')
+df = pandas.read_excel(io='extensions/cci/CCI_Mapping.xlsx', sheet_name='U_CCI_List')
 
 df = df[~df['D3FEND'].isnull()]
 # dataframe as read treats str 'NA' and np.nan the same; but if that
