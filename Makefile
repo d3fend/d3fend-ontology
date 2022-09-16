@@ -117,14 +117,6 @@ update-attack:
 	bash src/util/update_attack.sh
 	$(END)
 
-cci-mapping: ## Inline add of CCI control mappings to d3fend, direct to d3fend-protege.ttl 
-	bash extensions/cci/create_cci_mappings.sh
-	$(END)
-
-nist-mapping: ## Inline add of NIST control mappings to d3fend, direct to d3fend-protege.ttl 
-	bash extensions/nist/create_nist_mappings.sh
-	$(END)
-
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/
@@ -302,6 +294,20 @@ build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-publ
 	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
 	$(END)
 
+build/cci-to-d3fend-mapping.ttl: build/d3fend-public.owl
+	pipenv run python extensions/cci/create_cci_mappings.py
+	$(END)
+
+build/sp800-53r5-control-to-d3fend-mapping.ttl: build/d3fend-public.owl
+	pipenv run python extensions/nist/create_nist_mappings.py
+	$(END)
+
+extensions: build build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl
+	cat build/d3fend-public.ttl > build/d3fend-public-with-controls.ttl
+	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
+	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
+	pipenv run ttlfmt build/d3fend-public-with-controls.ttl	
+
 reportsdir:
 	mkdir -p reports/
 	$(END)
@@ -342,14 +348,15 @@ dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public.owl dist/public/d3fend.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
+	cp build/d3fend-public-with-controls.ttl dist/public/d3fend-with-controls.ttl
 	cp build/d3fend-public.ttl dist/public/d3fend.ttl
 	cp build/d3fend-public.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
-	chmod 644 dist/public/d3fend.ttl
+	chmod 644 dist/public/d3fend.ttl dist/public/d3fend-with-controls.ttl
 	$(END)
 
-all: build dist test ## build all, check for unallowed content, and test load files
+all: build extensions dist test ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version

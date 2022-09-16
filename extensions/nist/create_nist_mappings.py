@@ -2,21 +2,19 @@ import numpy as np
 import pandas # requires openpyxl to do read_excel
 from owlready2 import *
 
-"""
-This Python script reads the public ontology file and writes out a
-mapping file that may be folded back into the ontology with a
-companion shell script.
-"""
+""" This Python script reads the public ontology file and a mapping
+file and writes out .ttl file with mappings that may be
+appended to the public ontology.  """
 
-go = get_ontology("d3fend-protege.owl").load() # Only needed for defensive technique lookups
+go = get_ontology("build/d3fend-public.owl").load() # Only needed for defensive technique lookups
 
 relation_map = {
-    "broader" : ":broader",
-    "narrower" : ":narrower",
-    "exactly" : ":exactly",
-    "same" : ":exactly",        # off-label usage of same; treat as exactly
-    np.nan : ":related",       # If undefined in spreadsheet, use most general match :related
-    "" : ":related" }          # If undefined in spreadsheet, use most general match :related
+    "broader" : "d3f:broader",
+    "narrower" : "d3f:narrower",
+    "exactly" : "d3f:exactly",
+    "same" : "d3f:exactly",        # off-label usage of same; treat as exactly
+    np.nan : "d3f:related",       # If undefined in spreadsheet, use most general match :related
+    "" : "d3f:related" }          # If undefined in spreadsheet, use most general match :related
 
 d3fend_technique_query = """
 prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#>
@@ -57,10 +55,10 @@ def write_nist_control_mappings(f, version, control_id, control_name, relation, 
     # print('<{}>, <{}>, <{}>\n'.format(control_id, relation, techniques_string))
     control_iri_name = get_sp800_53_control_iri_name(version, control_id)
     # Write individual representing NIST control and provide annotation and data properties
-    f.write(':{} a :NISTControl ;\n'.format(control_iri_name))
+    f.write('d3f:{} a d3f:NISTControl ;\n'.format(control_iri_name))
     f.write('    rdfs:label "{}" ;\n'.format(control_id))
-    f.write('    :version "{}" ;\n'.format(version))
-    f.write('    :control-name "{}" .\n'.format(control_name))
+    f.write('    d3f:version "{}" ;\n'.format(version))
+    f.write('    d3f:control-name "{}" .\n'.format(control_name))
     # Write relations of this control to D3FEND countermeasures mapped in mapping file.
     if isinstance(relation, str): relation = relation.lower() # make lower for robust matching, but not if nan
     if relation: # np.nan or non-empty string
@@ -71,7 +69,7 @@ def write_nist_control_mappings(f, version, control_id, control_name, relation, 
                 if technique: # if non-empty
                     technique_iri_name = get_d3fend_technique_name(technique)
                     if technique_iri_name: # if we got a good lookup, do it.
-                        f.write(':{} {} :{} .\n'.format(control_iri_name, d3fend_relation, technique_iri_name))
+                        f.write('d3f:{} {} d3f:{} .\n'.format(control_iri_name, d3fend_relation, technique_iri_name))
     f.write('\n')
 
             
@@ -84,7 +82,7 @@ df = df[~df[techniques_column].isnull()]
 # changes, pull NA string fields explicitly
 df = df[df[techniques_column].str.contains('NA')==False] 
 
-with open('sp800-53r5-control-to-d3fend-mapping.ttl', 'w') as f:
+with open('build/sp800-53r5-control-to-d3fend-mapping.ttl', 'w') as f:
     df.apply(lambda x: write_nist_control_mappings(f,
                                                    "5",
                                                    x['Control Identifier'],
