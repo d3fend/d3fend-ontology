@@ -1198,6 +1198,11 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:label "confidence" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
 
+:control-name a owl:DatatypeProperty ;
+    rdfs:label "control-name" ;
+    rdfs:subPropertyOf :d3fend-external-control-data-property ;
+    rdfs:comment "The control (or control enhancement) name." .
+
 :created a owl:DatatypeProperty ;
     rdfs:label "date created"@en ;
     rdfs:subPropertyOf :date ;
@@ -2208,7 +2213,13 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
 
 :CCIControl a owl:Class ;
     rdfs:label "CCI Control" ;
-    rdfs:subClassOf :ExternalControl .
+    rdfs:subClassOf :ExternalControl,
+        [ a owl:Restriction ;
+            owl:onProperty :control-name ;
+            owl:someValuesFrom xsd:string ],
+        [ a owl:Restriction ;
+            owl:onProperty :published ;
+            owl:someValuesFrom xsd:dateTime ] .
 
 :Certificate a owl:Class ;
     rdfs:label "Certificate" ;
@@ -3845,10 +3856,7 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     rdfs:subClassOf :D3FENDThing,
         [ a owl:Restriction ;
             owl:onProperty :semantic-relation ;
-            owl:someValuesFrom :DefensiveTechnique ],
-        [ a owl:Restriction ;
-            owl:onProperty :version ;
-            owl:someValuesFrom xsd:string ] .
+            owl:someValuesFrom :DefensiveTechnique ] .
 
 :ExternalKnowledgeBase a owl:Class ;
     rdfs:label "External Knowledge Base" ;
@@ -5771,7 +5779,10 @@ Hosts/users within a computer network are analyzed to identify communities of ho
 
 :NISTControl a owl:Class ;
     rdfs:label "NIST Control" ;
-    rdfs:subClassOf :ExternalControl .
+    rdfs:subClassOf :ExternalControl,
+        [ a owl:Restriction ;
+            owl:onProperty :version ;
+            owl:someValuesFrom xsd:string ] .
 
 :NTFSHardLink a owl:Class ;
     rdfs:label "NTFS Hard Link" ;

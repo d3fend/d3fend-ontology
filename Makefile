@@ -117,6 +117,14 @@ update-attack:
 	bash src/util/update_attack.sh
 	$(END)
 
+create-cci-mappings:
+	bash extensions/cci/create_cci_mappings.sh
+	$(END)
+
+create-nist-mappings:
+	bash extensions/nist/create_nist_mappings.sh
+	$(END)
+
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/
