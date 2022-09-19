@@ -1198,6 +1198,11 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:label "confidence" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
 
+:control-name a owl:DatatypeProperty ;
+    rdfs:label "control-name" ;
+    rdfs:subPropertyOf :d3fend-external-control-data-property ;
+    rdfs:comment "The control (or control enhancement) name." .
+
 :created a owl:DatatypeProperty ;
     rdfs:label "date created"@en ;
     rdfs:subPropertyOf :date ;
@@ -1230,6 +1235,10 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:subPropertyOf :d3fend-data-property ;
     rdfs:comment "x d3fend-display-property y: An object x should be displayed using the display property y, when it applies." ;
     :todo "This should be an annotation property." .
+
+:d3fend-external-control-data-property a owl:DatatypeProperty ;
+    rdfs:label "d3fend-external-control-data-property" ;
+    rdfs:subPropertyOf :d3fend-data-property .
 
 :d3fend-id a owl:DatatypeProperty ;
     rdfs:label "d3fend-id" ;
@@ -1366,7 +1375,8 @@ skos:altLabel a owl:AnnotationProperty ;
 :version a owl:DatatypeProperty,
         owl:FunctionalProperty ;
     rdfs:label "version"@en ;
-    rdfs:subPropertyOf :d3fend-catalog-data-property ;
+    rdfs:subPropertyOf :d3fend-catalog-data-property,
+        :d3fend-external-control-data-property ;
     rdfs:domain :CapabilityImplementation ;
     rdfs:range xsd:string,
         [ a rdfs:Datatype ;
@@ -2200,6 +2210,16 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
         [ a owl:Restriction ;
             owl:onProperty :version ;
             owl:someValuesFrom xsd:string ] .
+
+:CCIControl a owl:Class ;
+    rdfs:label "CCI Control" ;
+    rdfs:subClassOf :ExternalControl,
+        [ a owl:Restriction ;
+            owl:onProperty :control-name ;
+            owl:someValuesFrom xsd:string ],
+        [ a owl:Restriction ;
+            owl:onProperty :published ;
+            owl:someValuesFrom xsd:dateTime ] .
 
 :Certificate a owl:Class ;
     rdfs:label "Certificate" ;
@@ -3846,6 +3866,13 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Exfiltration ] .
+
+:ExternalControl a owl:Class ;
+    rdfs:label "External Control" ;
+    rdfs:subClassOf :D3FENDThing,
+        [ a owl:Restriction ;
+            owl:onProperty :semantic-relation ;
+            owl:someValuesFrom :DefensiveTechnique ] .
 
 :ExternalKnowledgeBase a owl:Class ;
     rdfs:label "External Knowledge Base" ;
@@ -5796,6 +5823,13 @@ Hosts/users within a computer network are analyzed to identify communities of ho
 :NewsArticle a owl:Class ;
     rdfs:label "News Article" ;
     rdfs:subClassOf :Article .
+
+:NISTControl a owl:Class ;
+    rdfs:label "NIST Control" ;
+    rdfs:subClassOf :ExternalControl,
+        [ a owl:Restriction ;
+            owl:onProperty :version ;
+            owl:someValuesFrom xsd:string ] .
 
 :NTFSHardLink a owl:Class ;
     rdfs:label "NTFS Hard Link" ;
