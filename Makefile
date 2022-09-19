@@ -290,9 +290,30 @@ build/d3fend-inferred-relationships.csv:
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
 	$(END)
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
-	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
+build/cci-to-d3fend-mapping.ttl: build/d3fend-public.owl
+	pipenv run python extensions/cci/create_cci_mappings.py
 	$(END)
+
+build/sp800-53r5-control-to-d3fend-mapping.ttl: build/d3fend-public.owl
+	pipenv run python extensions/nist/create_nist_mappings.py
+	$(END)
+
+build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json  ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public.owl file
+	$(END)
+
+# depends on build.py
+build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl ## build D3FEND ExtensionsZZ
+	cat build/d3fend-public.ttl > build/d3fend-public-with-controls.ttl
+	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
+	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
+	pipenv run ttlfmt build/d3fend-public-with-controls.ttl
+	$(END)
+
+
+build: build/ontology build/extensions # build the D3FEND Ontology and Extensions
+	$(END)
+
 
 reportsdir:
 	mkdir -p reports/
@@ -334,14 +355,15 @@ dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public.owl dist/public/d3fend.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
+	cp build/d3fend-public-with-controls.ttl dist/public/d3fend-with-controls.ttl
 	cp build/d3fend-public.ttl dist/public/d3fend.ttl
 	cp build/d3fend-public.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
-	chmod 644 dist/public/d3fend.ttl
+	chmod 644 dist/public/d3fend.ttl dist/public/d3fend-with-controls.ttl
 	$(END)
 
-all: build dist test ## build all, check for unallowed content, and test load files
+all: build extensions dist test ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version
