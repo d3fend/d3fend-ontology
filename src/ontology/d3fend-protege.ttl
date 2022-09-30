@@ -6075,6 +6075,42 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     rdfs:comment "In telecommunications networks, a node (Latin nodus, 'knot') is either a redistribution point or a communication endpoint. The definition of a node depends on the network and protocol layer referred to. A physical network node is an electronic device that is attached to a network, and is capable of creating, receiving, or transmitting information over a communications channel. A passive distribution point such as a distribution frame or patch panel is consequently not a node." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Node_(networking)> .
 
+:NetworkNodeInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Node Inventory" ;
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :NetworkNode ] ;
+    :d3fend-id "D3-SYSI" ;
+    :definition "Network node inventorying identifies and records all the network nodes (hosts, routers, switches, firewalls, etc.) in the organization's architecture." ;
+    :kb-article """## How it works
+Administrators collect information on network nodes in their architecture using a variety of administrative and management tools that query network devices and nodes for information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to include host discovery and scanning for active ports and services.
+
+## Considerations
+* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
+* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
+
+## Examples
+* Link-layer discovery
+   * Link-layer Discovery Protocol (LLDP)
+   * Cisco Discovery Protocol (CDP)
+* Application-layer discovery
+   * Simple Network Management Protocol (SNMP) collects MIB information
+   * Web-based Enterprise Management (WBEM) collects CIM information
+      * Windows Management Instrumentation (WMI)
+      * Windows Management Infrastructure (MI)""" ;
+    :kb-reference :Reference_AdvancedDeviceMatchingSystem,
+        :Reference_IEEE-802_1AB-2016,
+        :Reference_QualysNetworkPassiveSensorGettingStartedGuide,
+        :Reference_RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks,
+        :Reference_Web-BasedEnterpriseManagement,
+        :Reference_Windows-Management-Infrastructure,
+        :Reference_Windows-Management-Instrumentation ;
+    :synonym "System Discovery",
+        "System Inventorying" .
+
 :NetworkPackets a owl:Class ;
     rdfs:label "Network Packet" ;
     rdfs:subClassOf :NetworkTraffic ;
@@ -6785,7 +6821,6 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     rdfs:subClassOf :PhysicalLinkMapping ;
     :d3fend-id "D3-PPLM" ;
     :definition "Passive physical link mapping only listens to network traffic as a means to map the physical layer." ;
-    :kb-reference :Reference_TenablePassiveNetworkMonitoring ;
     :synonym "Passive Physical Layer Mapping" .
 
 :Password a owl:Class ;
@@ -8603,7 +8638,7 @@ Extremely complex password requirements may lead users to saving passwords in te
 :System a owl:Class ;
     rdfs:label "System" ;
     rdfs:subClassOf :Artifact ;
-    rdfs:comment "An artifact (instrumentality) that combines interrelated interacting artifacts designed to work as a coherent entity;" ;
+    rdfs:comment "An artifact (instrumentality) that combines interrelated interacting artifacts designed to work as a coherent entity." ;
     rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/04384144-n" .
 
 :SystemCall a owl:Class ;
@@ -8877,44 +8912,6 @@ When system firmware verification fails a set of predefined responses is typical
         :SystemConfigurationInitResource,
         :SystemInitConfiguration ;
     rdfs:comment "A script used to initialize and configure elements of the system's environment, applications, services, or its operating system." .
-
-:SystemInventory a :AssetInventory,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "System Inventory" ;
-    rdfs:subClassOf :AssetInventory,
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :DigitalSystem ] ;
-    :d3fend-id "D3-SYSI" ;
-    :definition "System inventorying identifies and records all the systems in the organization's architecture." ;
-    :kb-article """## How it works
-Administrators collect information on systems in their architecture using a variety of administrative and management tools that query network devices and nodes for information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to include host discovery and scanning for active ports and services.
-
-## Considerations
-* Systems in a large architecture may be large systems of systems and not be identified directly by common inventory managment systems and may require manual specification or reference to organizaion architectural specifications.
-** Often inventory of system components will be collected by asset management systems but may need to be mapped to larger systems in an organization's architecture.
-* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
-* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
-
-## Examples
-* Link-layer discovery
-   * Link-layer Discovery Protocol (LLDP)
-   * Cisco Discovery Protocol (CDP)
-* Application-layer discovery
-   * Simple Network Management Protocol (SNMP) collects MIB information
-   * Web-based Enterprise Management (WBEM) collects CIM information
-      * Windows Management Instrumentation (WMI)
-      * Windows Management Infrastructure (MI)""" ;
-    :kb-reference :Reference_AdvancedDeviceMatchingSystem,
-        :Reference_IEEE-802_1AB-2016,
-        :Reference_QualysNetworkPassiveSensorGettingStartedGuide,
-        :Reference_RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks,
-        :Reference_Web-BasedEnterpriseManagement,
-        :Reference_Windows-Management-Infrastructure,
-        :Reference_Windows-Management-Instrumentation ;
-    :synonym "System Discovery",
-        "System Inventorying" .
 
 :SystemMapping a :DefensiveTechnique,
         owl:Class,
@@ -15160,7 +15157,7 @@ In order to convince the potential attacker that the deception environment is th
     :kb-abstract "Qualys Passive Scanning Sensor (PS) continuously monitors all network traffic and flags any asset activity. It identifies and profiles devices the moment they connect to the network, including those difficult to scan, corporate owned, brought by employees, and rogue IT. The data is sent immediately to the Qualys Cloud Platform for centralized analysis." ;
     :kb-organization "Qualsys" ;
     :kb-reference-of :HardwareInventory,
-        :SystemInventory ;
+        :NetworkNodeInventory ;
     :kb-reference-title "Qualys Network Passive Sensor Getting Started Guide" .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference_SupplyChainCyber-deception_Cymmetria,Inc.> a owl:NamedIndividual,
@@ -16933,7 +16930,7 @@ significant outages to web applications and services-such as government services
 """ ;
     :kb-author "Rajneesh Jalan, Joseph M. Schmitt, and Marco Simoes" ;
     :kb-organization "Device42 Inc" ;
-    :kb-reference-of :SystemInventory ;
+    :kb-reference-of :NetworkNodeInventory ;
     :kb-reference-title "Advanced device matching system" .
 
 :Reference_AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation a :AcademicPaperReference,
@@ -18615,8 +18612,8 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     :has-link "https://docs.microsoft.com/en-us/previous-versions/windows/desktop/wmi_v2/windows-management-infrastructure"^^xsd:anyURI ;
     :kb-organization "Microsoft" ;
     :kb-reference-of :HardwareInventory,
-        :SoftwareInventory,
-        :SystemInventory ;
+        :NetworkNodeInventory,
+        :SoftwareInventory ;
     :kb-reference-title "Windows Management Infrastructure" .
 
 :Reference_Windows-Management-Instrumentation a owl:NamedIndividual,
@@ -18626,8 +18623,8 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     :kb-organization "Microsoft" ;
     :kb-reference-of :ConfigurationInventory,
         :HardwareInventory,
-        :SoftwareInventory,
-        :SystemInventory ;
+        :NetworkNodeInventory,
+        :SoftwareInventory ;
     :kb-reference-title "Windows Management Instrumentation" .
 
 :Reference_www.biometric-solutions.com_keystroke-dynamics a :InternetArticleReference,
