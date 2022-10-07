@@ -3738,8 +3738,23 @@ This technique does not check for content hosted at the domain.
 
 :DomainName a owl:Class ;
     rdfs:label "Domain Name" ;
-    rdfs:subClassOf :Identifier ;
+    rdfs:subClassOf :Identifier,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :IPAddress ] ;
     rdfs:comment "A domain name is an identification string that defines a realm of administrative autonomy, authority or control within the Internet. Domain names are formed by the rules and procedures of the Domain Name System (DNS). Any name registered in the DNS is a domain name.Domain names are used in various networking contexts and application-specific naming and addressing purposes. In general, a domain name represents an Internet Protocol (IP) resource, such as a personal computer used to access the Internet, a server computer hosting a web site, or the web site itself or any other service communicated via the Internet. In 2015, 294 million domain names had been registered." .
+
+:DomainNameReputationAnalysis a :IdentifierReputationAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Domain Name Reputation Analysis" ;
+    rdfs:subClassOf :IdentifierReputationAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :DomainName ] ;
+    :d3fend-id "D3-DNRA" ;
+    :definition "Analyzing the reputation of a domain name." ;
+    :kb-reference :Reference-Finding_phishing_sites .
 
 :DomainRegistration a owl:Class ;
     rdfs:label "Domain Registration" ;
@@ -4316,6 +4331,13 @@ Asymmetric encryption is typically accomplished using public and private key cer
 - Secure transfer of private keys between multiple devices.""" ;
     :kb-reference :Reference-MethodForFileEncryption .
 
+:FileHash a owl:Class ;
+    rdfs:label "File Hash" ;
+    rdfs:subClassOf :Identifier,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :File ] .
+
 :FileHashing a :FileAnalysis,
         owl:Class,
         owl:NamedIndividual ;
@@ -4329,6 +4351,18 @@ This technique requires a list of hashes to compare a file against.
 ## Considerations
 Performance on large files or very large numbers of files.""" ;
     :kb-reference :Reference-Munin .
+
+:FileHashReputationAnalysis a :IdentifierReputationAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Hash Reputation Analysis" ;
+    rdfs:subClassOf :IdentifierReputationAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileHash ] ;
+    :d3fend-id "D3-FHRA" ;
+    :definition "Analyzing the reputation of a file hash." ;
+    :kb-reference :Reference-Reputation_of_an_entity_associated_with_a_content_item .
 
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
@@ -4830,7 +4864,10 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
         owl:NamedIndividual ;
     rdfs:label "Hostname" ;
     skos:altLabel "Nodename" ;
-    rdfs:subClassOf :Identifier ;
+    rdfs:subClassOf :Identifier,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :Host ] ;
     rdfs:comment "In computer networking, a hostname (archaically nodename) is a label that is assigned to a device connected to a computer network and that is used to identify the device in various forms of electronic communication, such as the World Wide Web. Hostnames may be simple names consisting of a single word or phrase, or they may be structured." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Hostname> .
 
@@ -4866,6 +4903,15 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
     :d3fend-id "D3-ID" ;
     :definition "Analyzing identifier artifacts such as IP address, domain names, or URL(I)s." ;
     :enables :Detect .
+
+:IdentifierReputationAnalysis a :IdentifierAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Identifier Reputation Analysis" ;
+    rdfs:subClassOf :IdentifierAnalysis ;
+    :d3fend-id "D3-IRA" ;
+    :definition "Analyzing the reputation of an identifier." ;
+    :kb-reference :Reference-Finding_phishing_sites .
 
 :ImageCodeSegment a owl:Class ;
     rdfs:label "Image Code Segment" ;
@@ -5354,7 +5400,10 @@ Types of restrictions that may be applied:
 
 :IPAddress a owl:Class ;
     rdfs:label "IP Address" ;
-    rdfs:subClassOf :Identifier ;
+    rdfs:subClassOf :Identifier,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :NetworkNode ] ;
     rdfs:comment "An Internet Protocol address (IP address) is a numerical label assigned to each device connected to a computer network that uses the Internet Protocol for communication.An IP address serves two main functions: host or network interface identification and location addressing. Internet Protocol version 4 (IPv4) defines an IP address as a 32-bit number. However, because of the growth of the Internet and the depletion of available IPv4 addresses, a new version of IP (IPv6), using 128 bits for the IP address, was standardized in 1998. IPv6 deployment has been ongoing since the mid-2000s." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/IP_address> .
 
@@ -5402,6 +5451,18 @@ IPC can occur within a single computer or between multiple computers remotely th
     rdfs:comment "A VoIP phone or IP phone uses voice over IP technologies for placing and transmitting telephone calls over an IP network, such as the Internet, instead of the traditional public switched telephone network (PSTN). Digital IP-based telephone service uses control protocols such as the Session Initiation Protocol (SIP), Skinny Client Control Protocol (SCCP) or various other proprietary protocols." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/VoIP_phone> ;
     :todo "Rename and merge to URI with \"VoIP Phone\" as label VoipPhone as IRI" .
+
+:IPReputationAnalysis a :IdentifierReputationAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "IP Reputation Analysis" ;
+    rdfs:subClassOf :IdentifierReputationAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :IPAddress ] ;
+    :d3fend-id "D3-IPRA" ;
+    :definition "Analyzing the reputation of an IP address." ;
+    :kb-reference :Reference-Finding_phishing_sites .
 
 :Isolate a :DefensiveTactic,
         owl:Class,
@@ -14347,6 +14408,18 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     :kb-reference :Reference_MethodAndApparatusForDetectingMaliciousWebsites_EndgameInc,
         :Reference_MethodAndSystemForDetectingRestrictedContentAssociatedWithRetrievedContent_SophosLtd .
 
+:URLReputationAnalysis a :IdentifierReputationAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "URL Reputation Analysis" ;
+    rdfs:subClassOf :IdentifierReputationAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :URL ] ;
+    :d3fend-id "D3-URA" ;
+    :definition "Analyzing the reputation of a URL." ;
+    :kb-reference :Reference-Finding_phishing_sites .
+
 :UseCaseGoal a owl:Class ;
     rdfs:label "Use Case Goal" ;
     rdfs:subClassOf :D3FENDUseCaseThing .
@@ -16297,6 +16370,15 @@ These flaws weaken the reliability and effectiveness of encrypted Internet conne
     :kb-reference-of :UserAccountPermissions ;
     :kb-reference-title "Configure User Access Control and Permissions" .
 
+:Reference-Database_for_receiving_storing_and_compiling_information_about_email_messages a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Database for receiving, storing and compiling information about email messages" ;
+    :has-link "https://patents.google.com/patent/US20050091319A1/" ;
+    :kb-author "Steven Kirsch" ;
+    :kb-reference-of :DomainNameReputationAnalysis,
+        :IPReputationAnalysis ;
+    :kb-reference-title "Database for receiving, storing and compiling information about email messages" .
+
 :Reference-DeadCodeElimination a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Dead code elimination" ;
@@ -16384,6 +16466,16 @@ In one embodiment, a response policy zone (RPZ) application generates an RPZ tha
     :kb-organization "Microsoft" ;
     :kb-reference-of :LocalFilePermissions ;
     :kb-reference-title "File and Folder Permissions" .
+
+:Reference-Finding_phishing_sites a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Finding phishing sites" ;
+    :has-link "https://patents.google.com/patent/US8839418B2/" ;
+    :kb-author "Geoffrey John Hulten, Paul Stephen Rehfuss, Robert Rounthwaite, Joshua Theodore Goodman, Gopalakrishnan Seshadrinathan, Anthony P. Penta, Manav Mishra, Roderic C. Deyo, Elliott Jeb Haber, David Aaron Ward Snelling" ;
+    :kb-reference-of :DomainNameReputationAnalysis,
+        :IPReputationAnalysis,
+        :URLReputationAnalysis ;
+    :kb-reference-title "Finding phishing sites" .
 
 :Reference-FirmwareBehaviorAnalysisConFirm a :AcademicPaperReference,
         owl:NamedIndividual ;
@@ -16733,6 +16825,14 @@ Columbia University""" ;
     :kb-organization "Microsoft" ;
     :kb-reference-of :UserSessionInitConfigAnalysis ;
     :kb-reference-title "Registry Key Security and Access Rights" .
+
+:Reference-Reputation_of_an_entity_associated_with_a_content_item a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Reputation of an entity associated with a content item" ;
+    :has-link "https://patents.google.com/patent/US20060253584A1" ;
+    :kb-author "Christopher Dixon, Thomas Pinckney" ;
+    :kb-reference-of :FileHashReputationAnalysis ;
+    :kb-reference-title "Reputation of an entity associated with a content item" .
 
 :Reference-RFC2289-AOne-TimePasswordSystem a owl:NamedIndividual,
         :SpecificationReference ;
