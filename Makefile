@@ -58,19 +58,19 @@ db-delete-prod:
 db-sync-local: db-delete-local db-load-local
 
 db-load-local:
-	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.owl ${DB_LOCAL}${DB_REST_PATH}
-	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.owl ${DB_LOCAL}${DB_REST_PATH_INF}
+	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_LOCAL}${DB_REST_PATH}
+	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_LOCAL}${DB_REST_PATH_INF}
 
 db-load-prod:
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.owl ${DB_PROD}${DB_REST_PATH_BD}
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.owl ${DB_PROD}${DB_REST_PATH_BD_INF}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_PROD}${DB_REST_PATH_BD}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_PROD}${DB_REST_PATH_BD_INF}
 
 db-sync-prod: db-delete-prod db-load-prod
 
 db-load-prod-restore:
-	curl -D- -H 'Content-Type:application/x-turtle' -v -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH_BD}
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH}
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH_INF}
+	curl -D- -H 'Content-Type:application/x-turtle' -v -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH_BD}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH_INF}
 
 # run make-onto again at end to rebuild the csv with latest data
 db-sync-all: db-delete-local db-load-local db-delete-prod db-load-prod ## sync local and prod dbs with current ontology
