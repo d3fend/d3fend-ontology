@@ -47,16 +47,16 @@ def get_cci_iri(cci_id):
 
 
 def get_sp800_53_control_iri_name(version, control_id):
-    """Formats IRI for a NIST SP800-53 control by removing spaces and brackets and embedding the release version"""
+    """Formats IRI for a NIST SP 800-53 control by removing spaces and brackets and embedding the release version"""
     control_iri_name = control_id.replace(" ", "")
     control_iri_name = control_iri_name.replace(")", "")
     control_iri_name = control_iri_name.replace("(", "_")
-    control_iri_name = "NIST_SP800-53_R{}_{}".format(str(version), control_iri_name)
+    control_iri_name = "NIST_SP_800-53_R{}_{}".format(str(version), control_iri_name)
     return control_iri_name
 
 
 def write_nist_control_mappings(
-    f, version, control_id, control_name, relation, techniques_string
+    f, version, control_id, control_name, relation, techniques_string, nist_catalog_iri="NIST_SP_800-53_R5"
 ):
     """Writes mappings for one row in frame (spreadsheet.) to .ttl"""
     version = str(version)
@@ -64,9 +64,10 @@ def write_nist_control_mappings(
     control_iri_name = get_sp800_53_control_iri_name(version, control_id)
     # Write individual representing NIST control and provide annotation and data properties
     f.write("d3f:{} a d3f:NISTControl ;\n".format(control_iri_name))
+    f.write('    d3f:member-of d3f:{} ;\n'.format(nist_catalog_iri))
     f.write('    rdfs:label "{}" ;\n'.format(control_id))
-    f.write('    d3f:version "{}" ;\n'.format(version))
     f.write('    d3f:control-name "{}" .\n'.format(control_name))
+    f.write('d3f:{} d3f:has-member d3f:{} .\n'.format(nist_catalog_iri, control_iri_name))
     # Write relations of this control to D3FEND countermeasures mapped in mapping file.
     if isinstance(relation, str):
         relation = relation.lower()  # make lower for robust matching, but not if nan
