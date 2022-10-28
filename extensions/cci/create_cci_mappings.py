@@ -81,11 +81,11 @@ def write_cci_mappings(
             " ", "T"
         )  # default not quite ISO; not quite xsd:dateTime worthy
         if contributor == "DISA  FSO":
-            contributor_str = (
-                "DISA FSO"  # Fix the typos in original data with double spaces
+            contributor_iri_name = (
+                "DISA_FSO"  # Fix the typos in original data with double spaces
             )
         else:
-            contributor_str = contributor
+            contributor_iri_name = contributor.replace(" ", "_")
         # print('<{}>, <{}>, <{}>, <{}>, <{}>, <{}>, <{}>, <{}>\n'.
         #       format(type(publishdate), publishdate, control_id, contributor, status,
         #              definition, relation, techniques_string))
@@ -96,7 +96,7 @@ def write_cci_mappings(
         f.write('    d3f:member-of d3f:{} ;\n'.format(cci_catalog_iri))
         f.write('    rdfs:label "{}" ;\n'.format(control_id))
         f.write('    d3f:published "{}"^^xsd:dateTime ;\n'.format(publishdate))
-        f.write('    d3f:contributor "{}" ;\n'.format(contributor_str))
+        f.write('    d3f:contributor d3f:{} ;\n'.format(contributor_iri_name))
         f.write('    d3f:definition "{}" .\n'.format(definition))
         f.write('d3f:{} d3f:has-member d3f:{} .\n'.format(cci_catalog_iri, control_iri_name))
         # Write relations of this control to D3FEND countermeasures mapped in mapping file.

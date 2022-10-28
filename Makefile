@@ -55,23 +55,17 @@ db-delete-prod:
 	@curl -s -o /dev/null -w "deleted ${DB_PROD}${DB_REST_PATH} %{http_code}\n"  ${DB_PROD}${DB_REST_PATH_BD} --data-urlencode "update=DROP ALL;"
 	@curl -s -o /dev/null -w "deleted ${DB_PROD}${DB_REST_PATH_BD_INF} %{http_code}\n" ${DB_PROD}${DB_REST_PATH_BD_INF} --data-urlencode "update=DROP ALL;"
 
-db-sync-local: db-delete-local db-load-local
-
-db-sync-local-with-controls: db-delete-local db-load-local-with-controls
-
 db-load-local:
 	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_LOCAL}${DB_REST_PATH}
 	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_LOCAL}${DB_REST_PATH_INF}
-
-db-load-local-with-controls:
-	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend-with-controls.ttl ${DB_LOCAL}${DB_REST_PATH}
-	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend-with-controls.ttl ${DB_LOCAL}${DB_REST_PATH_INF}
 
 db-load-prod:
 	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_PROD}${DB_REST_PATH_BD}
 	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_PROD}${DB_REST_PATH_BD_INF}
 
 db-sync-prod: db-delete-prod db-load-prod
+
+db-sync-local: db-delete-local db-load-local
 
 db-load-prod-restore:
 	curl -D- -H 'Content-Type:application/x-turtle' -v -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH_BD}
@@ -292,6 +286,9 @@ build/d3fend-public-mapped.owl: build/d3fend-public.owl
 	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
 	$(END)
 
+build/d3fend-public.ttl: build/d3fend-public.owl
+	./bin/robot convert --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" --input build/d3fend-public.owl --output build/d3fend-public.ttl
+
 build/d3fend-inferred-relationships.csv:
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
 	$(END)
@@ -304,22 +301,20 @@ build/sp800-53r5-control-to-d3fend-mapping.ttl: build/d3fend-public.owl
 	pipenv run python extensions/nist/create_nist_mappings.py
 	$(END)
 
-build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json  ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
-	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public.owl file
-	$(END)
-
-# depends on build.py
-build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl ## build D3FEND ExtensionsZZ
+build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl ## build D3FEND Extensions
 	cat build/d3fend-public.ttl > build/d3fend-public-with-controls.ttl
 	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	pipenv run ttlfmt build/d3fend-public-with-controls.ttl
+	./bin/robot convert --input build/d3fend-public-with-controls.ttl --output build/d3fend-public-with-controls.owl
 	$(END)
 
-
-build: build/ontology build/extensions # build the D3FEND Ontology and Extensions
+build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
+build: build/ontology # build the D3FEND Ontology and Extensions
+	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
+	$(END)
 
 reportsdir:
 	mkdir -p reports/
@@ -333,16 +328,16 @@ distdir:
 	$(END)
 
 test-load-owl:	reportsdir build/d3fend-public.owl ## Used to check d3fend.owl file as parseable and useable for DL profile.
-	./bin/robot validate-profile --profile DL --input build/d3fend-public.owl --output reports/test-owl-validation.txt > reports/test-owl-validation-stdout.txt
+	./bin/robot validate-profile --profile DL --input build/d3fend-public-with-controls.owl --output reports/test-owl-validation.txt > reports/test-owl-validation-stdout.txt
 	$(END)
 
 test-load-ttl:	reportsdir build/d3fend-public.ttl ## Used to check d3fend.ttl file as parseable and useable for DL profile.
-	./bin/robot validate-profile --profile DL --input build/d3fend-public.ttl --output reports/test-ttl-validation.txt > reports/test-ttl-validation-stdout.txt
+	./bin/robot validate-profile --profile DL --input build/d3fend-public-with-controls.ttl --output reports/test-ttl-validation.txt > reports/test-ttl-validation-stdout.txt
 	$(END)
 
 test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
 #	./bin/robot validate-profile --profile DL --input d3fend.json --output reports/json-validation.txt # JSON-LD serialized by RDFlib not read by ROBOT or Protege
-	@pipenv run python3 src/tests/test_load_json.py build/d3fend-public.json > reports/test-load-json.txt
+	@pipenv run python3 src/tests/test_load_json.py build/d3fend-public-with-controls.json > reports/test-load-json.txt
 	$(END)
 
 test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
@@ -350,7 +345,7 @@ test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and use
 	$(END)
 
 test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable for jena libraries
-	@${JENA_PATH}/riot --validate build/d3fend-public.owl > reports/test-owl-jena-validation.txt
+	@${JENA_PATH}/riot --validate build/d3fend-public-with-controls.owl > reports/test-owl-jena-validation.txt
 	$(END)
 
 
@@ -359,14 +354,13 @@ test:	test-load-owl test-load-ttl test-load-json test-load-full test-jena ## Che
 
 dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
-	cp build/d3fend-public.owl dist/public/d3fend.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
-	cp build/d3fend-public-with-controls.ttl dist/public/d3fend-with-controls.ttl
-	cp build/d3fend-public.ttl dist/public/d3fend.ttl
-	cp build/d3fend-public.json dist/public/d3fend.json
+	cp build/d3fend-public-with-controls.ttl dist/public/d3fend.ttl # For now, roll in the CCI & NIST controls extensions to base .ttl release
+	cp build/d3fend-public-with-controls.owl dist/public/d3fend.owl # For now, roll in the CCI & NIST controls extensions to base .owl release
+	cp build/d3fend-public-with-controls.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
-	chmod 644 dist/public/d3fend.ttl dist/public/d3fend-with-controls.ttl
+	chmod 644 dist/public/d3fend.ttl dist/public/d3fend.owl
 	$(END)
 
 all: build extensions dist test ## build all, check for unallowed content, and test load files
