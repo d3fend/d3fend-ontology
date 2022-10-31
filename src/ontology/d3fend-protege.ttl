@@ -610,7 +610,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :maps a owl:ObjectProperty ;
     rdfs:label "maps" ;
-    rdfs:subPropertyOf :associated-with .
+    rdfs:subPropertyOf :may-map .
 
 :may-access a owl:ObjectProperty ;
     rdfs:label "may-access" ;
@@ -758,6 +758,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-counter-attack ;
     :pref-label "may isolate" ;
     :todo "There are some d3f isolation techniques H b P I and E T and M A C that use isolates directly which is different sense that this tactial isolates/may-isolates." .
+
+:may-map a owl:ObjectProperty ;
+    rdfs:label "may-map" ;
+    rdfs:subPropertyOf :may-be-associated-with .
 
 :may-modify a owl:ObjectProperty ;
     rdfs:label "may-modify" ;
@@ -1507,7 +1511,10 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:subClassOf :OperationalActivityMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :AccessControlConfiguration ] ;
+            owl:someValuesFrom :AccessControlConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :UserAccount ] ;
     :d3fend-id "D3-AM" ;
     :definition "Access modeling identifies and records the access permissions granted to administrators, users, groups, and systems." ;
     :kb-reference :Reference-RFC7642SystemForCrossDomainIdentityManagementDefinitionsOverviewConceptsAndRequirements .
@@ -1621,6 +1628,15 @@ Another means of establishing network connectivity is by means of sendingn traff
     :kb-reference :Reference-IdentificationOfTracerouteNodesAndAssociatedDevices,
         :Reference-UsingSpanningTreeProtocolSTPToEnhanceLayer2NetworkTopologyMaps ;
     :synonym "Active Physical Layer Mapping" .
+
+:Activity a owl:Class ;
+    rdfs:label "Activity" ;
+    rdfs:subClassOf :D3FENDThing ;
+    :definition "An activity is a specific behavior representing a set of actions that may be accomplished by an agent." ;
+    rdfs:seeAlso "http://wordnet-rdf.princeton.edu/id/00408356-n",
+        "https://en.wikipedia.org/wiki/Business_Process_Model_and_Notation",
+        "https://en.wikipedia.org/wiki/IDEF0",
+        "https://enterpriseintegrationlab.github.io/icity/Activity/doc/index-en.html" .
 
 :ActivityDependency a owl:Class ;
     rdfs:label "Activity Dependency" ;
@@ -3145,7 +3161,19 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :DataDependency ] ;
+            owl:someValuesFrom :DataDependency ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :NetworkResource ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Database ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Email ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :NetworkFlow ] ;
     :d3fend-id "D3-DEM" ;
     :definition "Information exchange mapping identifies and models the organization's intended design for the exchange of the data types, formats, and volumes between systems at the application layer." ;
     :kb-reference :Reference-CatiaUAFPlugin,
@@ -5782,7 +5810,13 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:subClassOf :NetworkMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :LogicalLink ] ;
+            owl:someValuesFrom :LogicalLink ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Network ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :NetworkNode ] ;
     :d3fend-id "D3-LLM" ;
     :definition "Logical link mapping creates a model of existing or previous node-to-node connections using network-layer data or metadata." ;
     :kb-reference :Reference-LibreNMSDocsNetworkMapExtension .
@@ -6626,7 +6660,25 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:subClassOf :OperationalActivityMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :Dependency ] ;
+            owl:someValuesFrom :Dependency ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :OrganizationalActivity ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :HardwareDevice ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :NetworkNode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :NetworkResource ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Software ] ;
     :d3fend-id "D3-ODM" ;
     :definition "Operational dependency mapping identifies and models the dependencies of the organization's activities on each other and on the organization's performers (people, systems, and services.)  This may include modeling the higher- and lower-level activities of an organization forming a hierarchy, or layering, of the dependencies in an organization's activities." ;
     :kb-reference :Reference-CatiaUAFPlugin,
@@ -6698,6 +6750,10 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :has-member ;
             owl:someValuesFrom :Person ] .
 
+:OrganizationalActivity a owl:Class ;
+    rdfs:label "Organizational Activity" ;
+    rdfs:subClassOf :Activity .
+
 :OrganizationMapping a :OperationalActivityMapping,
         owl:Class,
         owl:NamedIndividual ;
@@ -6705,7 +6761,16 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:subClassOf :OperationalActivityMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :Dependency ] ;
+            owl:someValuesFrom :Dependency ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Organization ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Person ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :OrganizationalActivity ] ;
     :d3fend-id "D3-OM" ;
     :definition "Organization mapping identifies and models the people, roles, and groups with an organization and the relations between them." ;
     :display-order 4 ;
@@ -6918,10 +6983,7 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Passive Logical Link Mapping" ;
-    rdfs:subClassOf :LogicalLinkMapping,
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+    rdfs:subClassOf :LogicalLinkMapping ;
     :d3fend-id "D3-PLLM" ;
     :definition "Passive logical link mapping only listens to network traffic as a means to map the the whole data link layer, where the links represent logical data flows rather than physical connections." ;
     :kb-reference :Reference-TenablePassiveNetworkMonitoring ;
@@ -7075,6 +7137,9 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
         owl:NamedIndividual ;
     rdfs:label "Physical Link Mapping" ;
     rdfs:subClassOf :NetworkMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :NetworkNode ],
         [ a owl:Restriction ;
             owl:onProperty :maps ;
             owl:someValuesFrom :PhysicalLink ] ;
@@ -8287,7 +8352,16 @@ System service applications may originate from the operating system installation
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :ServiceDependency ] ;
+            owl:someValuesFrom :NetworkService ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :ServiceDependency ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :NetworkNode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Software ] ;
     :d3fend-id "D3-SVCDM" ;
     :definition "Service dependency mapping determines the services on which each given service relies." ;
     :kb-article """## How it works
@@ -8908,7 +8982,13 @@ Attackers may manipulate system settings or services to disable system logging o
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :SystemDependency ] ;
+            owl:someValuesFrom :NetworkNode ],
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :SystemDependency ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Software ] ;
     :d3fend-id "D3-SYSDM" ;
     :definition "System dependency mapping identifies and models the dependencies of system components on each other to carry out their function." ;
     :kb-article """## How it works
