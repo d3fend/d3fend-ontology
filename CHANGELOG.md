@@ -1,6 +1,6 @@
 # D3FEND Change Log
 
-## Version - 0.11.0-BETA-1 - 2022-09-19
+## Version - 0.11.0-BETA-1 - 2022-10-31
 
 - Added new large section of 'supporting' defensive techniques under tactic Model. (#12)
 - Added semantic mappings to NIST 800-53 Rev 5 and DISA CCI (Common Common Control Index). (#68)
