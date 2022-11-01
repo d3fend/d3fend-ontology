@@ -6,34 +6,39 @@ SELECT DISTINCT ?entity ?property ?value
 
 WHERE {
 
-# Select techniques where:
-#   Ignore top level classes
-#   Ignore parent classes who have DA relationships defined on their children
-
+    # Select techniques where:
+    #   Ignore top level classes
+    #   Ignore parent classes who have DA relationships defined on their children
 
     ?entity rdfs:subClassOf* d3f:OffensiveTechnique .
-    OPTIONAL{?entity rdfs:label ?property  }
-    OPTIONAL{?entity d3f:attack-id ?value  }
+    OPTIONAL{ ?entity rdfs:label ?property  }
+    OPTIONAL{ ?entity d3f:attack-id ?value  }
 
+    FILTER NOT EXISTS {
+        ?entity ?p ?da .
+        ?da rdfs:subClassOf* d3f:Artifact .
+        ?p rdfs:subPropertyOf* d3f:may-be-associated-with .
+    }
+
+    # Filter the toplevel classes
+    FILTER NOT EXISTS {
+        ?entity rdfs:subClassOf d3f:OffensiveTechnique .
+    }
+
+    # Filter the parents whose children have DAs defined.
+    FILTER NOT EXISTS {
+        ?subt rdfs:subClassOf* ?entity .
+        ?subt ?sp ?sda .
+        ?sda rdfs:subClassOf* d3f:Artifact .
+        ?sp rdfs:subPropertyOf* d3f:may-be-associated-with .
+    }
+
+    # Filter the children whose parents have DAs defined.
 	FILTER NOT EXISTS {
-     ?entity ?p ?da .
-     ?da rdfs:subClassOf* d3f:Artifact .
-     ?p rdfs:subPropertyOf* d3f:may-be-associated-with .
-
-	}
-
-    #Filter the toplevel classes
-    FILTER NOT EXISTS {
-      ?entity rdfs:subClassOf d3f:OffensiveTechnique .
-
+      ?pentity ?pp ?pda .
+      ?pda rdfs:subClassOf* d3f:Artifact .
+      ?pp rdfs:subPropertyOf* d3f:may-be-associated-with .
+      ?entity rdfs:subClassOf* ?p_entity .
     }
 
-	# Filter the parents whose children have DAs defined.
-    FILTER NOT EXISTS {
-      ?subt rdfs:subClassOf* ?entity .
-      ?subt ?sp ?sda .
-      ?sda rdfs:subClassOf* d3f:Artifact .
-      ?sp rdfs:subPropertyOf* d3f:may-be-associated-with .
-    }
-
-}
+} ORDER BY ?value

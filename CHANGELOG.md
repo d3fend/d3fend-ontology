@@ -1,5 +1,14 @@
 # D3FEND Change Log
 
+## Version - 0.11.0-BETA-1 - 2022-09-19
+
+- Added new large section of 'supporting' defensive techniques under tactic Model. (#12)
+- Added semantic mappings to NIST 800-53 Rev 5 and DISA CCI (Common Common Control Index). (#68)
+- Added large number of new artifact definitions for offensive and defensive techniques. (#67)
+- Added a script to automatically create ontology additions for STIX2 based ATT&CK updates and update to ATT&CK V11. (#60)
+- Update robot.jar URL. (#57)
+- Fix label kerberos ticket. (#53)
+
 ## Version - 0.10.1-BETA-1 - 2022-06-13
 
 - Ontology now supports docker builds, thanks @ioggstream. (#5)

@@ -22,7 +22,7 @@ to many lines in the file. This enables efficient code reviews.
 ## System Dependencies
 
 - java 15.0.1, other versions may work however
-- python 3.8
+- python 3.9
 - python pipenv package with `pipenv` in your PATH
 
 ## Building
