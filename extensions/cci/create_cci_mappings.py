@@ -4,7 +4,7 @@ from owlready2 import default_world
 
 """ This Python script reads the public ontology file and a mapping
 file and writes out .ttl file with mappings that may be
-appended to the public ontology.  """
+appended to the public ontology. """
 
 default_world.get_ontology(
     "build/d3fend-public.owl"
@@ -70,8 +70,8 @@ def write_cci_mappings(
     definition,
     relation,
     techniques_string,
-    cci_catalog_prefix='CCICatalog',
-    cci_catalog_version_date='2022-04-05'
+    cci_catalog_prefix="CCICatalog",
+    cci_catalog_version_date="2022-04-05",
 ):
     """Writes mappings for one row in frame (spreadsheet.) to .ttl"""
     if status != "deprecated":
@@ -92,13 +92,15 @@ def write_cci_mappings(
         control_iri_name = get_cci_iri(control_id) + "_v" + cci_catalog_version_date
         cci_catalog_iri = cci_catalog_prefix + "_v" + cci_catalog_version_date
         # Write individual representing NIST control and provide annotation and data properties
-        f.write('d3f:{} a d3f:CCIControl ;\n'.format(control_iri_name))
-        f.write('    d3f:member-of d3f:{} ;\n'.format(cci_catalog_iri))
+        f.write("d3f:{} a d3f:CCIControl ;\n".format(control_iri_name))
+        f.write("    d3f:member-of d3f:{} ;\n".format(cci_catalog_iri))
         f.write('    rdfs:label "{}" ;\n'.format(control_id))
         f.write('    d3f:published "{}"^^xsd:dateTime ;\n'.format(publishdate))
-        f.write('    d3f:contributor d3f:{} ;\n'.format(contributor_iri_name))
+        f.write("    d3f:contributor d3f:{} ;\n".format(contributor_iri_name))
         f.write('    d3f:definition "{}" .\n'.format(definition))
-        f.write('d3f:{} d3f:has-member d3f:{} .\n'.format(cci_catalog_iri, control_iri_name))
+        f.write(
+            "d3f:{} d3f:has-member d3f:{} .\n".format(cci_catalog_iri, control_iri_name)
+        )
         # Write relations of this control to D3FEND countermeasures mapped in mapping file.
         if isinstance(relation, str):
             relation = (
