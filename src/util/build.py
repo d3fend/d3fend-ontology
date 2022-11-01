@@ -1,6 +1,6 @@
 from rdflib import Graph, Namespace, URIRef
 
-PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public.owl"
+PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public-with-controls.owl"
 PUBLIC_DEST_DIR = "build/"
 
 DEFAULT_CONTEXT = {
@@ -48,7 +48,7 @@ _xmlns = _base + "#"
 xmlns = Namespace(_xmlns)
 
 if __name__ == "__main__":
-    output_fname = "d3fend-public"
+    output_fname = "d3fend-public-with-controls"
 
     g = get_graph()
 
