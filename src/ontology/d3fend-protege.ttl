@@ -333,7 +333,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :evaluates a owl:ObjectProperty ;
     rdfs:label "evaluates" ;
-    rdfs:subPropertyOf :associated-with .
+    rdfs:subPropertyOf :associated-with,
+        :may-evaluate .
 
 :evaluator a owl:ObjectProperty ;
     rdfs:label "evaluator" ;
@@ -726,6 +727,9 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :may-disable a owl:ObjectProperty ;
     rdfs:label "may-disable" ;
     rdfs:subPropertyOf :may-evict .
+
+:may-evaluate a owl:ObjectProperty ;
+    rdfs:subPropertyOf :may-be-associated-with .
 
 :may-evict a owl:ObjectProperty ;
     rdfs:label "may-evict" ;
@@ -1883,14 +1887,6 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:comment "The classification of someone or something with respect to its worth." ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/05741528-n> ;
     :comment "This is really an assessment result. If we need to model the assessment as a process in the future we will append Result to these classes." .
-
-:Asset a owl:Class ;
-    owl:equivalentClass :DigitalArtifact ;
-    rdfs:label "Asset" ;
-    rdfs:subClassOf :Artifact ;
-    rdfs:comment "Item, thing, or entity that can be used to acquire, process, store, and distribute digital information and has potential or actual value to an organization. See full defintion of \"IT Asset\" in entry 3.25 in ISO/IEC 19770-1:2017(en)" ;
-    rdfs:isDefinedBy "https://www.iso.org/obp/ui/#iso:std:iso-iec:19770:-1:ed-3:v1:en" ;
-    :synonym "IT Asset" .
 
 :AssetInventory a :DefensiveTechnique,
         owl:Class,
@@ -3161,19 +3157,7 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :DataDependency ],
-        [ a owl:Restriction ;
-            owl:onProperty :maps ;
-            owl:someValuesFrom :NetworkResource ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :Database ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :Email ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :NetworkFlow ] ;
+            owl:someValuesFrom :DataDependency ] ;
     :d3fend-id "D3-DEM" ;
     :definition "Data exchange mapping identifies and models the organization's intended design for the flows of the data types, formats, and volumes between systems at the application layer." ;
     :kb-reference :Reference-CatiaUAFPlugin,
@@ -3577,9 +3561,10 @@ A credential may be:
     rdfs:subClassOf :Artifact,
         :DigitalObject ;
     rdfs:comment "An information-bearing artifact (object) that is, or is encoded to be used with, a digital computer system. This concept is broad to include the literal instances of an artifact, or an implicit summarization of changes to or properties of other artifacts." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Digital_artifactual_value>,
+    rdfs:seeAlso "https://www.iso.org/obp/ui/#iso:std:iso-iec:19770:-1:ed-3:v1:en",
+        <http://dbpedia.org/resource/Digital_artifactual_value>,
         <http://dbpedia.org/resource/Virtual_artifact> ;
-    :synonym "Asset" .
+    :synonym "Digital Asset" .
 
 :DigitalEvent a owl:Class ;
     rdfs:label "Digital Event" ;
@@ -3588,7 +3573,7 @@ A credential may be:
 :DigitalObject a owl:Class ;
     rdfs:label "Digital Object" ;
     rdfs:subClassOf :D3FENDThing ;
-    rdfs:comment "A digital object is the top-level class for an information bearing object that exists in a digital environment. The digital object may be virtual or physical." ;
+    rdfs:comment "A digital object is the top-level class for an object that exists in a digital environment. The digital object may be virtual or physical." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Digital_artifactual_value>,
         <http://dbpedia.org/resource/Virtual_artifact> .
 
@@ -4773,6 +4758,35 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
         :Reference-VirtualizedProcessIsolation_AdvancedMicroDevicesInc ;
     :synonym "Virtualization" .
 
+:HardwareComponentInventory a :AssetInventory,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Hardware Component Inventory" ;
+    rdfs:subClassOf :AssetInventory,
+        [ a owl:Restriction ;
+            owl:onProperty :inventories ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :d3fend-id "D3-HCI" ;
+    :definition "Hardware component inventorying identifies and records the hardware items in the organization's architecture." ;
+    :kb-article """## How it works
+Administrators collect information on hardware devices such as peripherals, NICs, processors, and memory devices that are components of the computers in their architecture using a variety of administrative and management tools that query for this information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through remote adminstration tools and system commands, either manually or using scripts.
+
+## Considerations
+* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
+* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
+
+## Examples
+* Bus discovery 
+   * Admin-scripted PCI Bus inventory using ssh and pciutils
+* Application-layer discovery 
+   * Simple Network Management Protocol (SNMP) collects MIB information
+   * Web-based Enterprise Management (WBEM) collects CIM information
+      * Windows Management Instrumentation (WMI)
+      * Windows Management Infrastructure (MI)""" ;
+    :kb-reference :Reference-AdvancedDeviceMatchingSystem ;
+    :synonym "Hardware Component Discovery",
+        "Hardware Component Inventorying" .
+
 :HardwareDevice a owl:Class ;
     rdfs:label "Hardware Device" ;
     rdfs:subClassOf :DigitalArtifact,
@@ -4789,44 +4803,6 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
             owl:someValuesFrom :HardwareDevice ] ;
     rdfs:comment "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> .
-
-:HardwareInventory a :AssetInventory,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Hardware Inventory" ;
-    rdfs:subClassOf :AssetInventory,
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :HardwareDevice ],
-        [ a owl:Restriction ;
-            owl:onProperty :inventories ;
-            owl:someValuesFrom :NetworkNode ] ;
-    :d3fend-id "D3-HWI" ;
-    :definition "Hardware inventorying identifies and records the hardware items in the organization's architecture." ;
-    :kb-article """## How it works
-Administrators collect information on hardware items in their architecture using a variety of administrative and management tools that query network devices and nodes for information.  In some cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to include host discovery and scanning for active ports and services.
-
-## Considerations
-* Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
-* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
-
-## Examples
-* Link-layer discovery
-   * Link-layer Discovery Protocol (LLDP)
-   * Cisco Discovery Protocol (CDP)
-* Application-layer discovery
-   * Simple Network Management Protocol (SNMP) collects MIB information
-   * Web-based Enterprise Management (WBEM) collects CIM information
-      * Windows Management Instrumentation (WMI)
-      * Windows Management Infrastructure (MI)""" ;
-    :kb-reference :Reference-IEEE-802_1AB-2016,
-        :Reference-QualysNetworkPassiveSensorGettingStartedGuide,
-        :Reference-RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks,
-        :Reference-Web-BasedEnterpriseManagement,
-        :Reference-Windows-Management-Infrastructure,
-        :Reference-Windows-Management-Instrumentation ;
-    :synonym "Hardware Discovery",
-        "Hardware Inventorying" .
 
 :HeapSegment a owl:Class ;
     rdfs:label "Heap Segment" ;
@@ -5688,7 +5664,8 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     rdfs:label "Legacy System" ;
     rdfs:subClassOf :DigitalSystem ;
     rdfs:comment "In computing, a legacy system is an old method, technology, computer system, or application program, \"of, relating to, or being a previous or outdated computer system,\" yet still in use. Often referencing a system as \"legacy\" means that it paved the way for the standards that would follow it. This can also imply that the system is out of date or in need of replacement." ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Legacy_system> .
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Legacy_system> ;
+    :synonym "Legacy Digital System" .
 
 :License a owl:Class ;
     rdfs:label "License" ;
@@ -6236,8 +6213,7 @@ Administrators collect information on network nodes in their architecture using 
    * Web-based Enterprise Management (WBEM) collects CIM information
       * Windows Management Instrumentation (WMI)
       * Windows Management Infrastructure (MI)""" ;
-    :kb-reference :Reference-AdvancedDeviceMatchingSystem,
-        :Reference-IEEE-802_1AB-2016,
+    :kb-reference :Reference-IEEE-802_1AB-2016,
         :Reference-QualysNetworkPassiveSensorGettingStartedGuide,
         :Reference-RFC3411-AnArchitectureForDescribingSimpleNetworkManagementProtocolSNMPManagementFrameworks,
         :Reference-Web-BasedEnterpriseManagement,
@@ -6664,22 +6640,7 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:someValuesFrom :Dependency ],
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :OrganizationalActivity ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :Agent ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :HardwareDevice ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :NetworkNode ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :NetworkResource ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :Software ] ;
+            owl:someValuesFrom :OrganizationalActivity ] ;
     :d3fend-id "D3-ODM" ;
     :definition "Operational dependency mapping identifies and models the dependencies of the organization's activities on each other and on the organization's performers (people, systems, and services.)  This may include modeling the higher- and lower-level activities of an organization forming a hierarchy, or layering, of the dependencies in an organization's activities." ;
     :kb-reference :Reference-CatiaUAFPlugin,
@@ -8353,16 +8314,7 @@ System service applications may originate from the operating system installation
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :NetworkService ],
-        [ a owl:Restriction ;
-            owl:onProperty :maps ;
-            owl:someValuesFrom :ServiceDependency ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :NetworkNode ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :Software ] ;
+            owl:someValuesFrom :ServiceDependency ] ;
     :d3fend-id "D3-SVCDM" ;
     :definition "Service dependency mapping determines the services on which each given service relies." ;
     :kb-article """## How it works
@@ -8531,7 +8483,7 @@ Another difference are the capabilities of the mechanism:
     :d3fend-id "D3-SWI" ;
     :definition "Software inventorying identifies and records the software items in the organization's architecture." ;
     :kb-article """## How it works
-Administrators collect information on software items in their architecture using a variety of administrative and management tools that query network nodes for information.  In limited cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to determine services responding on network nodes."
+Administrators collect information on software items in their architecture using a variety of administrative and management tools that query network nodes for information.  In limited cases, where such queries are not supported or provide specific information of interest, an administrator may also collect this information through network enumeration methods to determine services responding on network nodes.
 
 ## Considerations
 * Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
@@ -8826,7 +8778,7 @@ Extremely complex password requirements may lead users to saving passwords in te
 :System a owl:Class ;
     rdfs:label "System" ;
     rdfs:subClassOf :Artifact ;
-    rdfs:comment "An artifact (instrumentality) that combines interrelated interacting artifacts designed to work as a coherent entity." ;
+    rdfs:comment "An artifact (instrumentality) that combines interrelated interacting artifacts designed to work as a coherent entity.  [Note that not all digital artifacts are systems nor are all systems digital artifacts.]" ;
     rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/04384144-n" .
 
 :SystemCall a owl:Class ;
@@ -8983,13 +8935,7 @@ Attackers may manipulate system settings or services to disable system logging o
     rdfs:subClassOf :SystemMapping,
         [ a owl:Restriction ;
             owl:onProperty :maps ;
-            owl:someValuesFrom :NetworkNode ],
-        [ a owl:Restriction ;
-            owl:onProperty :maps ;
-            owl:someValuesFrom :SystemDependency ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-map ;
-            owl:someValuesFrom :Software ] ;
+            owl:someValuesFrom :SystemDependency ] ;
     :d3fend-id "D3-SYSDM" ;
     :definition "System dependency mapping identifies and models the dependencies of system components on each other to carry out their function." ;
     :kb-article """## How it works
@@ -17295,7 +17241,7 @@ Various embodiments of the invention disclosed herein provide techniques for det
     rdfs:label "Reference - IEEE Standard for Local and Metropolitan Area Networks - Station and Media Access Control Connectivity Discovery" ;
     :has-link "https://standards.ieee.org/ieee/802.1AB/6047/"^^xsd:anyURI ;
     :kb-organization "IEEE" ;
-    :kb-reference-of :HardwareInventory ;
+    :kb-reference-of :HardwareComponentInventory ;
     :kb-reference-title "IEEE Standard for Local and Metropolitan Area Networks - Station and Media Access Control Connectivity Discovery" .
 
 :Reference-IndirectBranchingCalls a :AcademicPaperReference,
@@ -18054,7 +18000,7 @@ Powershell can be used to hide monitored command line execution such as:
     :has-link "https://www.qualys.com/passive-scanning-sensor/"^^xsd:anyURI ;
     :kb-abstract "Qualys Passive Scanning Sensor (PS) continuously monitors all network traffic and flags any asset activity. It identifies and profiles devices the moment they connect to the network, including those difficult to scan, corporate owned, brought by employees, and rogue IT. The data is sent immediately to the Qualys Cloud Platform for centralized analysis." ;
     :kb-organization "Qualys" ;
-    :kb-reference-of :HardwareInventory,
+    :kb-reference-of :HardwareComponentInventory,
         :NetworkNodeInventory ;
     :kb-reference-title "Qualys Network Passive Sensor Getting Started Guide" .
 
@@ -18236,7 +18182,7 @@ All of these behaviors call into the Windows API, which uses the NamedPipe WINRE
     :has-link "https://https://datatracker.ietf.org/doc/html/rfc3411"^^xsd:anyURI ;
     :kb-author "D. Harrington, R. Presuhn, B. Wijnen" ;
     :kb-organization "Internet Engineering Task Force (IETF)" ;
-    :kb-reference-of :HardwareInventory ;
+    :kb-reference-of :HardwareComponentInventory ;
     :kb-reference-title "An Architecture for Describing Simple Network Management Protocol (SNMP) Management Frameworks" .
 
 :Reference-RFC7208-SenderPolicyFramework-SPF-ForAuthorizingUseOfDomainsInEmail-IETF a owl:NamedIndividual,
@@ -19222,7 +19168,7 @@ Could be applied to a number of different types of monitoring depending on what 
     :has-link "https://www.dmtf.org/standards/wbem"^^xsd:anyURI ;
     :kb-organization "Distributed Management Task Force (DMTF)" ;
     :kb-reference-of :ConfigurationInventory,
-        :HardwareInventory,
+        :HardwareComponentInventory,
         :NetworkNodeInventory,
         :SoftwareInventory ;
     :kb-reference-title "Web-Based Enterprise Management" .
@@ -19270,7 +19216,7 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     :has-link "https://docs.microsoft.com/en-us/previous-versions/windows/desktop/wmi_v2/windows-management-infrastructure"^^xsd:anyURI ;
     :kb-organization "Microsoft" ;
     :kb-reference-of :ConfigurationInventory,
-        :HardwareInventory,
+        :HardwareComponentInventory,
         :NetworkNodeInventory,
         :SoftwareInventory ;
     :kb-reference-title "Windows Management Infrastructure" .
@@ -19281,7 +19227,7 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     :has-link "https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page"^^xsd:anyURI ;
     :kb-organization "Microsoft" ;
     :kb-reference-of :ConfigurationInventory,
-        :HardwareInventory,
+        :HardwareComponentInventory,
         :NetworkNodeInventory,
         :SoftwareInventory ;
     :kb-reference-title "Windows Management Instrumentation" .
