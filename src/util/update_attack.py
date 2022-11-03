@@ -13,18 +13,6 @@ D3F_PREFIX = "d3f:"
 ENTERPRISE_ATTACK_JSON = "enterprise-attack-11.2.json"
 
 
-def recursive_extract(dictionary, key):
-    if not isinstance(dictionary, dict):
-        print(dictionary)
-        print("is not dict")
-        return
-    for k, v in dictionary.items():
-        if k == key:
-            yield v
-        if isinstance(v, dict):
-            recursive_extract(v, key)
-
-
 def kcp_to_class(kcp):
     return str(
         D3F_PREFIX + string.capwords(kcp.replace("-", " ")) + " Technique"
@@ -51,53 +39,125 @@ def get_stix():
     return json.loads(enterprise_attack.read_text())
 
 
-def get_mitre_attacks(stix):
-    """Get all attack-patterns where the source_name is a mitre-attack"""
-    for attack_pattern in filter(
-        lambda x: x["type"] == "attack-pattern", stix["objects"]
-    ):
-        for mitre_attack in filter(
-            lambda x: x["source_name"] == "mitre-attack",
-            attack_pattern["external_references"],
+def get_mitre_attack_techniques(stix):
+    """Get all attack-patterns where the source_name is a mitre-attack.
+
+    An attack-pattern has a set of external_references that describe
+    specific attacks, e.g.:
+
+    { ...,
+      'external_references': [{
+        'external_id': 'T1055.011',
+        'source_name': 'mitre-attack',
+        'url': 'https://attack.mitre.org/techniques/T1055/011'
+        },...
+        ]
+    }
+
+    """
+    RE_ATTACK_TECHNIQUE = re.compile("^T[0-9]")
+    for attack_pattern in (x for x in stix["objects"] if x["type"] == "attack-pattern"):
+        for mitre_attack in (
+            y
+            for y in attack_pattern["external_references"]
+            if y["source_name"] == "mitre-attack"
         ):
-            yield attack_pattern, mitre_attack
+            if RE_ATTACK_TECHNIQUE.match(
+                mitre_attack["external_id"]
+            ):  # ensure we are getting techniques...
+                yield attack_pattern, mitre_attack
+
+
+def _assert(actual, expected):
+    if expected != actual:
+        raise AssertionError(f"expected: {expected} != actual: {actual}")
 
 
 def test_get_mitre_attacks():
     stix = get_stix()
-    for attack_pattern, mitre_attack in get_mitre_attacks(stix):
-        raise NotImplementedError
+    for attack_pattern, mitre_attack in get_mitre_attack_techniques(stix):
+        _assert(attack_pattern["type"], "attack-pattern")
+        _assert(mitre_attack["source_name"], "mitre-attack")
+        _assert(mitre_attack["external_id"].startswith("T"), True)
 
 
-if __name__ == "__main__":
-    g = get_graph(filename="src/ontology/d3fend-protege.ttl")
-    stix = get_stix()
+def get_attacks(stix):
+    """Get all attack-patterns where the source_name is a mitre-attack.
 
+    An attack metadata has the following structure:
+
+    {
+        "T1055.011": {
+            "name": "Extra Window Memory Injection",
+            "deprecated": False,
+            "superclasses": ["d3f:T1055"],
+            },
+        "T1055": {
+            "name": "Process Injection",
+            "deprecated": False,
+            "superclasses": [
+                "d3f:DefenseEvasionTechnique",
+                "d3f:PrivilegeEscalationTechnique",
+            ],
+            }
+    }
+    """
     attack_ids = set()
     deprecated_attack_ids = set()
     count_deprecated = 0  # total, could have duplicates...
-    technique_meta = {}
-    for o, r in get_mitre_attacks(stix):
-        if re.match("^T[0-9]", r["external_id"]):  # ensure we are getting techniques...
-            attack_id = r["external_id"]
-            technique_meta[attack_id] = {"name": o["name"]}
+    techniques_metadata = {}
+    for o, r in get_mitre_attack_techniques(stix):
+        attack_id = r["external_id"]
+        techniques_metadata[attack_id] = {"name": o["name"]}
 
-            if "." in attack_id:  # subtechniques go under techniques...
-                superclasses = [D3F_PREFIX + attack_id.split(".")[0]]
-            else:
-                superclasses = [
-                    kcp_to_class(p["phase_name"]) for p in o["kill_chain_phases"]
-                ]
-            technique_meta[attack_id]["superclasses"] = superclasses
+        if "." in attack_id:  # subtechniques go under techniques...
+            superclasses = [D3F_PREFIX + attack_id.split(".")[0]]
+        else:
+            superclasses = [
+                kcp_to_class(p["phase_name"]) for p in o["kill_chain_phases"]
+            ]
+        techniques_metadata[attack_id]["superclasses"] = superclasses
 
-            if o.get("x_mitre_deprecated", None) is True:
-                technique_meta[attack_id]["deprecated"] = True
-                deprecated_attack_ids.add(attack_id)
-                count_deprecated += 1
-            else:
-                technique_meta[attack_id]["deprecated"] = False
-                attack_ids.add(attack_id)
+        if o.get("x_mitre_deprecated", None) is True:
+            techniques_metadata[attack_id]["deprecated"] = True
+            deprecated_attack_ids.add(attack_id)
+            count_deprecated += 1
+        else:
+            techniques_metadata[attack_id]["deprecated"] = False
+            attack_ids.add(attack_id)
+    return attack_ids, deprecated_attack_ids, techniques_metadata, count_deprecated
 
+
+def test_get_attacks():
+    stix = get_stix()
+    attack_ids, deprecated_attack_ids, techniques_metadata = get_attacks(stix)
+    _assert(len(attack_ids) + len(deprecated_attack_ids), len(techniques_metadata))
+    _assert(len(attack_ids), 707)
+    _assert(len(deprecated_attack_ids), 12)
+    _assert(len(techniques_metadata), 719)
+    _assert(techniques_metadata["T1055.011"]["name"], "Extra Window Memory Injection")
+    _assert(techniques_metadata["T1055.011"]["deprecated"], False)
+    _assert(
+        techniques_metadata["T1055.011"]["superclasses"],
+        ["d3f:T1055"],
+    )
+    _assert(techniques_metadata["T1055"]["deprecated"], False)
+    _assert(
+        techniques_metadata["T1055"]["superclasses"],
+        ["d3f:DefenseEvasionTechnique", "d3f:PrivilegeEscalationTechnique"],
+    )
+
+
+def main():
+    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.ttl")
+    stix = get_stix()
+
+    (
+        attack_ids,
+        deprecated_attack_ids,
+        techniques_metadata,
+        count_deprecated,
+    ) = get_attacks(stix)
     attack_ids = list(attack_ids)
 
     incount = 0
@@ -105,12 +165,11 @@ if __name__ == "__main__":
     present = set()
     missing = set()
     for attack_id in attack_ids:
-        # import ipdb; ipdb.set_trace()
         if (
             URIRef(_xmlns + attack_id),
             URIRef(_xmlns + "attack-id"),
             Literal(attack_id),
-        ) in g:
+        ) in d3fend_graph:
             incount += 1
             present.add(attack_id)
         else:
@@ -121,12 +180,11 @@ if __name__ == "__main__":
     dnincount = 0
     deprecated_in_d3 = set()
     for attack_id in deprecated_attack_ids:
-        # import ipdb; ipdb.set_trace()
         if (
             URIRef(_xmlns + attack_id),
             URIRef(_xmlns + "attack-id"),
             Literal(attack_id),
-        ) in g:
+        ) in d3fend_graph:
             dincount += 1
             deprecated_in_d3.add(attack_id)
         else:
@@ -163,8 +221,8 @@ if __name__ == "__main__":
             csvwriter.writerow(
                 [
                     D3F_PREFIX + attack_id,
-                    technique_meta[attack_id]["name"],
-                    "|".join(technique_meta[attack_id]["superclasses"]),
+                    techniques_metadata[attack_id]["name"],
+                    "|".join(techniques_metadata[attack_id]["superclasses"]),
                     attack_id,
                 ]
             )
@@ -178,3 +236,7 @@ if __name__ == "__main__":
         "reports/attack_update-deprecated_attack_in_d3fend.txt",
         sorted(list(deprecated_in_d3)),
     )
+
+
+if __name__ == "__main__":
+    main()
