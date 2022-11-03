@@ -5,8 +5,8 @@ import csv
 import sys
 from pathlib import Path
 
-from rdflib import URIRef, Literal
-from build import get_graph, _xmlns
+from rdflib import URIRef, Literal, Graph, RDFS
+from build import get_graph, _xmlns as _XMLNS
 
 
 D3F_PREFIX = "d3f:"
@@ -148,6 +148,79 @@ def test_get_attacks():
     )
 
 
+def test_update_attack_labels():
+    """
+    Replace an rdfs:label when changed in the attack.json file.
+
+    :T1001.001 a owl:Class ;
+        rdfs:label "Junk Data" ;
+        rdfs:subClassOf :T1001 ;
+        :attack-id "T1001.001" .
+
+    """
+    techniques_meta = {
+        "T1055.011": {
+            "name": "BRAND NEW NAME",
+            "deprecated": False,
+            "superclasses": ["d3f:T1055"],
+        }
+    }
+    g = Graph()
+    g.parse(
+        data="""
+    @prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+    @prefix dcterms: <http://purl.org/dc/terms/> .
+    @prefix owl: <http://www.w3.org/2002/07/owl#> .
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+    :T1054 a owl:Class ;
+    rdfs:label "Indicator Blocking" ;
+    rdfs:subClassOf :DefenseEvasionTechnique ;
+    :attack-id "T1054" .
+
+    :T1055 a owl:Class ;
+        rdfs:label "Process Injection" ;
+        rdfs:subClassOf :DefenseEvasionTechnique,
+            :PrivilegeEscalationTechnique ;
+        :attack-id "T1055" .
+
+    :T1055.001 a owl:Class ;
+        rdfs:label "Dynamic-link Library Injection" ;
+        rdfs:subClassOf :T1055,
+            [ a owl:Restriction ;
+                owl:onProperty :adds ;
+                owl:someValuesFrom :SharedLibraryFile ],
+            [ a owl:Restriction ;
+                owl:onProperty :invokes ;
+                owl:someValuesFrom :SystemCall ],
+            [ a owl:Restriction ;
+                owl:onProperty :loads ;
+                owl:someValuesFrom :SharedLibraryFile ] ;
+        :attack-id "T1055.001" .
+    """,
+        format="turtle",
+    )
+    update_attack_labels(g, techniques_meta)
+    _assert(
+        g.value(URIRef(_XMLNS + "T1055.011"), RDFS.label), Literal("BRAND NEW NAME")
+    )
+
+
+def update_attack_labels(d3fend_graph, techniques_meta):
+    """
+    Update the graph with the new techniques metadata.
+    """
+    for attack_id, meta in techniques_meta.items():
+        attack_uri = URIRef(_XMLNS + attack_id)
+        current_label = d3fend_graph.value(attack_uri, RDFS.label)
+        if current_label != meta["name"]:
+            d3fend_graph.remove((attack_uri, RDFS.label, current_label))
+            d3fend_graph.add((attack_uri, RDFS.label, Literal(meta["name"])))
+
+
 def main():
     d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.ttl")
     stix = get_stix()
@@ -166,8 +239,8 @@ def main():
     missing = set()
     for attack_id in attack_ids:
         if (
-            URIRef(_xmlns + attack_id),
-            URIRef(_xmlns + "attack-id"),
+            URIRef(_XMLNS + attack_id),
+            URIRef(_XMLNS + "attack-id"),
             Literal(attack_id),
         ) in d3fend_graph:
             incount += 1
@@ -181,8 +254,8 @@ def main():
     deprecated_in_d3 = set()
     for attack_id in deprecated_attack_ids:
         if (
-            URIRef(_xmlns + attack_id),
-            URIRef(_xmlns + "attack-id"),
+            URIRef(_XMLNS + attack_id),
+            URIRef(_XMLNS + "attack-id"),
             Literal(attack_id),
         ) in d3fend_graph:
             dincount += 1
