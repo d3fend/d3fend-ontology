@@ -332,6 +332,13 @@ def main(do_counters=True, update_d3fend=False):
             sorted(list(deprecated_in_d3f)),
         )
 
+    if update_d3fend:
+        update_attack_labels(d3fend_graph, techniques_metadata)
+        d3fend_graph.serialize(
+            destination="src/ontology/d3fend-protege.ttl", format="turtle"
+        )
+
 
 if __name__ == "__main__":
-    main(do_counters=True, update_d3fend=False)
+    update_d3fend = "--update-d3fend" in sys.argv
+    main(do_counters=True, update_d3fend=update_d3fend)
