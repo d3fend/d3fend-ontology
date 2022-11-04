@@ -104,7 +104,9 @@ def get_attacks(stix):
     """
     attack_ids = set()
     deprecated_attack_ids = set()
-    count_deprecated = 0  # total, could have duplicates...
+    count_deprecated_with_duplicates = (
+        0  # This counter is required because there could be duplicates...
+    )
     techniques_metadata = {}
     for o, r in get_mitre_attack_techniques(stix):
         attack_id = r["external_id"]
@@ -121,20 +123,31 @@ def get_attacks(stix):
         if o.get("x_mitre_deprecated", None) is True:
             techniques_metadata[attack_id]["deprecated"] = True
             deprecated_attack_ids.add(attack_id)
-            count_deprecated += 1
+            count_deprecated_with_duplicates += 1
         else:
             techniques_metadata[attack_id]["deprecated"] = False
             attack_ids.add(attack_id)
-    return attack_ids, deprecated_attack_ids, techniques_metadata, count_deprecated
+    return (
+        attack_ids,
+        deprecated_attack_ids,
+        techniques_metadata,
+        count_deprecated_with_duplicates,
+    )
 
 
 def test_get_attacks():
     stix = get_stix()
-    attack_ids, deprecated_attack_ids, techniques_metadata = get_attacks(stix)
+    (
+        attack_ids,
+        deprecated_attack_ids,
+        techniques_metadata,
+        count_deprecated_with_duplicates,
+    ) = get_attacks(stix)
     _assert(len(attack_ids) + len(deprecated_attack_ids), len(techniques_metadata))
     _assert(len(attack_ids), 707)
     _assert(len(deprecated_attack_ids), 12)
     _assert(len(techniques_metadata), 719)
+    _assert(count_deprecated_with_duplicates, 12)
     _assert(techniques_metadata["T1055.011"]["name"], "Extra Window Memory Injection")
     _assert(techniques_metadata["T1055.011"]["deprecated"], False)
     _assert(
@@ -221,76 +234,40 @@ def update_attack_labels(d3fend_graph, techniques_meta):
             d3fend_graph.add((attack_uri, RDFS.label, Literal(meta["name"])))
 
 
-def main():
-    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.ttl")
-    stix = get_stix()
+def generate_robot_template(missing, techniques_metadata):
+    """Generate a CSV file to be processed with http://robot.obolibrary.org/template
+     and generate the missing entries in the d3fend.owl file.
 
-    (
-        attack_ids,
-        deprecated_attack_ids,
-        techniques_metadata,
-        count_deprecated,
-    ) = get_attacks(stix)
-    attack_ids = list(attack_ids)
+    The following row:
 
-    incount = 0
-    nincount = 0
-    present = set()
-    missing = set()
-    for attack_id in attack_ids:
-        if (
-            URIRef(_XMLNS + attack_id),
-            URIRef(_XMLNS + "attack-id"),
-            Literal(attack_id),
-        ) in d3fend_graph:
-            incount += 1
-            present.add(attack_id)
-        else:
-            nincount += 1
-            missing.add(attack_id)
+        d3f:T1055,Process Injection,d3f:DefenseEvasionTechnique|d3f:PrivilegeEscalationTechnique,T1055
 
-    dincount = 0
-    dnincount = 0
-    deprecated_in_d3 = set()
-    for attack_id in deprecated_attack_ids:
-        if (
-            URIRef(_XMLNS + attack_id),
-            URIRef(_XMLNS + "attack-id"),
-            Literal(attack_id),
-        ) in d3fend_graph:
-            dincount += 1
-            deprecated_in_d3.add(attack_id)
-        else:
-            dnincount += 1
+     will generate the following OWL:
 
-    _print("Valid ATT&CK ids found in stix document:", len(attack_ids))
+         :T1055 a owl:Class ;
+             rdfs:label "Process Injection" ;
+             rdfs:subClassOf :DefenseEvasionTechnique,
+                 :PrivilegeEscalationTechnique ;
+             :attack-id "T1055" .
 
-    _print("Valid ATT&CK ids in D3FEND graph:", incount)
-
-    _print("Valid ATT&CK ids not in D3FEND graph: ", nincount)
-    report_writer("reports/attack_update-missing_attack_ids.txt", sorted(list(missing)))
-
+    """
     outfile_csv = Path("reports/attack_update-missing_attack_ids-robot_template.csv")
     with outfile_csv.open("w") as f:
-        # csvwriter = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        # csvwriter = csv.writer(f)
         csvwriter = csv.writer(
             f, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         # ID & LABEL are reserved words in robot template command, both are required
         # to be unique. ID is unique, however, rdfs:label is never expected to be unique in D3FEND.
         csvwriter.writerow(["id", "name", "SC", "attack id"])
-        # see docs for explanation   http://robot.obolibrary.org/template
-        # csvwriter.writerow(["ID", "A rdfs:label", "AI rdfs:subClassOf SPLIT=|", "A " + D3F_PREFIX + "attack-id"])
         csvwriter.writerow(
             ["ID", "A rdfs:label", "SC % SPLIT=|", "A " + D3F_PREFIX + "attack-id"]
         )
-        # csvwriter.writerow(['ID', 'LABEL', 'SC'])
         for attack_id in sorted(missing):
-            if "." in attack_id:
-                superclass = D3F_PREFIX + attack_id.split(".")[0]
-            else:
-                superclass = D3F_PREFIX + "TODO"
+            # XXX The following code is unused: can we drop it?
+            # if "." in attack_id:
+            #     superclass = D3F_PREFIX + attack_id.split(".")[0]
+            # else:
+            #     superclass = D3F_PREFIX + "TODO"
             csvwriter.writerow(
                 [
                     D3F_PREFIX + attack_id,
@@ -300,16 +277,61 @@ def main():
                 ]
             )
 
-    _print("Deprecated ATT&CK total:", count_deprecated)
 
-    _print("Deprecated ATT&CK deduped:", len(deprecated_attack_ids))
+def main(do_counters=True, update_d3fend=False):
+    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.ttl")
+    stix = get_stix()
 
-    _print("Deprecated ATT&CK ids in D3FEND:", dnincount)
-    report_writer(
-        "reports/attack_update-deprecated_attack_in_d3fend.txt",
-        sorted(list(deprecated_in_d3)),
-    )
+    (
+        attack_ids,
+        deprecated_attack_ids,
+        techniques_metadata,
+        count_deprecated_with_duplicates,
+    ) = get_attacks(stix)
+
+    if do_counters:
+        # Print some stats
+        present = {
+            attack_id
+            for attack_id in attack_ids
+            if (
+                URIRef(_XMLNS + attack_id),
+                URIRef(_XMLNS + "attack-id"),
+                Literal(attack_id),
+            )
+            in d3fend_graph
+        }
+        missing = attack_ids - present
+
+        deprecated_in_d3f = {
+            attack_id
+            for attack_id in deprecated_attack_ids
+            if (
+                URIRef(_XMLNS + attack_id),
+                URIRef(_XMLNS + "attack-id"),
+                Literal(attack_id),
+            )
+            in d3fend_graph
+        }
+
+        _print("Valid ATT&CK ids found in stix document:", len(attack_ids))
+        _print("Valid ATT&CK ids in D3FEND graph:", len(present))
+        _print("Valid ATT&CK ids not in D3FEND graph: ", len(missing))
+        report_writer(
+            "reports/attack_update-missing_attack_ids.txt", sorted(list(missing))
+        )
+
+        generate_robot_template(missing, techniques_metadata)
+
+        _print("Deprecated ATT&CK total:", count_deprecated_with_duplicates)
+        _print("Deprecated ATT&CK deduped:", len(deprecated_attack_ids))
+
+        _print("Deprecated ATT&CK ids in D3FEND:", len(deprecated_in_d3f))
+        report_writer(
+            "reports/attack_update-deprecated_attack_in_d3fend.txt",
+            sorted(list(deprecated_in_d3f)),
+        )
 
 
 if __name__ == "__main__":
-    main()
+    main(do_counters=True, update_d3fend=False)
