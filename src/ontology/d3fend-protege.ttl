@@ -1166,6 +1166,12 @@ dcterms:title a owl:AnnotationProperty ;
     rdfs:subPropertyOf :d3fend-display-annotation ;
     rdfs:comment "A base string to use as prefix to create a full URL for an entity. The baseurl must end in a forward slash: /" .
 
+:display-order a owl:AnnotationProperty ;
+    rdfs:label "display-order" ;
+    rdfs:subPropertyOf :d3fend-display-annotation ;
+    rdfs:comment "x display-order y: An object x should be displayed in ordinal position y when placed or listed in a d3fend display with other objects of its kind." ;
+    :todo "This should be an annotation property." .
+
 :display-priority a owl:AnnotationProperty ;
     rdfs:subPropertyOf :d3fend-display-annotation .
 
@@ -1343,12 +1349,6 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:comment "A point or period of time associated with an event in the lifecycle of the resource." ;
     :comment "d3f:date casts the dcterms:date rdf Property as a DatatypeProperty." ;
     rdfs:seeAlso "https://www.w3.org/wiki/Good_Ontologies#The_Dublin_Core_.28DC.29_ontology"^^xsd:anyURI .
-
-:display-order a owl:DatatypeProperty ;
-    rdfs:label "display-order" ;
-    rdfs:subPropertyOf :d3fend-display-property ;
-    rdfs:comment "x display-order y: An object x should be displayed in ordinal position y when placed or listed in a d3fend display with other objects of its kind." ;
-    :todo "This should be an annotation property." .
 
 :expectation-rating a owl:DatatypeProperty ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
@@ -2640,10 +2640,7 @@ Profiling request and response payloads across multiple clients to a single serv
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Collection" ;
-    rdfs:subClassOf :OffensiveTactic,
-        [ a owl:Restriction ;
-            owl:onProperty :display-order ;
-            owl:hasValue 2 ] ;
+    rdfs:subClassOf :OffensiveTactic ;
     :display-order 9 .
 
 :CollectionTechnique a owl:Class ;
@@ -3433,9 +3430,6 @@ A credential may be:
     rdfs:label "Defensive Tactic" ;
     rdfs:subClassOf :D3FENDThing,
         [ a owl:Restriction ;
-            owl:onProperty :display-order ;
-            owl:someValuesFrom xsd:integer ],
-        [ a owl:Restriction ;
             owl:onProperty :enabled-by ;
             owl:someValuesFrom :DefensiveTechnique ] ;
     rdfs:comment "a plan for attaining a particular goal" ;
@@ -3454,9 +3448,6 @@ A credential may be:
         [ a owl:Restriction ;
             owl:onProperty :date ;
             owl:someValuesFrom xsd:dateTime ],
-        [ a owl:Restriction ;
-            owl:onProperty :display-order ;
-            owl:someValuesFrom xsd:integer ],
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :DefensiveTactic ],
@@ -6453,9 +6444,6 @@ Hosts/users within a computer network are analyzed to identify communities of ho
     rdfs:label "Offensive Tactic" ;
     rdfs:subClassOf :ATTACKThing,
         [ a owl:Restriction ;
-            owl:onProperty :display-order ;
-            owl:someValuesFrom xsd:integer ],
-        [ a owl:Restriction ;
             owl:onProperty :enabled-by ;
             owl:someValuesFrom :OffensiveTechnique ] ;
     rdfs:comment "Per ATT&CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique." ;
@@ -6465,9 +6453,6 @@ Hosts/users within a computer network are analyzed to identify communities of ho
     rdfs:label "Offensive Technique" ;
     rdfs:subClassOf :ATTACKThing,
         :Technique,
-        [ a owl:Restriction ;
-            owl:onProperty :display-order ;
-            owl:someValuesFrom xsd:integer ],
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :OffensiveTactic ] ;
@@ -7826,9 +7811,16 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:comment "A program that needs to access data from a file stored in a file system uses the read system call. The file is identified by a file descriptor that is normally obtained from a previous call to open. This system call reads in data in bytes, the number of which is specified by the caller, from the file and stores then into a buffer supplied by the calling process." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Read_(system_call)> .
 
+:Reconnaissance a owl:Class ;
+    rdfs:subClassOf :OffensiveTactic ;
+    :display-order 0 .
+
 :ReconnaissanceTechnique a owl:Class ;
     rdfs:label "Reconnaissance Technique" ;
-    rdfs:subClassOf :OffensiveTechnique .
+    rdfs:subClassOf :OffensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Reconnaissance ] .
 
 :Record a owl:Class ;
     rdfs:label "Record" ;
@@ -7986,9 +7978,16 @@ This technique analyzes a user's resource accesses by comparing the user's recen
         :Reference-ModelingUserAccessToComputerResources_DaedalusGroupLLC,
         :Reference-SystemAndMethodThereofForIdentifyingAndRespondingToSecurityIncidentsBasedOnPreemptiveForensics_PaloAltoNetworksInc .
 
+:ResourceDevelopment a owl:Class ;
+    rdfs:label "Resource Development" ;
+    rdfs:subClassOf :OffensiveTactic .
+
 :ResourceDevelopmentTechnique a owl:Class ;
     rdfs:label "Resource Development Technique" ;
-    rdfs:subClassOf :OffensiveTechnique .
+    rdfs:subClassOf :OffensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Reconnaissance ] .
 
 :ResourceFork a owl:Class ;
     rdfs:label "Resource Fork" ;
