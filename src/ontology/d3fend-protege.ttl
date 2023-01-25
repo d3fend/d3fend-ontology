@@ -358,6 +358,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :executes a owl:ObjectProperty ;
     rdfs:label "executes" ;
     rdfs:subPropertyOf :accesses,
+        :may-execute,
         :runs ;
     rdfs:comment "x executes y: The subject x takes the action of carrying out (executing) y, which is a single software module, function, or instruction." ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/02569242-v> .
@@ -752,7 +753,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :may-execute a owl:ObjectProperty ;
     rdfs:label "may-execute" ;
-    rdfs:subPropertyOf :may-be-associated-with .
+    rdfs:subPropertyOf :may-be-associated-with ;
+    rdfs:comment "x may execute y: The subject x might take the action of carrying out (executing) y, which is a single software module, function, or instruction." .
 
 :may-harden a owl:ObjectProperty ;
     rdfs:label "may-harden" ;
@@ -2340,7 +2342,7 @@ Byte sequences containing code that is never used as machine code are still anal
 
 :CacheMemory a owl:Class ;
     rdfs:label "Processor Cache Memory" ;
-    rdfs:subClassOf :PrimaryMemory,
+    rdfs:subClassOf :PrimaryStorage,
         [ a owl:Restriction ;
             owl:onProperty :accessed-by ;
             owl:someValuesFrom :CentralProcessingUnit ],
@@ -2456,6 +2458,14 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
             owl:onProperty :version ;
             owl:someValuesFrom xsd:string ] .
 
+:CAPEC-663 a :CommonAttackPattern,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Exploitation of Transient Instruction Execution" ;
+    rdfs:subClassOf :CommonAttackPattern ;
+    rdfs:isDefinedBy "https://capec.mitre.org/data/definitions/663.html" ;
+    :capec-id "CAPEC-553" .
+
 :CAPECThing a owl:Class ;
     rdfs:label "CAPEC Thing" .
 
@@ -2480,15 +2490,24 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
 
 :CentralProcessingUnit a owl:Class ;
     rdfs:label "Central Processing Unit" ;
-    rdfs:subClassOf :HardwareDevice,
+    rdfs:subClassOf :Processor,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ProcessorRegister ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :CacheMemory ] ;
+            owl:someValuesFrom :CacheMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :MemoryManagementUnit ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :MemoryProtectionUnit ] ;
     rdfs:comment "A central processing unit (CPU), also called a central processor, main processor or just processor, is the electronic circuitry that executes instructions comprising a computer program. The CPU performs basic arithmetic, logic, controlling, and input/output (I/O) operations specified by the instructions in the program. This contrasts with external components such as main memory and I/O circuitry, and specialized processors such as graphics" ;
-    rdfs:isDefinedBy "https://en.wikipedia.org/wiki/Central_processing_unit" .
+    rdfs:isDefinedBy "https://en.wikipedia.org/wiki/Central_processing_unit" ;
+    :synonym "Central Processor",
+        "CPU",
+        "Main Processor" .
 
 :Certificate a owl:Class ;
     rdfs:label "Certificate" ;
@@ -2671,7 +2690,7 @@ Profiling request and response payloads across multiple clients to a single serv
 
 :CloudStorage a owl:Class ;
     rdfs:label "Cloud Storage" ;
-    rdfs:subClassOf :Memory ;
+    rdfs:subClassOf :SecondaryStorage ;
     rdfs:comment "Cloud storage is storage held within a computing cloud." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Cloud_storage> ;
     rdfs:seeAlso <http://dbpedia.org/resource/Cloud_computing> .
@@ -3883,7 +3902,7 @@ A credential may be:
     rdfs:subClassOf :PlatformHardening,
         [ a owl:Restriction ;
             owl:onProperty :encrypts ;
-            owl:someValuesFrom :Memory ] ;
+            owl:someValuesFrom :Storage ] ;
     :d3fend-id "D3-DENCR" ;
     :definition "Encrypting a hard disk partition to prevent cleartext access to a file system." ;
     :kb-reference :Reference-LUKS1On-DiskFormatSpecificationVersion1.2.3 .
@@ -4483,14 +4502,6 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
             owl:onProperty :enables ;
             owl:someValuesFrom :Exfiltration ] .
 
-:ExploitationofTransientInstructionExecution a :CommonAttackPattern,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Exploitation of Transient Instruction Execution" ;
-    rdfs:subClassOf :CommonAttackPattern ;
-    rdfs:isDefinedBy "https://capec.mitre.org/data/definitions/663.html" ;
-    :capec-id "CAPEC-553" .
-
 :ExternalContentInclusionFunction a owl:Class ;
     rdfs:label "External Content Inclusion Function" ;
     rdfs:subClassOf :Subroutine .
@@ -4868,7 +4879,7 @@ Cryptographic hash values are computed for system and peripheral firmware. The h
 
 :FlashMemory a owl:Class ;
     rdfs:label "Flash Memory" ;
-    rdfs:subClassOf :Memory ;
+    rdfs:subClassOf :SecondaryStorage ;
     rdfs:comment "Flash memory is an electronic non-volatile computer memory storage medium that can be electrically erased and reprogrammed." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Flash_memory" .
 
@@ -4978,6 +4989,11 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
     rdfs:subClassOf :PeripheralFirmware ;
     rdfs:comment "Firmware that is installed on computer graphics card." ;
     rdfs:seeAlso "d3f:Firmware" .
+
+:GraphicsProcessingUnit a owl:Class ;
+    rdfs:label "Graphics Processing Unit" ;
+    rdfs:subClassOf :Processor ;
+    :synonym "GPU" .
 
 :GroupPolicy a owl:Class ;
     rdfs:label "Group Policy" ;
@@ -6213,17 +6229,6 @@ Initial planning of access model and continuous monitoring of the available user
     rdfs:comment "A media server is a computer appliance or an application software that stores digital media (video, audio or images) and makes it available over a network. Media servers range from servers that provide video on demand to smaller personal computers or NAS (Network Attached Storage) for the home." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Media_server> .
 
-:Memory a owl:Class ;
-    rdfs:label "Memory" ;
-    rdfs:subClassOf :DigitalArtifact,
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :FileSystem ] ;
-    rdfs:comment "Computer data storage, often called storage or memory, is a technology consisting of computer components and recording media used to retain digital data. It is a core function and fundamental component of computers. In the Von Neumann architecture, the CPU consists of two main parts: The control unit and the arithmetic / logic unit (ALU). The former controls the flow of data between the CPU and memory, while the latter performs arithmetic and logical operations on data." ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_data_storage> ;
-    :synonym "Computer data storage",
-        "Storage" .
-
 :MemoryAddress a owl:Class ;
     rdfs:label "Memory Address" ;
     rdfs:subClassOf :DigitalArtifact,
@@ -6247,7 +6252,7 @@ Initial planning of access model and continuous monitoring of the available user
 
 :MemoryBlock a owl:Class ;
     rdfs:label "Memory Block" ;
-    rdfs:subClassOf :Memory,
+    rdfs:subClassOf :MemoryExtent,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :MemoryWord ],
@@ -6274,13 +6279,17 @@ This technique monitors for indicators of whether a return address is outside me
 Kernel malware can manipulate memory contents, for example modifying pointers to hide processes, and thereby impact the accuracy of memory allocation information used to perform the analysis.""" ;
     :kb-reference :Reference-InferentialExploitAttemptDetection_CrowdstrikeInc .
 
+:MemoryExtent a owl:Class ;
+    rdfs:label "Memory Extent" ;
+    rdfs:subClassOf :DigitalArtifact .
+
 :MemoryFreeFunction a owl:Class ;
     rdfs:label "Memory Free Function" ;
     rdfs:subClassOf :Subroutine .
 
 :MemoryManagementUnit a owl:Class ;
     rdfs:label "Memory Management Unit" ;
-    rdfs:subClassOf :HardwareDevice,
+    rdfs:subClassOf :ProcessorComponent,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :TranslationLookasideBuffer ],
@@ -6289,26 +6298,34 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
             owl:someValuesFrom :VirtualAddress ],
         [ a owl:Restriction ;
             owl:onProperty :manages ;
-            owl:someValuesFrom :Memory ],
+            owl:someValuesFrom :PageTable ],
         [ a owl:Restriction ;
             owl:onProperty :manages ;
-            owl:someValuesFrom :PageTable ] ;
+            owl:someValuesFrom :Storage ] ;
     rdfs:comment "A computer’s memory management unit (MMU) is the physical hardware that handles its virtual memory and caching operations. The MMU is usually located within the computer’s central processing unit (CPU), but sometimes operates in a separate integrated chip (IC)." ;
     rdfs:isDefinedBy "https://www.techopedia.com/definition/4768/memory-management-unit-mmu" ;
     rdfs:seeAlso "https://dbpedia.org/page/Memory_management_unit" .
 
+:MemoryManagementUnitComponent a owl:Class ;
+    rdfs:label "Memory Management Unit Component" ;
+    rdfs:subClassOf :HardwareDevice .
+
 :MemoryPool a owl:Class ;
     rdfs:label "Memory Pool" ;
-    rdfs:subClassOf :Memory,
+    rdfs:subClassOf :MemoryExtent,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :MemoryBlock ] ;
     rdfs:comment "Memory pools, also called fixed-size blocks allocation, is the use of pools for memory management… preallocating a number of memory blocks with the same size called the memory pool. The application can allocate, access, and free blocks represented by handles at run time." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Memory_pool" .
 
+:MemoryProtectionUnit a owl:Class ;
+    rdfs:label "Memory Protection Unit" ;
+    rdfs:subClassOf :ProcessorComponent .
+
 :MemoryWord a owl:Class ;
     rdfs:label "Memory Word" ;
-    rdfs:subClassOf :Memory ;
+    rdfs:subClassOf :MemoryExtent ;
     rdfs:comment "A memory word is the natural unit of data used by a particular computer processor design; a fixed-size piece of data handled as a unit by the instruction set or the hardware of the processor." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Word_(computer_architecture)" .
 
@@ -7274,8 +7291,7 @@ There are various strategies for developing filtering rulesets:
 
 :Page a owl:Class ;
     rdfs:label "Page" ;
-    rdfs:subClassOf :MemoryBlock,
-        :VirtualMemory ;
+    rdfs:subClassOf :MemoryBlock ;
     rdfs:comment "A page, memory page, logical page, or virtual page is a fixed-length contiguous block of virtual memory, described by a single entry in the page table. It is the smallest unit of data for memory management in a virtual memory operating system." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Page_(computer_memory)" .
 
@@ -7284,7 +7300,7 @@ There are various strategies for developing filtering rulesets:
     rdfs:subClassOf :MemoryBlock,
         [ a owl:Restriction ;
             owl:onProperty :contained-by ;
-            owl:someValuesFrom :PrimaryMemory ] ;
+            owl:someValuesFrom :PrimaryStorage ] ;
     rdfs:comment "A page frame is the smallest fixed-length contiguous block of physical memory into which memory pages are mapped by the operating system." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Page_(computer_memory)" .
 
@@ -7690,10 +7706,10 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
     rdfs:comment "A PowerShell profile script is a script that runs when PowerShell starts and can be used as a logon script to customize user environments." ;
     rdfs:seeAlso <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.1> .
 
-:PrimaryMemory a owl:Class ;
-    rdfs:label "Primary Memory" ;
+:PrimaryStorage a owl:Class ;
+    rdfs:label "Primary Storage" ;
     rdfs:subClassOf :HardwareDevice,
-        :Memory,
+        :Storage,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :PageFrame ],
@@ -7934,26 +7950,17 @@ For example, Microsoft Word may block execution of any subprocess that is not in
         :Reference-UACBypass_MITRE ;
     :synonym "Process Tree Analysis" .
 
-:ProcessMemory a owl:Class ;
-    rdfs:label "Process Memory" ;
-    rdfs:subClassOf :Memory,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :HeapSegment ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :ProcessCodeSegment ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :ProcessDataSegment ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :StackSegment ] ;
-    rdfs:comment " Process memory refers to the logical organization of the memory used by a computer process into segments performing specific functions." .
+:Processor a owl:Class ;
+    rdfs:subClassOf :HardwareDevice ;
+    :synonym "Computer Processor" .
+
+:ProcessorComponent a owl:Class ;
+    rdfs:label "Processor Component" ;
+    rdfs:subClassOf :HardwareDevice .
 
 :ProcessorRegister a owl:Class ;
     rdfs:label "Processor Register" ;
-    rdfs:subClassOf :PrimaryMemory,
+    rdfs:subClassOf :PrimaryStorage,
         [ a owl:Restriction ;
             owl:onProperty :contained-by ;
             owl:someValuesFrom :CentralProcessingUnit ] ;
@@ -7964,7 +7971,8 @@ For example, Microsoft Word may block execution of any subprocess that is not in
 :ProcessSegment a owl:Class ;
     rdfs:label "Process Segment" ;
     rdfs:subClassOf :BinarySegment ;
-    rdfs:comment "Process segments are distinct partitions of the memory space of a running process.  Heap, data, code, and stack segments are examples of process segments." .
+    rdfs:comment "Process segments are distinct partitions of the memory space of a running process.  Heap, data, code, and stack segments are examples of process segments." ;
+    :synonym "Process Memory" .
 
 :ProcessSegmentExecutionPrevention a :ApplicationHardening,
         owl:Class,
@@ -8286,11 +8294,11 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:isDefinedBy <http://dbpedia.org/resource/Modem#Radio> .
 
 :RAM a owl:Class ;
-    rdfs:label "Random-access Memory" ;
-    rdfs:subClassOf :PrimaryMemory ;
+    rdfs:label "RAM" ;
+    rdfs:subClassOf :PrimaryStorage ;
     rdfs:comment "Random-access memory (RAM) is a form of computer memory that can be read and changed in any order, typically used to store working data and machine code." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Random-access_memory" ;
-    :synonym "RAM" .
+    :synonym "Random-access Memory" .
 
 :RawMemoryAccessFunction a owl:Class ;
     rdfs:label "Raw Memory Access Function" ;
@@ -8564,11 +8572,11 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
         :Reference-Technical_Specifications_for_Construction_and_Management_of_Sensitive_Compartmented_Information_Facilities .
 
 :ROM a owl:Class ;
-    rdfs:label "Read-only Memory" ;
-    rdfs:subClassOf :PrimaryMemory ;
+    rdfs:subClassOf :PrimaryStorage ;
     rdfs:comment "Read-only memory (ROM) is a type of non-volatile memory used in computers and other electronic devices. Data stored in ROM cannot be electronically modified after the manufacture of the memory device. Read-only memory is useful for storing software that is rarely changed during the life of the system, also known as firmware." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Read-only_memory" ;
-    :synonym "ROM" .
+    rdfs:seeAlso "ROM" ;
+    :synonym "Read-only Memory" .
 
 :Router a owl:Class ;
     rdfs:label "Router" ;
@@ -8685,10 +8693,10 @@ List of known unauthorized script files or regular expression patterns must be k
     rdfs:subClassOf :BootLoader ;
     rdfs:comment "An optional, often feature rich,  second stage set of routines run in order to load the operating system." .
 
-:SecondaryMemory a owl:Class ;
-    rdfs:label "Secondary Memory" ;
+:SecondaryStorage a owl:Class ;
+    rdfs:label "Secondary Storage" ;
     rdfs:subClassOf :HardwareDevice,
-        :Memory ;
+        :Storage ;
     rdfs:comment "Secondary memory (storage, hard disk) is the computer component holding information that does not need to be accessed quickly and that needs to be retained long-term." ;
     rdfs:isDefinedBy "https://whatis.techtarget.com/definition/memory" ;
     rdfs:seeAlso "https://en.wikipedia.org/wiki/Computer_data_storage#Secondary_storage" .
@@ -8921,7 +8929,8 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
             owl:onProperty :copy-of ;
             owl:someValuesFrom :CallStack ] ;
     rdfs:comment "A shadow stack is a mechanism for protecting a procedure's stored return address, such as from a stack buffer overflow. The shadow stack itself is a second, separate stack that \"shadows\" the program call stack. In the function prologue, a function stores its return address to both the call stack and the shadow stack. In the function epilogue, a function loads the return address from both the call stack and the shadow stack, and then compares them. If the two records of the return address differ, then an attack is detected." ;
-    rdfs:isDefinedBy "https://dbpedia.org/page/Shadow_stack" .
+    rdfs:isDefinedBy "https://dbpedia.org/page/Shadow_stack" ;
+    :todo "Model more completely: what manages the shadowstack, where does it reside specifically in memory." .
 
 :ShadowStackComparisons a owl:Class,
         owl:NamedIndividual,
@@ -9254,6 +9263,17 @@ A standalone honeynet is a lower risk to deploy compared to connected or integra
             owl:onProperty :next ;
             owl:someValuesFrom :Step ] .
 
+:Storage a owl:Class ;
+    rdfs:label "Storage" ;
+    rdfs:subClassOf :DigitalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FileSystem ] ;
+    rdfs:comment "Computer data storage, often called storage or memory, is a technology consisting of computer components and recording media used to retain digital data. It is a core function and fundamental component of computers. In the Von Neumann architecture, the CPU consists of two main parts: The control unit and the arithmetic / logic unit (ALU). The former controls the flow of data between the CPU and memory, while the latter performs arithmetic and logical operations on data." ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_data_storage> ;
+    :synonym "Computer data storage",
+        "Storage" .
+
 :StoredProcedure a owl:Class ;
     rdfs:label "Stored Procedure" ;
     rdfs:subClassOf :Subroutine ;
@@ -9285,10 +9305,11 @@ Extremely complex password requirements may lead users to saving passwords in te
         :Reference-Testing_Metrics_for_Password_Creation_Policies_by_Attacking_Large_Sets_of_Revealed_Passwords .
 
 :Subroutine a owl:Class ;
-    rdfs:label "Subroutine" ;
     rdfs:subClassOf :Software ;
     rdfs:comment "In different programming languages, a subroutine may be called a procedure, a function, a routine, a method, or a subprogram. The generic term callable unit is sometimes used." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Subroutine> .
+    rdfs:seeAlso <http://dbpedia.org/resource/Subroutine> ;
+    :synonym "Method",
+        "Subroutine" .
 
 :Switch a owl:Class ;
     rdfs:label "Switch" ;
@@ -13865,7 +13886,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :SystemConfigurationDatabase ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :Memory ] ;
+            owl:someValuesFrom :Storage ] ;
     :attack-id "T1564.005" .
 
 :T1564.006 a owl:Class ;
@@ -14868,11 +14889,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:comment "On many computer operating systems, a computer process terminates its execution by making an exit system call. More generally, an exit in a multithreading environment means that a thread of execution has stopped running. For resource management, the operating system reclaims resources (memory, files, etc.) that were used by the process. The process is said to be a dead process after it terminates." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Exit_(system_call)> .
 
-:TertiaryMemory a owl:Class ;
-    rdfs:label "Tertiary Memory" ;
+:TertiaryStorage a owl:Class ;
+    rdfs:label "Tertiary Storage" ;
     rdfs:subClassOf :HardwareDevice,
-        :Memory,
-        :MemoryBlock ;
+        :MemoryBlock,
+        :SecondaryStorage ;
     rdfs:comment "Tertiary storage or tertiary memory is memory primarily used for archiving rarely accessed information. It is primarily useful for extraordinarily large data stores. Typical examples include tape libraries and optical jukeboxes." ;
     rdfs:isDefinedBy "https://en.wikipedia.org/wiki/Computer_data_storage#Tertiary_storage" .
 
@@ -14892,11 +14913,15 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:isDefinedBy <http://dbpedia.org/resource/Thin_client> .
 
 :Thread a owl:Class ;
+    rdfs:label "Thread" ;
     rdfs:subClassOf :DigitalArtifact .
 
 :ThreadStartFunction a owl:Class ;
     rdfs:label "Thread Start Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :Thread ] .
 
 :TicketGrantingTicket a owl:Class ;
     rdfs:label "Ticket Granting Ticket" ;
@@ -14969,7 +14994,7 @@ DMARC is an email policy and authentication protocol that seeks to ensure that t
 
 :TranslationLookasideBuffer a owl:Class ;
     rdfs:label "Translation Lookaside Buffer" ;
-    rdfs:subClassOf :CacheMemory ;
+    rdfs:subClassOf :MemoryManagementUnitComponent ;
     rdfs:comment "A translation lookaside buffer (TLB) is a memory cache that is used to reduce the time taken to access a user memory location. It is a part of the chip's memory-management unit (MMU)." ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Translation_lookaside_buffer" .
 
@@ -15332,9 +15357,9 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:comment "Virtualization software allows a single host computer to create and run one or more virtual environments. Virtualization software is most often used to emulate a complete computer system in order to allow a guest operating system to be run, for example allowing Linux to run as a guest on top of a PC that is natively running a Microsoft Windows operating system (or the inverse, running Windows as a guest on Linux)." ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Category:Virtualization_software> .
 
-:VirtualMemory a owl:Class ;
-    rdfs:label "Virtual Memory" ;
-    rdfs:subClassOf :Memory ;
+:VirtualMemorySpace a owl:Class ;
+    rdfs:label "Virtual Memory Space" ;
+    rdfs:subClassOf :MemoryAddressSpace ;
     rdfs:comment "Virtual memory is a memory management technique where secondary memory can be used as if it were a part of the main memory. Virtual memory uses hardware and software to enable a computer to compensate for physical memory shortages" ;
     rdfs:isDefinedBy "https://whatis.techtarget.com/definition/memory" ;
     rdfs:seeAlso "https://dbpedia.org/page/Virtual_memory" .
