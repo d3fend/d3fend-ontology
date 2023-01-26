@@ -348,7 +348,10 @@ test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable 
 	@${JENA_PATH}/riot --validate build/d3fend-public-with-controls.owl > reports/test-owl-jena-validation.txt
 	$(END)
 
-test:	test-load-owl test-load-ttl test-load-json test-load-full test-jena ## Checks all ontology build files as parseable and DL-compatible.
+test-reasoner:
+	./bin/robot reason --reasoner ELK --input build/d3fend-public-with-controls.ttl -D reports/test-reasoner-results.ttl
+
+test:	test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
 	$(END)
 
 dist: distdir
