@@ -8,7 +8,7 @@
 ##  - Remove any deprecated techniques as necessary.
 ##
 
-pipenv run python src/util/update_attack.py || exit 1
+pipenv run python src/util/update_attack.py --update-d3fend || exit 1
 
 ./bin/robot template \
     --template reports/attack_update-missing_attack_ids-robot_template.csv \
