@@ -1,5 +1,12 @@
 # D3FEND Change Log
 
+## Version - 0.12.0-BETA-1 - 2023-01-31
+- New CWE mappings and software subroutine taxonomy. (#66)
+- Updated ATT&CK mappings
+- PythonScript subClassOf ExecutableScript. (#101)
+- Fix mispecified inverseOf relation on :accessses property which caused reasoning errors. (#88)
+- Fix version data properties, and broken URLs on some has-link values. (#90)
+
 ## Version - 0.11.0-BETA-1 - 2022-10-31
 
 - Added new large section of 'supporting' defensive techniques under tactic Model. (#12)
