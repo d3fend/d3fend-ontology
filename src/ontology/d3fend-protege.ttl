@@ -4205,6 +4205,30 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Email_attachment> ;
     :definition "An email attachment is a computer file sent along with an email message. One or more files can be attached to any email message, and be sent along with it to the recipient. This is typically used as a simple method to share documents and images." .
 
+:EmailRemoval a :FileRemoval,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Email Removal" ;
+    rdfs:subClassOf :FileRemoval,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :Email ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :MailServer ] ;
+    :definition "The email removal technique deletes email files from system storage." ;
+    :kb-article """## How it works
+
+Email removal is a technique that can be used to prevent a user from  executing malware or responding to phishing attempts. Security software or users themselves may detect malicious or suspicious email and then employ this technique.
+
+## Considerations
+
+For email that needs to be removed, an infosec organization may choose to take additional follow-up actions (such as blocking the sources or notifying providers), rather than only relying on email deletion. 
+
+For the case where users detect likely suspicious email files, the organization should consider implementing a means for reporting these emails to their infosec organization. 
+
+Email files may propagate through many storage systems across the an organization's systems over time, so early detection helps avoid residual, latent stores of malicous email content in the enterprise.""" .
+
 :EmailRule a owl:Class ;
     rdfs:label "Email Rule" ;
     rdfs:subClassOf :ApplicationRule ;
@@ -4672,6 +4696,16 @@ Asymmetric encryption is typically accomplished using public and private key cer
 - Secure transfer of private keys between multiple devices.""" ;
     :kb-reference :Reference-MethodForFileEncryption .
 
+:FileEviction a :DefensiveTechnique,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Eviction" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
+    :definition "File eviction techniques evict files from system storage." .
+
 :FileHash a owl:Class ;
     rdfs:label "File Hash" ;
     rdfs:subClassOf :Identifier,
@@ -4711,6 +4745,26 @@ Performance on large files or very large numbers of files.""" ;
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :File ] .
+
+:FileRemoval a :FileEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Removal" ;
+    rdfs:subClassOf :FileEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :FileServer ] ;
+    :definition "The file removal technique deletes files from system storage." ;
+    :kb-article """## How it works
+
+Malicious files often need to be removed from operational systems for security purposes to secure them from being executed or deceiving users (e.g., phishing.)
+
+## Considerations
+
+When it is determined that a file should be removed for security purposes, the organization--or systems implementing an organization's policies-- may determine the should not simply be deleted from the enterprise's mission systems, but be quarantined to a secure system by an approved mechanism, so as to allow follow-up investigation by security staff.""" .
 
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
@@ -5244,11 +5298,33 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
     rdfs:isDefinedBy <http://dbpedia.org/resource/Identifier> ;
     :definition "An identifier is a name that identifies (that is, labels the identity of) either a unique object or a unique class of objects, where the \"object\" or class may be an idea, physical [countable] object (or class thereof), or physical [noncountable] substance (or class thereof). The abbreviation ID often refers to identity, identification (the process of identifying), or an identifier (that is, an instance of identification). An identifier may be a word, number, letter, symbol, or any combination of those." .
 
+:IdentifierActivityAnalysis a :IdentifierAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Identifier Activity Analysis" ;
+    rdfs:subClassOf :IdentifierAnalysis ;
+    :definition "Identifier activity analysis is a method for analyzing identifiers and determining the artifacts that have interacted with those identifiers." ;
+    :kb-article """## How it works
+
+Identifier activity analysis is the process of taking identifiers--typically known malicious identifiers--and determining the artifacts that have interacted with those identifiers. The scope of the identifier's interactions 
+
+## Considerations
+
+Logged identifier activity data of interest for analysis with the identifier might include, but no be limited to:
+
+* network traffic activity where the identifier was used to identify communicating entities or referred to in the communication
+* process activity referencing the identifier, especially for resource access
+* file activity referencing the identifier
+* registry activity using identifiers""" .
+
 :IdentifierAnalysis a :DefensiveTechnique,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Identifier Analysis" ;
     rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :Identifier ],
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Detect ] ;
