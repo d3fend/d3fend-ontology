@@ -330,6 +330,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :end a owl:ObjectProperty ;
     rdfs:subPropertyOf :d3fend-process-object-property .
 
+:enumerates a owl:ObjectProperty ;
+    rdfs:label "enumerates" ;
+    rdfs:subPropertyOf :reads ;
+    :definition "definition \"x enumerates y: The subject x takes the action of reading from a digital source y to acquire data and create a list of its contents." .
+
 :evaluated-by a owl:ObjectProperty ;
     rdfs:label "evaluated-by" ;
     rdfs:subPropertyOf :associated-with ;
@@ -1852,7 +1857,8 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :EndpointSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :Application ] .
+            owl:someValuesFrom :Application ] ;
+    :definition "Collects information on applications on an endpoint." .
 
 :ApplicationLayerFirewall a owl:Class ;
     rdfs:label "Application Layer Firewall" ;
@@ -1993,7 +1999,10 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
 
 :AuthenticateUser a owl:Class ;
     rdfs:label "Authenticate User" ;
-    rdfs:subClassOf :SystemCall .
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :UserAccount ] .
 
 :Authentication a :Authentication,
         owl:Class,
@@ -2691,7 +2700,8 @@ Profiling request and response payloads across multiple clients to a single serv
             owl:someValuesFrom :CloudServiceAuthentication ],
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :CloudServiceAuthorization ] .
+            owl:someValuesFrom :CloudServiceAuthorization ] ;
+    :definition "Senses data from cloud service platforms. Including data from cloud service  authentications, authorizations, and other activities." .
 
 :CloudStorage a owl:Class ;
     rdfs:label "Cloud Storage" ;
@@ -2927,7 +2937,10 @@ Another approach passively inspects network traffic with application protocol an
 
 :ConnectSocket a owl:Class ;
     rdfs:label "Connect Socket" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :connects ;
+            owl:someValuesFrom :Pipe ] ;
     :definition "The connect socket system call connects the socket to a target address." ;
     rdfs:seeAlso <https://man7.org/linux/man-pages/man2/connect.2.html> .
 
@@ -3006,7 +3019,10 @@ Container images become containers at runtime and in the case of Docker containe
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Copy Token" ;
-    rdfs:subClassOf :SystemCall .
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :copies ;
+            owl:someValuesFrom :AccessToken ] .
 
 :CreateFile a owl:Class ;
     rdfs:label "Create File" ;
@@ -3023,7 +3039,10 @@ Container images become containers at runtime and in the case of Docker containe
 :CreateProcess a owl:Class ;
     rdfs:label "Create Process" ;
     skos:altLabel "Process Spawn" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Process ] ;
     :definition "A process spawn refers to a function that loads and executes a new child process.The current process may wait for the child to terminate or may continue to execute asynchronously. Creating a new subprocess requires enough memory in which both the child process and the current program can execute. There is a family of spawn functions in DOS, inherited by Microsoft Windows. There is also a different family of spawn functions in an optional extension of the POSIX standards.  Fork-exec is another technique combining two Unix system calls, which can effect a process spawn." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Fork%E2%80%93exec>,
         <http://dbpedia.org/resource/Spawn_(computing)>,
@@ -3031,13 +3050,19 @@ Container images become containers at runtime and in the case of Docker containe
 
 :CreateSocket a owl:Class ;
     rdfs:label "Create Socket" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Pipe ] ;
     :definition "A create socket system call creates an endpoint for communication and returns a file descriptor that refers to that endpoint." ;
     rdfs:seeAlso <https://www.man7.org/linux/man-pages/man2/socket.2.html> .
 
 :CreateThread a owl:Class ;
     rdfs:label "Create Thread" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Thread ] ;
     :definition "Threads are an execution model that exists independently from a language, as well as a parallel execution model. They enable a program to control multiple different flows of work that overlap in time." ;
     rdfs:seeAlso <http://dbpedia.org/resource/POSIX_Threads>,
         <https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread> .
@@ -4305,7 +4330,9 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
 
 :EndpointSensor a owl:Class ;
     rdfs:label "Endpoint Sensor" ;
-    rdfs:subClassOf :Sensor .
+    rdfs:subClassOf :Sensor ;
+    :definition "A sensor application installed on a endpoint (platform) to collect information on platform components." ;
+    rdfs:seeAlso "d3f:Platform" .
 
 :EvalFunction a owl:Class ;
     rdfs:label "Eval Function" ;
@@ -4790,7 +4817,8 @@ Performance on large files or very large numbers of files.""" ;
     rdfs:subClassOf :EndpointSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :File ] .
+            owl:someValuesFrom :File ] ;
+    :definition "Collects files and file metadata on an endpoint." .
 
 :FileTransferNetworkTraffic a owl:Class ;
     rdfs:label "File Transfer Network Traffic" ;
@@ -4876,7 +4904,8 @@ Finally, this technique may implement other countermeasure techniques as part of
     rdfs:subClassOf :EndpointSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :Firmware ] .
+            owl:someValuesFrom :Firmware ] ;
+    :definition "Collects information on firmware installed on an Endpoint." .
 
 :FirmwareVerification a owl:Class,
         owl:NamedIndividual,
@@ -4967,7 +4996,10 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
 
 :GetOpenSockets a owl:Class ;
     rdfs:label "Get Open Sockets" ;
-    rdfs:subClassOf :SystemCall .
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :enumerates ;
+            owl:someValuesFrom :Pipe ] .
 
 :GetOpenWindows a owl:Class ;
     rdfs:label "Get Open Windows" ;
@@ -4983,7 +5015,10 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
 
 :GetSystemConfigValue a owl:Class ;
     rdfs:label "Get System Config Value" ;
-    rdfs:subClassOf :SystemConfigSystemCall ;
+    rdfs:subClassOf :SystemConfigSystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
     rdfs:seeAlso "https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexa" .
 
 :GetSystemNetworkConfigValue a owl:Class ;
@@ -5233,7 +5268,8 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
             owl:someValuesFrom :ApplicationConfiguration ],
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :OperatingSystemConfiguration ] .
+            owl:someValuesFrom :OperatingSystemConfiguration ] ;
+    :definition "Collects the configuration data on an endpoint." .
 
 :Hostname a :DomainName,
         owl:Class,
@@ -5361,7 +5397,10 @@ Logged identifier activity data of interest for analysis with the identifier mig
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Impersonate User" ;
-    rdfs:subClassOf :SystemCall .
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :forges ;
+            owl:someValuesFrom :UserAccount ] .
 
 :ImportLibraryFunction a owl:Class ;
     rdfs:label "Import Library Function" ;
@@ -5972,7 +6011,8 @@ Potential for false positives from anomalies that are not associated with malici
     rdfs:subClassOf :EndpointSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :SystemCall ] .
+            owl:someValuesFrom :SystemCall ] ;
+    :definition "Monitors system calls (operating system api functions)." .
 
 :KernelModule a owl:Class ;
     rdfs:label "Kernel Module" ;
@@ -6185,7 +6225,10 @@ Many operating systems, software frameworks and programs include a logging syste
 
 :LogonUser a owl:Class ;
     rdfs:label "Logon User" ;
-    rdfs:subClassOf :SystemCall .
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :UserAccount ] .
 
 :MacOSKeychain a owl:Class ;
     rdfs:label "MacOS Keychain" ;
@@ -6602,7 +6645,8 @@ MFA configuration steps may vary across accounts and in some cases left up to us
     rdfs:subClassOf :NetworkSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :NetworkFlow ] .
+            owl:someValuesFrom :NetworkFlow ] ;
+    :definition "Monitors network traffic and produces summaries of data flows traversing the network." .
 
 :NetworkInitScriptFileResource a owl:Class ;
     rdfs:label "Network Init Script File Resource" ;
@@ -6705,7 +6749,8 @@ Administrators collect information on network nodes in their architecture using 
     rdfs:subClassOf :NetworkSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :NetworkTraffic ] .
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :definition "Monitors and parses network protocols to extract values from various network protocol layers." .
 
 :NetworkResource a owl:Class ;
     rdfs:label "Network Resource" ;
@@ -6981,7 +7026,10 @@ Additionally, after the code file is printed, it could be recovered from the sys
 
 :OpenFile a owl:Class ;
     rdfs:label "Open File" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :File ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Open_(system_call)> ;
     :definition "For most file systems, a program initializes access to a file in a file system using the open system call. This allocates resources associated to the file (the file descriptor), and returns a handle that the process will use to refer to that file. In some cases the open is performed by the first access. During the open, the filesystem may allocate memory for buffers, or it may wait until the first operation. Various other errors which may occur during the open include directory update failures, un-permitted multiple connections, media failures, communication link failures and device failures." .
 
@@ -8403,7 +8451,10 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
 
 :ReadFile a owl:Class ;
     rdfs:label "Read File" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :File ] ;
     :definition "A program that needs to access data from a file stored in a file system uses the read system call. The file is identified by a file descriptor that is normally obtained from a previous call to open. This system call reads in data in bytes, the number of which is specified by the caller, from the file and stores then into a buffer supplied by the calling process." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Read_(system_call)> .
 
@@ -8890,7 +8941,8 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
 
 :Sensor a owl:Class ;
     rdfs:label "Sensor" ;
-    rdfs:subClassOf :D3FENDThing .
+    rdfs:subClassOf :D3FENDThing,
+        :DigitalArtifact .
 
 :SerializationFunction a owl:Class ;
     rdfs:label "Serialization Function" ;
@@ -9007,7 +9059,10 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
 
 :SetSystemConfigValue a owl:Class ;
     rdfs:label "Set System Config Value" ;
-    rdfs:subClassOf :SystemConfigSystemCall ;
+    rdfs:subClassOf :SystemConfigSystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
     rdfs:seeAlso "https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetvalueexa" .
 
 :ShadowStack a owl:Class ;
@@ -9427,6 +9482,13 @@ Extremely complex password requirements may lead users to saving passwords in te
     rdfs:seeAlso <http://dbpedia.org/resource/Subroutine> ;
     :synonym "Method",
         "Subroutine" .
+
+:SuspendProcess a owl:Class ;
+    rdfs:label "Suspend Process" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :evicts ;
+            owl:someValuesFrom :Process ] .
 
 :Switch a owl:Class ;
     rdfs:label "Switch" ;
@@ -15002,7 +15064,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :TerminateProcess a owl:Class ;
     rdfs:label "Terminate Process" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :terminates ;
+            owl:someValuesFrom :Process ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Exit_(system_call)> ;
     :definition "On many computer operating systems, a computer process terminates its execution by making an exit system call. More generally, an exit in a multithreading environment means that a thread of execution has stopped running. For resource management, the operating system reclaims resources (memory, files, etc.) that were used by the process. The process is said to be a dead process after it terminates." .
 
@@ -15076,7 +15141,10 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
 
 :TraceProcess a owl:Class ;
     rdfs:label "Trace Process" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :Process ] ;
     :definition "A trace system call provides a means by which one process (the \"tracer\") may observe and control the execution of another process (the \"tracee\"), and examine and change the tracee's memory and registers. It is primarily used to implement breakpoint debugging and system call tracing." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Ptrace>,
         <https://linux.die.net/man/2/ptrace> .
@@ -15646,7 +15714,10 @@ User web session data is collected over a period of time to create a user behavi
 
 :WriteFile a owl:Class ;
     rdfs:label "Write File" ;
-    rdfs:subClassOf :SystemCall ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :File ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Write_(system_call)> ;
     :definition "The write is one of the most basic routines provided by a Unix-like operating system kernel. It writes data from a buffer declared by the user to a given device, such as a file. This is the primary way to output data from a program by directly using a system call. The destination is identified by a numeric code. The data to be written, for instance a piece of text, is defined by a pointer and a size, given in number of bytes. write thus takes three arguments." .
 
