@@ -1755,6 +1755,13 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
     rdfs:isDefinedBy <http://dbpedia.org/resource/Alias_(Mac_OS)> ;
     :definition "In macOS, an alias is a small file that represents another object in a local, remote, or removable[1] file system and provides a dynamic link to it; the target object may be moved or renamed, and the alias will still link to it (unless the original file is recreated; such an alias is ambiguous and how it is resolved depends on the version of macOS)." .
 
+:AllocateMemory a owl:Class ;
+    rdfs:label "Allocate Memory" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :MemoryBlock ] .
+
 :AnalysisOfAlternatives a owl:Class ;
     rdfs:label "Analysis of Alternatives" ;
     rdfs:subClassOf :D3FENDCatalogThing,
@@ -2083,7 +2090,10 @@ This technique covers statistical outliers. Though depending on the complexity o
 
 :AuthenticationFunction a owl:Class ;
     rdfs:label "Authentication Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :UserAccount ] .
 
 :AuthenticationLog a owl:Class ;
     rdfs:label "Authentication Log" ;
@@ -3012,7 +3022,10 @@ Container images become containers at runtime and in the case of Docker containe
 
 :CopyMemoryFunction a owl:Class ;
     rdfs:label "Copy Memory Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :copies ;
+            owl:someValuesFrom :MemoryBlock ] .
 
 :CopyToken a :CopyToken,
         owl:Class,
@@ -4362,7 +4375,10 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
 
 :EvalFunction a owl:Class ;
     rdfs:label "Eval Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :Subroutine ] .
 
 :EventLog a owl:Class ;
     rdfs:label "Event Log" ;
@@ -4798,7 +4814,10 @@ Performance on large files or very large numbers of files.""" ;
     rdfs:subClassOf :Subroutine,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
-            owl:someValuesFrom :File ] .
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :OpenFile ] .
 
 :FileRemoval a :FileEviction,
         owl:Class,
@@ -5057,6 +5076,13 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
 * Replacing the response is not effective in the case that the nameserver uses a technique to provide integrity of its responses, such as DNSSEC for DNS responses.""" ;
     :kb-reference :Reference-UseDNSPolicyForApplyingFiltersOnDNSQueries ;
     :synonym "Forward Resolution IP Blacklisting" .
+
+:FreeMemory a owl:Class ;
+    rdfs:label "Free Memory" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :MemoryBlock ] .
 
 :GetOpenSockets a owl:Class ;
     rdfs:label "Get Open Sockets" ;
@@ -6321,7 +6347,10 @@ Many operating systems, software frameworks and programs include a logging syste
         "Message transfer agent",
         "MTA",
         "MX Host" ;
-    rdfs:subClassOf :Server ;
+    rdfs:subClassOf :Server,
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :MessageTransferAgent ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Message_transfer_agent> ;
     :definition "Within the Internet email system, a message transfer agent or mail transfer agent (MTA) or mail relay is software that transfers electronic mail messages from one computer to another using SMTP. The terms mail server, mail exchanger, and MX host are also used in some contexts. Messages exchanged across networks are passed between mail servers, including any attached data files (such as images, multimedia or documents). These servers also often keep mailboxes for email. Access to this email by end users is typically either via webmail or an email client." .
 
@@ -6414,7 +6443,10 @@ Initial planning of access model and continuous monitoring of the available user
 
 :MemoryAllocationFunction a owl:Class ;
     rdfs:label "Memory Allocation Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :AllocateMemory ] .
 
 :MemoryBlock a owl:Class ;
     rdfs:label "Memory Block" ;
@@ -6451,7 +6483,10 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
 
 :MemoryFreeFunction a owl:Class ;
     rdfs:label "Memory Free Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :FreeMemory ] .
 
 :MemoryManagementUnit a owl:Class ;
     rdfs:label "Memory Management Unit" ;
@@ -7846,6 +7881,9 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
     rdfs:subClassOf :Subroutine,
         [ a owl:Restriction ;
             owl:onProperty :addresses ;
+            owl:someValuesFrom :MemoryBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :addresses ;
             owl:someValuesFrom :Pointer ] .
 
 :Policy a owl:Class ;
@@ -8277,7 +8315,10 @@ Some attributes of interest are:
 
 :ProcessStartFunction a owl:Class ;
     rdfs:label "Process Start Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ] .
 
 :ProcessSuspension a owl:Class,
         owl:NamedIndividual,
@@ -8506,7 +8547,10 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
 
 :RawMemoryAccessFunction a owl:Class ;
     rdfs:label "Raw Memory Access Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :MemoryBlock ] .
 
 :RDPSession a owl:Class ;
     rdfs:label "RDP Session" ;
@@ -9176,7 +9220,10 @@ If the threshold for detecting a stack anomaly is low, it may not detect a retur
 
 :SharedResourceAccessFunction a owl:Class ;
     rdfs:label "Shared Resource Access Function" ;
-    rdfs:subClassOf :Subroutine .
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Resource ] .
 
 :Shim a owl:Class ;
     rdfs:label "Shim" ;
