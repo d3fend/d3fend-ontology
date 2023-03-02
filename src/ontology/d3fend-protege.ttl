@@ -4251,6 +4251,31 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Email_attachment> ;
     :definition "An email attachment is a computer file sent along with an email message. One or more files can be attached to any email message, and be sent along with it to the recipient. This is typically used as a simple method to share documents and images." .
 
+:EmailRemoval a :FileRemoval,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Email Removal" ;
+    rdfs:subClassOf :FileRemoval,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :Email ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :MailServer ] ;
+    :definition "The email removal technique deletes email files from system storage." ;
+    :kb-article """## How it works
+
+Email removal is a technique that can be used to prevent a user from executing malware or responding to phishing attempts. Security software or users themselves may detect malicious or suspicious email in a local or remote mail folder email and then employ this technique.
+
+## Considerations
+
+For email that needs to be removed, an infosec organization may choose to take additional follow-up actions (such as blocking the sources or notifying providers), rather than only relying on email deletion.
+
+For the case where users detect likely suspicious email files, the organization should consider implementing a means for reporting these emails to their infosec organization.
+
+Email files may propagate through many storage systems across the an organization's systems over time, so early detection and blocking helps avoid residual, latent stores of malicous email content in the enterprise.""" ;
+    :synonym "Email Deletion" .
+
 :EmailRule a owl:Class ;
     rdfs:label "Email Rule" ;
     rdfs:subClassOf :ApplicationRule ;
@@ -4762,6 +4787,31 @@ Performance on large files or very large numbers of files.""" ;
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :File ] .
+
+:FileRemoval a :FileEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Removal" ;
+    rdfs:subClassOf :FileEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :FileServer ] ;
+    :definition "The file removal technique deletes malicious artifacts or programs from a computer system." ;
+    :kb-article """## How it works
+
+Adversaries may place files or programs into a computer's file system to perform malicious actions. As part of the eviction process, these files and programs should be removed to prevent further compromise or reinfection. Examples of malicious types of files are malware which is directly harmful and content files with the intent to deceive users (e.g., phishing.)
+
+On Windows systems, antivirus (AV) software should be used to safely and permanently remove malicious files. AV software may first quarantine a suspected malicious file, which is the process of moving a file from its original location to a new location and makes changes so that it cannot be executed. Users can then verify that the file is not benign and then permanently delete it.
+
+## Considerations
+
+When it is determined that a file should be removed for security purposes, the organization--or systems implementing an organization's policies--may determine that the file should not simply be deleted from the enterprise's mission systems, but be quarantined to a secure system by an approved mechanism, so as to allow follow-up investigation by security staff.
+
+On Windows systems, deleting a file in File Explorer does not permanently delete a file – it sends it to the Recycle Bin instead. The Recycle Bin must be emptied, or alternative steps must be performed to remove files completely. Even then, in some cases the data may persist in disk, so data shredder tools may be needed to completely wipe a file. Thus, AV tools are recommended.""" ;
+    :synonym "File Deletion" .
 
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
@@ -5309,19 +5359,23 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
         owl:NamedIndividual ;
     rdfs:label "Identifier Activity Analysis" ;
     rdfs:subClassOf :IdentifierAnalysis ;
-    :definition "Identifier activity analysis is a method for analyzing identifiers and determining the artifacts that have interacted with those identifiers." ;
+    :definition "Taking known malicious identifiers and determining if they are present in a system." ;
     :kb-article """## How it works
 
-Identifier activity analysis is the process of taking identifiers--typically known malicious identifiers--and determining the artifacts that have interacted with those identifiers. The scope of the identifier's interactions 
+Identifier activity analysis is the process of taking identifiers--typically known malicious identifiers--and determining the artifacts that have interacted with those identifiers.
+
+There are many open and closed source repositories of identifiers that represent indicators of compromise. For example, VirusTotal contains hash signatures of malware and IP Addresses used by threat actors. Defenders can search for these indicators of compromise their own systems to gain context on activity around an identifier.
 
 ## Considerations
 
-Logged identifier activity data of interest for analysis with the identifier might include, but no be limited to:
+Indicator activity analysis is a good way to gain high precision analysis, but adversaries can modify their own signatures such as hashes quickly to evade detection. This is related to David Bianco’s Pyramid of Pain – Indicators on the lower level (hash values, IP addresses domain names) are easy for adversaries to change.
+
+Identifier activity data of interest for analysis with the identifier might include, but is not limited to:
 
 * network traffic activity where the identifier was used to identify communicating entities or referred to in the communication
 * process activity referencing the identifier, especially for resource access
 * file activity referencing the identifier
-* registry activity using identifiers""" .
+* registry settings referencing the identifier""" .
 
 :IdentifierAnalysis a :DefensiveTechnique,
         owl:Class,
@@ -17977,6 +18031,15 @@ The user interaction and the code process executed during the user session are m
     :kb-reference-title "How ASLR protects Linux systems from buffer overflow attacks" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-HowDoesAntivirusQuarantineWork-SafetyDetectives a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - How Does Antivirus Quarantine Work? - Safety Detectives" ;
+    :has-link "https://www.safetydetectives.com/blog/how-does-antivirus-quarantine-work/"^^xsd:anyURI ;
+    :kb-abstract "Your antivirus has just finished a regular scan and it’s asking whether you want to quarantine the virus it’s found. You click ‘yes’ without putting much thought into what’s actually happening. But what does quarantining actually mean, what does it do and is it safe for your computer? It’s important to understand the details so that you know what’s happening when you send infected files into quarantine." ;
+    :kb-author "Katarina Glamoslija" ;
+    :kb-reference-of :FileRemoval ;
+    :kb-reference-title "How Does Antivirus Quarantine Work?" .
+
 :Reference-HowToChangeRegistryValuesOrPermissionsFromACommandLineOrAScript a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - How to change registry values or permissions from a command line or a script" ;
@@ -19529,6 +19592,16 @@ and deploy decoy physical or virtual endpoints.""" ;
     :kb-reference-title "System and method for providing an actively invalidated client-side network resource cache" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-SystemAndMethodForScanningRemoteServicesToLocateStoredObjectsWithMalware a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - System and method for scanning remote services to locate stored objects with malware" ;
+    :has-link "https://www.safetydetectives.com/blog/how-does-antivirus-quarantine-work/"^^xsd:anyURI ;
+    :kb-abstract "A system and method for retrieval and analysis of stored objects for malware is described. The method involves receiving a scan request message from a customer to conduct analytics on one or more objects stored within a third-party controlled service. In response to receipt of the scan request message, the system generates a redirect message. The redirect message redirects the customer to an authentication portal of the third-party controlled service operating as a logon page and configures receipt by the system of access credentials for the third-party controlled service upon verification of the customer. Using the access credentials, the system is able to retrieve the one or more objects using the access credentials and performing analytics on each object of the one or more objects to classify each object as malicious or benign." ;
+    :kb-author "Sai Vashisht" ;
+    :kb-organization "Mandiant Inc, FireEye Security Holdings US LLC" ;
+    :kb-reference-of :EmailRemoval ;
+    :kb-reference-title "System and method for scanning remote services to locate stored objects with malware" .
+
 :Reference-SystemAndMethodForValidatingIn-memoryIntegrityOfExecutableFilesToIdentifyMaliciousActivity_EndgameInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - System and method for validating in-memory integrity of executable files to identify malicious activity - Endgame Inc" ;
@@ -19772,6 +19845,15 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-author "Matt Weir, Sudhir Aggarwal, Michael Collins, Henry Stern" ;
     :kb-reference-of :StrongPasswordPolicy ;
     :kb-reference-title "Testing Metrics for Password Creation Policies by Attacking Large Sets of Revealed Passwords" .
+
+:Reference-ThePyramidOfPain-DavidBianco a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - The Pyramid of Pain - David Bianco" ;
+    :has-link "http://detect-respond.blogspot.com/2013/03/the-pyramid-of-pain.html"^^xsd:anyURI ;
+    :kb-abstract "This article identifies progressive levels of adversary difficulty encountered for various types of indicators." ;
+    :kb-author "David Bianco" ;
+    :kb-reference-of :IdentifierActivityAnalysis ;
+    :kb-reference-title "The Pyramid of Pain" .
 
 :Reference-ThreatDetectionForReturnOrientedProgramming_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
