@@ -1053,6 +1053,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/02758570-v> ;
     :definition "x summarizes y: The sensor x summarizes a set y of events concerning digital artifacts over time" .
 
+:suspends a owl:ObjectProperty ;
+    rdfs:label "suspends" ;
+    rdfs:subPropertyOf :evicts ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00543748-v" ;
+    :definition "x suspends y: The agent or technique x pauses entity y." .
+
 :terminates a owl:ObjectProperty ;
     rdfs:label "terminates" ;
     rdfs:subPropertyOf :associated-with,
@@ -3186,6 +3192,21 @@ Effective implementation requires identifying any location that could end up con
     rdfs:isDefinedBy <http://dbpedia.org/resource/Credential_Management> ;
     :definition "Credential Management, also referred to as a Credential Management System (CMS), is an established form of software that is used for issuing and managing credentials as part of public key infrastructure (PKI)." .
 
+:CredentialRevoking a :CredentialEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Credential Revoking" ;
+    rdfs:subClassOf :CredentialEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :Credential ] ;
+    :d3fend-id "D3-CR" ;
+    :definition "Deleting a set of credentials permanently to prevent them from being used to authenticate." ;
+    :kb-article """## How it works
+
+Management servers with enterprise policies for account management provide the ability remove permissions, accounts, or credentials. Compromised credentials should be revoked to prevent further malicious activity.""" ;
+    :kb-reference :Reference-RevokingaPreviouslyIssuedVerifiableCredential-Microsoft .
+
 :CredentialTransmissionScoping a :CredentialHardening,
         owl:Class,
         owl:NamedIndividual ;
@@ -4531,7 +4552,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :ExecutableFile a owl:Class ;
     rdfs:label "Executable File" ;
     skos:altLabel "Executable" ;
-    rdfs:subClassOf :File ;
+    rdfs:subClassOf :File,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Subroutine ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Executable> ;
     :definition "In computing, executable code or an executable file or executable program, sometimes simply an executable, causes a computer \"to perform indicated tasks according to encoded instructions,\" as opposed to a data file that must be parsed by a program to be meaningful. These instructions are traditionally machine code instructions for a physical CPU. However, in a more general sense, a file containing instructions (such as bytecode) for a software interpreter may also be considered executable; even a scripting language source file may therefore be considered executable in this sense. The exact interpretation depends upon the use; while the term often refers only to machine code files, in the context of protection against computer viruses all files which cause potentially hazardous instruction" .
 
@@ -6002,7 +6026,8 @@ IPC can occur within a single computer or between multiple computers remotely th
 
 :JavaArchive a owl:Class ;
     rdfs:label "Java Archive" ;
-    rdfs:subClassOf :ExecutableBinary ;
+    rdfs:subClassOf :ArchiveFile,
+        :SoftwarePackage ;
     :definition "A JAR (Java ARchive) is a package file format typically used to aggregate many Java class files and associated metadata and resources (text, images, etc.) into one file for distribution." ;
     rdfs:seeAlso <https://dbpedia.org/page/JAR_(file_format)> .
 
@@ -8309,6 +8334,26 @@ Some attributes of interest are:
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ] .
 
+:ProcessSuspension a owl:Class,
+        owl:NamedIndividual,
+        :ProcessEviction ;
+    rdfs:label "Process Suspension" ;
+    rdfs:subClassOf :ProcessEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :suspends ;
+            owl:someValuesFrom :Process ] ;
+    :d3fend-id "D3-PS" ;
+    :definition "Suspending a running process on a computer system." ;
+    :kb-article """## How it works
+
+A running process might be suspended to mitigate its immediate effects if it is exhibiting anomalous, unauthorized, or malicious behavior. Defenders may choose to suspend rather than terminate to analyze the process first and resume the process if deemed benign.
+
+### System-provided functions
+
+#### Windows tools
+In Windows, the `PsSuspend` command line utility from the SysInternals Suite provides functionality to suspend processes on a local or remote system.""" ;
+    :kb-reference :Reference-PsSuspend .
+
 :ProcessTermination a owl:Class,
         owl:NamedIndividual,
         :ProcessEviction ;
@@ -8334,6 +8379,8 @@ Security software might use proprietary technology to terminate processes, inste
 In Windows, `ExitProcess()` is used to send a signal to a process to request it to exit, and `TerminateProcess()` is used to force a process to exit.
 
 The `taskkill` executable available in the cmd shell is used to kill a process, with the `/F` switch forcing termination as with `TerminateProcess()`.  In PowerShell, `Stop-Process` is used, which is aliased by default to `spps` and `kill`.  Processes started in the Windows Subsystem for Linux (WSL) environment may be terminated there with the `kill` command.
+
+In some cases, existing drivers can also be leveraged to kill processes.
 
 #### Unix/Linux tools
 In Unix-like systems, all process termination requests are handled using signals.  The `kill` function takes the Process ID and signal to send, and is accessible with the `kill` command.  Some shells have a `kill` builtin function which is separate than the `kill` binary, which can also kill background jobs in the shell and additionally perform the function faster, and can run from an existing instance of the shell if the process table is full.  The signal SIGTERM specifies that the process to terminate may invoke a handler that it has defined instead of terminating, and the signal SIGKILL forces immediate termination.
@@ -8491,7 +8538,7 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
 
 :PythonPackage a owl:Class ;
     rdfs:label "Python Package" ;
-    rdfs:subClassOf :ExecutableFile ;
+    rdfs:subClassOf :SoftwarePackage ;
     :definition "A Python package is an aggregation of many Python files - either in source code or in bytecode - and associated metadata and resources (text, images, etc.). Python packages can be distributed in different file formats." ;
     rdfs:seeAlso <https://packaging.python.org/> .
 
@@ -9311,18 +9358,23 @@ Application-layer discovery:
     rdfs:seeAlso <https://dbpedia.org/page/Library_(computing)> .
 
 :SoftwareLibraryFile a owl:Class ;
+    rdfs:label "Software Library File" ;
     rdfs:subClassOf :File,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :Software ],
+            owl:someValuesFrom :Subroutine ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :ExecutableBinary ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :SourceCode ] ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :definition "A software library is a collection of software components that are used to build a software product." ;
     rdfs:seeAlso <https://dbpedia.org/page/Library_(computing)> .
+
+:SoftwarePackage a owl:Class ;
+    rdfs:label "Software Package" ;
+    rdfs:subClassOf :DigitalArtifact .
 
 :SoftwarePackagingTool a owl:Class ;
     rdfs:label "Software Packaging Tool" ;
@@ -18895,6 +18947,15 @@ Powershell can be used to hide monitored command line execution such as:
     :kb-reference-of :InboundSessionVolumeAnalysis ;
     :kb-reference-title "Protecting against distributed network flood attacks" .
 
+:Reference-PsSuspend a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - PsSuspend - Microsoft" ;
+    :has-link "https://learn.microsoft.com/en-us/sysinternals/downloads/pssuspend" ;
+    :kb-author "Mark Russinovich" ;
+    :kb-organization "Microsoft" ;
+    :kb-reference-of :ProcessSuspension ;
+    :kb-reference-title "PsSuspend" .
+
 :Reference-QualysNetworkPassiveSensorGettingStartedGuide a owl:NamedIndividual,
         :UserManualReference ;
     rdfs:label "Reference - Qualys Network Passive Sensor Getting Started Guide" ;
@@ -19067,6 +19128,15 @@ All of these behaviors call into the Windows API, which uses the NamedPipe WINRE
     :kb-mitre-analysis "Inbound corporate traffic SMTP traffic on port 25 can be routed through Barracuda Email Security Gateway before reaching the corporate mail server, acting as a traffic filter based on reverse DNS lookups and a denylist for blocking domains." ;
     :kb-reference-of :ReverseResolutionDomainDenylisting ;
     :kb-reference-title "Reverse DNS Blocking" .
+
+:Reference-RevokingaPreviouslyIssuedVerifiableCredential-Microsoft a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Revoke a previously issued verifiable credential - Microsoft" ;
+    :has-link "https://learn.microsoft.com/en-us/azure/active-directory/verifiable-credentials/how-to-issuer-revoke" ;
+    :kb-author "Barclay Neira, Christer Ljung, Juan Camilo Ruiz, John Flores" ;
+    :kb-organization "Microsoft" ;
+    :kb-reference-of :CredentialRevoking ;
+    :kb-reference-title "Revoke a previously issued verifiable credential" .
 
 :Reference-RFC2289-AOne-TimePasswordSystem a owl:NamedIndividual,
         :SpecificationReference ;
