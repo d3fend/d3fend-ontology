@@ -522,6 +522,16 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/01572394-v> ;
     :definition "x installs y: An entity x sets up a digital artifact y for subsequent use.  For example, an installation program can install application software." .
 
+:instructed-by a owl:ObjectProperty ;
+    rdfs:label "instructed-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "definition \"x instructed-by y: A subject x takes machine instructions from object y.\"" .
+
+:instructs a owl:ObjectProperty ;
+    rdfs:label "instructs" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "definition \"x instructs y: A subject x delivers machine instructions to object y.\"" .
+
 :interprets a owl:ObjectProperty ;
     rdfs:label "interprets" ;
     rdfs:subPropertyOf :executes,
@@ -999,7 +1009,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "runs" ;
     rdfs:subPropertyOf :associated-with,
         :may-run ;
-    :definition "x runs y: To carry out a process or program y, as on a computer or a machine x; where y may be a large software assembly or a  specific module or instruction.  Examples: \"run a new program on the Mac\"; \"the computer executed the instruction\"" ;
+    :definition "x runs y: To carry out a process or program y, as on a computer or a machine x; where y may be a large software assembly or a specific module or instruction.  Examples: \"run a new program on the Mac\"; \"the computer runs the application software\"." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/02569242-v> .
 
 :seller a owl:ObjectProperty ;
@@ -1785,10 +1795,7 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
     rdfs:subClassOf :Software,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :ApplicationConfiguration ],
-        [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :Resource ] ;
+            owl:someValuesFrom :ApplicationConfiguration ] ;
     :definition "A program that gives a computer instructions that provide the user with tools to accomplish a task; \"he has tried several different word processing applications\".  Distinct from system software that is intrinsically part of the operating system.  An application can be made up of executable files, configuration files, shared libraries, etc." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Application_software>,
         <http://wordnet-rdf.princeton.edu/id/06582286-n> .
@@ -2113,7 +2120,7 @@ This technique covers statistical outliers. Though depending on the complexity o
 
 :AuthenticationService a owl:Class ;
     rdfs:label "Authentication Service" ;
-    rdfs:subClassOf :ServiceApplication ;
+    rdfs:subClassOf :ServiceApplicationProcess ;
     rdfs:isDefinedBy <https://www.gartner.com/en/information-technology/glossary/authentication-service> ;
     :definition "An authentication service is a mechanism, analogous to the use of passwords on time-sharing systems, for the secure authentication of the identity of network clients by servers and vice versa, without presuming the operating system integrity of either (e.g., Kerberos)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Authentication> .
@@ -2162,7 +2169,8 @@ Depending on the complexity of the data considered, outliers may not be obvious 
 
 :AuthorizationService a owl:Class ;
     rdfs:label "Authorization Service" ;
-    rdfs:subClassOf :ServiceApplication ;
+    rdfs:subClassOf :NetworkService,
+        :ServiceApplicationProcess ;
     rdfs:isDefinedBy <https://www.sciencedirect.com/referencework/9780122272400/encyclopedia-of-information-systems> ;
     :definition "An authorization service ensures that the user is authorized to have access to a particular resource. Authorization can be done through role-based access control (RBAC) or list-based access control (LBAC)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Authorization> .
@@ -6614,7 +6622,7 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     rdfs:label "Message Transfer Agent" ;
     skos:altLabel "Mail Transfer Agent",
         "MTA" ;
-    rdfs:subClassOf :ServiceApplication ;
+    rdfs:subClassOf :MailService ;
     :definition "A message transfer agent or mail transfer agent (MTA) or mail relay is software that transfers electronic mail messages from one computer to another using a client-server application architecture. An MTA implements both the client (sending) and server (receiving) portions of the Simple Mail Transfer Protocol." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Message_transfer_agent> .
 
@@ -6879,7 +6887,7 @@ Administrators collect information on network nodes in their architecture using 
 
 :NetworkService a owl:Class ;
     rdfs:label "Network Service" ;
-    rdfs:subClassOf :NetworkResource ;
+    rdfs:subClassOf :ServiceApplicationProcess ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_service> ;
     :definition "In computer networking, a network service is an application running at the network application layer and above, that provides data storage, manipulation, presentation, communication or other capability which is often implemented using a client-server or peer-to-peer architecture based on application layer network protocols. Clients and servers will often have a user interface, and sometimes other hardware associated with it." .
 
@@ -7978,6 +7986,9 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
             owl:onProperty :contains ;
             owl:someValuesFrom :ProcessImage ],
         [ a owl:Restriction ;
+            owl:onProperty :instructed-by ;
+            owl:someValuesFrom :Software ],
+        [ a owl:Restriction ;
             owl:onProperty :may-execute ;
             owl:someValuesFrom :Thread ],
         [ a owl:Restriction ;
@@ -7997,7 +8008,10 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
             owl:someValuesFrom xsd:string ],
         [ a owl:Restriction ;
             owl:onProperty :process-user ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Resource ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Process_(computing)> ;
     :definition "A process is an instance of a computer program that is being executed. It contains the program code and its current activity. Depending on the operating system (OS), a process may be made up of multiple threads of execution that execute instructions concurrently. A computer program is a passive collection of instructions, while a process is the actual execution of those instructions. Several processes may be associated with the same program; for example, opening up several instances of the same program often means more than one process is being executed." .
 
@@ -8616,7 +8630,8 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 
 :RemoteAuthenticationService a owl:Class ;
     rdfs:label "Remote Authentication Service" ;
-    rdfs:subClassOf :AuthenticationService ;
+    rdfs:subClassOf :AuthenticationService,
+        :NetworkService ;
     :definition "A remote authentication service provides for the authentication of a user across a network (i.e., remotely)." .
 
 :RemoteAuthorizationService a owl:Class ;
@@ -9063,7 +9078,13 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
 :Server a owl:Class ;
     rdfs:label "Server" ;
     rdfs:subClassOf :Host,
-        :NetworkResource ;
+        :NetworkResource,
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :ServiceApplication ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Server_(computing)> ;
     :definition "In computing, a server is a piece of computer hardware or software (computer program) that provides functionality for other programs or devices, called \"clients\". This architecture is called the client-server model. Servers can provide various functionalities, often called \"services\", such as sharing data or resources among multiple clients, or performing computation for a client. A single server can serve multiple clients, and a single client can use multiple servers. A client process may run on the same device or may connect over a network to a server on a different device. Typical servers are database servers, file servers, mail servers, print servers, web servers, game servers, and application servers." .
 
@@ -9077,6 +9098,10 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
     :definition "An application that provides a set of software functionalities so that multiple clients who can reuse the functionality, provided they are authorized for use of the service." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Server_(computing)>,
         <http://dbpedia.org/resource/Service_(systems_architecture)> .
+
+:ServiceApplicationProcess a owl:Class ;
+    rdfs:label "Service Application Process" ;
+    rdfs:subClassOf :ApplicationProcess .
 
 :ServiceBinaryVerification a owl:Class,
         owl:NamedIndividual,
@@ -9273,7 +9298,10 @@ Another difference are the capabilities of the mechanism:
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
             owl:onProperty :implements ;
-            owl:someValuesFrom :Subroutine ] ;
+            owl:someValuesFrom :Subroutine ],
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :Process ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Software> ;
     :definition "Computer software, or simply software, is that part of a computer system that consists of encoded information or computer instructions, in contrast to the physical hardware from which the system is built." .
 
