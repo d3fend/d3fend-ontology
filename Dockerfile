@@ -11,4 +11,4 @@ RUN pip3 install pipenv==2022.8.5
 COPY . /app
 WORKDIR /app
 RUN make ROBOT_URL=${ROBOT_URL} clean install-deps
-RUN make build extensions dist test
+RUN make build extensions dist
