@@ -1,11 +1,16 @@
 # D3FEND Change Log
 
 ## Version - 0.12.0-BETA-1 - 2023-01-31
-- New CWE mappings and software subroutine taxonomy. (#66)
-- Updated ATT&CK mappings
-- PythonScript subClassOf ExecutableScript. (#101)
+- Updated ATT&CK mappings.
+- Added PythonScript subClassOf ExecutableScript. (#101)
+- Added defensive techniques: FileEviction techniques (#92, #93), Identifier Activity Analysis (#95), Data and Data Hardening Techniques. (#75)
+- Added digital artifacts: URL Reputation Analsyis (#71), Network Traffic Analysis software (#79) Network Traffic Analysis Software. (#80)
+- Added top #25 Weaknesses from CWE and relationships to digital artifacts, including new subroutine taxonomy. (#66)
+- Fixed errata on version data property (#89) Physical Object subclassing. (#88)
+- Fixed bug in technique mapping queries (elimates some spurious/redundant mappings) in backend.
 - Fix mispecified inverseOf relation on :accessses property which caused reasoning errors. (#88)
 - Fix version data properties, and broken URLs on some has-link values. (#90)
+
 
 ## Version - 0.11.0-BETA-1 - 2022-10-31
 
