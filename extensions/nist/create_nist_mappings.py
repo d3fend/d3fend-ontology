@@ -4,7 +4,7 @@ from owlready2 import default_world
 
 """ This Python script reads the public ontology file and a mapping
 file and writes out .ttl file with mappings that may be
-appended to the public ontology.  """
+appended to the public ontology. """
 
 default_world.get_ontology(
     "build/d3fend-public.owl"
@@ -56,7 +56,13 @@ def get_sp800_53_control_iri_name(version, control_id):
 
 
 def write_nist_control_mappings(
-    f, version, control_id, control_name, relation, techniques_string, nist_catalog_iri="NIST_SP_800-53_R5"
+    f,
+    version,
+    control_id,
+    control_name,
+    relation,
+    techniques_string,
+    nist_catalog_iri="NIST_SP_800-53_R5",
 ):
     """Writes mappings for one row in frame (spreadsheet.) to .ttl"""
     version = str(version)
@@ -64,10 +70,12 @@ def write_nist_control_mappings(
     control_iri_name = get_sp800_53_control_iri_name(version, control_id)
     # Write individual representing NIST control and provide annotation and data properties
     f.write("d3f:{} a d3f:NISTControl ;\n".format(control_iri_name))
-    f.write('    d3f:member-of d3f:{} ;\n'.format(nist_catalog_iri))
+    f.write("    d3f:member-of d3f:{} ;\n".format(nist_catalog_iri))
     f.write('    rdfs:label "{}" ;\n'.format(control_id))
     f.write('    d3f:control-name "{}" .\n'.format(control_name))
-    f.write('d3f:{} d3f:has-member d3f:{} .\n'.format(nist_catalog_iri, control_iri_name))
+    f.write(
+        "d3f:{} d3f:has-member d3f:{} .\n".format(nist_catalog_iri, control_iri_name)
+    )
     # Write relations of this control to D3FEND countermeasures mapped in mapping file.
     if isinstance(relation, str):
         relation = relation.lower()  # make lower for robust matching, but not if nan
