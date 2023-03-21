@@ -993,6 +993,13 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/01003181-v> ;
     :todo "a log doesn't summarize an event, it records it; it logs it in the sense of holding the records; it contains it in sense of a record in a historical list of records, maybe---but if we model loggers we might want to reserve 'log' to say they 'log' the event.  The chronological order of the log events (log event records to be exact) would suggest 'chronicles' but that verb might be too twee for first D3FEND release." .
 
+:regenerates a owl:ObjectProperty ;
+    rdfs:label "regenerates" ;
+    rdfs:subPropertyOf :associated-with,
+        :hardens ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00167632-v" ;
+    :definition "x regenerates y: The entity x discards the current digital artifact y and creates a new version that serves the same function." .
+
 :related a owl:ObjectProperty ;
     rdfs:label "related" ;
     rdfs:subPropertyOf :semantic-relation ;
@@ -3215,6 +3222,27 @@ Effective implementation requires identifying any location that could end up con
 
 Management servers with enterprise policies for account management provide the ability remove permissions, accounts, or credentials. Compromised credentials should be revoked to prevent further malicious activity.""" ;
     :kb-reference :Reference-RevokingaPreviouslyIssuedVerifiableCredential-Microsoft .
+
+:CredentialRotation a :CredentialHardening,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Credential Rotation" ;
+    rdfs:subClassOf :CredentialHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :regenerates ;
+            owl:someValuesFrom :Credential ] ;
+    :d3fend-id "D3-CRO" ;
+    :definition "Expiring an existing set of credentials and reissuing a new valid set" ;
+    :kb-article """## How it works
+
+Management servers with enterprise policies for account management provide the ability to change or reset passwords for accounts. Some organizations rotate credentials periodically to limit the risk of stolen credentials.
+
+## Considerations
+
+- When responding to an incident, severity of compromise should be considered to determine what credentials to what accounts should be regenerated
+- If proactively rotating credentials periodically, several factors should be considered to determine the frequency. Also introduces some risk including promoting the creation of weak passwords and poor storage practices for employees and presents challenges in proper tracking.""" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA>,
+        :Reference-PasswordandKeyRotation-SSH .
 
 :CredentialTransmissionScoping a :CredentialHardening,
         owl:Class,
@@ -5445,6 +5473,7 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
         owl:NamedIndividual ;
     rdfs:label "Identifier Activity Analysis" ;
     rdfs:subClassOf :IdentifierAnalysis ;
+    :d3fend-id "D3-IAA" ;
     :definition "Taking known malicious identifiers and determining if they are present in a system." ;
     :kb-article """## How it works
 
@@ -16061,6 +16090,14 @@ In order to convince the potential attacker that the deception environment is th
     :kb-reference-title "Decoy and deceptive data object technology" ;
     :todo "MITRE Analysis was not found" .
 
+<http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise - CISA" ;
+    :has-link "https://www.cisa.gov/news-events/analysis-reports/ar21-134a" ;
+    :kb-organization "CISA" ;
+    :kb-reference-of :CredentialRotation ;
+    :kb-reference-title "Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise" .
+
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IsolationOfApplicationsWithinAVirtualMachine_Bromium,Inc.> a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Isolation of applications within a virtual machine - Bromium, Inc." ;
@@ -18866,6 +18903,14 @@ While this analytic does not take the user into account, doing so could generate
     :has-link "https://code.google.com/archive/p/seccompsandbox/wikis/overview.wiki"^^xsd:anyURI ;
     :kb-reference-of :SystemCallFiltering ;
     :kb-reference-title "Overview of the seccomp sandbox" .
+
+:Reference-PasswordandKeyRotation-SSH a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Password and Key Rotation - SSH" ;
+    :has-link "https://www.ssh.com/academy/iam/password-key-rotation" ;
+    :kb-organization "SSH" ;
+    :kb-reference-of :CredentialRotation ;
+    :kb-reference-title "Password and Key Rotation" .
 
 :Reference-PlatformFirmwareResiliencyGuidelines_NIST a :GuidelineReference,
         owl:NamedIndividual ;
