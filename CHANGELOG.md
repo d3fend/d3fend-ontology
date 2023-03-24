@@ -1,5 +1,8 @@
 # D3FEND Change Log
 
+## Version - 0.12.0-BETA-2 - 2023-03-21
+- Add missing identifier for D3-IAA
+
 ## Version - 0.12.0-BETA-1 - 2023-01-31
 - Updated ATT&CK mappings.
 - Added PythonScript subClassOf ExecutableScript. (#101)
