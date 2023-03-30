@@ -1,5 +1,20 @@
 # D3FEND Change Log
 
+## Version - 0.12.0-BETA-2 - 2023-03-21
+- Add missing identifier for D3-IAA
+
+## Version - 0.12.0-BETA-1 - 2023-01-31
+- Updated ATT&CK mappings.
+- Added PythonScript subClassOf ExecutableScript. (#101)
+- Added defensive techniques: FileEviction techniques (#92, #93), Identifier Activity Analysis (#95), Data and Data Hardening Techniques. (#75)
+- Added digital artifacts: URL Reputation Analsyis (#71), Network Traffic Analysis software (#79) Network Traffic Analysis Software. (#80)
+- Added top #25 Weaknesses from CWE and relationships to digital artifacts, including new subroutine taxonomy. (#66)
+- Fixed errata on version data property (#89) Physical Object subclassing. (#88)
+- Fixed bug in technique mapping queries (elimates some spurious/redundant mappings) in backend.
+- Fix mispecified inverseOf relation on :accessses property which caused reasoning errors. (#88)
+- Fix version data properties, and broken URLs on some has-link values. (#90)
+
+
 ## Version - 0.11.0-BETA-1 - 2022-10-31
 
 - Added new large section of 'supporting' defensive techniques under tactic Model. (#12)
