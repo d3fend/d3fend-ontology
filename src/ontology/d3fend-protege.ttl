@@ -1012,6 +1012,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/00234091-v> ;
     :definition "x restricts y: An entity x bounds the use of entity y." .
 
+:resume a owl:ObjectProperty ;
+    rdfs:label "resume" ;
+    rdfs:subPropertyOf :d3fend-process-object-property ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00350758-v" ;
+    :definition "The agent or technique x continues a previous action on entity y. Usually occurs after suspension on y." .
+
 :runs a owl:ObjectProperty ;
     rdfs:label "runs" ;
     rdfs:subPropertyOf :associated-with,
@@ -6264,6 +6270,56 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     rdfs:subClassOf :DigitalArtifact ;
     rdfs:seeAlso "https://dbpedia.org/resource/Link" .
 
+:LinuxClone a owl:Class ;
+    rdfs:label "Linux Clone" ;
+    rdfs:subClassOf :CreateProcess ;
+    :definition "Creates a child process and provides more precise control over the data shared between the parent and child processes" ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/clone.2.html" .
+
+:LinuxClone3 a owl:Class ;
+    rdfs:label "Linux Clone3" ;
+    rdfs:subClassOf :CreateProcess ;
+    :definition """Creates a child process and provides more precise control over the data shared between the parent and child processes.
+
+Newer system call.""" ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/clone3.2.html" .
+
+:LinuxClone3ArgumentCLONE_THREAD a owl:Class ;
+    rdfs:label "Linux Clone3 Argument CLONE_THREAD" ;
+    rdfs:subClassOf :CreateThread ;
+    :definition "A flag parameter to the Clone3 syscall. If set, the child is placed in the same thread group as the calling process." ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/clone3.2.html" .
+
+:LinuxCloneArgumentCLONE_THREAD a owl:Class ;
+    rdfs:label "Linux Clone Argument CLONE_THREAD" ;
+    rdfs:subClassOf :CreateThread ;
+    :definition "A flag parameter to the Clone syscall. If set, the child is placed in the same thread group as the calling process." ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/clone.2.html" .
+
+:LinuxFork a owl:Class ;
+    rdfs:label "Linux Fork" ;
+    rdfs:subClassOf :CreateProcess ;
+    :definition "Creates a child process with unique PID but retains parent PID as Parent Process Identifier (PPID)" ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/fork.2.html" .
+
+:LinuxPause a owl:Class ;
+    rdfs:label "Linux Pause" ;
+    rdfs:subClassOf :SuspendProcess ;
+    :definition "Causes the calling process to sleep until a signal is delivered that either terminates the process or causes the invocation of a signal-catching function." ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/pause.2.html" .
+
+:LinuxPtraceArgumentPTRACEINTERRUPT a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_INTERRUPT" ;
+    rdfs:subClassOf :SuspendProcess ;
+    :definition "Stops a tracee." ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/ptrace.2.html" .
+
+:LinuxVfork a owl:Class ;
+    rdfs:label "Linux Vfork" ;
+    rdfs:subClassOf :CreateProcess ;
+    :definition "Create child process that temp suspends parent process until it terminates" ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/vfork.2.html" .
+
 :LocalAccountMonitoring a owl:Class,
         owl:NamedIndividual,
         :UserBehaviorAnalysis ;
@@ -9728,8 +9784,17 @@ Extremely complex password requirements may lead users to saving passwords in te
     rdfs:label "Suspend Process" ;
     rdfs:subClassOf :SystemCall,
         [ a owl:Restriction ;
-            owl:onProperty :evicts ;
+            owl:onProperty :suspends ;
             owl:someValuesFrom :Process ] .
+
+:SuspendThread a owl:Class ;
+    rdfs:label "Suspend Thread" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :suspends ;
+            owl:someValuesFrom :Thread ] ;
+    :definition "Suspending a thread causes the thread to stop executing user-mode code." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread" .
 
 :Switch a owl:Class ;
     rdfs:label "Switch" ;
@@ -15914,6 +15979,33 @@ User web session data is collected over a period of time to create a user behavi
     rdfs:isDefinedBy <http://dbpedia.org/resource/Local_area_network> ;
     :definition "By contrast to a local area network (LAN), a wide area network (WAN), not only covers a larger geographic distance, but also generally involves leased telecommunication circuits or Internet links." .
 
+:WindowsNtCreateProcess a owl:Class ;
+    rdfs:label "Windows NtCreateProcess" ;
+    rdfs:subClassOf :CreateProcess ;
+    rdfs:seeAlso "http://undocumented.ntinternals.net/UserMode/Undocumented%20Functions/NT%20Objects/Process/NtCreateProcess.html" .
+
+:WindowsNtCreateProcessEx a owl:Class ;
+    rdfs:label "Windows NtCreateProcessEx" ;
+    rdfs:subClassOf :CreateProcess .
+
+:WindowsNtCreateThread a owl:Class ;
+    rdfs:label "Windows NtCreateThread" ;
+    rdfs:subClassOf :CreateThread ;
+    rdfs:seeAlso "http://undocumented.ntinternals.net/UserMode/Undocumented%20Functions/NT%20Objects/Thread/NtCreateThread.html" .
+
+:WindowsNtCreateThreadEx a owl:Class ;
+    rdfs:label "Windows NtCreateThreadEx" ;
+    rdfs:subClassOf :CreateThread .
+
+:WindowsNtSuspendProcess a owl:Class ;
+    rdfs:label "Windows NtSuspendProcess" ;
+    rdfs:subClassOf :SuspendProcess .
+
+:WindowsNtSuspendThread a owl:Class ;
+    rdfs:label "Windows NtSuspendThread" ;
+    rdfs:subClassOf :SuspendThread ;
+    rdfs:seeAlso "http://undocumented.ntinternals.net/UserMode/Undocumented%20Functions/NT%20Objects/Thread/NtSuspendThread.html" .
+
 :WindowsRegistry a owl:Class ;
     rdfs:label "Windows Registry" ;
     rdfs:subClassOf :SystemConfigurationDatabase ;
@@ -16216,8 +16308,7 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:label "Linux ELF File 64bit" .
 
 :LinuxExec a :CreateProcess,
-        owl:NamedIndividual ;
-    rdfs:label "Linux Exec" .
+        owl:NamedIndividual .
 
 :LinuxProcess a owl:NamedIndividual,
         :Process ;
