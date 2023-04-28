@@ -1006,6 +1006,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy skos:related ;
     :definition "x related y: x has a symmetric associative relation to y." .
 
+:restricted-by a owl:ObjectProperty ;
+    rdfs:label "restricted-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :restricts .
+
 :restricts a owl:ObjectProperty ;
     rdfs:label "restricts" ;
     rdfs:subPropertyOf :associated-with ;
@@ -1567,7 +1572,10 @@ skos:altLabel a owl:AnnotationProperty ;
 
 :AccessControlList a owl:Class ;
     rdfs:label "Access Control List" ;
-    rdfs:subClassOf :AccessControlConfiguration ;
+    rdfs:subClassOf :AccessControlConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :UserGroup ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> ;
     :definition "A list of permissions attached to an object." .
 
@@ -15562,7 +15570,10 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     rdfs:subClassOf :DigitalArtifact,
         [ a owl:Restriction ;
             owl:onProperty :has-account ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_(computing)> ;
     :definition "A user is a person [or agent] who uses a computer or network service. Users generally use a system or a software product without the technical expertise required to fully understand it. Power users use advanced features of programs, though they are not necessarily capable of computer programming and system administration. A user often has a user account and is identified to the system by a username (or user name). Other terms for username include login name, screenname (or screen name), nickname (or nick) and handle, which is derived from the identical Citizen's Band radio term. Some software products provide services to other systems and have no direct end users." ;
     rdfs:seeAlso "UserAccount",
@@ -15671,6 +15682,18 @@ Geolocation data for each user logon attempt is collected and used to create a b
 * Attackers may not differentiate their logon behavior enough to trigger an alert.""" ;
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-System,Method,AndComputerProgramProductForDetectingAndAssessingSecurityRisksInANetwork_ExabeamInc>,
         :Reference-MethodAndApparatusForNetworkFraudDetectionAndRemediationThroughAnalytics_IdaptiveLLC .
+
+:UserGroup a owl:Class ;
+    rdfs:label "User Group" ;
+    rdfs:subClassOf :AccessControlConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
+    :definition "User groups are a way to collect user accounts and/or computer accounts into manageable units. Administrators can assign permissions, roles, or access to resources, as well as modify group membership, depending on the operating system." ;
+    :synonym "Security Group" .
 
 :UserInitConfigurationFile a owl:Class ;
     rdfs:label "User Init Configuration File" ;
