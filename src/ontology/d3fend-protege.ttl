@@ -7,10 +7,10 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl> a owl:Ontology ;
-    rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2022 The MITRE Corporation."^^xsd:string ;
-    dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature."^^xsd:string ;
-    dcterms:license "MIT"^^xsd:string ;
-    dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures"^^xsd:string .
+    rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2022 The MITRE Corporation." ;
+    dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature." ;
+    dcterms:license "MIT" ;
+    dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures" .
 
 ### Object Properties
 
@@ -3970,6 +3970,17 @@ A credential may be:
     :definition "An application used to develop computer software including applications used for software construction, analysis, testing, packaging, or management." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Application_development>,
         <http://dbpedia.org/resource/Application_software> .
+
+:DHCPNetworkTraffic a owl:Class ;
+    rdfs:label "DHCP Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic ;
+    :definition "DHCP Network Traffic is network traffic related to the DHCP protocol, used by network nodes to negotiate and configure either IPv4 or IPv6 addresses." .
+
+:DHCPServer a owl:Class ;
+    rdfs:label "DHCP Server" ;
+    rdfs:subClassOf :Server ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Dynamic_Host_Configuration_Protocol> ;
+    :definition "A Dynamic Host Configuration Protocol (DHCP) server is a type of server that assigns IP addresses to computers.  DHCP servers are used to assign IP addresses to computers and other devices automatically.  The DHCP server is responsible for assigning the unique IP address to each device." .
 
 :DialUpModem a owl:Class ;
     rdfs:label "Dial Up Modem" ;
@@ -13363,7 +13374,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1542.005 a owl:Class ;
     rdfs:label "TFTP Boot" ;
-    rdfs:subClassOf :T1542 ;
+    rdfs:subClassOf :T1542,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :TFTPNetworkTraffic ] ;
     :attack-id "T1542.005" .
 
 :T1543 a owl:Class ;
@@ -14043,7 +14057,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1557.003 a owl:Class ;
     rdfs:label "DHCP Spoofing" ;
-    rdfs:subClassOf :T1557 ;
+    rdfs:subClassOf :T1557,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :DHCPNetworkTraffic ] ;
     :attack-id "T1557.003" .
 
 :T1558 a owl:Class ;
@@ -15358,6 +15375,17 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DeveloperApplication ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Test_execution_engine> ;
     :definition "A test execution tool is a type of software used to test software, hardware or complete systems.  Synonyms of test execution tool include test execution engine, test executive, test manager, test sequencer.  Two common forms in which a test execution engine may appear are as a: (a) module of a test software suite (test bench) or an integrated development environment, or (b) stand-alone application software." .
+
+:TFTPNetworkTraffic a owl:Class ;
+    rdfs:label "TFTP Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic ;
+    :definition "TFTP Network Traffic is network traffic typically used to automatically transfer configuration or boot files between machines." .
+
+:TFTPServer a owl:Class ;
+    rdfs:label "TFTP Server" ;
+    rdfs:subClassOf :Server ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Trivial_File_Transfer_Protocol> ;
+    :definition "Trivial File Transfer Protocol (TFTP) is a simple file transfer protocol, typically used to automatically transfer configuration or boot files between machines.  It is used where user authentication and directory visibility are not required." .
 
 :ThinClientComputer a owl:Class ;
     rdfs:label "Thin Client Computer" ;
