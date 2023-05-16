@@ -1666,14 +1666,16 @@ Using either Certificate Revocation Lists (CRLs) or Online Certificate Status Pr
 :ActiveLearning a owl:Class ;
     rdfs:label "Active Learning" ;
     rdfs:subClassOf :MachineLearning ;
-    :definition "Active learning is a special case of machine learning in which a learning algorithm can interactively query a user (or some other information source) to label new data points with the desired outputs." ;
+    :definition "Active learning aims to improve learning efficiency by allowing the learning algorithm to select which data to learn from." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+Traditional supervised learning often requires a large number of labeled instances, which can be costly or time-consuming to obtain. Active learning addresses this labeling bottleneck by asking an oracle (e.g., a human annotator) to label selected unlabeled instances. The goal is to achieve high accuracy with minimal labeling effort. 
 
 ## Considerations 
+Active learning is particularly useful in scenarios where data is abundant but labeled instances are scarce or expensive. Examples include speech recognition, information extraction, and document classification.
 
 ## References 
-- https://en.wikipedia.org/wiki/Active_learning_(machine_learning)""" .
+- https://en.wikipedia.org/wiki/Active_learning_(machine_learning)
+- https://burrsettles.com/pub/settles.activelearning.pdf""" .
 
 :ActiveLogicalLinkMapping a :LogicalLinkMapping,
         owl:Class,
@@ -2317,41 +2319,48 @@ _TBD Add some description distinguishing two and explaining why they are differe
 :BayesianModelAveraging a owl:Class ;
     rdfs:label "Bayesian Model Averaging" ;
     rdfs:subClassOf :EnsembleLearning ;
-    :definition "A parameter estimate (or a prediction of new observations) obtained by averaging the estimates (or predictions) of the different models under consideration, each weighted by its model probability." ;
+    :definition "Combines multiple candidate models by weighting them according to their posterior probabilities. It allows for the simultaneous consideration of all models and their associated parameter estimates, taking into account the uncertainty in the model selection process" ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+Bayesian Model Averaging starts by assigning prior probabilities to each candidate model. Then, given observed data, Bayesian inference is used to update these prior probabilities to posterior probabilities using Bayes' theorem. The posterior probabilities reflect the relative plausibility of each model given the observed data. Then, estimates the parameters for each model individually using Bayesian methods, incorporating prior information and observed data. These parameter estimates are weighted by their respective posterior probabilities. The weighted parameter estimates from all models are combined to produce a model-averaged estimate, taking into account the uncertainty associated with both model selection and parameter estimation.
 
 ## Considerations 
-
+- Bayesian Model Averaging offers advantages such as reduced overconfidence, optimal predictions, and robustness against model misspecification, making it a valuable approach in statistical analysis.
+- By considering multiple models simultaneously, Bayesian Model Averaging avoids the limitations of selecting a single model and provides a more comprehensive analysis. It accounts for model uncertainty and produces robust predictions and parameter estimates.
 ## References 
-- https://journals.sagepub.com/doi/full/10.1177/2515245919898657#:~:text=Bayesian%20model%20average%3A%20A%20parameter,weighted%20by%20its%20model%20probability""" .
+- https://journals.sagepub.com/doi/full/10.1177/2515245919898657#:~:text=Bayesian%20model%20average%3A%20A%20parameter,weighted%20by%20its%20model%20probability
+- https://arxiv.org/pdf/1509.08864.pdf
+- https://www.stat.colostate.edu/~jah/papers/statsci.pdf""" .
 
 :BayesianModelCombination a owl:Class ;
     rdfs:label "Bayesian Model Combination" ;
     rdfs:subClassOf :EnsembleLearning ;
-    :definition """Bayesian model averaging can easily be modified to produce an optimal technique for model combination rather than model selection
-
-Bayesian model combination (BMC) is an algorithmic correction to Bayesian model averaging (BMA). Instead of sampling each model in the ensemble individually, it samples from the space of possible ensembles (with model weights drawn randomly from a Dirichlet distribution having uniform parameters)""" ;
+    :definition "A method for combining multiple models by integrating over the space of model combinations and weighting each combination based on its probability of being correct. It modifies the traditional Bayesian Model Averaging approach to focus on selecting the optimal combination of models rather than individual learners" ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
-
+Outputs from individual hypotheses are combined in a variety of ways to create a set of diverse ensembles. The output from each ensemble is then weighted by the probability that the ensemble is correct given the training data. Then, instead of integrating out uncertainty about which ensemble member is correct, the focus is  instead on integrating out uncertainty about which model combination is correct. Different combinations of models may be used such as Linear Combination, Sampling froma Dirichlet Distrobution, Independent, and Dynamic. 
 ## Considerations 
-
-## References 
+- Leverages the benefits of ensemble learning by augmenting the hypothesis space and reducing learner error rates.
+- More complicated strategies are possible, but even simple  presented here outperform Bagging, Boosting, and Bayesian Model Averaging.
+## References
 - https://axon.cs.byu.edu/papers/Kristine.ijcnn2011.pdf
-- https://en.wikipedia.org/wiki/Ensemble_learning""" .
+- https://en.wikipedia.org/wiki/Ensemble_learning
+- https://www.robots.ox.ac.uk/~sjrob/Pubs/galaxyZooSN_simpson_etal.pdf
+- http://proceedings.mlr.press/v22/kim12/kim12.pdf""" .
 
 :BayesOptimalClassifier a owl:Class ;
     rdfs:label "Bayes Optimal Classifier" ;
     rdfs:subClassOf :EnsembleLearning ;
-    :definition "A probabilistic model that makes the most probable prediction for a new example." ;
+    :definition "A probabilistic model that makes the most probable prediction for a new example given a training data set." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+The Bayes Optimal Classifier leverages Bayesian decision theory to make optimal predictions. It aims to minimize the expected misclassification error by considering the probabilistic relationships between input features and class labels. The classifier calculates the posterior probabilities of different class labels given the observed data using Bayes' theorem, taking into account both prior knowledge and the likelihood of the observed evidence. By combining these probabilities, the classifier assigns the class label with the highest posterior probability to the input sample. 
 
 ## Considerations 
+- When a categorical variable in the test dataset contains a category that was not seen in the training dataset, the model faces a challenge known as "Zero Frequency" where it cannot assign a probability and therefore cannot make a prediction. To address this issue, we can employ a smoothing technique, such as Laplace estimation, which is a straightforward approach.
+- Bayes Optimal Classifier assumes predictors are independent which is unrealistic to real world data.
 
 ## References 
-- https://machinelearningmastery.com/bayes-optimal-classifier/""" .
+- https://machinelearningmastery.com/bayes-optimal-classifier/
+- https://www.cc.gatech.edu/home/isbell/classes/reading/papers/Rish.pdf
+- https://courses.cs.washington.edu/courses/cse446/17wi/slides/naivebayes-bayesnets-annotated.pdf""" .
 
 :BestModel a owl:Class ;
     rdfs:label "Best Model" ;
@@ -2446,17 +2455,29 @@ _TBD enter text here for how the thing works_
 :Boosting a owl:Class ;
     rdfs:label "Boosting" ;
     rdfs:subClassOf :EnsembleLearning ;
-    :definition """Boosting is a method of ML that uses an algorithm to strengthen weaker algorithms through combination or ensemble learning
-
-Boosting involves training successively models by emphasizing training data mis-classified by previously learned models""" ;
+    :definition "Boosting employs sequential ensemble techniques, where learners are trained sequentially, and fusion methods rely on different voting mechanisms. The goal is to create a strong classifier from multiple weak classifiers by building models that learn from the training data and attempt to correct the errors of the previous models." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+Boosting is a sequential ensemble learning method where each subsequent model aims to correct the mistakes made by the previous models. It starts by training a weak learner on the input data. Then, a second weak learner is trained, with a focus on the previously misclassified instances, in an attempt to improve upon the errors of the first model. This process continues iteratively, with each new model giving more importance to the data points that were poorly handled by the previous models. The final prediction is made by aggregating the predictions of all the weak learners. Boosting algorithms, such as AdaBoost, SGB, and XGBoost, offer interpretability, help reduce bias and variance, and are applicable to regression and classification problems. 
 
 ## Considerations 
+Boosting can be computationally expensive, prone to overfitting, and slower to train compared to other ensemble methods. Nevertheless, boosting provides an effective approach for building strong classifiers from multiple weak learners through a sequential learning process.
+
+There are three main types of Boosting algorithms
+ - Adaptive Boosting
+Adaptive Boosting (sometimes called AdaBoost) works by adding equal importance to each piece of a dataset and running it through the base learning algorithms. Every algorithm that errors, the boosting algorithm assigns a higher importance to. This continues until an acceptable level of confidence is reached.
+ - Gradient Boosting
+Gradient Boosting starts by training multiple models simultaneously to gather a strong estimate of strength to build new base learning algorithms.
+ - XGBoosting
+XGBoosting is a scalable tree boosting model. Using decision trees, weight is assigned to each variable and put into a decision tree. Outputs that are classified by the algorithm as wrong or weak are put into a second decision tree and the results form a stronger model.
 
 ## References 
 _TBD See KB Cards for content_ 
-- https://en.wikipedia.org/wiki/Ensemble_learning""" .
+- https://en.wikipedia.org/wiki/Ensemble_learning
+- https://reader.elsevier.com/reader/sd/pii/S1319157823000228?token=B05B898C984FAB268E6646A481ACF213B56D930F15DCA0F9F4D603E1FC9AA37472627AF9A2F96E99D0299C071F4FD666&originRegion=us-east-1&originCreation=20230512212601
+ - Mitchell, Rory, and Eibe Frank. "Accelerating the XGBoost algorithm using GPU computing." PeerJ Computer Science 3 (2017): e127.
+ - Natekin, Alexey, and Alois Knoll. "Gradient boosting machines, a tutorial." Frontiers in neurorobotics 7 (2013): 21.
+ - Schapire, Robert E. "A brief introduction to boosting." Ijcai. Vol. 99. 1999.
+ - Zhang, Cha, and Yunqian Ma, eds. Ensemble machine learning: methods and applications. Springer Science & Business Media, 2012.""" .
 
 :BootLoader a owl:Class ;
     rdfs:label "Boot Loader" ;
@@ -4346,14 +4367,19 @@ _TBD enter text here for how the thing works_
 :Density-weightedMethod a owl:Class ;
     rdfs:label "Density-weighted Method" ;
     rdfs:subClassOf :ActiveLearning ;
-    :definition "An Actvie Learning technique that uses a density estimate meta-parameter to avoid sampling sparsely populated regions of the feature space and can be based parametrically or from a parameter free model." ;
+    :definition """An Actvie Learning technique that uses a density estimate meta-parameter to avoid sampling sparsely populated regions of the feature space and can be based parametrically or from a parameter free model.
+
+Density-weighted methods select instances for labeling based on their informativeness and representativeness of the underlying distribution, combining a base query strategy with a density term that measures similarity to other instances. These methods aim to avoid querying outliers and prioritize instances that are both informative and representative, improving active learning performance.""" ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+By combining a base query strategy with a density term, which measures similarity to other instances in the input distribution, density-weighted methods prioritize instances that are both uncertain and representative of dense regions. This approach improves the overall effectiveness of active learning by selecting informative instances that align with the underlying data distribution.
 
 ## Considerations 
+- The density-weighted approach involves tuning the parameter β, which determines the relative importance of the density term. Selecting an appropriate value for β may require experimentation and fine-tuning to optimize the performance of the method.
 
 ## References 
-- https://www.inovex.de/de/blog/intro-to-active-learning/""" .
+- Inovex GmbH. (n.d.). An Introduction to Active Learning. Retrieved from https://www.inovex.de/de/blog/intro-to-active-learning/
+- https://idea-stat.snu.ac.kr/seminar/20161203/active.pdf
+- https://burrsettles.com/pub/settles.activelearning.pdf""" .
 
 :Dependency a owl:Class ;
     rdfs:label "Dependency" ;
@@ -4940,14 +4966,16 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
 :EnsembleLearning a owl:Class ;
     rdfs:label "Ensemble Learning" ;
     rdfs:subClassOf :MachineLearning ;
-    :definition "In statistics and machine learning, ensemble methods use multiple learning algorithms to obtain better predictive performance than could be obtained from any of the constituent learning algorithms alone" ;
+    :definition "Ensemble learning consists of a collection of baseline classifiers, also known as a classifiers ensemble. These baseline classifiers are trained on input data and produce individual predictions that are combined to generate an aggregate prediction. There are different strategies for creating ensemble classifiers, which can be homogeneous or heterogeneous." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+Ensemble learning involves four main steps. First, a set of baseline classifiers is trained on the input data using different learning algorithms or variations of the same algorithm. Each classifier learns from a different subset of the training data or with different configurations. Then, these trained classifiers independently make predictions on new, unseen data points. Next, the individual predictions from the baseline classifiers are combined using an aggregation function or fusion method, which can range from simple majority voting to more complex weighting schemes. Finally, the combined predictions form the ensemble prediction, which serves as the final output of the ensemble learning system. By leveraging the diversity and collective knowledge of the baseline classifiers, ensemble learning aims to improve prediction accuracy, generalization, and robustness.
 
 ## Considerations 
+Ensemble learning offers several advantages. It can improve the predictive accuracy and generalization of the models by reducing bias and variance. It can also enhance the robustness of predictions by considering different perspectives from multiple models. Additionally, ensemble learning is flexible and can be applied to various types of learning algorithms and data domains.
 
 ## References 
-- https://en.wikipedia.org/wiki/Ensemble_learning""" .
+- https://en.wikipedia.org/wiki/Ensemble_learning
+- https://reader.elsevier.com/reader/sd/pii/S1319157823000228?token=9551444F07A4325E0DA864A053606434FA4037B8A1239E86F3D557FD7F5B305A68A2798BF1B57ED232FC309860526F96&originRegion=us-east-1&originCreation=20230512004922""" .
 
 :EquivalenceMatching a owl:Class ;
     rdfs:label "Equivalence Matching" ;
@@ -5201,27 +5229,31 @@ _TBD enter text here for how the thing works_
 :ExpectedErrorReduction a owl:Class ;
     rdfs:label "Expected Error Reduction" ;
     rdfs:subClassOf :ActiveLearning ;
-    :definition """Expected Error Reduction (EER) follows similar ideas as EMC, but again looks at the model output instead of the model itself and also takes the other data into account. In particular, a sample x
- is considered useful, if we can expect that knowing the label will reduce the future error on unseen samples""" ;
+    :definition "Rather than measuring how much a model is likely to change, EER focuses on estimating the reduction in generalization error. The goal is to minimize the expected future error of a model trained on labeled instances while considering the remaining unlabeled instances as a representative validation set." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+There are two main objectives within EER. The first objective is to minimize the expected 0/1 loss, which aims to reduce the total number of incorrect predictions. The second objective is to minimize the expected log loss, which is equivalent to reducing the expected entropy over the unlabeled set. This can be interpreted as maximizing the expected information gain or mutual information between the output variables and the unlabeled instances.
 
 ## Considerations 
-
+- The Expected Error Reduction approach is computationally expensive. It requires estimating the expected future error for each query and incrementally re-training the model for each possible query labeling, iterating over the entire unlabeled pool.
+- Note that EER is only applicable in Pool-based Active Learning, because we need access to all yet unlabeled data.
 ## References 
-- https://www.inovex.de/de/blog/intro-to-active-learning/""" .
+- https://www.inovex.de/de/blog/intro-to-active-learning/
+- https://idea-stat.snu.ac.kr/seminar/20161203/active.pdf""" .
 
 :ExpectedModelChange a owl:Class ;
     rdfs:label "Expected Model Change" ;
     rdfs:subClassOf :ActiveLearning ;
-    :definition "Supervised learning establishes a relationship between the known input and output variables to conduct a predictive analysis." ;
+    :definition "Expected Model Change focuses on selecting instances that would result in the greatest change to the current model if their labels were known." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+Uses the Expected Gradient Length strategy where the change imparted to the model is is measured by the training gradient, which represents the vecror used to re-estimate parameter values. The learner then selects the instance that would yield the largest magnitude of the new training gradeint when labeled and added to traning set. Since the true lable is not known ahead of learning, the gradient length is calculated as an expectation value over possible labelings. 
 
 ## Considerations 
+- Can be computationally expensive when the feature space and leble set are large. 
+- If features are not properly scaled, the Expected Gradient Length strategy may be lead to overestimation. 
 
 ## References 
-_TBD See KB Cards for content_""" .
+- https://www.inovex.de/de/blog/intro-to-active-learning
+- https://burrsettles.com/pub/settles.activelearning.pdf""" .
 
 :ExternalContentInclusionFunction a owl:Class ;
     rdfs:label "External Content Inclusion Function" ;
@@ -9856,16 +9888,17 @@ _TBD enter text here for how the thing works_
 - https://en.wikipedia.org/wiki/Q-learning""" .
 
 :QueryByCommittee a owl:Class ;
-    rdfs:label "Expected Model Change" ;
+    rdfs:label "Query By Committee" ;
     rdfs:subClassOf :ActiveLearning ;
-    :definition "Supervised learning establishes a relationship between the known input and output variables to conduct a predictive analysis." ;
+    :definition "Epected Model Change focuses on selecting instances that would result in the greatest change to the current model if their labels were known. Specifically, it introduces the \"expected gradient length\" (EGL) strategy, which is applicable to discriminative probabilistic models trained using gradient-based optimization." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+In EGL, the change imparted to the model is measured by the length of the training gradient, which represents the vector used to re-estimate parameter values. The learner selects the instance, denoted as x∗EGL, that would yield the largest magnitude of the new training gradient when labeled and added to the training set L. Since the true label is not known in advance, the length is calculated as an expectation over possible labelings. The EGL approach is applicable to any learning problem that employs gradient-based training. It prioritizes instances that are likely to have the most influence on the model's parameters, regardless of the resulting query label.
 
 ## Considerations 
+Expected Model Change can be computationally expensive when the feature space and set of labelings are large. Additionally, if the features are not properly scaled, the EGL approach may be misled by unusually large feature values or corresponding parameter estimates, leading to an overestimation of an instance's informativeness. Parameter regularization techniques can mitigate this issue to some extent, and it is not typically a significant problem in practice.
 
 ## References 
-_TBD See KB Cards for content_""" .
+- https://burrsettles.com/pub/settles.activelearning.pdf""" .
 
 :RadioModem a owl:Class ;
     rdfs:label "Radio Modem" ;
@@ -11180,6 +11213,7 @@ A vulnerability such as a write-what-where condition that allows one to write da
 Stacking (sometimes called stacked generalization) involves training a model to combine the predictions of several other learning algorithms.""" ;
     :kb-article """## How it works
 _TBD enter text here for how the thing works_
+
 
 ## Considerations 
 
@@ -17186,11 +17220,14 @@ _TBD Need better reference or definition and first reference if at all possible.
 :UncertaintySampling a owl:Class ;
     rdfs:label "Uncertainty Sampling" ;
     rdfs:subClassOf :ActiveLearning ;
-    :definition "Makes the utility inversely proportional to the uncertainty of the model with respect to the sample and will work with any  model provided it can assess its uncertainty of a predection." ;
+    :definition "Uncertainty sampling is an active learning strategy where the learner selects instances for labeling that it is least certain about in terms of their true labels, using measures such as posterior probabilities, prediction confidence, or entropy." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+For binary classification, uncertainty sampling queries the instance with the posterior probability closest to 0.5, which represents uncertainty between the two classes. In multi-class problems, the least confident strategy selects the instance with the lowest prediction confidence, while margin sampling incorporates the posterior probabilities of the first and second most likely class labels to correct for the limitations of the least confident strategy. Entropy-based uncertainty sampling uses entropy as an uncertainty measure, considering the amount of information needed to encode a label distribution. It generalizes well to probabilistic multi-label classifiers and complex structured instances like sequences and trees.
 
 ## Considerations 
+- Empirical comparisons of these uncertainty measures have yielded mixed results, suggesting that the most suitable strategy may depend on the specific application and objective.
+- Uncertainty sampling can also be applied to non-probabilistic classifiers, such as decision trees, nearest-neighbor classifiers, and support vector machines.
+- While commonly used, more sophisticated strategies exist. 
 
 ## References 
 - https://www.inovex.de/de/blog/intro-to-active-learning/""" .
@@ -17548,14 +17585,15 @@ Geolocation data for each user logon attempt is collected and used to create a b
 :VarianceReduction a owl:Class ;
     rdfs:label "Variance Reduction" ;
     rdfs:subClassOf :ActiveLearning ;
-    :definition "Leverages a well-known result from statistical learning and decomposes the model error into a data noise term, a model bias term and a model variance term. As the noise term only depends on the data and the bias is induced by the choice of model, any reduction in the error can only come from the variance term." ;
+    :definition "Minimizing the expectation of a loss function directly is often computationally expensive, so an alternative approach is to minimize output variance, which can have a closed-form solution in certain cases. In regression problems, where the objective is to minimize standard error, the decomposition of expected future error includes terms for noise, bias, and variance. By minimizing variance, the future generalization error of the model can be minimized." ;
     :kb-article """## How it works
-_TBD enter text here for how the thing works_
+Variance reduction involves decomposing the expected future error into noise, bias, and variance components. While directly minimizing the expectation of a loss function is computationally expensive, minimizing output variance can sometimes be achieved with closed-form solutions. By minimizing variance, which represents the remaining component of the learner's squared-loss, the future generalization error of the model can be minimized. This approach utilizes the estimated distribution of the model's output variance, allowing for efficient estimation without retraining the model. Gradient methods can then be applied to search for query instances that minimize output variance, effectively reducing generalization error. 
 
 ## Considerations 
-
+Estimating output variance requires inverting a matrix for each instance, leading to a large time complexity for large query pools and/or number of model paremeters. 
 ## References 
-- https://www.inovex.de/de/blog/intro-to-active-learning/""" .
+- https://www.inovex.de/de/blog/intro-to-active-learning/
+- https://burrsettles.com/pub/settles.activelearning.pdf""" .
 
 :Vendor a owl:Class ;
     rdfs:label "Vendor" ;
@@ -17621,7 +17659,9 @@ _TBD enter text here for how the thing works_
     :definition "Voting is another form of ensembling" ;
     :kb-article """## How it works
 _TBD enter text here for how the thing works_
+ the wiki points here as the source for "voting: https://reader.elsevier.com/reader/sd/pii/S0890540184710091?token=77F30D0F6FA15655DF7A933245A5BE1AE111E678FE1743E01FDDC6E58F7495C5E1B280525DD6FF01C23E12292E0534E8&originRegion=us-east-1&originCreation=20230516005152
 
+need to read
 ## Considerations 
 
 ## References 
@@ -22322,4 +22362,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.0
+### Serialized using the ttlser deterministic serializer v1.2.1
