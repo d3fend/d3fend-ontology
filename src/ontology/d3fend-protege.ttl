@@ -7,10 +7,10 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl> a owl:Ontology ;
-    rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2022 The MITRE Corporation."^^xsd:string ;
-    dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature."^^xsd:string ;
-    dcterms:license "MIT"^^xsd:string ;
-    dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures"^^xsd:string .
+    rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2022 The MITRE Corporation." ;
+    dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature." ;
+    dcterms:license "MIT" ;
+    dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures" .
 
 ### Object Properties
 
@@ -358,6 +358,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :exactly a owl:ObjectProperty ;
     rdfs:label "exactly" ;
     rdfs:subPropertyOf :semantic-relation .
+
+:executed-by a owl:ObjectProperty ;
+    rdfs:label "executed-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :executes .
 
 :executes a owl:ObjectProperty ;
     rdfs:label "executes" ;
@@ -3994,6 +3999,13 @@ A credential may be:
     rdfs:label "Digital Event" ;
     rdfs:subClassOf :D3FENDThing .
 
+:DigitalFingerprint a owl:Class ;
+    rdfs:label "Digital Fingerprint" ;
+    rdfs:subClassOf :Identifier ;
+    rdfs:isDefinedBy "https://csrc.nist.gov/glossary/term/digital_fingerprint" ;
+    :definition "A digital signature that uniquely identifies data and has the property that changing a single bit in the data will cause a completely different message digest to be generated." ;
+    :todo "Create relationship 'identifies some data' once data ontology implemented" .
+
 :DigitalObject a owl:Class ;
     rdfs:label "Digital Object" ;
     rdfs:subClassOf :D3FENDThing ;
@@ -4457,6 +4469,11 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
     :definition "A sensor application installed on a endpoint (platform) to collect information on platform components." ;
     rdfs:seeAlso "d3f:Platform" .
 
+:EntityGroup a owl:Class ;
+    rdfs:label "Entity Group" ;
+    rdfs:subClassOf :AccessControlConfiguration ;
+    :definition "A collection of objects that can have access controls placed on them." .
+
 :EvalFunction a owl:Class ;
     rdfs:label "Eval Function" ;
     rdfs:subClassOf :Subroutine,
@@ -4864,7 +4881,7 @@ Asymmetric encryption is typically accomplished using public and private key cer
 
 :FileHash a owl:Class ;
     rdfs:label "File Hash" ;
-    rdfs:subClassOf :Identifier,
+    rdfs:subClassOf :DigitalFingerprint,
         [ a owl:Restriction ;
             owl:onProperty :identifies ;
             owl:someValuesFrom :File ] .
@@ -5470,6 +5487,17 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
             owl:onProperty :monitors ;
             owl:someValuesFrom :OperatingSystemConfiguration ] ;
     :definition "Collects the configuration data on an endpoint." .
+
+:HostGroup a owl:Class ;
+    rdfs:label "Host Group" ;
+    rdfs:subClassOf :EntityGroup,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Host ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
+    :definition "A collection of Hosts used to allow operations such as access control to be applied to the entire group." .
 
 :Hostname a :DomainName,
         owl:Class,
@@ -9067,6 +9095,20 @@ Jobs can be scheduled in many different and sometimes creative ways through oper
         :Reference-PreventingExecutionOfTaskScheduledMalware_McAfeeLLC ;
     :synonym "Scheduled Job Execution" .
 
+:ScheduledTask a owl:Class ;
+    rdfs:label "Scheduled Task" ;
+    rdfs:subClassOf :OperatingSystemConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :created-by ;
+            owl:someValuesFrom :TaskSchedule ],
+        [ a owl:Restriction ;
+            owl:onProperty :executed-by ;
+            owl:someValuesFrom :TaskSchedule ] ;
+    :definition "A task that is scheduled to run at a particular time or periodically. In Windows, Scheduled Tasks are created and managed by the Task Scheduler. In Unix-like OSes, the `cron` utitility serves a similar role." ;
+    rdfs:seeAlso "http://dbpedia.org/resource/Cron",
+        "http://dbpedia.org/resource/Windows_Task_Scheduler" ;
+    :synonym "Job" .
+
 :ScriptApplicationProcess a owl:Class ;
     rdfs:label "Script Application Process" ;
     skos:altLabel "Script Process" ;
@@ -9894,10 +9936,7 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
 
 :SystemConfigurationDatabase a owl:Class ;
     rdfs:label "System Configuration Database" ;
-    rdfs:subClassOf :Database,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
+    rdfs:subClassOf :Database ;
     :definition "A database used to hold system configuration data." .
 
 :SystemConfigurationDatabaseRecord a owl:Class ;
@@ -15307,7 +15346,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :TaskSchedule a owl:Class ;
     rdfs:label "Task Schedule" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ScheduledTask ],
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ScheduledTask ] ;
     :definition "A task schedule is a specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
         <http://dbpedia.org/resource/Windows_Task_Scheduler> .
@@ -15704,7 +15749,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
 
 :UserGroup a owl:Class ;
     rdfs:label "User Group" ;
-    rdfs:subClassOf :AccessControlConfiguration,
+    rdfs:subClassOf :EntityGroup,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :User ],
@@ -15980,22 +16025,48 @@ User web session data is collected over a period of time to create a user behavi
 
 :WindowsRegistry a owl:Class ;
     rdfs:label "Windows Registry" ;
-    rdfs:subClassOf :SystemConfigurationDatabase ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Windows_Registry> ;
+    rdfs:subClassOf :SystemConfigurationDatabase,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :WindowsRegistryKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :WindowsRegistryValue ] ;
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users",
+        <http://dbpedia.org/resource/Windows_Registry> ;
     :definition "The Windows Registry is a hierarchical database that stores low-level settings for the Microsoft Windows operating system and for applications that opt to use the registry. The kernel, device drivers, services, Security Accounts Manager, and user interface can all use the registry. The registry also allows access to counters for profiling system performance." .
 
 :WindowsRegistryKey a owl:Class ;
     rdfs:label "Windows Registry Key" ;
     rdfs:subClassOf :SystemConfigurationDatabaseRecord,
         [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :WindowsRegistryKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :WindowsRegistryValue ],
+        [ a owl:Restriction ;
             owl:onProperty :windows-registry-key ;
-            owl:someValuesFrom xsd:string ],
+            owl:someValuesFrom xsd:string ] ;
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry",
+        <http://dbpedia.org/resource/Windows_Registry#Keys_and_values> ;
+    :definition "Windows Registry Keys are container objects similar to folders that contain subkeys and/or data entries called values. A key can be a 'Registry Hive' when it is root key of a logical group of keys, subkeys, and values that has a set of supporting files loaded into memory when the operating system is started or a user logs in." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-hives",
+        "https://schema.ocsf.io/objects/registry_key" .
+
+:WindowsRegistryValue a owl:Class ;
+    rdfs:label "Windows Registry Value" ;
+    rdfs:subClassOf :SystemConfigurationDatabaseRecord,
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :WindowsRegistryKey ],
         [ a owl:Restriction ;
             owl:onProperty :windows-registry-value ;
             owl:someValuesFrom xsd:string ] ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Windows_Registry#Keys_and_values> ;
-    :definition "Windows registry keys are container objects similar to folders. Registry values are non-container objects similar to files. Keys may contain values and subkeys. Keys are referenced with a syntax similar to Windows' path names, using backslashes to indicate levels of hierarchy. Keys must have a case insensitive name without backslashes." ;
-    rdfs:seeAlso "https://schema.ocsf.io/objects/registry_key" .
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/winreg/ns-winreg-valentw" ;
+    :definition "A Windows Registry Value is a data structure consisting of a name, type, data (as a pointer), and the length. Windows Registry Values are always associated with a Windows Registry Key. They store the actual configuration data for the operating system and the programs that run on the system." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry",
+        "https://schema.ocsf.io/objects/registry_value" .
 
 :WindowsShortcutFile a owl:Class ;
     rdfs:label "Windows Shortcut File" ;
