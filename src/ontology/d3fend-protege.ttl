@@ -1575,6 +1575,15 @@ skos:altLabel a owl:AnnotationProperty ;
     :definition "Information about what access permissions are granted to particular users for particular objects" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Access-control_list> .
 
+:AccessControlGroup a owl:Class ;
+    rdfs:label "Access Control Group" ;
+    rdfs:subClassOf :AccessControlConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
+    :definition "A collection of objects that can have access controls placed on them." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/group" .
+
 :AccessControlList a owl:Class ;
     rdfs:label "Access Control List" ;
     rdfs:subClassOf :AccessControlConfiguration,
@@ -4004,7 +4013,7 @@ A credential may be:
     rdfs:label "Digital Fingerprint" ;
     rdfs:subClassOf :Identifier ;
     rdfs:isDefinedBy "https://csrc.nist.gov/glossary/term/digital_fingerprint" ;
-    :definition "A digital signature that uniquely identifies data and has the property that changing a single bit in the data will cause a completely different message digest to be generated." ;
+    :definition "A digital signature uniquely identifies data and has the property that changing a single bit in the data will cause a completely different message digest to be generated." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/fingerprint" ;
     :todo "Create relationship 'identifies some data' once data ontology implemented" .
 
@@ -4470,12 +4479,6 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
     rdfs:subClassOf :Sensor ;
     :definition "A sensor application installed on a endpoint (platform) to collect information on platform components." ;
     rdfs:seeAlso "d3f:Platform" .
-
-:EntityGroup a owl:Class ;
-    rdfs:label "Entity Group" ;
-    rdfs:subClassOf :AccessControlConfiguration ;
-    :definition "A collection of objects that can have access controls placed on them." ;
-    rdfs:seeAlso "https://schema.ocsf.io/objects/group" .
 
 :EvalFunction a owl:Class ;
     rdfs:label "Eval Function" ;
@@ -5494,13 +5497,10 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
 
 :HostGroup a owl:Class ;
     rdfs:label "Host Group" ;
-    rdfs:subClassOf :EntityGroup,
+    rdfs:subClassOf :AccessControlGroup,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :Host ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricted-by ;
-            owl:someValuesFrom :AccessControlList ] ;
+            owl:someValuesFrom :Host ] ;
     :definition "A collection of Hosts used to allow operations such as access control to be applied to the entire group." .
 
 :Hostname a :DomainName,
@@ -7323,7 +7323,8 @@ Additionally, after the code file is printed, it could be recovered from the sys
         "System Configuration" ;
     rdfs:subClassOf :OperatingSystemConfiguration ;
     :definition "An component of the overall information necessary for the configuration of an operating system." ;
-    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03085025-n> .
+    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03085025-n> ;
+    :todo "Clean this up" .
 
 :OperatingSystemConfigurationFile a owl:Class ;
     rdfs:label "Operating System Configuration File" ;
@@ -9101,18 +9102,23 @@ Jobs can be scheduled in many different and sometimes creative ways through oper
 
 :ScheduledTask a owl:Class ;
     rdfs:label "Scheduled Task" ;
-    rdfs:subClassOf :OperatingSystemConfiguration,
+    rdfs:subClassOf :OperatingSystemProcess,
         [ a owl:Restriction ;
-            owl:onProperty :created-by ;
+            owl:onProperty :contained-by ;
             owl:someValuesFrom :TaskSchedule ],
         [ a owl:Restriction ;
-            owl:onProperty :executed-by ;
-            owl:someValuesFrom :TaskSchedule ] ;
-    :definition "A task that is scheduled to run at a particular time or periodically. In Windows, Scheduled Tasks are created and managed by the Task Scheduler. In Unix-like OSes, the `cron` utitility serves a similar role." ;
-    rdfs:seeAlso "http://dbpedia.org/resource/Cron",
-        "http://dbpedia.org/resource/Windows_Task_Scheduler",
-        "https://schema.ocsf.io/objects/job" ;
-    :synonym "Job" .
+            owl:onProperty :created-by ;
+            owl:someValuesFrom :TaskSchedulerSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :modified-by ;
+            owl:someValuesFrom :TaskSchedulerSoftware ] ;
+    :definition "A task scheduler process is an operating system process that executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking)." ;
+    rdfs:seeAlso "https://linux.die.net/man/1/at",
+        "https://schema.ocsf.io/objects/job",
+        <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Job",
+        "Task Scheduler Process" .
 
 :ScriptApplicationProcess a owl:Class ;
     rdfs:label "Script Application Process" ;
@@ -10925,6 +10931,9 @@ When system firmware verification fails a set of predefined responses is typical
         :PersistenceTechnique,
         :PrivilegeEscalationTechnique,
         [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ScheduledTask ],
+        [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ],
         [ a owl:Restriction ;
@@ -10958,7 +10967,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1053.005 a owl:Class ;
     rdfs:label "Schtasks Execution" ;
-    rdfs:subClassOf :T1053 ;
+    rdfs:subClassOf :T1053,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ScheduledTask ] ;
     :attack-id "T1053.005" ;
     :definition "Renamed from ATT&CK to be consistent with at, launchd, cron siblings; name as is looks like parent.  Not sure why parent is not just Scheduled Task [Execution[." .
 
@@ -15354,27 +15366,31 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Task Schedule" ;
     rdfs:subClassOf :DigitalArtifact,
         [ a owl:Restriction ;
-            owl:onProperty :creates ;
+            owl:onProperty :contains ;
             owl:someValuesFrom :ScheduledTask ],
         [ a owl:Restriction ;
-            owl:onProperty :executes ;
-            owl:someValuesFrom :ScheduledTask ] ;
-    :definition "A task schedule is a specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
-        <http://dbpedia.org/resource/Windows_Task_Scheduler> .
-
-:TaskSchedulerProcess a owl:Class ;
-    rdfs:label "Task Scheduler Process" ;
-    rdfs:subClassOf :OperatingSystemProcess ;
-    :definition "A task scheduler process is an operating system process that executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking)." ;
+            owl:onProperty :modified-by ;
+            owl:someValuesFrom :TaskSchedulerSoftware ] ;
+    :definition "A task schedule contains specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process. In Windows, the schedule can be accessed at 'C:\\Windows\\System32\\Tasks' or in the registry. In Linux, the schedule is located at '/etc/crontab'" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
         <http://dbpedia.org/resource/Windows_Task_Scheduler> .
 
 :TaskSchedulerSoftware a owl:Class ;
     rdfs:label "Task Scheduler Software" ;
-    rdfs:subClassOf :SystemServiceSoftware ;
-    :definition "A task scheduler software is operating system software that when run executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking). Processes running such software are task scheduler processes." ;
-    rdfs:seeAlso "Task Scheduler Process" .
+    rdfs:subClassOf :SystemServiceSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ScheduledTask ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ScheduledTask ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :TaskSchedule ] ;
+    :definition "A task scheduler software is operating system software that when run executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking). Processes running such software are task scheduler processes. In Windows, Scheduled Tasks are created and managed by the Task Scheduler. In Unix-like OSes, the `cron` utitility serves a similar role." ;
+    rdfs:seeAlso "Scheduled Task",
+        <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> .
 
 :Technique a owl:Class ;
     rdfs:label "Technique" ;
@@ -15755,13 +15771,10 @@ Geolocation data for each user logon attempt is collected and used to create a b
 
 :UserGroup a owl:Class ;
     rdfs:label "User Group" ;
-    rdfs:subClassOf :EntityGroup,
+    rdfs:subClassOf :AccessControlGroup,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :User ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricted-by ;
-            owl:someValuesFrom :AccessControlList ] ;
+            owl:someValuesFrom :User ] ;
     :definition "User groups are a way to collect user accounts and/or computer accounts into manageable units. Administrators can assign permissions, roles, or access to resources, as well as modify group membership, depending on the operating system." ;
     :synonym "Security Group" .
 
