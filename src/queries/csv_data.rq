@@ -1,0 +1,23 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+SELECT DISTINCT
+	?def_tactic_label
+	?parent_label
+	?def_tech_label
+	?def_tech_id
+	?def_tech_definition
+WHERE {
+    ?def_tech rdfs:subClassOf+ d3f:DefensiveTechnique .
+    ?def_tech rdfs:subClassOf ?parent .
+   	?lineage ^rdfs:subClassOf* ?def_tech .
+  	?lineage d3f:enables ?def_tactic .
+    ?def_tech d3f:d3fend-id ?def_tech_id .
+    ?def_tech d3f:definition ?def_tech_definition .
+  	?def_tactic rdfs:label ?def_tactic_label .
+    ?parent rdfs:label ?parent_label .
+    ?def_tech rdfs:label ?def_tech_label .
+    ?def_tactic rdfs:label ?def_tactic_label .
+    #FILTER (!isBlank(?parent))
+}

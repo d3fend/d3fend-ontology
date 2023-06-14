@@ -271,8 +271,9 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 	$(END)
 
 build/d3fend.csv: build/d3fend-public.owl ## make D3FEND csv, not part of build or all targets
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py
-	$(END)
+	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/csv_data.rq build/d3fend.csv
+
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/cleancsv.py
 
 build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
