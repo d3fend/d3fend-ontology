@@ -1,0 +1,646 @@
+{
+  "type": "bundle",
+  "id": "bundle--5c150c1d-d85c-4c50-b4dd-88e4b88a15c5",
+  "spec_version": "2.1",
+  "objects": [
+    {
+      "type": "x-mitre-collection",
+      "id": "x-mitre-collection--1f5f1533-f617-4ca8-9ab4-6a02367fa019",
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0",
+      "name": "Enterprise ATT&CK",
+      "x_mitre_version": "13.1",
+      "description": "ATT&CK for Enterprise provides a knowledge base of real-world adversary behavior targeting traditional enterprise networks. ATT&CK for Enterprise covers the following platforms: Windows, macOS, Linux, PRE, Office 365, Google Workspace, IaaS, Network, and Containers.",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "created": "2018-01-17T12:56:55.080Z",
+      "modified": "2023-05-09T14:00:00.188Z",
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ]
+    },
+    {
+      "x_mitre_platforms": [
+        "Linux",
+        "macOS",
+        "Windows",
+        "Network"
+      ],
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "x_mitre_contributors": [
+        "ExtraHop"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "type": "attack-pattern",
+      "id": "attack-pattern--774a3188-6ba9-4dc4-879d-d54ee48a5ce9",
+      "created": "2017-05-31T21:30:29.458Z",
+      "x_mitre_version": "1.2",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1020",
+          "url": "https://attack.mitre.org/techniques/T1020"
+        }
+      ],
+      "x_mitre_deprecated": false,
+      "revoked": false,
+      "description": "Adversaries may exfiltrate data, such as sensitive documents, through the use of automated processing after being gathered during Collection. \n\nWhen automated exfiltration is used, other exfiltration techniques likely apply as well to transfer the information out of the network, such as [Exfiltration Over C2 Channel](https://attack.mitre.org/techniques/T1041) and [Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048).",
+      "modified": "2022-05-11T14:00:00.188Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "name": "Automated Exfiltration",
+      "x_mitre_detection": "Monitor process file access patterns and network behavior. Unrecognized processes or scripts that appear to be traversing file systems and sending network traffic may be suspicious.",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "exfiltration"
+        }
+      ],
+      "x_mitre_is_subtechnique": false,
+      "x_mitre_data_sources": [
+        "Network Traffic: Network Connection Creation",
+        "Network Traffic: Network Traffic Flow",
+        "Network Traffic: Network Traffic Content",
+        "Command: Command Execution",
+        "File: File Access",
+        "Script: Script Execution"
+      ],
+      "x_mitre_attack_spec_version": "2.1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "spec_version": "2.1"
+    },
+    {
+      "x_mitre_platforms": [
+        "Windows"
+      ],
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "attack-pattern--0042a9f5-f053-4769-b3ef-9ad018dfa298",
+      "type": "attack-pattern",
+      "created": "2020-01-14T17:18:32.126Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1055.011",
+          "url": "https://attack.mitre.org/techniques/T1055/011"
+        },
+        {
+          "url": "https://msdn.microsoft.com/library/windows/desktop/ms633574.aspx",
+          "description": "Microsoft. (n.d.). About Window Classes. Retrieved December 16, 2017.",
+          "source_name": "Microsoft Window Classes"
+        }
+      ],
+      "modified": "2022-04-25T14:00:00.188Z",
+      "name": "Extra Window Memory Injection",
+      "description": "Adversaries may inject malicious code into process via Extra Window Memory (EWM) in order to evade process-based defenses as well as possibly elevate privileges. EWM injection is a method of executing arbitrary code in the address space of a separate live process. \n\nBefore creating a window, graphical Windows-based processes must prescribe to or register a windows class, which stipulate appearance and behavior (via windows procedures, which are functions that handle input/output of data).(Citation: Microsoft Window Classes) Registration of new windows classes can include a request for up to 40 bytes of EWM to be appended to the allocated memory of each instance of that class. This EWM is intended to store data specific to that window and has specific application programming interface (API) functions to set and get its value. (Citation: Microsoft GetWindowLong function) (Citation: Microsoft SetWindowLong function)\n\nAlthough small, the EWM is large enough to store a 32-bit pointer and is often used to point to a windows procedure. Malware may possibly utilize this memory location in part of an attack chain that includes writing code to shared sections of the process\u2019s memory, placing a pointer to the code in EWM, then invoking execution by returning execution control to the address in the process\u2019s EWM.\n\nExecution granted through EWM injection may allow access to both the target process's memory and possibly elevated privileges. Writing payloads to shared sections also avoids the use of highly monitored API calls such as <code>WriteProcessMemory</code> and <code>CreateRemoteThread</code>.(Citation: Elastic Process Injection July 2017) More sophisticated malware samples may also potentially bypass protection mechanisms such as data execution prevention (DEP) by triggering a combination of windows procedures and other system functions that will rewrite the malicious payload inside an executable portion of the target process.  (Citation: MalwareTech Power Loader Aug 2013) (Citation: WeLiveSecurity Gapz and Redyms Mar 2013)\n\nRunning code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges. Execution via EWM injection may also evade detection from security products since the execution is masked under a legitimate process. ",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "defense-evasion"
+        },
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "privilege-escalation"
+        }
+      ],
+      "x_mitre_detection": "Monitor for API calls related to enumerating and manipulating EWM such as GetWindowLong (Citation: Microsoft GetWindowLong function) and SetWindowLong (Citation: Microsoft SetWindowLong function). Malware associated with this technique have also used SendNotifyMessage (Citation: Microsoft SendNotifyMessage function) to trigger the associated window procedure and eventual malicious injection. (Citation: Elastic Process Injection July 2017)",
+      "x_mitre_is_subtechnique": true,
+      "x_mitre_version": "1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_data_sources": [
+        "Process: OS API Execution"
+      ],
+      "x_mitre_defense_bypassed": [
+        "Anti-virus",
+        "Application control"
+      ],
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+    },
+    {
+      "modified": "2023-05-09T14:00:00.188Z",
+      "name": "Scheduled Task",
+      "description": "Adversaries may abuse the Windows Task Scheduler to perform task scheduling for initial or recurring execution of malicious code. There are multiple ways to access the Task Scheduler in Windows. The [schtasks](https://attack.mitre.org/software/S0111) utility can be run directly on the command line, or the Task Scheduler can be opened through the GUI within the Administrator Tools section of the Control Panel. In some cases, adversaries have used a .NET wrapper for the Windows Task Scheduler, and alternatively, adversaries have used the Windows netapi32 library to create a scheduled task.\n\nThe deprecated [at](https://attack.mitre.org/software/S0110) utility could also be abused by adversaries (ex: [At](https://attack.mitre.org/techniques/T1053/002)), though <code>at.exe</code> can not access tasks created with <code>schtasks</code> or the Control Panel.\n\nAn adversary may use Windows Task Scheduler to execute programs at system startup or on a scheduled basis for persistence. The Windows Task Scheduler can also be abused to conduct remote Execution as part of Lateral Movement and/or to run a process under the context of a specified account (such as SYSTEM). Similar to [System Binary Proxy Execution](https://attack.mitre.org/techniques/T1218), adversaries have also abused the Windows Task Scheduler to potentially mask one-time execution under signed/trusted system processes.(Citation: ProofPoint Serpent)\n\nAdversaries may also create \"hidden\" scheduled tasks (i.e. [Hide Artifacts](https://attack.mitre.org/techniques/T1564)) that may not be visible to defender tools and manual queries used to enumerate tasks. Specifically, an adversary may hide a task from `schtasks /query` and the Task Scheduler by deleting the associated Security Descriptor (SD) registry value (where deletion of this value must be completed using SYSTEM permissions).(Citation: SigmaHQ)(Citation: Tarrask scheduled task) Adversaries may also employ alternate methods to hide tasks, such as altering the metadata (e.g., `Index` value) within associated registry keys.(Citation: Defending Against Scheduled Task Attacks in Windows Environments) ",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "execution"
+        },
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "persistence"
+        },
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "privilege-escalation"
+        }
+      ],
+      "x_mitre_contributors": [
+        "Andrew Northern, @ex_raritas",
+        "Bryan Campbell, @bry_campbell",
+        "Zachary Abzug, @ZackDoesML",
+        "Selena Larson, @selenalarson",
+        "Sittikorn Sangrattanapitak"
+      ],
+      "x_mitre_deprecated": false,
+      "x_mitre_detection": "Monitor process execution from the <code>svchost.exe</code> in Windows 10 and the Windows Task Scheduler <code>taskeng.exe</code> for older versions of Windows. (Citation: Twitter Leoloobeek Scheduled Task) If scheduled tasks are not used for persistence, then the adversary is likely to remove the task when the action is complete. Monitor Windows Task Scheduler stores in %systemroot%\\System32\\Tasks for change entries related to scheduled tasks that do not correlate with known software, patch cycles, etc.\n\nConfigure event logging for scheduled task creation and changes by enabling the \"Microsoft-Windows-TaskScheduler/Operational\" setting within the event logging service. (Citation: TechNet Forum Scheduled Task Operational Setting) Several events will then be logged on scheduled task activity, including: (Citation: TechNet Scheduled Task Events)(Citation: Microsoft Scheduled Task Events Win10)\n\n* Event ID 106 on Windows 7, Server 2008 R2 - Scheduled task registered\n* Event ID 140 on Windows 7, Server 2008 R2 / 4702 on Windows 10, Server 2016 - Scheduled task updated\n* Event ID 141 on Windows 7, Server 2008 R2 / 4699 on Windows 10, Server 2016 - Scheduled task deleted\n* Event ID 4698 on Windows 10, Server 2016 - Scheduled task created\n* Event ID 4700 on Windows 10, Server 2016 - Scheduled task enabled\n* Event ID 4701 on Windows 10, Server 2016 - Scheduled task disabled\n\nTools such as Sysinternals Autoruns may also be used to detect system changes that could be attempts at persistence, including listing current scheduled tasks. (Citation: TechNet Autoruns)\n\nRemote access tools with built-in features may interact directly with the Windows API to perform these functions outside of typical system utilities. Tasks may also be created through Windows system management tools such as Windows Management Instrumentation and PowerShell, so additional logging may need to be configured to gather the appropriate data.",
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "x_mitre_is_subtechnique": true,
+      "x_mitre_platforms": [
+        "Windows"
+      ],
+      "x_mitre_version": "1.3",
+      "x_mitre_data_sources": [
+        "File: File Modification",
+        "Scheduled Job: Scheduled Job Creation",
+        "Windows Registry: Windows Registry Key Creation",
+        "Command: Command Execution",
+        "Process: Process Creation"
+      ],
+      "x_mitre_permissions_required": [
+        "Administrator"
+      ],
+      "x_mitre_remote_support": true,
+      "type": "attack-pattern",
+      "id": "attack-pattern--005a06c6-14bf-4118-afa0-ebcd8aebb0c9",
+      "created": "2019-11-27T14:58:00.429Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "revoked": false,
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "url": "https://attack.mitre.org/techniques/T1053/005",
+          "external_id": "T1053.005"
+        },
+        {
+          "source_name": "SigmaHQ",
+          "description": "BlackB0lt. (2022, April 15). https://github.com/SigmaHQ/sigma/blob/master/rules/windows/registry/registry_delete/registry_delete_removal_sd_value_scheduled_task_hide.yml. Retrieved June 1, 2022.",
+          "url": "https://github.com/SigmaHQ/sigma/blob/master/rules/windows/registry/registry_delete/registry_delete_removal_sd_value_scheduled_task_hide.yml"
+        }
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "x_mitre_attack_spec_version": "3.1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "spec_version": "2.1"
+    },
+    {
+      "modified": "2023-05-09T14:00:00.188Z",
+      "name": "Windows Management Instrumentation",
+      "description": "Adversaries may abuse Windows Management Instrumentation (WMI) to execute malicious commands and payloads. WMI is an administration feature that provides a uniform environment to access Windows system components. The WMI service enables both local and remote access, though the latter is facilitated by [Remote Services](https://attack.mitre.org/techniques/T1021) such as [Distributed Component Object Model](https://attack.mitre.org/techniques/T1021/003) (DCOM) and [Windows Remote Management](https://attack.mitre.org/techniques/T1021/006) (WinRM).(Citation: MSDN WMI) Remote WMI over DCOM operates using port 135, whereas WMI over WinRM operates over port 5985 when using HTTP and 5986 for HTTPS.(Citation: MSDN WMI)(Citation: FireEye WMI 2015)\n\nAn adversary can use WMI to interact with local and remote systems and use it as a means to execute various behaviors, such as gathering information for Discovery as well as remote Execution of files as part of Lateral Movement. (Citation: FireEye WMI SANS 2015) (Citation: FireEye WMI 2015)",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "execution"
+        }
+      ],
+      "x_mitre_contributors": [
+        "@ionstorm"
+      ],
+      "x_mitre_deprecated": false,
+      "x_mitre_detection": "Monitor network traffic for WMI connections; the use of WMI in environments that do not typically use WMI may be suspect. Perform process monitoring to capture command-line arguments of \"wmic\" and detect commands that are used to perform remote behavior. (Citation: FireEye WMI 2015)",
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "x_mitre_is_subtechnique": false,
+      "x_mitre_platforms": [
+        "Windows"
+      ],
+      "x_mitre_version": "1.3",
+      "x_mitre_data_sources": [
+        "Process: Process Creation",
+        "Command: Command Execution",
+        "Network Traffic: Network Connection Creation"
+      ],
+      "x_mitre_remote_support": true,
+      "type": "attack-pattern",
+      "id": "attack-pattern--01a5a209-b94c-450b-b7f9-946497d91055",
+      "created": "2017-05-31T21:30:44.329Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "revoked": false,
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "url": "https://attack.mitre.org/techniques/T1047",
+          "external_id": "T1047"
+        },
+        {
+          "source_name": "FireEye WMI 2015",
+          "description": "Ballenthin, W., et al. (2015). Windows Management Instrumentation (WMI) Offense, Defense, and Forensics. Retrieved March 30, 2016.",
+          "url": "https://www.fireeye.com/content/dam/fireeye-www/global/en/current-threats/pdfs/wp-windows-management-instrumentation.pdf"
+        }
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "x_mitre_attack_spec_version": "3.1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "spec_version": "2.1"
+    },
+    {
+      "x_mitre_platforms": [
+        "Linux",
+        "macOS"
+      ],
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "x_mitre_contributors": [
+        "Robert Wilson",
+        "Katie & Tony Lambert",
+        "Joe Gervais"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "attack-pattern--01df3350-ce05-4bdf-bdf8-0a919a66d4a8",
+      "type": "attack-pattern",
+      "created": "2017-12-14T16:46:06.044Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "revoked": true,
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1156",
+          "url": "https://attack.mitre.org/techniques/T1156"
+        },
+        {
+          "source_name": "intezer-kaiji-malware",
+          "url": "https://www.intezer.com/blog/research/kaiji-new-chinese-linux-malware-turning-to-golang/",
+          "description": "Paul Litvak. (2020, May 4). Kaiji: New Chinese Linux malware turning to Golang. Retrieved December 17, 2020."
+        }
+      ],
+      "modified": "2022-04-25T14:00:00.188Z",
+      "name": "Malicious Shell Modification",
+      "description": "Adversaries may establish persistence through executing malicious commands triggered by a user\u2019s shell. User shells execute several configuration scripts at different points throughout the session based on events. For example, when a user opens a command line interface or remotely logs in (such as SSH) a login shell is initiated. The login shell executes scripts from the system (/etc) and the user\u2019s home directory (~/) to configure the environment. All login shells on a system use <code>/etc/profile</code> when initiated. These configuration scripts run at the permission level of their directory and are often used to set environment variables, create aliases, and customize the user\u2019s environment. When the shell exits or terminates, additional shell scripts are executed to ensure the shell exits appropriately. \n\nAdversaries may attempt to establish persistence by inserting commands into scripts automatically executed by shells. Using bash as an example, the default shell for most GNU/Linux systems, adversaries may add commands that launch malicious binaries into the <code>/etc/profile</code> and <code>/etc/profile.d</code> files (Citation: intezer-kaiji-malware). These files require root permissions and are executed each time any shell on a system launches. For user level permissions, adversaries can insert malicious commands into <code>~/.bash_profile</code>, <code>~/.bash_login</code>, or <code>~/.profile</code> (Rocke) which are sourced when a user opens a command line interface or connects remotely. Adversaries often use ~/.bash_profile since the system only executes the first file that exists in the listed order. Adversaries have also leveraged the <code>~/.bashrc</code> file (Tsunami, Rocke, Linux Rabbit, Magento) which is additionally executed if the connection is established remotely or an additional interactive shell is opened, such as a new tab in the command line interface. Some malware targets the termination of a program to trigger execution (Cannon), adversaries can use the <code>~/.bash_logout</code> file to execute malicious commands at the end of a session(Pearl_shellbot). \n\nFor macOS, the functionality of this technique is similar but leverages zsh, the default shell for macOS 10.15+. When the Terminal.app is opened, the application launches a zsh login shell and a zsh interactive shell. The login shell configures the system environment using <code>/etc/profile</code>, <code>/etc/zshenv</code>, <code>/etc/zprofile</code>, and <code>/etc/zlogin</code>. The login shell then configures the user environment with <code>~/.zprofile</code> and <code>~/.zlogin</code>. The interactive shell uses the <code>~/.zshrc<code> to configure the user environment. Upon exiting, <code>/etc/zlogout</code> and <code>~/.zlogout</code> are executed. For legacy programs, macOS executes <code>/etc/bashrc</code> on startup.",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "persistence"
+        }
+      ],
+      "x_mitre_detection": "While users may customize their shell profile files, there are only certain types of commands that typically appear in these files. Monitor for abnormal commands such as execution of unknown programs, opening network sockets, or reaching out across the network when user profiles are loaded during the login process.\n\nMonitor for changes to /ect/profile and /etc/profile.d, these files should only be modified by system administrators. MacOS users can leverage Apple\u2019s Security Endpoint Framework using the ES_EVENT_TYPE_NOTIFY_WRITE(Citation: ESF_filemonitoring) function for monitoring these specific files. \n",
+      "x_mitre_version": "1.1",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_permissions_required": [
+        "User",
+        "Administrator"
+      ],
+      "x_mitre_is_subtechnique": false,
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+    },
+    {
+      "x_mitre_platforms": [
+        "Windows"
+      ],
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "attack-pattern--772bc7a8-a157-42cc-8728-d648e25c7fe7",
+      "type": "attack-pattern",
+      "created": "2018-01-16T16:13:52.465Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "revoked": false,
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1175",
+          "url": "https://attack.mitre.org/techniques/T1175"
+        },
+        {
+          "source_name": "Fireeye Hunting COM June 2019",
+          "url": "https://www.fireeye.com/blog/threat-research/2019/06/hunting-com-objects.html",
+          "description": "Hamilton, C. (2019, June 4). Hunting COM Objects. Retrieved June 10, 2019."
+        }
+      ],
+      "modified": "2021-01-27T14:49:39.188Z",
+      "name": "Component Object Model and Distributed COM",
+      "description": "**This technique has been deprecated. Please use [Distributed Component Object Model](https://attack.mitre.org/techniques/T1021/003) and [Component Object Model](https://attack.mitre.org/techniques/T1559/001).**\n\nAdversaries may use the Windows Component Object Model (COM) and Distributed Component Object Model (DCOM) for local code execution or to execute on remote systems as part of lateral movement. \n\nCOM is a component of the native Windows application programming interface (API) that enables interaction between software objects, or executable code that implements one or more interfaces.(Citation: Fireeye Hunting COM June 2019) Through COM, a client object can call methods of server objects, which are typically Dynamic Link Libraries (DLL) or executables (EXE).(Citation: Microsoft COM) DCOM is transparent middleware that extends the functionality of Component Object Model (COM) (Citation: Microsoft COM) beyond a local computer using remote procedure call (RPC) technology.(Citation: Fireeye Hunting COM June 2019)\n\nPermissions to interact with local and remote server COM objects are specified by access control lists (ACL) in the Registry. (Citation: Microsoft COM ACL)(Citation: Microsoft Process Wide Com Keys)(Citation: Microsoft System Wide Com Keys) By default, only Administrators may remotely activate and launch COM objects through DCOM.\n\nAdversaries may abuse COM for local command and/or payload execution. Various COM interfaces are exposed that can be abused to invoke arbitrary execution via a variety of programming languages such as C, C++, Java, and VBScript.(Citation: Microsoft COM) Specific COM objects also exists to directly perform functions beyond code execution, such as creating a [Scheduled Task/Job](https://attack.mitre.org/techniques/T1053), fileless download/execution, and other adversary behaviors such as Privilege Escalation and Persistence.(Citation: Fireeye Hunting COM June 2019)(Citation: ProjectZero File Write EoP Apr 2018)\n\nAdversaries may use DCOM for lateral movement. Through DCOM, adversaries operating in the context of an appropriately privileged user can remotely obtain arbitrary and even direct shellcode execution through Office applications (Citation: Enigma Outlook DCOM Lateral Movement Nov 2017) as well as other Windows objects that contain insecure methods.(Citation: Enigma MMC20 COM Jan 2017)(Citation: Enigma DCOM Lateral Movement Jan 2017) DCOM can also execute macros in existing documents (Citation: Enigma Excel DCOM Sept 2017) and may also invoke [Dynamic Data Exchange](https://attack.mitre.org/techniques/T1173) (DDE) execution directly through a COM created instance of a Microsoft Office application (Citation: Cyberreason DCOM DDE Lateral Movement Nov 2017), bypassing the need for a malicious document.",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "lateral-movement"
+        },
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "execution"
+        }
+      ],
+      "x_mitre_detection": "Monitor for COM objects loading DLLs and other modules not typically associated with the application.(Citation: Enigma Outlook DCOM Lateral Movement Nov 2017) Enumeration of COM objects, via [Query Registry](https://attack.mitre.org/techniques/T1012) or [PowerShell](https://attack.mitre.org/techniques/T1086), may also proceed malicious use.(Citation: Fireeye Hunting COM June 2019)(Citation: Enigma MMC20 COM Jan 2017)\n\nMonitor for spawning of processes associated with COM objects, especially those invoked by a user different than the one currently logged on.\n\nMonitor for any influxes or abnormal increases in Distributed Computing Environment/Remote Procedure Call (DCE/RPC) traffic.",
+      "x_mitre_deprecated": true,
+      "x_mitre_version": "2.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_permissions_required": [
+        "Administrator",
+        "SYSTEM",
+        "User"
+      ],
+      "x_mitre_remote_support": true,
+      "x_mitre_is_subtechnique": false,
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+    },
+    {
+      "x_mitre_platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "attack-pattern--99709758-2b96-48f2-a68a-ad7fbd828091",
+      "type": "attack-pattern",
+      "created": "2017-05-31T21:30:32.259Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1026",
+          "url": "https://attack.mitre.org/techniques/T1026"
+        },
+        {
+          "url": "https://arxiv.org/ftp/arxiv/papers/1408/1408.1136.pdf",
+          "description": "Gardiner, J.,  Cova, M., Nagaraja, S. (2014, February). Command & Control Understanding, Denying and Detecting. Retrieved April 20, 2016.",
+          "source_name": "University of Birmingham C2"
+        }
+      ],
+      "modified": "2021-04-29T14:49:39.188Z",
+      "name": "Multiband Communication",
+      "description": "**This technique has been deprecated and should no longer be used.**\n\nSome adversaries may split communications between different protocols. There could be one protocol for inbound command and control and another for outbound data, allowing it to bypass certain firewall restrictions. The split could also be random to simply avoid data threshold alerts on any one communication.",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "command-and-control"
+        }
+      ],
+      "x_mitre_detection": "Analyze network data for uncommon data flows (e.g., a client sending significantly more data than it receives from a server). Processes utilizing the network that do not normally have network communication or have never been seen before are suspicious. Analyze packet contents to detect communications that do not follow the expected protocol behavior for the port that is being used. (Citation: University of Birmingham C2) Correlating alerts between multiple communication channels can further help identify command-and-control behavior.",
+      "x_mitre_deprecated": true,
+      "x_mitre_version": "1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_is_subtechnique": false,
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+    },
+    {
+      "x_mitre_platforms": [
+        "Linux",
+        "macOS"
+      ],
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "x_mitre_contributors": [
+        "Robert Wilson",
+        "Tony Lambert, Red Canary"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "attack-pattern--b63a34e8-0a61-4c97-a23b-bf8a2ed812e2",
+      "type": "attack-pattern",
+      "created": "2020-01-24T14:13:45.936Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "external_id": "T1546.004",
+          "url": "https://attack.mitre.org/techniques/T1546/004"
+        },
+        {
+          "source_name": "intezer-kaiji-malware",
+          "url": "https://www.intezer.com/blog/research/kaiji-new-chinese-linux-malware-turning-to-golang/",
+          "description": "Paul Litvak. (2020, May 4). Kaiji: New Chinese Linux malware turning to Golang. Retrieved December 17, 2020."
+        }
+      ],
+      "modified": "2022-04-25T14:00:00.188Z",
+      "name": "Unix Shell Configuration Modification",
+      "description": "Adversaries may establish persistence through executing malicious commands triggered by a user\u2019s shell. User [Unix Shell](https://attack.mitre.org/techniques/T1059/004)s execute several configuration scripts at different points throughout the session based on events. For example, when a user opens a command-line interface or remotely logs in (such as via SSH) a login shell is initiated. The login shell executes scripts from the system (<code>/etc</code>) and the user\u2019s home directory (<code>~/</code>) to configure the environment. All login shells on a system use /etc/profile when initiated. These configuration scripts run at the permission level of their directory and are often used to set environment variables, create aliases, and customize the user\u2019s environment. When the shell exits or terminates, additional shell scripts are executed to ensure the shell exits appropriately. \n\nAdversaries may attempt to establish persistence by inserting commands into scripts automatically executed by shells. Using bash as an example, the default shell for most GNU/Linux systems, adversaries may add commands that launch malicious binaries into the <code>/etc/profile</code> and <code>/etc/profile.d</code> files.(Citation: intezer-kaiji-malware)(Citation: bencane blog bashrc) These files typically require root permissions to modify and are executed each time any shell on a system launches. For user level permissions, adversaries can insert malicious commands into <code>~/.bash_profile</code>, <code>~/.bash_login</code>, or <code>~/.profile</code> which are sourced when a user opens a command-line interface or connects remotely.(Citation: anomali-rocke-tactics)(Citation: Linux manual bash invocation) Since the system only executes the first existing file in the listed order, adversaries have used <code>~/.bash_profile</code> to ensure execution. Adversaries have also leveraged the <code>~/.bashrc</code> file which is additionally executed if the connection is established remotely or an additional interactive shell is opened, such as a new tab in the command-line interface.(Citation: Tsunami)(Citation: anomali-rocke-tactics)(Citation: anomali-linux-rabbit)(Citation: Magento) Some malware targets the termination of a program to trigger execution, adversaries can use the <code>~/.bash_logout</code> file to execute malicious commands at the end of a session. \n\nFor macOS, the functionality of this technique is similar but may leverage zsh, the default shell for macOS 10.15+. When the Terminal.app is opened, the application launches a zsh login shell and a zsh interactive shell. The login shell configures the system environment using <code>/etc/profile</code>, <code>/etc/zshenv</code>, <code>/etc/zprofile</code>, and <code>/etc/zlogin</code>.(Citation: ScriptingOSX zsh)(Citation: PersistentJXA_leopitt)(Citation: code_persistence_zsh)(Citation: macOS MS office sandbox escape) The login shell then configures the user environment with <code>~/.zprofile</code> and <code>~/.zlogin</code>. The interactive shell uses the <code>~/.zshrc</code> to configure the user environment. Upon exiting, <code>/etc/zlogout</code> and <code>~/.zlogout</code> are executed. For legacy programs, macOS executes <code>/etc/bashrc</code> on startup.",
+      "kill_chain_phases": [
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "privilege-escalation"
+        },
+        {
+          "kill_chain_name": "mitre-attack",
+          "phase_name": "persistence"
+        }
+      ],
+      "x_mitre_detection": "While users may customize their shell profile files, there are only certain types of commands that typically appear in these files. Monitor for abnormal commands such as execution of unknown programs, opening network sockets, or reaching out across the network when user profiles are loaded during the login process.\n\nMonitor for changes to <code>/etc/profile</code> and <code>/etc/profile.d</code>, these files should only be modified by system administrators. MacOS users can leverage Endpoint Security Framework file events monitoring these specific files.(Citation: ESF_filemonitor) \n\nFor most Linux and macOS systems, a list of file paths for valid shell options available on a system are located in the <code>/etc/shells</code> file.\n",
+      "x_mitre_is_subtechnique": true,
+      "x_mitre_version": "2.1",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_data_sources": [
+        "File: File Creation",
+        "File: File Modification",
+        "Process: Process Creation",
+        "Command: Command Execution"
+      ],
+      "x_mitre_permissions_required": [
+        "User",
+        "Administrator"
+      ],
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+    },
+    {
+      "x_mitre_platforms": [
+          "Linux",
+          "macOS",
+          "Windows"
+      ],
+      "x_mitre_domains": [
+          "enterprise-attack"
+      ],
+      "object_marking_refs": [
+          "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "attack-pattern--00d0b012-8a03-410e-95de-5826bf542de6",
+      "type": "attack-pattern",
+      "created": "2017-05-31T21:30:54.176Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "revoked": true,
+      "external_references": [
+          {
+              "source_name": "mitre-attack",
+              "url": "https://attack.mitre.org/techniques/T1066",
+              "external_id": "T1066"
+          }
+      ],
+      "modified": "2022-04-25T14:00:00.188Z",
+      "name": "Indicator Removal from Tools",
+      "description": "If a malicious tool is detected and quarantined or otherwise curtailed, an adversary may be able to determine why the malicious tool was detected (the indicator), modify the tool by removing the indicator, and use the updated version that is no longer detected by the target's defensive systems or subsequent targets that may use similar systems.\n\nA good example of this is when malware is detected with a file signature and quarantined by anti-virus software. An adversary who can determine that the malware was quarantined because of its file signature may use [Software Packing](https://attack.mitre.org/techniques/T1045) or otherwise modify the file so it has a different signature, and then re-use the malware.",
+      "kill_chain_phases": [
+          {
+              "kill_chain_name": "mitre-attack",
+              "phase_name": "defense-evasion"
+          }
+      ],
+      "x_mitre_detection": "The first detection of a malicious tool may trigger an anti-virus or other security tool alert. Similar events may also occur at the boundary through network IDS, email scanning appliance, etc. The initial detection should be treated as an indication of a potentially more invasive intrusion. The alerting system should be thoroughly investigated beyond that initial alert for activity that was not detected. Adversaries may continue with an operation, assuming that individual events like an anti-virus detect will not be investigated or that an analyst will not be able to conclusively link that event to other activity occurring on the network.",
+      "x_mitre_version": "1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "x_mitre_defense_bypassed": [
+          "Log analysis",
+          "Host intrusion prevention systems",
+          "Anti-virus"
+      ],
+      "x_mitre_is_subtechnique": false,
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+  },
+  {
+    "x_mitre_platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+    ],
+    "x_mitre_domains": [
+        "enterprise-attack"
+    ],
+    "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+    ],
+    "type": "attack-pattern",
+    "id": "attack-pattern--b0533c6e-8fea-4788-874f-b799cacc4b92",
+    "created": "2020-03-19T21:27:32.820Z",
+    "x_mitre_version": "1.1",
+    "external_references": [
+        {
+            "source_name": "mitre-attack",
+            "external_id": "T1027.005",
+            "url": "https://attack.mitre.org/techniques/T1027/005"
+        }
+    ],
+    "x_mitre_deprecated": false,
+    "revoked": false,
+    "description": "Adversaries may remove indicators from tools if they believe their malicious tool was detected, quarantined, or otherwise curtailed. They can modify the tool by removing the indicator and using the updated version that is no longer detected by the target's defensive systems or subsequent targets that may use similar systems.\n\nA good example of this is when malware is detected with a file signature and quarantined by anti-virus software. An adversary who can determine that the malware was quarantined because of its file signature may modify the file to explicitly avoid that signature, and then re-use the malware.",
+    "modified": "2022-05-24T14:00:00.188Z",
+    "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+    "name": "Indicator Removal from Tools",
+    "x_mitre_detection": "The first detection of a malicious tool may trigger an anti-virus or other security tool alert. Similar events may also occur at the boundary through network IDS, email scanning appliance, etc. The initial detection should be treated as an indication of a potentially more invasive intrusion. The alerting system should be thoroughly investigated beyond that initial alert for activity that was not detected. Adversaries may continue with an operation, assuming that individual events like an anti-virus detect will not be investigated or that an analyst will not be able to conclusively link that event to other activity occurring on the network.",
+    "kill_chain_phases": [
+        {
+            "kill_chain_name": "mitre-attack",
+            "phase_name": "defense-evasion"
+        }
+    ],
+    "x_mitre_is_subtechnique": true,
+    "x_mitre_data_sources": [
+        "Application Log: Application Log Content"
+    ],
+    "x_mitre_defense_bypassed": [
+        "Anti-virus",
+        "Host intrusion prevention systems",
+        "Log analysis",
+        "Signature-based detection"
+    ],
+    "x_mitre_attack_spec_version": "2.1.0",
+    "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+    "spec_version": "2.1"
+},
+  {
+    "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+    ],
+    "id": "relationship--cb4015bf-e7a4-4b26-8816-1f7a996adf4f",
+    "type": "relationship",
+    "created": "2020-03-20T15:22:53.973Z",
+    "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+    "modified": "2022-04-25T14:00:00.188Z",
+    "relationship_type": "revoked-by",
+    "source_ref": "attack-pattern--00d0b012-8a03-410e-95de-5826bf542de6",
+    "target_ref": "attack-pattern--b0533c6e-8fea-4788-874f-b799cacc4b92",
+    "x_mitre_version": "1.0",
+    "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+    "spec_version": "2.1",
+    "x_mitre_attack_spec_version": "2.1.0",
+    "x_mitre_domains": [
+        "enterprise-attack"
+    ]
+},
+    {
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "relationship--8e1cab5a-7a82-4116-8727-d77200f52419",
+      "type": "relationship",
+      "created": "2020-01-24T14:14:05.642Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "modified": "2022-04-25T14:00:00.188Z",
+      "relationship_type": "revoked-by",
+      "source_ref": "attack-pattern--01df3350-ce05-4bdf-bdf8-0a919a66d4a8",
+      "target_ref": "attack-pattern--b63a34e8-0a61-4c97-a23b-bf8a2ed812e2",
+      "x_mitre_version": "1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0",
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ]
+    },
+    {
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ],
+      "object_marking_refs": [
+        "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+      ],
+      "id": "course-of-action--00d7d21b-69d6-4797-88a2-c86f3fc97651",
+      "type": "course-of-action",
+      "created": "2018-10-17T00:14:20.652Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "external_references": [
+        {
+          "source_name": "mitre-attack",
+          "url": "https://attack.mitre.org/mitigations/T1174",
+          "external_id": "T1174"
+        },
+        {
+          "url": "https://msdn.microsoft.com/library/windows/desktop/ms721766.aspx",
+          "description": "Microsoft. (n.d.). Installing and Registering a Password Filter DLL. Retrieved November 21, 2017.",
+          "source_name": "Microsoft Install Password Filter n.d"
+        }
+      ],
+      "modified": "2019-07-25T11:22:19.139Z",
+      "name": "Password Filter DLL Mitigation",
+      "description": "Ensure only valid password filters are registered. Filter DLLs must be present in Windows installation directory (<code>C:\\Windows\\System32\\</code> by default) of a domain controller and/or local computer with a corresponding entry in <code>HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\Notification Packages</code>. (Citation: Microsoft Install Password Filter n.d)",
+      "x_mitre_deprecated": true,
+      "x_mitre_version": "1.0",
+      "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "spec_version": "2.1",
+      "x_mitre_attack_spec_version": "2.1.0"
+    },
+    {
+      "definition": {
+        "statement": "Copyright 2015-2023, The MITRE Corporation. MITRE ATT&CK and ATT&CK are registered trademarks of The MITRE Corporation."
+      },
+      "id": "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168",
+      "type": "marking-definition",
+      "created": "2017-06-01T00:00:00.000Z",
+      "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+      "definition_type": "statement",
+      "x_mitre_attack_spec_version": "2.1.0",
+      "spec_version": "2.1",
+      "x_mitre_domains": [
+        "enterprise-attack"
+      ]
+    }
+  ]
+}
