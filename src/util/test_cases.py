@@ -1,4 +1,4 @@
-from update_attack_v2 import get_stix_data, update_and_add
+from update_attack import get_stix_data, update_and_add
 from stix2 import MemoryStore, Filter
 from rdflib import URIRef, Literal, Graph, RDF, RDFS, Namespace
 from build import get_graph, _xmlns as _XMLNS
@@ -62,8 +62,6 @@ test_graph = """
 def _assert(actual, expected):
     if expected != actual:
         raise AssertionError(f"expected: {expected} != actual: {actual}")
-    else:
-        print("test case passed")
 
 def test_cases(src, g):
     """

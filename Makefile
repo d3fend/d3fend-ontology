@@ -7,8 +7,6 @@ D3FEND_RELEASE_DATE :="2023-03-21T00:00:00.000Z"
 
 JENA_VERSION := 4.5.0
 
-ATT&CK_VERSION := 13.1.json
-
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
 ROBOT_URL := "https://github.com/ontodev/robot/releases/download/v1.9.0/robot.jar"
@@ -112,7 +110,8 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 
 download-attack:
 	mkdir -p data
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATT&CK_VERSION)
+	echo "Version: $(ATTACK_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
