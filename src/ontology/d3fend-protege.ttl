@@ -7,10 +7,10 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl> a owl:Ontology ;
-    rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2022 The MITRE Corporation."^^xsd:string ;
-    dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature."^^xsd:string ;
-    dcterms:license "MIT"^^xsd:string ;
-    dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures"^^xsd:string .
+    rdfs:comment "Use of the D3FEND Knowledge Graph, and the associated references from this ontology are subject to the Terms of Use. D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC) which is operated by The MITRE Corporation. D3FEND™ and the D3FEND logo are trademarks of The MITRE Corporation. This software was produced for the U.S. Government under Basic Contract No. W56KGU-18-D0004, and is subject to the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation Clause 252.227-7014 (FEB 2012) Copyright 2022 The MITRE Corporation." ;
+    dcterms:description "D3FEND is a framework which encodes a countermeasure knowledge base as a knowledge graph. The graph contains the types and relations that define key concepts in the cybersecurity countermeasure domain and the relations necessary to link those concepts to each other. Each of these concepts and relations are linked to references in the cybersecurity literature." ;
+    dcterms:license "MIT" ;
+    dcterms:title "D3FEND™ - A knowledge graph of cybersecurity countermeasures" .
 
 ### Object Properties
 
@@ -1006,6 +1006,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy skos:related ;
     :definition "x related y: x has a symmetric associative relation to y." .
 
+:restricted-by a owl:ObjectProperty ;
+    rdfs:label "restricted-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :restricts .
+
 :restricts a owl:ObjectProperty ;
     rdfs:label "restricts" ;
     rdfs:subPropertyOf :associated-with ;
@@ -1567,7 +1572,10 @@ skos:altLabel a owl:AnnotationProperty ;
 
 :AccessControlList a owl:Class ;
     rdfs:label "Access Control List" ;
-    rdfs:subClassOf :AccessControlConfiguration ;
+    rdfs:subClassOf :AccessControlConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :UserGroup ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> ;
     :definition "A list of permissions attached to an object." .
 
@@ -3963,6 +3971,17 @@ A credential may be:
     rdfs:seeAlso <http://dbpedia.org/resource/Application_development>,
         <http://dbpedia.org/resource/Application_software> .
 
+:DHCPNetworkTraffic a owl:Class ;
+    rdfs:label "DHCP Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic ;
+    :definition "DHCP Network Traffic is network traffic related to the DHCP protocol, used by network nodes to negotiate and configure either IPv4 or IPv6 addresses." .
+
+:DHCPServer a owl:Class ;
+    rdfs:label "DHCP Server" ;
+    rdfs:subClassOf :Server ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Dynamic_Host_Configuration_Protocol> ;
+    :definition "A Dynamic Host Configuration Protocol (DHCP) server is a type of server that assigns IP addresses to computers.  DHCP servers are used to assign IP addresses to computers and other devices automatically.  The DHCP server is responsible for assigning the unique IP address to each device." .
+
 :DialUpModem a owl:Class ;
     rdfs:label "Dial Up Modem" ;
     rdfs:subClassOf :Modem ;
@@ -4882,6 +4901,28 @@ Performance on large files or very large numbers of files.""" ;
     :d3fend-id "D3-FHRA" ;
     :definition "Analyzing the reputation of a file hash." ;
     :kb-reference :Reference-Reputation_of_an_entity_associated_with_a_content_item .
+
+:FileIntegrityMonitoring a :FileIntegrityMonitoring,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Integrity Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-FIM" ;
+    :definition "Detecting any suspicious changes to files in a computer system." ;
+    :kb-article """## How it Works
+There are a number of tools in Windows and Unix that can monitor specific files in a system and generate alerts if any artifacts have been created, modified, or removed. They accomplish this by comparing the current artifacts to a previous snapshot.
+
+Unix – Unix systems have a file integrity checker tool called tripwire. Tripwire first initializes a database that serves as a basis for comparison and can then scan the system to compare the state of the current file system against the initial baseline database. Additionally, users can define policies that specify potential violations.
+
+Windows – In Microsoft Azure, file integrity monitoring can be enabled which can track file and registry key creation, removals, and modifications of specific files.
+
+## Considerations
+Files can change constantly due to the non-static nature of a computer system. File Integrity Monitoring works best when pointed at a narrow scope of critical files to limit the number of unneccessary files that may be modified over the course of normal use. The accuracy and precision of defined policies also affect the efficacy of this technique.""" ;
+    :kb-reference :Reference-FileIntegrityMonitoringinMicrosoftDefenderforCloud-Microsoft,
+        :Reference-Tripwire .
 
 :FilePathOpenFunction a owl:Class ;
     rdfs:label "File Path Open Function" ;
@@ -7329,8 +7370,7 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :enables ;
             owl:someValuesFrom :Model ] ;
     :d3fend-id "D3-OAM" ;
-    :definition "Identifying staff and organizational structure is part of operational activity mapping.  One inventories assets; people are *not* assets, but are resources.  Grasping operations and activities (missions) and mapping them to people is (notionally) last phase of modeling architecture.",
-        "Operational activity mapping identifies activities of the organization and the organization's suborganizations, groups, roles, and individuals that carry out the activities and then establishes the dependencies of the activities on the systems and people that perform those activities." ;
+    :definition "Operational activity mapping identifies activities of the organization and the organization's suborganizations, groups, roles, and individuals that carry out the activities and then establishes the dependencies of the activities on the systems and people that perform those activities." ;
     :kb-reference :Reference-CatiaUAFPlugin ;
     :synonym "Mission Mapping" .
 
@@ -13333,7 +13373,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1542.005 a owl:Class ;
     rdfs:label "TFTP Boot" ;
-    rdfs:subClassOf :T1542 ;
+    rdfs:subClassOf :T1542,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :TFTPNetworkTraffic ] ;
     :attack-id "T1542.005" .
 
 :T1543 a owl:Class ;
@@ -14013,7 +14056,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1557.003 a owl:Class ;
     rdfs:label "DHCP Spoofing" ;
-    rdfs:subClassOf :T1557 ;
+    rdfs:subClassOf :T1557,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :DHCPNetworkTraffic ] ;
     :attack-id "T1557.003" .
 
 :T1558 a owl:Class ;
@@ -15329,6 +15375,17 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:isDefinedBy <http://dbpedia.org/resource/Test_execution_engine> ;
     :definition "A test execution tool is a type of software used to test software, hardware or complete systems.  Synonyms of test execution tool include test execution engine, test executive, test manager, test sequencer.  Two common forms in which a test execution engine may appear are as a: (a) module of a test software suite (test bench) or an integrated development environment, or (b) stand-alone application software." .
 
+:TFTPNetworkTraffic a owl:Class ;
+    rdfs:label "TFTP Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic ;
+    :definition "TFTP Network Traffic is network traffic typically used to automatically transfer configuration or boot files between machines." .
+
+:TFTPServer a owl:Class ;
+    rdfs:label "TFTP Server" ;
+    rdfs:subClassOf :Server ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Trivial_File_Transfer_Protocol> ;
+    :definition "Trivial File Transfer Protocol (TFTP) is a simple file transfer protocol, typically used to automatically transfer configuration or boot files between machines.  It is used where user authentication and directory visibility are not required." .
+
 :ThinClientComputer a owl:Class ;
     rdfs:label "Thin Client Computer" ;
     rdfs:subClassOf :SharedComputer ;
@@ -15540,7 +15597,10 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     rdfs:subClassOf :DigitalArtifact,
         [ a owl:Restriction ;
             owl:onProperty :has-account ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_(computing)> ;
     :definition "A user is a person [or agent] who uses a computer or network service. Users generally use a system or a software product without the technical expertise required to fully understand it. Power users use advanced features of programs, though they are not necessarily capable of computer programming and system administration. A user often has a user account and is identified to the system by a username (or user name). Other terms for username include login name, screenname (or screen name), nickname (or nick) and handle, which is derived from the identical Citizen's Band radio term. Some software products provide services to other systems and have no direct end users." ;
     rdfs:seeAlso "UserAccount",
@@ -15596,8 +15656,7 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
             owl:someValuesFrom :Detect ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_behavior_analytics> ;
     :d3fend-id "D3-UBA" ;
-    :definition "Analysis of user behavior and patterns for the purpose of detecting unauthorized user activity.",
-        "User behavior analytics (\"UBA\") as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns-anomalies that indicate potential threats.' Instead of tracking devices or security events, UBA tracks a system's users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats." ;
+    :definition "User behavior analytics (\"UBA\") as defined by Gartner, is a cybersecurity process about detection of insider threats, targeted attacks, and financial fraud. UBA solutions look at patterns of human behavior, and then apply algorithms and statistical analysis to detect meaningful anomalies from those patterns-anomalies that indicate potential threats.' Instead of tracking devices or security events, UBA tracks a system's users. Big data platforms are increasing UBA functionality by allowing them to analyze petabytes worth of data to detect insider threats and advanced persistent threats." ;
     :enables :Detect ;
     :kb-article """## Technique Overview
 
@@ -15649,6 +15708,18 @@ Geolocation data for each user logon attempt is collected and used to create a b
 * Attackers may not differentiate their logon behavior enough to trigger an alert.""" ;
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-System,Method,AndComputerProgramProductForDetectingAndAssessingSecurityRisksInANetwork_ExabeamInc>,
         :Reference-MethodAndApparatusForNetworkFraudDetectionAndRemediationThroughAnalytics_IdaptiveLLC .
+
+:UserGroup a owl:Class ;
+    rdfs:label "User Group" ;
+    rdfs:subClassOf :AccessControlConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
+    :definition "User groups are a way to collect user accounts and/or computer accounts into manageable units. Administrators can assign permissions, roles, or access to resources, as well as modify group membership, depending on the operating system." ;
+    :synonym "Security Group" .
 
 :UserInitConfigurationFile a owl:Class ;
     rdfs:label "User Init Configuration File" ;
@@ -17917,6 +17988,14 @@ If a process is conducting a traversal of the directory and accessing files acco
     :kb-reference-of :LocalFilePermissions ;
     :kb-reference-title "File and Folder Permissions" .
 
+:Reference-FileIntegrityMonitoringinMicrosoftDefenderforCloud-Microsoft a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - File Integrity Monitoring in Microsoft Defender for Cloud - Microsoft" ;
+    :has-link "https://learn.microsoft.com/en-us/azure/defender-for-cloud/file-integrity-monitoring-overview" ;
+    :kb-organization "Microsoft" ;
+    :kb-reference-of :FileIntegrityMonitoring ;
+    :kb-reference-title "File Integrity Monitoring in Microsoft Defender for Cloud" .
+
 :Reference-Finding_phishing_sites a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Finding phishing sites" ;
@@ -20102,6 +20181,13 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-organization "SmartTouch Inc" ;
     :kb-reference-of :BiometricAuthentication ;
     :kb-reference-title "Tokenless biometric transaction authorization method and system" .
+
+:Reference-Tripwire a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Tripwire" ;
+    :has-link "https://linux.die.net/man/8/tripwire" ;
+    :kb-reference-of :FileIntegrityMonitoring ;
+    :kb-reference-title "Reference - Tripwire" .
 
 :Reference-TrustedAttestationProtocolUseCases a owl:NamedIndividual,
         :SpecificationReference ;
