@@ -110,7 +110,8 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 
 download-attack:
 	mkdir -p data
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-11.2.json
+	echo "Version: $(ATTACK_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
