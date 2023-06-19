@@ -6202,6 +6202,38 @@ Peer group analysis identifies functionally similar groups of actors (users or r
 Potential for false positives from anomalies that are not associated with malicious activity.""" ;
     :kb-reference :Reference-AnomalyDetectionUsingAdaptiveBehavioralProfiles_SecuronixInc .
 
+:JobSchedule a owl:Class ;
+    rdfs:label "Job Schedule" ;
+    rdfs:subClassOf :DigitalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ScheduledJob ],
+        [ a owl:Restriction ;
+            owl:onProperty :modified-by ;
+            owl:someValuesFrom :JobSchedulerSoftware ] ;
+    :definition "A job schedule contains specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process. In Windows, the schedule can be accessed at 'C:\\Windows\\System32\\Tasks' or in the registry. In Linux, the schedule is located at '/etc/crontab'" ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Task Schedule" .
+
+:JobSchedulerSoftware a owl:Class ;
+    rdfs:label "Job Scheduler Software" ;
+    rdfs:subClassOf :SystemServiceSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ScheduledJob ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :JobSchedule ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ScheduledJob ] ;
+    :definition "A job scheduler software is operating system software that when run executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking). Processes running such software are task scheduler processes. In Windows, Scheduled Tasks are created and managed by the Task Scheduler. In Unix-like OSes, the `cron` utitility serves a similar role." ;
+    rdfs:seeAlso "Scheduled Task",
+        <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Task Scheduler Software" .
+
 :JournalArticle a owl:Class ;
     rdfs:label "Journal Article" ;
     rdfs:subClassOf :AcademicArticle .
@@ -7054,7 +7086,7 @@ Administrators collect information on network nodes in their architecture using 
             owl:onProperty :contains ;
             owl:someValuesFrom :NetworkPackets ] ;
     :definition "A network session is a temporary and interactive information interchange between two or more devices communicating over a network. A session is established at a certain point in time, and then 'torn down' - brought to an end - at some later point. An established communication session may involve more than one message in each direction. A session is typically stateful, meaning that at least one of the communicating parties needs to hold current state information and save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses. Network sessions may be established and implemented as part of protocols and services at the application, session, or transport layers of the OSI model." ;
-    rdfs:seeAlso "https://schema.ocsf.io/objects/network_connection",
+    rdfs:seeAlso "https://schema.ocsf.io/objects/network_connection_info",
         <http://dbpedia.org/resource/OSI_model>,
         <http://dbpedia.org/resource/Session_(computer_science)> .
 
@@ -9088,6 +9120,26 @@ Example RPC Protocols:
     :definition "A saved instruction pointer points to the instruction that generated an exception (trap or fault)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Exception_handling> .
 
+:ScheduledJob a owl:Class ;
+    rdfs:label "Scheduled Job" ;
+    rdfs:subClassOf :OperatingSystemProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :JobSchedule ],
+        [ a owl:Restriction ;
+            owl:onProperty :created-by ;
+            owl:someValuesFrom :JobSchedulerSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :modified-by ;
+            owl:someValuesFrom :JobSchedulerSoftware ] ;
+    :definition "A task scheduler process is an operating system process that executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking)." ;
+    rdfs:seeAlso "https://linux.die.net/man/1/at",
+        "https://schema.ocsf.io/objects/job",
+        <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Scheduled Task",
+        "Task Scheduler Process" .
+
 :ScheduledJobAnalysis a :OperatingSystemMonitoring,
         owl:Class,
         owl:NamedIndividual ;
@@ -9095,7 +9147,7 @@ Example RPC Protocols:
     rdfs:subClassOf :OperatingSystemMonitoring,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
-            owl:someValuesFrom :TaskSchedule ] ;
+            owl:someValuesFrom :JobSchedule ] ;
     :d3fend-id "D3-SJA" ;
     :definition "Analysis of source files, processes, destination files, or destination servers associated with a scheduled job to detect unauthorized use of job scheduling." ;
     :kb-article """## How it works
@@ -9109,26 +9161,6 @@ Jobs can be scheduled in many different and sometimes creative ways through oper
         :Reference-ExecutionWithSchtasks_MITRE,
         :Reference-PreventingExecutionOfTaskScheduledMalware_McAfeeLLC ;
     :synonym "Scheduled Job Execution" .
-
-:ScheduledTask a owl:Class ;
-    rdfs:label "Scheduled Task" ;
-    rdfs:subClassOf :OperatingSystemProcess,
-        [ a owl:Restriction ;
-            owl:onProperty :contained-by ;
-            owl:someValuesFrom :TaskSchedule ],
-        [ a owl:Restriction ;
-            owl:onProperty :created-by ;
-            owl:someValuesFrom :TaskSchedulerSoftware ],
-        [ a owl:Restriction ;
-            owl:onProperty :modified-by ;
-            owl:someValuesFrom :TaskSchedulerSoftware ] ;
-    :definition "A task scheduler process is an operating system process that executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking)." ;
-    rdfs:seeAlso "https://linux.die.net/man/1/at",
-        "https://schema.ocsf.io/objects/job",
-        <http://dbpedia.org/resource/Cron>,
-        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
-    :synonym "Job",
-        "Task Scheduler Process" .
 
 :ScriptApplicationProcess a owl:Class ;
     rdfs:label "Script Application Process" ;
@@ -10728,7 +10760,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1036,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :TaskSchedule ] ;
+            owl:someValuesFrom :JobSchedule ] ;
     :attack-id "T1036.004" .
 
 :T1036.005 a owl:Class ;
@@ -10942,13 +10974,13 @@ When system firmware verification fails a set of predefined responses is typical
         :PrivilegeEscalationTechnique,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
-            owl:someValuesFrom :ScheduledTask ],
+            owl:someValuesFrom :ScheduledJob ],
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :TaskSchedule ] ;
+            owl:someValuesFrom :JobSchedule ] ;
     :attack-id "T1053" ;
     :definition "The sub-techniques of this are specific software implementations of scheduling capabilities" .
 
@@ -10980,7 +11012,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1053,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
-            owl:someValuesFrom :ScheduledTask ] ;
+            owl:someValuesFrom :ScheduledJob ] ;
     :attack-id "T1053.005" ;
     :definition "Renamed from ATT&CK to be consistent with at, launchd, cron siblings; name as is looks like parent.  Not sure why parent is not just Scheduled Task [Execution[." .
 
@@ -15378,36 +15410,6 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Target Audience" ;
     rdfs:subClassOf :D3FENDUseCaseThing .
 
-:TaskSchedule a owl:Class ;
-    rdfs:label "Task Schedule" ;
-    rdfs:subClassOf :DigitalArtifact,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :ScheduledTask ],
-        [ a owl:Restriction ;
-            owl:onProperty :modified-by ;
-            owl:someValuesFrom :TaskSchedulerSoftware ] ;
-    :definition "A task schedule contains specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process. In Windows, the schedule can be accessed at 'C:\\Windows\\System32\\Tasks' or in the registry. In Linux, the schedule is located at '/etc/crontab'" ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
-        <http://dbpedia.org/resource/Windows_Task_Scheduler> .
-
-:TaskSchedulerSoftware a owl:Class ;
-    rdfs:label "Task Scheduler Software" ;
-    rdfs:subClassOf :SystemServiceSoftware,
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :ScheduledTask ],
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :ScheduledTask ],
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :TaskSchedule ] ;
-    :definition "A task scheduler software is operating system software that when run executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking). Processes running such software are task scheduler processes. In Windows, Scheduled Tasks are created and managed by the Task Scheduler. In Unix-like OSes, the `cron` utitility serves a similar role." ;
-    rdfs:seeAlso "Scheduled Task",
-        <http://dbpedia.org/resource/Cron>,
-        <http://dbpedia.org/resource/Windows_Task_Scheduler> .
-
 :Technique a owl:Class ;
     rdfs:label "Technique" ;
     rdfs:subClassOf :D3FENDThing,
@@ -16073,10 +16075,7 @@ User web session data is collected over a period of time to create a user behavi
     rdfs:subClassOf :SystemConfigurationDatabase,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :WindowsRegistryKey ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :WindowsRegistryValue ] ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users",
         <http://dbpedia.org/resource/Windows_Registry> ;
     :definition "The Windows Registry is a hierarchical database that stores low-level settings for the Microsoft Windows operating system and for applications that opt to use the registry. The kernel, device drivers, services, Security Accounts Manager, and user interface can all use the registry. The registry also allows access to counters for profiling system performance." .
