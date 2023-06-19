@@ -40,11 +40,11 @@ The introduction of YARRRML as an implementation appears to be by the [RML.io](h
 
 Depending on the needs, YARRRML and RML alternatives exist.   Capabilities vary and cross-compatibility is not assured.
 
-The Python-based Morph KGC (and kglab, which embeds it) can use YARRRML directly to directly perform knowledge graph construction.  They also support .ttl as an output serialization format.  However, the Morph KGC team has categorized the ability to use parent references in XPath as [an enhancement rather than a bug](https://github.com/morph-kgc/morph-kgc/issues/98), which is unfortunate since RML.io's implementation and the [CARML](https://github.com/carml/carml-jar) implementation do handle parent path references in Xpath and the [RML spec](https://rml.io/specs/rml/) _[not sure what specification is considered canonical other than one on RML.io cite]_ seems to indicate this should be possible.  Intermediate RML can be generated directly in the Morph KGC with the code block:
+The Python-based [Morph KGC](https://github.com/morph-kgc/morph-kgc) (and [kglab](https://github.com/DerwenAI/kglab/), which embeds it) can use YARRRML directly to directly perform knowledge graph construction.  They also support .ttl as an output serialization format.  However, the Morph KGC team has categorized the ability to use parent references in XPath as [an enhancement rather than a bug](https://github.com/morph-kgc/morph-kgc/issues/98), which is unfortunate since RML.io's implementation and the [CARML](https://github.com/carml/carml-jar) implementation do handle parent path references in Xpath and the [RML spec](https://rml.io/specs/rml/) _[not sure what specification is considered canonical other than one on RML.io cite]_ seems to indicate this should be possible.  Intermediate RML can be generated directly in the Morph KGC with the code block:
 
 ```
 rml_mapping = morph_kgc.mapping.load_yarrrml()
-rml_mapping.serialize(destionation="morph-kgc.rml.ttl`)
+rml_mapping.serialize(destination="morph-kgc.rml.ttl`)
 ```
 
 However, the resulting RML file did not work with other RML mapping engines.
