@@ -10,7 +10,7 @@ install-yarrrml-mapper:
 install-deps: install-yarrrml-parser install-yarrrml-mapper
 
 # Pull CWE file; unzip; convert versioned into stable target 'cwec.xml' for YARRRML (and RML) specification
-download-cwe: cwec_latest.xml
+download-cwe:
 	curl https://cwe.mitre.org/data/xml/cwec_latest.xml.zip -o cwec_latest.xml.zip
 	unzip cwec_latest.xml.zip
 	rm cwec_latest.xml.zip
