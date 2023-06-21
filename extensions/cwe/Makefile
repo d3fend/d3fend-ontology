@@ -1,6 +1,6 @@
 # Install yarrrml-parser
 install-yarrrml-parser:
-	npm i @rmlio/yarrrml-parser
+	npm install
 
 # Install yarrml-mapper jar
 install-yarrrml-mapper:
@@ -18,7 +18,7 @@ download-cwe:
 
 # Run parser on YARRRML file
 parse-yarrrml: cwe-yarrrml.yaml
-	yarrrml-parser -i cwe-yarrrml.yaml -o cwe-rules.rml.ttl
+	node_modules/.bin/yarrrml-parser -i cwe-yarrrml.yaml -o cwe-rules.rml.ttl
 
 # Run mapper on d3fend-protege.ttl; as of 2023-06-19, rmlmapper doesn't have .ttl as serializationformat.
 create-cwe-triples: download-cwe parse-yarrrml
