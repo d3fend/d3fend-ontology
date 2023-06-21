@@ -359,6 +359,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "exactly" ;
     rdfs:subPropertyOf :semantic-relation .
 
+:executed-by a owl:ObjectProperty ;
+    rdfs:label "executed-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :executes .
+
 :executes a owl:ObjectProperty ;
     rdfs:label "executes" ;
     rdfs:subPropertyOf :accesses,
@@ -1570,6 +1575,15 @@ skos:altLabel a owl:AnnotationProperty ;
     :definition "Information about what access permissions are granted to particular users for particular objects" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Access-control_list> .
 
+:AccessControlGroup a owl:Class ;
+    rdfs:label "Access Control Group" ;
+    rdfs:subClassOf :AccessControlConfiguration,
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
+    :definition "A collection of objects that can have access controls placed on them." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/group" .
+
 :AccessControlList a owl:Class ;
     rdfs:label "Access Control List" ;
     rdfs:subClassOf :AccessControlConfiguration,
@@ -2574,6 +2588,7 @@ DHHS, National Health Security Review 2010‐ 2014, Terms, Jan 17""" ;
             owl:someValuesFrom :PublicKey ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Public_key_certificate> ;
     :definition "In cryptography, a public key certificate, also known as a digital certificate or identity certificate, is an electronic document used to prove the ownership of a public key. The certificate includes information about the key, information about the identity of its owner (called the subject), and the digital signature of an entity that has verified the certificate's contents (called the issuer). If the signature is valid, and the software examining the certificate trusts the issuer, then it can use that key to communicate securely with the certificate's subject. In email encryption, code signing, and e-signature systems, a certificate's subject is typically a person or organization. However, in Transport Layer Security (TLS) a certificate's subject is typically a computer or other device, t" ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/certificate" ;
     :todo "Since we say it contains a PK, must be PKC.  Rewire certificate hierarchy to include attribute/authorization certificates more generally.  Push this down to specifically represent PKCs.  Also key and authority issues may require parallel adjustments http://dbpedia.org/resource/Authorization_certificate" .
 
 :Certificate-basedAuthentication a :CredentialHardening,
@@ -3000,7 +3015,8 @@ Another approach passively inspects network traffic with application protocol an
     rdfs:isDefinedBy <https://www.docker.com/resources/what-container> ;
     :definition """A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
 
-Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.""" .
+Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.""" ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/image" .
 
 :ContainerOrchestrationSoftware a owl:Class ;
     rdfs:label "Container Orchestration Software" ;
@@ -3010,7 +3026,8 @@ Container images become containers at runtime and in the case of Docker containe
 :ContainerProcess a owl:Class ;
     rdfs:label "Container Process" ;
     rdfs:subClassOf :ApplicationProcess ;
-    :definition "A running instance of a d3f:ContainerImage" .
+    :definition "A running instance of a d3f:ContainerImage" ;
+    rdfs:seeAlso <https://schema.ocsf.io/objects/container> .
 
 :ContainerRuntime a owl:Class ;
     rdfs:label "Container Runtime" ;
@@ -4003,6 +4020,14 @@ A credential may be:
     rdfs:label "Digital Event" ;
     rdfs:subClassOf :D3FENDThing .
 
+:DigitalFingerprint a owl:Class ;
+    rdfs:label "Digital Fingerprint" ;
+    rdfs:subClassOf :Identifier ;
+    rdfs:isDefinedBy "https://csrc.nist.gov/glossary/term/digital_fingerprint" ;
+    :definition "A digital signature uniquely identifies data and has the property that changing a single bit in the data will cause a completely different message digest to be generated." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/fingerprint" ;
+    :todo "Create relationship 'identifies some data' once data ontology implemented" .
+
 :DigitalObject a owl:Class ;
     rdfs:label "Digital Object" ;
     rdfs:subClassOf :D3FENDThing ;
@@ -4132,7 +4157,8 @@ For example, a DNS policy can be created for blocking DNS queries for FQDNs that
     rdfs:subClassOf :DigitalArtifact,
         :DigitalEvent ;
     :definition "A Domain Name System (DNS) lookup is a record returned from a DNS resolver after querying a DNS name server.  Typically considered an A or AAAA record, where a domain name is resolved to an IPv4 or IPv6 address, respectively." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Domain_Name_System>,
+    rdfs:seeAlso "https://schema.ocsf.io/objects/dns_query",
+        <http://dbpedia.org/resource/Domain_Name_System>,
         <http://dbpedia.org/resource/List_of_DNS_record_types> .
 
 :DNSNetworkTraffic a owl:Class ;
@@ -4343,7 +4369,8 @@ Analyzing the interaction of a piece of code with a system while the code is bei
             owl:onProperty :may-contain ;
             owl:someValuesFrom :URL ] ;
     :definition "An email, or email message, is a document that is sent between computer users across computer networks." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Email> .
+    rdfs:seeAlso "https://schema.ocsf.io/objects/email",
+        <http://dbpedia.org/resource/Email> .
 
 :EmailAttachment a owl:Class ;
     rdfs:label "Email Attachment" ;
@@ -4894,7 +4921,7 @@ Asymmetric encryption is typically accomplished using public and private key cer
 
 :FileHash a owl:Class ;
     rdfs:label "File Hash" ;
-    rdfs:subClassOf :Identifier,
+    rdfs:subClassOf :DigitalFingerprint,
         [ a owl:Restriction ;
             owl:onProperty :identifies ;
             owl:someValuesFrom :File ] .
@@ -5390,7 +5417,8 @@ Administrators collect information on hardware devices such as peripherals, NICs
     rdfs:subClassOf :DigitalArtifact,
         :PhysicalArtifact ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_hardware> ;
-    :definition "Hardware devices are the physical artifacts that constitute a network or computer system. Hardware devices are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, hard disk drive (HDD), graphic cards, sound cards, memory (RAM), motherboard, and so on, all of which are tangible physical objects. By contrast, software is instructions that can be stored and run by hardware. Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system." .
+    :definition "Hardware devices are the physical artifacts that constitute a network or computer system. Hardware devices are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, hard disk drive (HDD), graphic cards, sound cards, memory (RAM), motherboard, and so on, all of which are tangible physical objects. By contrast, software is instructions that can be stored and run by hardware. Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system." ;
+    rdfs:seeAlso <https://schema.ocsf.io/objects/device_hw_info> .
 
 :HardwareDriver a owl:Class ;
     rdfs:label "Hardware Driver" ;
@@ -5482,7 +5510,8 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
             owl:onProperty :runs ;
             owl:someValuesFrom :OperatingSystem ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Host_(network)> ;
-    :definition "A host is a computer or other device, typically connected to a computer network. A network host may offer information resources, services, and applications to users or other nodes on the network. A network host is a network node that is assigned a network layer host address. Network hosts that participate in applications that use the client-server model of computing, are classified as server or client systems. Network hosts may also function as nodes in peer-to-peer applications, in which all nodes share and consume resources in an equipotent manner." .
+    :definition "A host is a computer or other device, typically connected to a computer network. A network host may offer information resources, services, and applications to users or other nodes on the network. A network host is a network node that is assigned a network layer host address. Network hosts that participate in applications that use the client-server model of computing, are classified as server or client systems. Network hosts may also function as nodes in peer-to-peer applications, in which all nodes share and consume resources in an equipotent manner." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/device" .
 
 :Host-basedFirewall a owl:Class ;
     rdfs:label "Host-based Firewall" ;
@@ -5499,6 +5528,14 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
             owl:onProperty :monitors ;
             owl:someValuesFrom :OperatingSystemConfiguration ] ;
     :definition "Collects the configuration data on an endpoint." .
+
+:HostGroup a owl:Class ;
+    rdfs:label "Host Group" ;
+    rdfs:subClassOf :AccessControlGroup,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Host ] ;
+    :definition "A collection of Hosts used to allow operations such as access control to be applied to the entire group." .
 
 :Hostname a :DomainName,
         owl:Class,
@@ -6188,6 +6225,38 @@ Peer group analysis identifies functionally similar groups of actors (users or r
 Potential for false positives from anomalies that are not associated with malicious activity.""" ;
     :kb-reference :Reference-AnomalyDetectionUsingAdaptiveBehavioralProfiles_SecuronixInc .
 
+:JobSchedule a owl:Class ;
+    rdfs:label "Job Schedule" ;
+    rdfs:subClassOf :DigitalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ScheduledJob ],
+        [ a owl:Restriction ;
+            owl:onProperty :modified-by ;
+            owl:someValuesFrom :JobSchedulerSoftware ] ;
+    :definition "A job schedule contains specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process. In Windows, the schedule can be accessed at 'C:\\Windows\\System32\\Tasks' or in the registry. In Linux, the schedule is located at '/etc/crontab'" ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Task Schedule" .
+
+:JobSchedulerSoftware a owl:Class ;
+    rdfs:label "Job Scheduler Software" ;
+    rdfs:subClassOf :SystemServiceSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ScheduledJob ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :JobSchedule ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ScheduledJob ] ;
+    :definition "A job scheduler software is operating system software that when run executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking). Processes running such software are task scheduler processes. In Windows, Scheduled Tasks are created and managed by the Task Scheduler. In Unix-like OSes, the `cron` utitility serves a similar role." ;
+    rdfs:seeAlso "Scheduled Task",
+        <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Task Scheduler Software" .
+
 :JournalArticle a owl:Class ;
     rdfs:label "Journal Article" ;
     rdfs:subClassOf :AcademicArticle .
@@ -6232,7 +6301,8 @@ Potential for false positives from anomalies that are not associated with malici
             owl:onProperty :may-contain ;
             owl:someValuesFrom :KernelModule ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Kernel_(operating_system)> ;
-    :definition "The kernel is a computer program that constitutes the central core of a computer's operating system. It has complete control over everything that occurs in the system. As such, it is the first program loaded on startup, and then manages the remainder of the startup, as well as input/output requests from software, translating them into data processing instructions for the central processing unit. It is also responsible for managing memory, and for managing and communicating with computing peripherals, like printers, speakers, etc. The kernel is a fundamental part of a modern computer's operating system." .
+    :definition "The kernel is a computer program that constitutes the central core of a computer's operating system. It has complete control over everything that occurs in the system. As such, it is the first program loaded on startup, and then manages the remainder of the startup, as well as input/output requests from software, translating them into data processing instructions for the central processing unit. It is also responsible for managing memory, and for managing and communicating with computing peripherals, like printers, speakers, etc. The kernel is a fundamental part of a modern computer's operating system." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/kernel" .
 
 :Kernel-basedProcessIsolation a :ExecutionIsolation,
         owl:Class,
@@ -6259,7 +6329,8 @@ Potential for false positives from anomalies that are not associated with malici
     rdfs:isDefinedBy <http://dbpedia.org/resource/Loadable_kernel_module> ;
     :definition """A loadable kernel module (LKM) is an object file that contains code to extend the running kernel, or so-called base kernel, of an operating system. LKMs are typically used to add support for new hardware (as device drivers) and/or filesystems, or for adding system calls. When the functionality provided by a LKM is no longer required, it can be unloaded in order to free memory and other resources.
 
-Most current Unix-like systems and Microsoft Windows support loadable kernel modules, although they might use a different name for them, such as kernel loadable module (kld) in FreeBSD, kernel extension (kext) in macOS,[1] kernel extension module in AIX, kernel-mode driver in Windows NT[2] and downloadable kernel module (DKM) in VxWorks. They are also known as kernel loadable modules (or KLM), and simply as kernel modules (KMOD).""" .
+Most current Unix-like systems and Microsoft Windows support loadable kernel modules, although they might use a different name for them, such as kernel loadable module (kld) in FreeBSD, kernel extension (kext) in macOS,[1] kernel extension module in AIX, kernel-mode driver in Windows NT[2] and downloadable kernel module (DKM) in VxWorks. They are also known as kernel loadable modules (or KLM), and simply as kernel modules (KMOD).""" ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/kernel_driver" .
 
 :KernelProcessTable a owl:Class ;
     rdfs:label "Kernel Process Table" ;
@@ -6769,7 +6840,8 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     rdfs:label "Metadata" ;
     rdfs:subClassOf :DigitalArtifact ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Metadata> ;
-    :definition "Metadata is \"data [information] that provides information about other data\". Three distinct types of metadata exist: structural metadata, descriptive metadata, and administrative metadata. Structural metadata is data about the containers of data. For instance a \"book\" contains data, and data about the book is metadata about that container of data. Descriptive metadata uses individual instances of application data or the data content." .
+    :definition "Metadata is \"data [information] that provides information about other data\". Three distinct types of metadata exist: structural metadata, descriptive metadata, and administrative metadata. Structural metadata is data about the containers of data. For instance a \"book\" contains data, and data about the book is metadata about that container of data. Descriptive metadata uses individual instances of application data or the data content." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/metadata" .
 
 :Microcode a owl:Class ;
     rdfs:label "Microcode" ;
@@ -7037,7 +7109,8 @@ Administrators collect information on network nodes in their architecture using 
             owl:onProperty :contains ;
             owl:someValuesFrom :NetworkPackets ] ;
     :definition "A network session is a temporary and interactive information interchange between two or more devices communicating over a network. A session is established at a certain point in time, and then 'torn down' - brought to an end - at some later point. An established communication session may involve more than one message in each direction. A session is typically stateful, meaning that at least one of the communicating parties needs to hold current state information and save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses. Network sessions may be established and implemented as part of protocols and services at the application, session, or transport layers of the OSI model." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/OSI_model>,
+    rdfs:seeAlso "https://schema.ocsf.io/objects/network_connection_info",
+        <http://dbpedia.org/resource/OSI_model>,
         <http://dbpedia.org/resource/Session_(computer_science)> .
 
 :NetworkTimeServer a owl:Class ;
@@ -7057,7 +7130,8 @@ Administrators collect information on network nodes in their architecture using 
             owl:onProperty :originates-from ;
             owl:someValuesFrom :PhysicalLocation ] ;
     :definition "Network traffic or data traffic is the data, or alternatively the amount of data, moving across a network at a given point of time.  Network data in computer networks is mostly encapsulated in network packets, which provide the load in the network." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Network_traffic> .
+    rdfs:seeAlso "https://schema.ocsf.io/objects/network_traffic",
+        <http://dbpedia.org/resource/Network_traffic> .
 
 :NetworkTrafficAnalysis a :DefensiveTechnique,
         owl:Class,
@@ -7307,7 +7381,8 @@ Additionally, after the code file is printed, it could be recovered from the sys
             owl:onProperty :may-contain ;
             owl:someValuesFrom :OperatingSystemConfigurationComponent ] ;
     :definition "An operating system (OS) is system software that manages computer hardware and software resources and provides common services for computer programs. All computer programs, excluding firmware, require an operating system to function. Time-sharing operating systems schedule tasks for efficient use of the system and may also include accounting software for cost allocation of processor time, mass storage, printing, and other resources." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Operating_system> .
+    rdfs:seeAlso "https://schema.ocsf.io/objects/os",
+        <http://dbpedia.org/resource/Operating_system> .
 
 :OperatingSystemConfiguration a owl:Class ;
     rdfs:label "Operating System Configuration" ;
@@ -7320,7 +7395,8 @@ Additionally, after the code file is printed, it could be recovered from the sys
         "System Configuration" ;
     rdfs:subClassOf :OperatingSystemConfiguration ;
     :definition "An component of the overall information necessary for the configuration of an operating system." ;
-    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03085025-n> .
+    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03085025-n> ;
+    :todo "Clean this up" .
 
 :OperatingSystemConfigurationFile a owl:Class ;
     rdfs:label "Operating System Configuration File" ;
@@ -7920,7 +7996,8 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     rdfs:label "Physical Location" ;
     rdfs:subClassOf :DigitalArtifact ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Location_(geography)> ;
-    :definition "The terms location  [here, a physical location] and place in geography are used to identify a point or an area on the Earth's surface or elsewhere. The term location generally implies a higher degree of certainty than place, which often indicates an entity with an ambiguous boundary, relying more on human or social attributes of place identity and sense of place than on geometry. The distinction between space and place is considered a central concern of geography, and has been addressed by scholars such as Yi-Fu Tuan and John Agnew." .
+    :definition "The terms location  [here, a physical location] and place in geography are used to identify a point or an area on the Earth's surface or elsewhere. The term location generally implies a higher degree of certainty than place, which often indicates an entity with an ambiguous boundary, relying more on human or social attributes of place identity and sense of place than on geometry. The distinction between space and place is considered a central concern of geography, and has been addressed by scholars such as Yi-Fu Tuan and John Agnew." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/location" .
 
 :PhysicalObject a owl:Class ;
     rdfs:label "Physical Object" ;
@@ -8159,7 +8236,8 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
             owl:onProperty :uses ;
             owl:someValuesFrom :Resource ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Process_(computing)> ;
-    :definition "A process is an instance of a computer program that is being executed. It contains the program code and its current activity. Depending on the operating system (OS), a process may be made up of multiple threads of execution that execute instructions concurrently. A computer program is a passive collection of instructions, while a process is the actual execution of those instructions. Several processes may be associated with the same program; for example, opening up several instances of the same program often means more than one process is being executed." .
+    :definition "A process is an instance of a computer program that is being executed. It contains the program code and its current activity. Depending on the operating system (OS), a process may be made up of multiple threads of execution that execute instructions concurrently. A computer program is a passive collection of instructions, while a process is the actual execution of those instructions. Several processes may be associated with the same program; for example, opening up several instances of the same program often means more than one process is being executed." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/process" .
 
 :ProcessAnalysis a :DefensiveTechnique,
         owl:Class,
@@ -8675,7 +8753,8 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:subClassOf :NetworkNode,
         :Server ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Proxy_server> ;
-    :definition "In computer networking, a proxy server is a server application or appliance that acts as an intermediary for requests from clients seeking resources from servers that provide those resources. A proxy server thus functions on behalf of the client when requesting service, potentially masking the true origin of the request to the resource server." .
+    :definition "In computer networking, a proxy server is a server application or appliance that acts as an intermediary for requests from clients seeking resources from servers that provide those resources. A proxy server thus functions on behalf of the client when requesting service, potentially masking the true origin of the request to the resource server." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/network_proxy" .
 
 :PublicKey a owl:Class ;
     rdfs:label "Public Key" ;
@@ -8803,7 +8882,8 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
     rdfs:label "Remote Procedure Call" ;
     rdfs:subClassOf :RemoteCommand ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Remote_procedure_call> ;
-    :definition "In distributed computing a remote procedure call (RPC) is when a computer program causes a procedure (subroutine) to execute in another address space (commonly on another computer on a shared network), which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client-server interaction (caller is client, executor is server), typically implemented via a request-response message-passing system. The object-oriented programming analog is remote method invocation (RMI). The RPC model implies a level of location transparency." .
+    :definition "In distributed computing a remote procedure call (RPC) is when a computer program causes a procedure (subroutine) to execute in another address space (commonly on another computer on a shared network), which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction. That is, the programmer writes essentially the same code whether the subroutine is local to the executing program, or remote. This is a form of client-server interaction (caller is client, executor is server), typically implemented via a request-response message-passing system. The object-oriented programming analog is remote method invocation (RMI). The RPC model implies a level of location transparency." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/dce_rpc" .
 
 :RemoteResource a owl:Class ;
     rdfs:label "Remote Resource" ;
@@ -9069,6 +9149,26 @@ Example RPC Protocols:
     :definition "A saved instruction pointer points to the instruction that generated an exception (trap or fault)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Exception_handling> .
 
+:ScheduledJob a owl:Class ;
+    rdfs:label "Scheduled Job" ;
+    rdfs:subClassOf :OperatingSystemProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :JobSchedule ],
+        [ a owl:Restriction ;
+            owl:onProperty :created-by ;
+            owl:someValuesFrom :JobSchedulerSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :modified-by ;
+            owl:someValuesFrom :JobSchedulerSoftware ] ;
+    :definition "A task scheduler process is an operating system process that executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking)." ;
+    rdfs:seeAlso "https://linux.die.net/man/1/at",
+        "https://schema.ocsf.io/objects/job",
+        <http://dbpedia.org/resource/Cron>,
+        <http://dbpedia.org/resource/Windows_Task_Scheduler> ;
+    :synonym "Scheduled Task",
+        "Task Scheduler Process" .
+
 :ScheduledJobAnalysis a :OperatingSystemMonitoring,
         owl:Class,
         owl:NamedIndividual ;
@@ -9076,7 +9176,7 @@ Example RPC Protocols:
     rdfs:subClassOf :OperatingSystemMonitoring,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
-            owl:someValuesFrom :TaskSchedule ] ;
+            owl:someValuesFrom :JobSchedule ] ;
     :d3fend-id "D3-SJA" ;
     :definition "Analysis of source files, processes, destination files, or destination servers associated with a scheduled job to detect unauthorized use of job scheduling." ;
     :kb-article """## How it works
@@ -9324,7 +9424,8 @@ The organization collects and models architectural information about the service
     rdfs:label "Session" ;
     rdfs:subClassOf :DigitalArtifact ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Session_(computer_science)> ;
-    :definition "In computer science, in particular networking, a session is a semi-permanent interactive information interchange, also known as a dialogue, a conversation or a meeting, between two or more communicating devices, or between a computer and user (see Login session). A session is set up or established at a certain point in time, and then torn down at some later point. An established communication session may involve more than one message in each direction. A session is typically, but not always, stateful, meaning that at least one of the communicating parts needs to save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses." .
+    :definition "In computer science, in particular networking, a session is a semi-permanent interactive information interchange, also known as a dialogue, a conversation or a meeting, between two or more communicating devices, or between a computer and user (see Login session). A session is set up or established at a certain point in time, and then torn down at some later point. An established communication session may involve more than one message in each direction. A session is typically, but not always, stateful, meaning that at least one of the communicating parts needs to save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/session" .
 
 :SessionCookie a owl:Class ;
     rdfs:label "Session Cookie" ;
@@ -9333,9 +9434,10 @@ The organization collects and models architectural information about the service
         "Transient Cookie",
         "Web Session Cookie" ;
     rdfs:subClassOf :Credential ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/HTTP_cookie#Session_cookie> ;
+    rdfs:isDefinedBy <https://schema.ocsf.io/objects/http_cookie> ;
     :definition "A session cookie, also known as an in-memory cookie, transient cookie or non-persistent cookie, exists only in temporary memory while the user navigates the website. Web browsers normally delete session cookies when the user closes the browser. Unlike other cookies, session cookies do not have an expiration date assigned to them, which is how the browser knows to treat them as session cookies." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/HTTP_cookie> .
+    rdfs:seeAlso "https://schema.ocsf.io/objects/http_cookie",
+        <http://dbpedia.org/resource/HTTP_cookie> .
 
 :SessionDurationAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -9540,7 +9642,8 @@ Application-layer discovery:
 
 :SoftwarePackage a owl:Class ;
     rdfs:label "Software Package" ;
-    rdfs:subClassOf :DigitalArtifact .
+    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/package" .
 
 :SoftwarePackagingTool a owl:Class ;
     rdfs:label "Software Packaging Tool" ;
@@ -9916,10 +10019,7 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
 
 :SystemConfigurationDatabase a owl:Class ;
     rdfs:label "System Configuration Database" ;
-    rdfs:subClassOf :Database,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
+    rdfs:subClassOf :Database ;
     :definition "A database used to hold system configuration data." .
 
 :SystemConfigurationDatabaseRecord a owl:Class ;
@@ -10689,7 +10789,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1036,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :TaskSchedule ] ;
+            owl:someValuesFrom :JobSchedule ] ;
     :attack-id "T1036.004" .
 
 :T1036.005 a owl:Class ;
@@ -10902,11 +11002,14 @@ When system firmware verification fails a set of predefined responses is typical
         :PersistenceTechnique,
         :PrivilegeEscalationTechnique,
         [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ScheduledJob ],
+        [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :TaskSchedule ] ;
+            owl:someValuesFrom :JobSchedule ] ;
     :attack-id "T1053" ;
     :definition "The sub-techniques of this are specific software implementations of scheduling capabilities" .
 
@@ -10935,7 +11038,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1053.005 a owl:Class ;
     rdfs:label "Schtasks Execution" ;
-    rdfs:subClassOf :T1053 ;
+    rdfs:subClassOf :T1053,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ScheduledJob ] ;
     :attack-id "T1053.005" ;
     :definition "Renamed from ATT&CK to be consistent with at, launchd, cron siblings; name as is looks like parent.  Not sure why parent is not just Scheduled Task [Execution[." .
 
@@ -15333,26 +15439,6 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Target Audience" ;
     rdfs:subClassOf :D3FENDUseCaseThing .
 
-:TaskSchedule a owl:Class ;
-    rdfs:label "Task Schedule" ;
-    rdfs:subClassOf :DigitalArtifact ;
-    :definition "A task schedule is a specification of tasks to be executed at particular times or time intervals.  The schedule is a plan that enacted by a task scheduling process." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
-        <http://dbpedia.org/resource/Windows_Task_Scheduler> .
-
-:TaskSchedulerProcess a owl:Class ;
-    rdfs:label "Task Scheduler Process" ;
-    rdfs:subClassOf :OperatingSystemProcess ;
-    :definition "A task scheduler process is an operating system process that executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking)." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Cron>,
-        <http://dbpedia.org/resource/Windows_Task_Scheduler> .
-
-:TaskSchedulerSoftware a owl:Class ;
-    rdfs:label "Task Scheduler Software" ;
-    rdfs:subClassOf :SystemServiceSoftware ;
-    :definition "A task scheduler software is operating system software that when run executes scheduled tasks (time-scheduling in the sense of wall clock time; not operating system scheduling of processes for multitasking). Processes running such software are task scheduler processes." ;
-    rdfs:seeAlso "Task Scheduler Process" .
-
 :Technique a owl:Class ;
     rdfs:label "Technique" ;
     rdfs:subClassOf :D3FENDThing,
@@ -15549,7 +15635,8 @@ DMARC is an email policy and authentication protocol that seeks to ensure that t
             owl:onProperty :addresses ;
             owl:someValuesFrom :Resource ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Uniform_Resource_Locator> ;
-    :definition "A Uniform Resource Locator (URL), commonly informally termed a web address (a term which is not defined identically) is a reference to a web resource that specifies its location on a computer network and a mechanism for retrieving it.A URL is a specific type of Uniform Resource Identifier (URI), although many people use the two terms interchangeably. A URL implies the means to access an indicated resource, which is not true of every URI. URLs occur most commonly to reference web pages (http), but are also used for file transfer (ftp), email (mailto), database access (JDBC), and many other applications." .
+    :definition "A Uniform Resource Locator (URL), commonly informally termed a web address (a term which is not defined identically) is a reference to a web resource that specifies its location on a computer network and a mechanism for retrieving it.A URL is a specific type of Uniform Resource Identifier (URI), although many people use the two terms interchangeably. A URL implies the means to access an indicated resource, which is not true of every URI. URLs occur most commonly to reference web pages (http), but are also used for file transfer (ftp), email (mailto), database access (JDBC), and many other applications." ;
+    rdfs:seeAlso "https://schema.ocsf.io/objects/url" .
 
 :URLAnalysis a :IdentifierAnalysis,
         owl:Class,
@@ -15640,7 +15727,8 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     rdfs:subClassOf :DigitalArtifact ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_(computing)#User_account> ;
     :definition "A user account allows a user to authenticate to a system and potentially to receive authorization to access resources provided by or connected to that system; however, authentication does not imply authorization. To log into an account, a user is typically required to authenticate oneself with a password or other credentials for the purposes of accounting, security, logging, and resource management." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/User_account> .
+    rdfs:seeAlso "https://schema.ocsf.io/objects/user",
+        <http://dbpedia.org/resource/User_account> .
 
 :UserAccountPermissions a :CredentialHardening,
         owl:Class,
@@ -15740,13 +15828,10 @@ Geolocation data for each user logon attempt is collected and used to create a b
 
 :UserGroup a owl:Class ;
     rdfs:label "User Group" ;
-    rdfs:subClassOf :AccessControlConfiguration,
+    rdfs:subClassOf :AccessControlGroup,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :User ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricted-by ;
-            owl:someValuesFrom :AccessControlList ] ;
+            owl:someValuesFrom :User ] ;
     :definition "User groups are a way to collect user accounts and/or computer accounts into manageable units. Administrators can assign permissions, roles, or access to resources, as well as modify group membership, depending on the operating system." ;
     :synonym "Security Group" .
 
@@ -16019,21 +16104,45 @@ User web session data is collected over a period of time to create a user behavi
 
 :WindowsRegistry a owl:Class ;
     rdfs:label "Windows Registry" ;
-    rdfs:subClassOf :SystemConfigurationDatabase ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Windows_Registry> ;
+    rdfs:subClassOf :SystemConfigurationDatabase,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users",
+        <http://dbpedia.org/resource/Windows_Registry> ;
     :definition "The Windows Registry is a hierarchical database that stores low-level settings for the Microsoft Windows operating system and for applications that opt to use the registry. The kernel, device drivers, services, Security Accounts Manager, and user interface can all use the registry. The registry also allows access to counters for profiling system performance." .
 
 :WindowsRegistryKey a owl:Class ;
     rdfs:label "Windows Registry Key" ;
     rdfs:subClassOf :SystemConfigurationDatabaseRecord,
         [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :WindowsRegistryKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :WindowsRegistryValue ],
+        [ a owl:Restriction ;
             owl:onProperty :windows-registry-key ;
-            owl:someValuesFrom xsd:string ],
+            owl:someValuesFrom xsd:string ] ;
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry",
+        <http://dbpedia.org/resource/Windows_Registry#Keys_and_values> ;
+    :definition "Windows Registry Keys are container objects similar to folders that contain subkeys and/or data entries called values. A key can be a 'Registry Hive' when it is root key of a logical group of keys, subkeys, and values that has a set of supporting files loaded into memory when the operating system is started or a user logs in." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-hives",
+        "https://schema.ocsf.io/objects/registry_key" .
+
+:WindowsRegistryValue a owl:Class ;
+    rdfs:label "Windows Registry Value" ;
+    rdfs:subClassOf :SystemConfigurationDatabaseRecord,
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :WindowsRegistryKey ],
         [ a owl:Restriction ;
             owl:onProperty :windows-registry-value ;
             owl:someValuesFrom xsd:string ] ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Windows_Registry#Keys_and_values> ;
-    :definition "Windows registry keys are container objects similar to folders. Registry values are non-container objects similar to files. Keys may contain values and subkeys. Keys are referenced with a syntax similar to Windows' path names, using backslashes to indicate levels of hierarchy. Keys must have a case insensitive name without backslashes." .
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/winreg/ns-winreg-valentw" ;
+    :definition "A Windows Registry Value is a data structure consisting of a name, type, data (as a pointer), and the length. Windows Registry Values are always associated with a Windows Registry Key. They store the actual configuration data for the operating system and the programs that run on the system." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry",
+        "https://schema.ocsf.io/objects/registry_value" .
 
 :WindowsShortcutFile a owl:Class ;
     rdfs:label "Windows Shortcut File" ;
