@@ -1039,6 +1039,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/00234091-v> ;
     :definition "x restricts y: An entity x bounds the use of entity y." .
 
+:resume a owl:ObjectProperty ;
+    rdfs:label "resume" ;
+    rdfs:subPropertyOf :d3fend-process-object-property ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00350758-v" ;
+    :definition "The agent or technique x continues a previous action on entity y. Usually occurs after suspension on y." .
+
 :runs a owl:ObjectProperty ;
     rdfs:label "runs" ;
     rdfs:subPropertyOf :associated-with,
@@ -3603,15 +3609,11 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
 
 :CreateProcess a owl:Class ;
     rdfs:label "Create Process" ;
-    skos:altLabel "Process Spawn" ;
-    rdfs:subClassOf :SystemCall,
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :Process ] ;
-    :definition "A process spawn refers to a function that loads and executes a new child process.The current process may wait for the child to terminate or may continue to execute asynchronously. Creating a new subprocess requires enough memory in which both the child process and the current program can execute. There is a family of spawn functions in DOS, inherited by Microsoft Windows. There is also a different family of spawn functions in an optional extension of the POSIX standards.  Fork-exec is another technique combining two Unix system calls, which can effect a process spawn." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Fork%E2%80%93exec>,
-        <http://dbpedia.org/resource/Spawn_(computing)>,
-        <https://docs.microsoft.com/en-us/windows/win32/procthread/creating-processes> .
+    rdfs:subClassOf :SpawnProcess ;
+    :definition "Creates a process." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Fork%E2%80%93exec",
+        "https://dbpedia.org/page/Spawn_(computing)",
+        "https://learn.microsoft.com/en-us/windows/win32/procthread/creating-processes" .
 
 :CreateSocket a owl:Class ;
     rdfs:label "Create Socket" ;
@@ -3663,7 +3665,7 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
             owl:someValuesFrom :PasswordFile ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ] .
+            owl:someValuesFrom :SpawnProcess ] .
 
 :CredentialCompromiseScopeAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -9241,6 +9243,14 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
             owl:onProperty :claims ;
             owl:someValuesFrom :DefensiveTechnique ] .
 
+:DeleteFile a owl:Class ;
+    rdfs:label "Delete File" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :File ] ;
+    :definition "Remove a file from a machine." .
+
 :Density-basedClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Density-based Clustering" ;
@@ -10050,7 +10060,7 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :d3fend-id "D3-EAL" ;
     :definition "Using a digital signature to authenticate a file before opening." ;
     :kb-article """## How it works
@@ -10092,7 +10102,7 @@ Organizations which download or create high volumes of software make management 
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :d3fend-id "D3-EDL" ;
     :definition "Blocking the execution of files on a host in accordance with defined application policy rules." ;
     :kb-article """## How it works
@@ -10154,6 +10164,17 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     rdfs:subClassOf :ExecutableFile ;
     :definition "An executable script is written in a scripting language and interpreted at run time. This is in contrast with an executable binary, which contains machine code instructions for a physical CPU or byte code for a virtual machine." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Executable> .
+
+:ExecuteProcess a owl:Class ;
+    rdfs:label "Execute Process" ;
+    rdfs:subClassOf :SpawnProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :Process ] ;
+    :definition "Executes a process." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Fork%E2%80%93exec",
+        "https://dbpedia.org/page/Spawn_(computing)",
+        "https://learn.microsoft.com/en-us/windows/win32/procthread/creating-processes" .
 
 :Execution a :OffensiveTactic,
         owl:Class,
@@ -11002,7 +11023,7 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
             owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :d3fend-id "D3-HBPI" ;
     :definition "Preventing one process from writing to the memory space of another process through hardware based address manager implementations." ;
     :kb-article """## How it works
@@ -12347,6 +12368,234 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
     rdfs:subClassOf :DigitalArtifact ;
     rdfs:seeAlso "https://dbpedia.org/resource/Link" .
 
+:Linux_Exit a owl:Class ;
+    rdfs:label "Linux _Exit" ;
+    rdfs:subClassOf :TerminateProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/exit.2.html" ;
+    :definition "Terminate the calling process." .
+
+:LinuxClone a owl:Class ;
+    rdfs:label "Linux Clone" ;
+    rdfs:subClassOf :CreateProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone.2.html" ;
+    :definition "Creates a child process and provides more precise control over the data shared between the parent and child processes" .
+
+:LinuxClone3 a owl:Class ;
+    rdfs:label "Linux Clone3" ;
+    rdfs:subClassOf :CreateProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone3.2.html" ;
+    :definition """Creates a child process and provides more precise control over the data shared between the parent and child processes.
+
+Newer system call.""" .
+
+:LinuxClone3ArgumentCLONE_THREAD a owl:Class ;
+    rdfs:label "Linux Clone3 Argument CLONE_THREAD" ;
+    rdfs:subClassOf :CreateThread ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone3.2.html" ;
+    :definition "A flag parameter to the Clone3 syscall. If set, the child is placed in the same thread group as the calling process." .
+
+:LinuxCloneArgumentCLONE_THREAD a owl:Class ;
+    rdfs:label "Linux Clone Argument CLONE_THREAD" ;
+    rdfs:subClassOf :CreateThread ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone.2.html" ;
+    :definition "A flag parameter to the Clone syscall. If set, the child is placed in the same thread group as the calling process." .
+
+:LinuxConnect a owl:Class ;
+    rdfs:label "Linux Connect" ;
+    rdfs:subClassOf :ConnectSocket ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/connect.2.html" ;
+    :definition "Initiate a connection on a socket." .
+
+:LinuxCreat a owl:Class ;
+    rdfs:label "Linux Creat" ;
+    rdfs:subClassOf :CreateFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/creat.2.html" ;
+    :definition "Equivalent to calling Linux Open with flags equal to O_CREAT|O_WRONLY|O_TRUNC." .
+
+:LinuxExecve a owl:Class ;
+    rdfs:label "Linux Execve" ;
+    rdfs:subClassOf :ExecuteProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/execve.2.html" ;
+    :definition "Executes a program by replacing the calling process with a new program, with newly initialized stack, heap, and (initialized and uninitialized) data segments. The PID stays the same." .
+
+:LinuxExecveat a owl:Class ;
+    rdfs:label "Linux Execveat" ;
+    rdfs:subClassOf :ExecuteProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/execveat.2.html" ;
+    :definition "Execute program relative to a directory file descriptor. Behavior is similar to Linux Execve." .
+
+:LinuxFork a owl:Class ;
+    rdfs:label "Linux Fork" ;
+    rdfs:subClassOf :CreateProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/fork.2.html" ;
+    :definition "Creates a child process with unique PID but retains parent PID as Parent Process Identifier (PPID)" .
+
+:LinuxKillArgumentSIGKILL a owl:Class ;
+    rdfs:label "Linux Kill Argument SIGKILL" ;
+    rdfs:subClassOf :TerminateProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/kill.2.html" ;
+    :definition "Send SIGKILL signal to a process." .
+
+:LinuxMmap a owl:Class ;
+    rdfs:label "Linux Mmap" ;
+    rdfs:subClassOf :AllocateMemory ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/mmap.2.html" ;
+    :definition "Map files or devices into memory." .
+
+:LinuxMmap2 a owl:Class ;
+    rdfs:label "Linux Mmap2" ;
+    rdfs:subClassOf :AllocateMemory ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/mmap2.2.html" ;
+    :definition "Map files or devices into memory." .
+
+:LinuxMunmap a owl:Class ;
+    rdfs:label "Linux Munmap" ;
+    rdfs:subClassOf :FreeMemory ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/munmap.2.html" ;
+    :definition "Unmap files or devices from memory." .
+
+:LinuxOpenArgumentO_CREAT a owl:Class ;
+    rdfs:label "Linux Open Argument O_CREAT" ;
+    rdfs:subClassOf :CreateFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/open.2.html" ;
+    :definition "Create a regular file." .
+
+:LinuxOpenArgumentO_RDONLY-O_WRONLY-O_RDWR a owl:Class ;
+    rdfs:label "Linux Open Argument O_RDONLY, O_WRONLY, O_RDWR" ;
+    rdfs:subClassOf :OpenFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/open.2.html" ;
+    :definition "Opens a file specified by pathname." .
+
+:LinuxOpenAt2ArgumentO_CREAT a owl:Class ;
+    rdfs:label "Linux OpenAt2 Argument O_CREAT" ;
+    rdfs:subClassOf :CreateFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat2.2.html" ;
+    :definition "Create a regular file. Extension of Linux Openat." .
+
+:LinuxOpenAt2ArgumentO_RDONLY-O_WRONLY-O_RDWR a owl:Class ;
+    rdfs:label "Linux OpenAt2 Argument O_RDONLY, O_WRONLY, O_RDWR" ;
+    rdfs:subClassOf :OpenFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat2.2.html" ;
+    :definition "Extension of Linux Openat." .
+
+:LinuxOpenAtArgumentO_CREAT a owl:Class ;
+    rdfs:label "Linux OpenAt Argument O_CREAT" ;
+    rdfs:subClassOf :CreateFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat.2.html" ;
+    :definition "Create a regular file. Same functionality as Linux Open but slight differences in parameter." .
+
+:LinuxOpenAtArgumentO_RDONLY-O_WRONLY-O_RDWR a owl:Class ;
+    rdfs:label "Linux OpenAt Argument O_RDONLY, O_WRONLY, O_RDWR" ;
+    rdfs:subClassOf :OpenFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat.2.html" ;
+    :definition "Same functionality as Linux Open but slight differences in parameter." .
+
+:LinuxPauseProcess a owl:Class ;
+    rdfs:label "Linux Pause Process" ;
+    rdfs:subClassOf :SuspendProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/pause.2.html" ;
+    :definition "Causes the calling process to sleep until a signal is delivered that either terminates the process or causes the invocation of a signal-catching function." .
+
+:LinuxPauseThread a owl:Class ;
+    rdfs:label "Linux Pause Thread" ;
+    rdfs:subClassOf :SuspendThread ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/pause.2.html" ;
+    :definition "Causes the calling thread to sleep until a signal is delivered that either terminates the thread or causes the invocation of a signal-catching function." .
+
+:LinuxPtraceArgumentPTRACE_TRACEME a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_TRACEME" ;
+    rdfs:subClassOf :TraceProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Indicates that the process is to be traced by its parent." .
+
+:LinuxPtraceArgumentPTRACEINTERRUPT a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_INTERRUPT" ;
+    rdfs:subClassOf :SuspendProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Stops a tracee." .
+
+:LinuxRead a owl:Class ;
+    rdfs:label "Linux Read" ;
+    rdfs:subClassOf :ReadFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/read.2.html" ;
+    :definition "Read from a file descriptor." .
+
+:LinuxReadv a owl:Class ;
+    rdfs:label "Linux Readv" ;
+    rdfs:subClassOf :ReadFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/readv.2.html" ;
+    :definition "Read data into multiple buffers." .
+
+:LinuxRename a owl:Class ;
+    rdfs:label "Linux Rename" ;
+    rdfs:subClassOf :MoveFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/rename.2.html" ;
+    :definition "Change the name or location of a file" .
+
+:LinuxRenameat a owl:Class ;
+    rdfs:label "Linux Renameat" ;
+    rdfs:subClassOf :MoveFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/renameat.2.html" ;
+    :definition "Change the name or location of a file. Different parameter handling than Linux Rename." .
+
+:LinuxRenameat2 a owl:Class ;
+    rdfs:label "Linux Renameat2" ;
+    rdfs:subClassOf :MoveFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/renameat2.2.html" ;
+    :definition "Change the name or location of a file. Additional flags argument." .
+
+:LinuxSocket a owl:Class ;
+    rdfs:label "Linux Socket" ;
+    rdfs:subClassOf :CreateSocket ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/socket.2.html" ;
+    :definition "Create an endpoint for communication." .
+
+:LinuxSocketcallArgumentSYS_CONNECT a owl:Class ;
+    rdfs:label "Linux Socketcall Argument SYS_CONNECT" ;
+    rdfs:subClassOf :ConnectSocket ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/socketcall.2.html" .
+
+:LinuxSocketcallArgumentSYS_SOCKET a owl:Class ;
+    rdfs:label "Linux Socketcall Argument SYS_SOCKET" ;
+    rdfs:subClassOf :CreateSocket ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/socketcall.2.html" .
+
+:LinuxTime a owl:Class ;
+    rdfs:label "Linux Time" ;
+    rdfs:subClassOf :GetSystemTime ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/time.2.html" ;
+    :definition "Get time in seconds." .
+
+:LinuxUnlink a owl:Class ;
+    rdfs:label "Linux Unlink" ;
+    rdfs:subClassOf :DeleteFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/unlink.2.html" ;
+    :definition "Delete a name and possibly the file it refers to." .
+
+:LinuxUnlinkat a owl:Class ;
+    rdfs:label "Linux Unlinkat" ;
+    rdfs:subClassOf :DeleteFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/unlinkat.2.html" ;
+    :definition "Delete a name and possibly the file it refers to. Different parameter handling than Linux Unlink" .
+
+:LinuxVfork a owl:Class ;
+    rdfs:label "Linux Vfork" ;
+    rdfs:subClassOf :CreateProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/vfork.2.html" ;
+    :definition "Create child process that temp suspends parent process until it terminates" .
+
+:LinuxWrite a owl:Class ;
+    rdfs:label "Linux Write" ;
+    rdfs:subClassOf :WriteFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/write.2.html" ;
+    :definition "Write to a file descriptor." .
+
+:LinuxWritev a owl:Class ;
+    rdfs:label "Linux Writev" ;
+    rdfs:subClassOf :WriteFile ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/writev.2.html" ;
+    :definition "Write data into multiple buffers." .
+
 :LocalAccountMonitoring a owl:Class,
         owl:NamedIndividual,
         :UserBehaviorAnalysis ;
@@ -12597,7 +12846,7 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
             owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :d3fend-id "D3-MAC" ;
     :definition "Controlling access to local computer system resources with kernel-level capabilities." ;
     :kb-article """## How it works
@@ -13034,7 +13283,7 @@ Wikipedia. (n.d.). Moment (mathematics). [Link](https://en.wikipedia.org/wiki/Mo
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :FileSystemMetadata ] ;
-    :definition "A system call to rename or move a file.  Linux's rename() is an example of this kind of system call." ;
+    :definition "A system call to rename or move a file.  Linux's rename() is an example of this kind of system call. Another way of handling it is to call a copy file system call followed by a delete file system call." ;
     rdfs:seeAlso <https://man7.org/linux/man-pages/man2/rename.2.html> .
 
 :MovingAverageModel a owl:Class,
@@ -14895,10 +15144,10 @@ Comparing loaded code segments of processes with what is expected to have been l
     rdfs:subClassOf :ProcessAnalysis,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
-            owl:someValuesFrom :Process ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :d3fend-id "D3-PSA" ;
     :definition "Analyzing spawn arguments or attributes of a process to detect processes that are unauthorized." ;
     :kb-article """## How it works
@@ -14965,7 +15214,7 @@ Some attributes of interest are:
     rdfs:subClassOf :Subroutine,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :definition "A function creates a new computer process, usually by invoking a create process system call." .
 
 :ProcessSuspension a owl:Class,
@@ -16490,6 +16739,15 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Source Code" .
 
+:SpawnProcess a owl:Class ;
+    rdfs:label "Spawn Process" ;
+    skos:altLabel "Process Spawn" ;
+    rdfs:subClassOf :SystemCall ;
+    :definition "A process spawn refers to a function that loads and executes a new child process.The current process may wait for the child to terminate or may continue to execute asynchronously. Creating a new subprocess requires enough memory in which both the child process and the current program can execute. There is a family of spawn functions in DOS, inherited by Microsoft Windows. There is also a different family of spawn functions in an optional extension of the POSIX standards.  Fork-exec is another technique combining two Unix system calls, which can effect a process spawn." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Fork%E2%80%93exec>,
+        <http://dbpedia.org/resource/Spawn_(computing)>,
+        <https://docs.microsoft.com/en-us/windows/win32/procthread/creating-processes> .
+
 :SpearmansRankCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Spearman's Rank Correlation Coefficient" ;
@@ -16811,8 +17069,17 @@ About Support Vector Machine (SVM). IBM SPSS Modeler SaaS Documentation. [Link](
     rdfs:label "Suspend Process" ;
     rdfs:subClassOf :SystemCall,
         [ a owl:Restriction ;
-            owl:onProperty :evicts ;
+            owl:onProperty :suspends ;
             owl:someValuesFrom :Process ] .
+
+:SuspendThread a owl:Class ;
+    rdfs:label "Suspend Thread" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :suspends ;
+            owl:someValuesFrom :Thread ] ;
+    :definition "Suspending a thread causes the thread to stop executing user-mode code." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread" .
 
 :Switch a owl:Class ;
     rdfs:label "Switch" ;
@@ -17369,10 +17636,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :GetRunningProcesses ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :GetRunningProcesses ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1007" .
 
 :T1008 a owl:Class ;
@@ -17393,10 +17660,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :GetOpenWindows ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :GetOpenWindows ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1010" .
 
 :T1011 a owl:Class ;
@@ -17463,10 +17730,10 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :ExecutableScript ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :GetSystemNetworkConfigValue ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :GetSystemNetworkConfigValue ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1016" .
 
 :T1016.001 a owl:Class ;
@@ -17487,10 +17754,10 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :OperatingSystemConfigurationFile ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :CreateSocket ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateSocket ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :NetworkTraffic ] ;
@@ -17690,7 +17957,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :CopyToken ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1033" .
 
 :T1035 a owl:Class ;
@@ -17877,7 +18144,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :IntranetAdministrativeNetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1047" .
 
 :T1048 a owl:Class ;
@@ -17952,7 +18219,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :ScheduledJob ],
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :JobSchedule ] ;
@@ -18050,7 +18317,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1055,
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1055.004" .
 
 :T1055.005 a owl:Class ;
@@ -18098,7 +18365,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1055,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1055.013" .
 
 :T1055.014 a owl:Class ;
@@ -18160,10 +18427,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :GetRunningProcesses ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :GetRunningProcesses ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1057" .
 
 :T1058 a owl:Class ;
@@ -18521,7 +18788,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :DecoyArtifact ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1082" .
 
 :T1083 a owl:Class ;
@@ -18986,10 +19253,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :GetSystemTime ],
         [ a owl:Restriction ;
             owl:onProperty :may-invoke ;
-            owl:someValuesFrom :GetSystemTime ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1124" .
 
 :T1125 a owl:Class ;
@@ -19121,7 +19388,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1134,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1134.004" .
 
 :T1134.005 a owl:Class ;
@@ -19242,7 +19509,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DefenseEvasionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :may-add ;
             owl:someValuesFrom :ExecutableFile ],
@@ -19855,7 +20122,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :CreateFile ],
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1218.001" .
 
 :T1218.002 a owl:Class ;
@@ -19863,7 +20130,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1218,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
@@ -19874,7 +20141,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1218,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
             owl:someValuesFrom :NetworkTraffic ] ;
@@ -19921,7 +20188,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1218,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :loads ;
             owl:someValuesFrom :SharedLibraryFile ] ;
@@ -19979,7 +20246,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :ExecutableScript ],
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1220" .
 
 :T1221 a owl:Class ;
@@ -20241,7 +20508,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :StoredProcedure ],
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :SpawnProcess ] ;
     :attack-id "T1505.001" .
 
 :T1505.002 a owl:Class ;
@@ -20606,7 +20873,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1546,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :loads ;
             owl:someValuesFrom :SharedLibraryFile ],
@@ -20620,7 +20887,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1546,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :loads ;
             owl:someValuesFrom :SharedLibraryFile ],
@@ -20831,7 +21098,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
-            owl:someValuesFrom :CreateProcess ],
+            owl:someValuesFrom :SpawnProcess ],
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
@@ -22545,6 +22812,7 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
 
 :TraceProcess a owl:Class ;
     rdfs:label "Trace Process" ;
+    skos:altLabel "Open Process" ;
     rdfs:subClassOf :SystemCall,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
@@ -23212,6 +23480,133 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:isDefinedBy <http://dbpedia.org/resource/Local_area_network> ;
     :definition "By contrast to a local area network (LAN), a wide area network (WAN), not only covers a larger geographic distance, but also generally involves leased telecommunication circuits or Internet links." .
 
+:WindowsNtAllocateVirtualMemory a owl:Class ;
+    rdfs:label "Windows NtAllocateVirtualMemory" ;
+    rdfs:subClassOf :AllocateMemory ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtAllocateVirtualMemoryEx a owl:Class ;
+    rdfs:label "Windows NtAllocateVirtualMemoryEx" ;
+    rdfs:subClassOf :AllocateMemory .
+
+:WindowsNtCreateFile a owl:Class ;
+    rdfs:label "Windows NtCreateFile" ;
+    rdfs:subClassOf :CreateFile ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtCreateMailslotFile a owl:Class ;
+    rdfs:label "Windows NtCreateMailslotFile" ;
+    rdfs:subClassOf :CreateFile ;
+    :definition "Creates a special File Object called Mailslot." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtCreateNamedPipeFile a owl:Class ;
+    rdfs:label "Windows NtCreateNamedPipeFile" ;
+    rdfs:subClassOf :CreateFile ;
+    :definition "Creates Named Pipe File Object." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtCreatePagingFile a owl:Class ;
+    rdfs:label "Windows NtCreatePagingFile" ;
+    rdfs:subClassOf :CreateFile ;
+    :definition "Typically used by Control Panel's \"System\" applet for creating new paged files." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtCreateProcess a owl:Class ;
+    rdfs:label "Windows NtCreateProcess" ;
+    rdfs:subClassOf :CreateProcess,
+        :ExecuteProcess ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtCreateProcessEx a owl:Class ;
+    rdfs:label "Windows NtCreateProcessEx" ;
+    rdfs:subClassOf :CreateProcess,
+        :ExecuteProcess .
+
+:WindowsNtCreateThread a owl:Class ;
+    rdfs:label "Windows NtCreateThread" ;
+    rdfs:subClassOf :CreateThread ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtCreateThreadEx a owl:Class ;
+    rdfs:label "Windows NtCreateThreadEx" ;
+    rdfs:subClassOf :CreateThread .
+
+:WindowsNtDeleteFile a owl:Class ;
+    rdfs:label "Windows NtDeleteFile" ;
+    rdfs:subClassOf :DeleteFile ;
+    :definition "Deletes the specified file." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtDuplicateToken a owl:Class ;
+    rdfs:label "Windows NtDuplicateToken" ;
+    rdfs:subClassOf :CopyToken ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtFreeVirtualMemory a owl:Class ;
+    rdfs:label "Windows NtFreeVirtualMemory" ;
+    rdfs:subClassOf :FreeMemory ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtOpenFile a owl:Class ;
+    rdfs:label "Windows NtOpenFile" ;
+    rdfs:subClassOf :OpenFile ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtOpenProcess a owl:Class ;
+    rdfs:label "Windows NtOpenProcess" ;
+    rdfs:subClassOf :TraceProcess ;
+    :definition "Opens a handle to process obj and sets the access rights to this object." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-ntopenprocess" .
+
+:WindowsNtQuerySystemTime a owl:Class ;
+    rdfs:label "Windows NtQuerySystemTime" ;
+    rdfs:subClassOf :GetSystemTime ;
+    :definition "Returns current time in Coordinated Universal Time (UTC) 8-bytes format." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtReadFile a owl:Class ;
+    rdfs:label "Windows NtReadFile" ;
+    rdfs:subClassOf :ReadFile ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtReadFileScatter a owl:Class ;
+    rdfs:label "Windows NtReadFileScatter" ;
+    rdfs:subClassOf :ReadFile ;
+    :definition "Reads specified block from file into multiple buffers. Each buffer must have one page length." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtSetInformationFileArgumentFileDispositionInformation a owl:Class ;
+    rdfs:label "Windows NtSetInformationFile Argument FileDispositionInformation" ;
+    rdfs:subClassOf :DeleteFile ;
+    :definition "Request to delete the file when it is closed or cancel a previously requested deletion." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/nf-ntifs-ntsetinformationfile" .
+
+:WindowsNtSuspendProcess a owl:Class ;
+    rdfs:label "Windows NtSuspendProcess" ;
+    rdfs:subClassOf :SuspendProcess .
+
+:WindowsNtSuspendThread a owl:Class ;
+    rdfs:label "Windows NtSuspendThread" ;
+    rdfs:subClassOf :SuspendThread ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtTerminateProcess a owl:Class ;
+    rdfs:label "Windows NtTerminateProcess" ;
+    rdfs:subClassOf :TerminateProcess ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtWriteFile a owl:Class ;
+    rdfs:label "Windows NtWriteFile" ;
+    rdfs:subClassOf :WriteFile ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtWriteFileGather a owl:Class ;
+    rdfs:label "Windows NtWriteFileGather" ;
+    rdfs:subClassOf :WriteFile ;
+    :definition "Writes specified block of file with data from memory pages." ;
+    rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
 :WindowsRegistry a owl:Class ;
     rdfs:label "Windows Registry" ;
     rdfs:subClassOf :SystemConfigurationDatabase,
@@ -23536,10 +23931,6 @@ order to constitute a complete standard. For a complete definition of all requir
 :LinuxELFFile64bit a :ExecutableBinary,
         owl:NamedIndividual ;
     rdfs:label "Linux ELF File 64bit" .
-
-:LinuxExec a :CreateProcess,
-        owl:NamedIndividual ;
-    rdfs:label "Linux Exec" .
 
 :LinuxProcess a owl:NamedIndividual,
         :Process ;
