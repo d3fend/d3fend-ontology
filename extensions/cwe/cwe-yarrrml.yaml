@@ -1,0 +1,36 @@
+prefixes:
+  d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+sources:
+  cwe-pillar-source:
+    access: "cwec_latest.xml"
+    referenceFormulation: xpath
+    iterator: "/Weakness_Catalog/Weaknesses/Weakness[@Abstraction = 'Pillar']"
+  cwe-source:
+    access: "cwec_latest.xml"
+    referenceFormulation: xpath
+    iterator: "/Weakness_Catalog/Weaknesses/Weakness[@Status != 'Deprecated']"
+  cwe-rel-source:
+    access: "./cwec_latest.xml"
+    referenceFormulation: xpath
+    iterator: "/Weakness_Catalog/Weaknesses/Weakness/Related_Weaknesses/Related_Weakness[@Nature = 'ChildOf' and @View_ID='1000']"
+mappings:
+  Pillar:
+    sources: cwe-pillar-source
+    s: d3f:CWE-$(./@ID)
+    po:
+      - [rdfs:subClassOf, d3f:Weakness~iri]
+  Weakness:
+    sources: cwe-source
+    s: d3f:CWE-$(./@ID)
+    po:
+      - [d3f:cwe-id, "CWE-$(./@ID)"]
+      - [rdfs:label, "$(./@Name)"]
+  RelatedWeakness:
+    sources: cwe-rel-source
+    s: d3f:CWE-$(./../../@ID)
+    po:
+      - [rdfs:subClassOf, d3f:CWE-$(./@CWE_ID)~iri]
