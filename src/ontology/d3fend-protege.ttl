@@ -1867,13 +1867,80 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 :AgglomerativeClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Agglomerative Clustering" ;
-    rdfs:subClassOf :ClusterAnalysis ;
+    rdfs:subClassOf :HierarchicalClustering ;
     :d3fend-id "D3A-AC" ;
-    :definition "Recursively merges pair of clusters of sample data; uses linkage distance." ;
-    :kb-article """## References
-scikit-learn. (n.d.). AgglomerativeClustering. [Link](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.
-Wikipedia. (2021, August 10). Hierarchical clustering. [Link](https://en.wikipedia.org/wiki/Hierarchical_clustering)
-html)""" .
+    :definition "Agglomerative Clustering is a type of hierarchical clustering method where data points are grouped together based on similarity. Initially, each data point is treated as an individual cluster, and then in successive iterations, the closest clusters are merged until only one large cluster remains or until a specified stopping criterion is met." ;
+    :kb-article """## How it works 
+
+Agglomerative clustering starts with each data point as its own cluster. The algorithm then iterates, identifying the two clusters that are closest to each other based on a defined distance metric (e.g., Euclidean, Manhattan). These two clusters are then merged into a single cluster. This process continues iteratively, merging the closest pairs of clusters in each step until all data points are merged into a single cluster or until other stopping criteria are achieved. A dendrogram, which is a tree-like diagram, can be used to represent the sequence of merges, providing a visual representation of the hierarchical structure of data. 
+
+## Considerations  
+
+- **Choice of Distance Metric**: The outcome can vary significantly depending on the chosen distance metric (e.g., Euclidean, Manhattan). 
+
+- **Scalability**: Agglomerative clustering can be computationally intensive for large datasets. 
+
+- **Sensitivity**: The method can be sensitive to outliers, which might affect the quality of the clusters formed. 
+
+## Key Test Considerations  
+
+- **Unsupervised Learning**:
+
+  - **Number of Clusters**: Determine an optimal number of clusters using the dendrogram and techniques like the elbow method.
+
+- **Cluster Analysis**:
+
+    - **Silhouette Score**: Evaluates how similar an object is to its own cluster compared to other clusters. A higher silhouette score indicates that the object is well matched to its own cluster and poorly matched to neighboring clusters.
+
+    - **Dunn Index**: Measures the ratio between the smallest distance between observations not in the same cluster to the largest intra-cluster distance.
+
+- **Hierarchical Clustering**:
+
+    - **Cophenetic Correlation Coefficient**: Measures the correlation between the distances of points in feature space and their distances on the dendrogram. Helps assess the fidelity of the dendrogram in preserving pairwise distances between samples.
+
+- **Agglomerative Clustering**:
+
+    - **Linkage Criteria**: Test different linkage criteria (e.g., single, complete, average) to determine which produces the most cohesive clusters for the data at hand. 
+
+  ## Platforms, Tools, or Libraries
+
+- **scikit-learn**:
+
+    - A versatile machine learning library in Python.
+
+    - The `AgglomerativeClustering` class in scikit-learn provides this functionality.
+
+- **SciPy**:
+
+    - A Python library used for scientific and technical computing.
+
+    - The `scipy.cluster.hierarchy` module provides functions for hierarchical and 
+    agglomerative clustering, including the `linkage` and `dendrogram` functions.
+
+- **R**:
+
+    - The `hclust` function in the stats package provides agglomerative clustering.
+
+    - The `agnes` function in the `cluster` package offers a more extensive implementation.
+
+- **MATLAB**:
+
+    - Offers the `linkage` function for hierarchical agglomerative clustering and `dendrogram` for visualization.
+
+- **Weka**:
+
+    - A collection of machine learning algorithms for data mining tasks.
+
+    - The `HierarchicalClusterer` class provides an implementation of agglomerative clustering.
+
+## References  
+
+1. Jain, A. K., & Dubes, R. C. (1988). *Algorithms for clustering data*. Prentice-Hall, Inc.
+
+2. Murtagh, F., & Legendre, P. (2014). Ward’s hierarchical agglomerative clustering method: which algorithms implement Ward’s criterion?. *Journal of Classification*, 31(3), 274-295. [Link](https://link.springer.com/article/10.1007/s00357-014-9161-z). 
+
+3. Scikit-learn. (30 Jun 2023). Scikit-learn Documentation: Agglomerative Clustering.
+[Link](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html).""" .
 
 :AlethicLogic a owl:Class,
         owl:NamedIndividual ;
@@ -3117,11 +3184,144 @@ An extension of PKP is Subject Public Key Information Pinning (SPKI) includes pu
     :kb-article """## How it works
 Classification recognizes specific entities within the dataset and attempts to draw some conclusions on how those entities should be labeled or defined. Common classification algorithms are linear classifiers, support vector machines (SVM), decision trees, k-nearest neighbor, and random forest, which are described in more detail below.
 
+## Considerations:
 
-## References
-Supervised Learning. IBM. [Link](https://www.ibm.com/topics/supervised-learning).
+There are many different types of classification algorithms for modeling classification predictive modeling problems.
 
-Types of Classification in Machine Learning. Machine Learning Mastery. [Link](https://machinelearningmastery.com/types-of-classification-in-machine-learning/).""" .
+There is no single theory on how to map algorithms onto problem types; instead, it is generally recommended that a practitioner use controlled experiments and discover which algorithm and algorithm configuration results in the best performance for a given classification task.
+
+## Key Test Considerations  
+
+- **Machine Learning**:
+
+  - **Verify the dataset quality**: Check the data to make sure it is
+      free of errors.  Quantify the degree of missing values,
+      outliers, and noise in the data collection.  If the data quality
+      is low, it may be difficult or impossible to create models and
+      systems with the desired performance.
+
+  - **Verify development datasets are representative** of expected
+      operational environment and data collection means.  Compare
+      distributions of dataset features and labels with exploratory
+      data analysis and assess the difference in tests on training
+      data and tests on evaluation data (where the evaluation data
+      must be drawn from a representative dataset.)
+
+  - **Use software libraries**: and tools built for ML where possible, so
+      that the underlying code is verified by prior use.**
+
+  - **Diagnose model errors with domain SMEs**: Have problem domain
+    SMEs investigate model errors for conditions for which the model
+    may underperform and suggest refinements.
+
+- **Classification**:
+
+  - **Use Standard Classification Performance Measures**: Not all of
+      the following may be necessary, but should be considered for
+      both verification (developmental test) and operational test
+      stages use:
+
+    - **Accuracy**: The fraction of predictions that were corret.
+
+    - **Precision**: The proportion of positive identifications that were correct.
+
+    - **Recall**: The proportion of actual positive cases identified correctly.
+
+    - **F-Measure**: Combines the preicion and recall into a single
+        score.  It is the harmonic mean of the precision and recall.
+
+    - **Receiver Operating Characteristic (ROC) Curve**: A ROC curve
+        shows the performance of a classification model at all
+        classification thresholds.  It graphs the True Positive Rate
+        over the False Positive Rate.
+
+    - **Area Under the ROC Curve (AUC)**: This measures the
+        two-dimensional area under the ROC Curve.  AUC is
+        scale-invariant and classification-threshold invariant.
+
+    - **ROC TP vs FP points**: In addition to a specific AUC score,
+        the performance at points
+
+    - **Confusion Matrix**: A confusion matrix is a table layout that
+        allows the visualization of the performance of an
+        algorithm. Each row of the matrix represents the instances in
+        an actual class while each column represents the instances in
+        a predicted class, or vice versa. It is a special kind of
+        contingency table, with two dimensions ("actual" and
+        "predicted"), and identical sets of "classes" in both
+        dimensions (each combination of dimension and class is a
+        variable in the contingency table.)
+
+  - **Prediction Bias**: The difference between the average of the
+      predicted labels and the average of the labels in the data
+      set.  One should check for prediction bias when evaluating the
+      classifier's results. Causes of bias can include:
+
+    - **Noisy data set**: Errors in original data can as the
+      collection method may have an underlying bias.
+	
+    - **Processing bug**: Errors in the data pipeline can
+      introduce bias.
+	
+    - **Biased training sample (unbalanced samples)**: Model
+      parameters may be skewed towards majority classes.
+	
+	- **Overly strong regularization**: Model may be underfitting
+        model and too simple.
+	
+	- **Proxy variables**: Model features may be highly
+        correlated.
+
+  - **Overfitting and Underfitting**: Overfitting occurs when the the
+    model built corresponds too closely or exactly to a particular
+    set of data, and thus may fail to fit to predict additional data
+    reliably. An overfitted model is a mathematical model that
+    contains more parameters than can be justified by the data.
+    Underfitting occurs when the model built does adequately capture
+    the patterns in the data. As an example, a linear model will
+    underfit a non-linear dataset.
+
+## Platforms, Tools, or Libraries:
+
+- **Python**:
+
+  - **scikit-learn**: Is a free software machine learning library for
+      Python and includes features for classification.
+
+  - **TensorFlow**: is an end-to-end source machine learning
+    platform.
+
+  - **Keras**: is an open-source library that provides a Python API
+    designed to enable fast experimentation with deep neural networks.
+
+  - **PyTorch**: Is a machine learning framework based on the Torch
+    library.
+
+- **R**:
+
+  - **caret**: Classification And REgression Training package contains
+      functions to streamline model training for complex regression
+      and classification problems.
+
+  - **randomForest**: Implementation of classification and regression
+      based on forest of trees.
+      
+## References  
+
+1. Supervised Learning. IBM.
+[Link](https://www.ibm.com/topics/supervised-learning).
+
+1. Types of Classification in Machine Learning. Machine Learning Mastery.
+[Link](https://machinelearningmastery.com/types-of-classification-in-machine-learning/).
+
+1. Google. (18 July 2022). Classification: Precision and Recall.
+[Link](https://developers.google.com/machine-learning/crash-course/classification/precision-and-recall).
+
+1. Wikipedia. (18 Aug 2023). Overfitting.
+[Link](https://en.wikipedia.org/wiki/Overfitting).
+
+1. Wikipedia. (19 Aug 2023). Confusion matrix.
+[Link](https://en.wikipedia.org/wiki/Confusion_matrix).""" .
 
 :Classifying a owl:Class ;
     rdfs:label "Classifying" ;
@@ -3431,16 +3631,6 @@ Decoy honeypots are deployed within the enterprise environment that emulate cert
 ## Considerations
 A connected honeynet provides a tradeoff between emulating certain functionality but not being as sophisticated as an integrated honeynet. The connected honeynet may not provide enough functionality to detect new attack patterns or zero day exploits but could provide enough functionality for specific known vulnerabilities.""" ;
     :kb-reference :Reference-ModificationOfAServerToMimicADeceptionMechanism_AcalvioTechnologiesInc .
-
-:Connection-basedClustering a owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Connection-based Clustering" ;
-    rdfs:subClassOf :ClusterAnalysis ;
-    :d3fend-id "D3A-CBC" ;
-    :definition "Connectivity-based clustering is based on connectivity between the elements Clusters are created by building a hierarchical tree-type structure." ;
-    :kb-article """## References
-Connectivity-Based Clustering. Sarang, P. (2023) in Thinking Data Science. The Springer Series in Applied Machine Learning. Springer, Cham. [Link](https://doi.org/10.1007/978-3-031-02363-7_10)""" ;
-    :todo "Should this be connectivity based clustering ?" .
 
 :ConnectionAttemptAnalysis a :NetworkTrafficAnalysis,
         owl:Class,
@@ -8891,36 +9081,155 @@ Code can also be deemed unreachable for certain run-time conditions. Different d
     rdfs:subClassOf :Classification ;
     :d3fend-id "D3A-DT" ;
     :definition "Decision tree learning is a supervised learning approach used in statistics, data mining, and machine learning. In this formalism, a classification or regression decision tree is used as a predictive model to draw conclusions about a set of observations." ;
-    :kb-article """## How it works
+    :kb-article """## Definition 
+
+Decision tree learning is a supervised learning approach used in statistics, data mining, and machine learning. In this formalism, a classification or regression decision tree is used as a predictive model to draw conclusions about a set of observations.
+
+## How it works
+
 A decision tree starts with a root node, which does not have any incoming branches. The outgoing branches from the root node then feed into the internal nodes, also known as decision nodes. Based on the available features, both node types conduct evaluations to form homogenous subsets, which are denoted by leaf nodes, or terminal nodes. The leaf nodes represent all the possible outcomes within the dataset.
 
-## Considerations
+## Considerations  
 
 While the basic underlying model is that of a decision tree, the decision tree node criteria, and the method for identifying splits varies significantly depending on the learning algorithm selected (e.g., CART, ID3, C4.5, C5.0, CHAID, MARS.)  Extensions like linear and logistic trees can add additional expressiveness as well.
 
-### Verification Approach
-- Use software libraries and tools built for ML where possible, so that the underlying code is verified by prior use.
-- Use standard ML measures for both verification (developmental test) and operational test stages (e.g., accuracy, precision, recall, F1, ROC, confusion matrices.)
-- Assay your data to determine if a decision tree learning method will be effective, and if additional steps or supplemental ML techniques should be incorporated into the solution:
-  - Missing values,
-  - Noise and/or error rates in input data for each feature, or
-  - Decision trees are ideal when decision boundaries can be found that lie along axes of features.
-  - Target class balance; decision tree learning algorithms are especially sensitive to unbalanced target classes.
-- Decision tree learning overfitting may require tuning algorithm hyperparameters such as tree depth, max features used, max leaf nodes, etc.
-- Pruning may result in a more robust model in real-word applications.
+## Key Test Considerations  
+
+- **Machine Learning**:
+
+  - **Verify the dataset quality**: Check the data to make sure it is
+      free of errors.  Quantify the degree of missing values,
+      outliers, and noise in the data collection.  If the data quality
+      is low, it may be difficult or impossible to create models and
+      systems with the desired performance.
+
+  - **Verify development datasets are representative**: of expected
+      operational environment and data collection means.  Compare
+      distributions of dataset features and labels with exploratory
+      data analysis and assess the difference in tests on training
+      data and tests on evaluation data (where the evaluation data
+      must be drawn from a representative dataset.)
+
+   - **Use a variety of data sets**: where available and applicable, to
+      reflect different operating and environment conditions that are
+      likley to be be encountered.
+
+  - **Use software libraries**: and tools built for ML where possible, so
+      that the underlying code is verified by prior use.**
+
+  - **Diagnose model errors with domain SMEs**: Have problem domain
+    SMEs investigate model errors for conditions for which the model
+    may underperform and suggest refinements.
+
+- **Classification**:
+
+  - **Use Standard Classification Performance Measures**: Not all of
+      the following may be necessary, but should be considered for
+      both verification (developmental test) and operational test
+      stages use:
+
+    - **Accuracy**: The fraction of predictions that were corret.
+
+    - **Precision**: The proportion of positive identifications that were correct.
+
+    - **Recall**: The proportion of actual positive cases identified correctly.
+
+    - **F-Measure**: Combines the preicion and recall into a single
+        score.  It is the harmonic mean of the precision and recall.
+
+    - **Receiver Operating Characteristic (ROC) Curve**: A ROC curve
+        shows the performance of a classification model at all
+        classification thresholds.  It graphs the True Positive Rate
+        over the False Positive Rate.
+
+    - **Area Under the ROC Curve (AUC)**: This measures the
+        two-dimensional area under the ROC Curve.  AUC is
+        scale-invariant and classification-threshold invariant.
+
+    - **ROC TP vs FP points**: In addition to a specific AUC score,
+        the performance at points
+
+    - **Confusion Matrix**: A confusion matrix is a table layout that
+        allows the visualization of the performance of an
+        algorithm. Each row of the matrix represents the instances in
+        an actual class while each column represents the instances in
+        a predicted class, or vice versa. It is a special kind of
+        contingency table, with two dimensions ("actual" and
+        "predicted"), and identical sets of "classes" in both
+        dimensions (each combination of dimension and class is a
+        variable in the contingency table.)
+
+  - **Prediction Bias**: The difference between the average of the
+      predicted labels and the average of the labels in the data
+      set.  One should check for prediction bias when evaluating the
+      classifier's results. Causes of bias can include:
+
+    - **Noisy data set**: Errors in original data can as the
+      collection method may have an underlying bias.
+	
+    - **Processing bug**: Errors in the data pipeline can
+      introduce bias.
+	
+    - **Biased training sample (unbalanced samples)**: Model
+      parameters may be skewed towards majority classes.
+	
+    - **Overly strong regularization**: Model may be underfitting
+       model and too simple.
+	
+    - **Proxy variables**: Model features may be highly
+       correlated.
+
+- **Supervised Learning**:
+
+  - **Overfitting and Underfitting**: Overfitting occurs when the the
+    model built corresponds too closely or exactly to a particular
+    set of data, and thus may fail to fit to predict additional data
+    reliably. An overfitted model is a mathematical model that
+    contains more parameters than can be justified by the data.
+    Underfitting occurs when the model built does adequately capture
+    the patterns in the data. As an example, a linear model will
+    underfit a non-linear dataset.
+
+  - **Sensitivity**: Perform N-fold Cross validation to indicate how
+    much sensitivity the algorithm has to data variation and to avoid
+    overfitting operational models.
+
+- **Decision Tree Learning**:
+
+  - **Sensitive to unbalanced classes**: Examine and determine target
+      class balance; decision tree learning algorithms are especially
+      sensitive to unbalanced target classes.
+
+  - **Consider decision boundaries**: Perform exploratory data
+      analysis to determine if decision boundaries lie alongaxes of
+      features. _Decision trees are ideal when decision boundaries can
+      be found that lie along axes of features._
+
+   - **Decision tree overfitting** may require tuning algorithm hyperparameters such as tree depth, max features used, max leaf nodes, etc.
+
+   - **Pruning** may result in a more robust model in real-word applications.
+
+   - **Missing values**: Inspect the data set to determine if there
+     are missing values and select a means to address them, either by
+     choosing an algorithm that works well or a way to impute the
+     value or eliminate the missing values in the data sensors or
+     pipeline.
+    
+## Platforms, Tools, or Libraries
+
+- **scikit-learn**: includes tree algorithms for ID3, C4.5, C5.0, and CART.
+
+- **Weka**: includes J48 (C4.5), SimpleCart (CART), Logistic Model Trees, Naive Bayes Trees, and more.
 
 ### Validation Approach
 - Use operationally relevant data across the range of application's operating environment.
-  - Use a variety of data sets reflecting different operating and environment conditions.
-  - Apply cross-fold validation to see sensitivity to data variation and avoid overfitting operational models.
-- Use SMEs to investigate model errors for problem domain areas or conditions for which the model may underperform and suggest refinements.
 - Incorporate some kind of continuous validation to address concept drift and the need to retrain the model and/or check data quality.
 
 ## References
-1. Decision tree learning. (2023, May 30). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Decision_tree_learning)
-2. Decision Trees. (n.d.). In _scikit-learn User Guide 1.2.2_. [Link](https://scikit-learn.org/stable/modules/tree.html)
-3. Concept drift. (2023, April 17). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Concept_drift)
-4. 8 Concept Drift Detection Methods. (n.d.). In _Aporia Learning Center_. [Link](https://www.aporia.com/learn/data-drift/concept-drift-detection-methods/)""" .
+1. Decision tree learning. (2023, May 30). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Decision_tree_learning).
+2. Decision Trees. (n.d.). In _scikit-learn User Guide 1.2.2_. [Link](https://scikit-learn.org/stable/modules/tree.html).
+3. Concept drift. (2023, April 17). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Concept_drift).
+4. 8 Concept Drift Detection Methods. (n.d.). In _Aporia Learning Center_. [Link](https://www.aporia.com/learn/data-drift/concept-drift-detection-methods/).""" .
 
 :DecisionTreeRegression a owl:Class,
         owl:NamedIndividual ;
@@ -9499,6 +9808,13 @@ AnalytixLabs. (n.d.). Types of Clustering Algorithms. [Link](https://www.analyti
     :kb-article """## References
 Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wiki/Probability_distribution)""" ;
     :todo "Might be lots more to add in this tree" .
+
+:DivisiveClustering a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Divisive Clustering" ;
+    rdfs:subClassOf :HierarchicalClustering ;
+    :d3fend-id "D3A-DC" ;
+    :definition "A divisive clustering approach is a hierarchical, top-down approach to clustering a dataset." .
 
 :DNN-basedClustering a owl:Class,
         owl:NamedIndividual ;
@@ -10349,13 +10665,24 @@ Protocol stream reassembly software recreates a directional byte stream by analy
 - File type identification can be a difficult process which can be exploited by adversaries.""" ;
     :kb-reference :Reference-ComputerWormDefenseSystemAndMethod_FireEyeInc .
 
-:FileContentRules a :FileAnalysis,
+:FileContentAnalysis a :FileAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Content Analysis" ;
+    rdfs:subClassOf :FileAnalysis ;
+    :d3fend-id "D3-FCOA" ;
+    :definition "Employing a pattern matching algorithm to statically analyze the content of files." ;
+    :kb-article """## How it works
+Analyzing a piece of code without it being executed in a sandbox, virtual machine, or simulator. Patterns or signatures in the file can indicate whati kind of software it is, including whether it is malware.""" ;
+    :kb-reference :Reference-CyberVaccineAndPredictiveMalwareDefensiveMethodsAndSystems .
+
+:FileContentRules a :FileContentAnalysis,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "File Content Rules" ;
-    rdfs:subClassOf :FileAnalysis ;
+    rdfs:subClassOf :FileContentAnalysis ;
     :d3fend-id "D3-FCR" ;
-    :definition "Employing a pattern matching rule language to analyze files." ;
+    :definition "Employing a pattern matching rule language to analyze the content of files." ;
     :kb-article """## How it works
 Rules, often called signatures, are used for both generic and targeted malware detection. The rules are usually expressed in a domain specific language (DSL), then deployed to software that scans files for matches. The rules are developed and broadly distributed by commercial vendors, or they are developed and deployed by enterprise security teams to address highly targeted or custom malware. Conceptually, there are public and private rule sets. Both leverage the same technology, but they are intended to detect different types of cyber adversaries.
 
@@ -10919,14 +11246,28 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 Generative pre-trained transformer. (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wiki/Generative_pre-trained_transformer)""" ;
     :synonym "Generative Pre-trained Transformer" .
 
+:GradientBoostedDecisionTree a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Gradient-Boosted Decision Tree" ;
+    rdfs:subClassOf :CART ;
+    :d3fend-id "D3A-GBDT" ;
+    :definition "A gradient-boosted decision tree is, as in other bagging and boosting methods, a method where the relatively 'weak' machine learning model (a decision tree) is used in an ensemble to form a 'strong' machine learning model." ;
+    :kb-article """## Reference
+
+1. Google. (28 Sep 2023). Gradient Boosted Decision Trees.
+[Link](https://developers.google.com/machine-learning/decision-forests/intro-to-gbdt).""" .
+
 :Graph-basedClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Graph-based Clustering" ;
     rdfs:subClassOf :ClusterAnalysis ;
     :d3fend-id "D3A-GBC" ;
-    :definition "Graph-based Clustering is a form of clustering where data is represented with graphs to identify clusters ." ;
+    :definition "Graph-based Clustering is a form of clustering where data is represented with graphs to identify clusters.  We include Connection-based Clustering in this class." ;
     :kb-article """## References
-Density-Based and Graph-Based Clustering. [Link](https://towardsdatascience.com/density-based-and-graph-based-clustering-a1f0d45ff5fb)""" .
+1. Jagota, A. (13 Dec 2020). Density-based and Graph-based Clustering. towardsdatascience.com. [Link](https://towardsdatascience.com/density-based-and-graph-based-clustering-a1f0d45ff5fb)
+
+1. Connectivity-Based Clustering. Sarang, P. (2023) in Thinking Data Science. The Springer Series in Applied Machine Learning. Springer, Cham. [Link](https://doi.org/10.1007/978-3-031-02363-7_10).""" ;
+    :synonym "Connection-based Clustering" .
 
 :Graph-basedSemi-supervisedLearning a owl:Class,
         owl:NamedIndividual ;
@@ -12101,6 +12442,95 @@ Potential for false positives from anomalies that are not associated with malici
     rdfs:label "Journal Article" ;
     rdfs:subClassOf :AcademicArticle .
 
+:K-CenterClustering a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "K-Center Clustering" ;
+    rdfs:subClassOf :Graph-basedClustering ;
+    :d3fend-id "D3A-KCC" ;
+    :definition "K-center Clustering is a type of clustering based on an combinatorial optimization methods.  It clusters a set of points so as to minimize the maximum intercluster distance." ;
+    :kb-article """## How it works 
+
+An example K-center Clustering problem is to mimimize the number of points in a set that are necessary so that a every other point in the set is within some fixed distance of those points.  For instance, given n cities with specified distances, one wants to build k warehouses in different cities and minimize the maximum distance of a city to a warehouse.
+
+## Considerations  
+
+- **Scalability**: Exact solutions are NP-hard.  However, algorithms
+    that have been proven effective and create no more than 2x the
+    optimal set of clusters can run in O(kn) proportional to k*n where
+    k is the minimum number of clusters and n is the number of data
+    points being clustered. 
+
+## Key Test Considerations  
+
+- **Unsupervised Learning**:
+
+  - **Number of Clusters**: The Gonzalez (Gon) algorithm guarantees
+      creating no more than twice the optimal number of clusters,
+      where the optimal number is the minimum number of clusters to
+      minimize total distance between representative points in the
+      clusters [1].
+
+- **Cluster Analysis**:
+
+    - **Rand Index and Adjusted Rand Index**: Given ground truth set
+      of class labels for the data, the Rand Index is a measure of the
+      similarity between two data clusterings. The Rand Index is the
+      accuracy of determining if a link belongs within a cluster or
+      not. A form of the Rand Index may be defined that is adjusted
+      for the chance grouping of elements, this is the Adjusted Rand
+      Index [5].
+    
+    - **Adjusted Mutual Information**: Given ground truth set of class
+      labels for the data, Adjusted Mutual Information corrects the
+      effect of agreement solely due to chance between clusterings,
+      similar to the way the Adjusted Rand Index corrects the Rand
+      Index [6].
+
+- **Connection-based Clustering**:
+
+  - **Choice of Distance Metric**: The outcome can vary significantly depending on the chosen distance metric (e.g., Euclidean, Manhattan).
+
+  - **Sensitivity**: Connection-based method can be sensitive to outliers, which might affect the quality of the clusters formed.
+
+- **K-center Clustering**:
+
+  - **Silhouette Score**: The silhouette score refers to a scoring
+    method that helps validate the consistency between clusters of
+    data. The evaluation technique also produces a concise graphical
+    representation of how well each object appear to have been
+    classified.  It is suited to K-centric Clustering in that it also
+    works for different metric spaces.
+
+  - **Distance Metric**: The distance measure must be a true metric (see
+    [2]).  Differences in the metric chosen may (e.g., Euclidean,a
+    Manhattan) affect results significantly.
+    
+  - **Sensitivity**: Greedy implementations may be sensitive to
+    outliers.
+    
+## Platforms, Tools, or Libraries
+
+N/A. _Note that this algorithm is relatively simple and so it is
+usually implemented from scratch by those incorporating this algorithm
+into a system._
+
+## References  
+
+1. Gonzalez, T.F. (1985). Clustering to Minimize the Maximum Intercluster Distance. Theor. Comput. Sci., 38, 293-306.
+[Link](https://www.sciencedirect.com/science/article/pii/0304397585902245?via%3Dihub).
+
+1. Weisstein, Eric W. (n.d.). "Metric." From MathWorld--A Wolfram Web Resource. [Link](https://mathworld.wolfram.com/Metric.html).
+
+1. Wikipedia. (8 Aug 2023). Metric k-center [Link](https://en.wikipedia.org/wiki/Metric_k-center).
+
+1. Wikipedia. (14 Aug 2023). Vertex k-center problem. [Link](https://en.wikipedia.org/wiki/Vertex_k-center_problem).
+
+1. Wikipedia. (n.d.). Rand Index. [Link](https://en.wikipedia.org/wiki/Rand_index).
+
+1. Wikipedia. (n.d.). Adjusted Mutual Information. [Link](https://en.wikipedia.org/wiki/Adjusted_mutual_information).
+
+1. Wikipedia. (1 Aug 2023). Silhouette (clustering). [Link](https://en.wikipedia.org/wiki/Silhouette_(clustering)).""" .
+
 :K-FoldCross-Validation a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "K-Fold Cross-Validation" ;
@@ -12125,12 +12555,46 @@ Towards Data Science. (n.d.). Understanding K-means Clustering in Machine Learni
     rdfs:subClassOf :Classification ;
     :d3fend-id "D3A-KNN" ;
     :definition "The k-nearest neighbors algorithm, also known as KNN or k-NN, is a non-parametric, supervised learning classifier, which uses proximity to make classifications or predictions about the grouping of an individual data point." ;
-    :kb-article """## How it works
-For classification problems, a class label is assigned on the basis of a majority vote-i.e. the label that is most frequently represented around a given data point is used. While this is technically considered “plurality voting”, the term, “majority vote” is more commonly used in literature. The distinction between these terminologies is that “majority voting” technically requires a majority of greater than 50%, which primarily works when there are only two categories. When you have multiple classes-e.g. four categories, you don’t necessarily need 50% of the vote to make a conclusion about a class; you could assign a class label with a vote of greater than 25%.
+    :kb-article """## **How it works**
+The goal of the k-nearest neighbor algorithm is to identify the nearest neighbors of a given query point, so that we can assign a class label to that point. To determine which data points are closest to a given query point, the distance between the query point and the other data points will need to be calculated. The distance measures used can vary depending on the data set or implementation and help inform decision boundaries, which query points into different regions. Then, by defining the k-value (the number of neighbors to be checked to determine the classification of a specific query point), the data can be assigned its class label. 
 
+For classification problems, a class label is assigned on the basis of a majority vote—i.e. the label that is most frequently represented around a given data point is used (the term “majority vote” is commonly used in literature, however, the technique is more technically considered “plurality voting”).  Regression problems use a similar concept as classification problem, but in this case, the average the k nearest neighbors is taken to make a prediction about a classification. The main distinction here is that classification is used for discrete values, whereas regression is used with continuous ones.
 
-## References
-K-Nearest Neighbors (k-NN). IBM. [Link](https://www.ibm.com/topics/knn?mhsrc=ibmsearch_a&mhq=k-nearest%20neighbors%20).""" .
+Unlike other algorithms that explicitly model the problem, such as linear regression, KNN is instance-based. It means that the algorithm doesn't explicitly learn a model. Instead, it memorizes the training instances and uses them as "knowledge" for the prediction phase. It's also worth noting that the KNN algorithm is also part of a family of “lazy learning” models, meaning that it only stores a training dataset versus undergoing a training stage.
+
+## **Considerations**
+
+* **Scaling:** Scaling is a problem as KNN is a lazy algorithm and takes up more memory and storage compared to other classification methods.
+
+* **Implementation and Hyperparameters:** As KNN only requires a k-value and a distance metric, it is often an easy implementation and can adjust will to new training data. 
+
+## Key Test Considerations
+
+- **Supervised Learning:**
+ 
+  - **Cross Validation:** As cross validation methods like k-fold, leave-one-out, and stratified cross validation can help validate model performance. However, nuances like pessimism bias in k-fold cross validation or high variability in leave-one-out cross validation may need consideration. 
+
+- **Classification:**
+
+  - **ROC Curve:**  A standard technique used to summarize classifier performance over a range of tradeoffs between true and false positives is the Receiver Operating Characteristic (ROC) curve. 
+
+  - **Data Imbalance:** Imbalanced data sets where one class significantly outnumbers others, under sampling techniques like SMOTE may be beneficial in sampling minority classes.
+
+- **K-Nearest Neighbor**
+
+  - **Choice of K:** The number of neighbors, K, affects the decision boundary. A smaller K can lead to a noisy decision boundary, while a large K can smooth it out, but may also blur class distinctions.
+
+  - **K-d Tree:** Exact searching on large datasets can be computationally costly and inefficient. Implementing approximate nearest neighbor algorithms like the K-d tree algorithm. 
+
+  - **Dimensionality:** KNN does not perform well while using high-dimensional data and can be sensitive to irrelevant features which can lead to overfitting. 
+
+  - **Distance Metric:** Choosing the appropriate distance metric (Euclidean, Manhattan, MinKowski, Hamming etc.) is essential, based on the nature of the data.
+
+## **References**
+1. IBM. K-Nearest Neighbors Algorithm.  [Link](https://www.ibm.com/topics/knn?mhsrc=ibmsearch_a&mhq=k-nearest%20neighbors%20).
+2. Muja, M., & Lowe, D. G. (2014). Scalable nearest neighbor algorithms for high dimensional data. IEEE Transactions on Pattern Analysis and Machine Intelligence. [Link]( https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6809191).
+3. Chawla, N. V., Bowyer, K. W., Hall, L. O., & Kegelmeyer, W. P. (2002). SMOTE: synthetic minority over-sampling technique. Journal of artificial intelligence research, 16, 321-357. [Link]( https://www.jair.org/index.php/jair/article/view/10302/24590).
+4. Kohavi, R. (1995). A study of cross-validation and bootstrap for accuracy estimation and model selection. Proceedings of the 14th international joint conference on Artificial intelligence . [Link]( https://www.ijcai.org/Proceedings/95-2/Papers/016.pdf).""" .
 
 :KendallsRankCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
@@ -12725,10 +13189,20 @@ Many operating systems, software frameworks and programs include a logging syste
     rdfs:subClassOf :SymbolicLogic ;
     :d3fend-id "D3A-LR" ;
     :definition "A logical rule matches event data or set of values to a conditional expression and results in the determination of a truth value, which may be used to determine the next action or step to take." ;
-    :kb-article """## References
-1. Event condition action. (2019, Nov 21). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Event_condition_action)
-2. Business rule. (2023, April 10). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Business_rule)
-3. YARA. (2023, June 5). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/YARA)""" .
+    :kb-article """## How it works
+
+Logic rules define a set of patterns that in some patterns must match input data. If the the conditions are met, then the rule will "fire" and some action will be taken, usually notifying a person or another system that the event being monitored needs further processing or attention.
+
+## Key Test Considerations
+
+- **Performance (Accuracy)** Identify instances in data where rule is expected to be triggered. Implement traceability and metrics for individual rule performance. Traceability of cases could be implemented as unit tests or as part of a fine-grained classification performance platform. For simple rule-based matching systems with many rules, individual rules may be unused or may create unusually high false positives (or false negatives relative to expectation.
+
+- **Performance (Computational)** Generate model performance measures (see Classification Performance Measures), esp. a confusion matrix for each rule and identify outliers and relative contribution of rule to overall performance.
+
+## References
+1. Event condition action. (2019, Nov 21). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Event_condition_action).
+2. Business rule. (2023, April 10). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Business_rule).
+3. YARA. (2023, June 5). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/YARA).""" .
 
 :LogicProgramming a owl:Class,
         owl:NamedIndividual ;
@@ -15628,9 +16102,19 @@ Wikipedia. (2021, September 7). Recurrent Neural Network. [Link](https://en.wiki
     rdfs:subClassOf :PartialMatching ;
     :d3fend-id "D3A-RM" ;
     :definition "Regular expression matching is type of partial string matching using a regular expression, which is a sequence of characters that specifies a match pattern in text." ;
-    :kb-article """## References
-1. Regular expression. (2023, June 1). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Regular_expression)
-2. String-searching algorithm. (2023, April 8). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/String-searching_algorithm)""" ;
+    :kb-article """## How it works
+
+A regular expression (shortened as regex or regexp) is a sequence of characters that specifies a match pattern in text. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.
+
+## Key Test Considerations
+
+- **External review of regular expressions**: Regular expressions used in rules should be reviewed by a independent developer SME.  Regex testing and visualization tools may be used to aid this review.  Back-tests for failure modes identified during the review shoud be developed.  Regular expressions are easy to get wrong and may appear to work on limited tests; small mistakes can lead to unintended misses and matches.]
+
+- **Processing Performance Review**: Review of resource-intensive rules may be necessary if system performance degraded.  Look for cases of “exponential backtracking”  Some regexes are computationally expensive.
+
+## References
+1. Regular expression. (2023, June 1). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Regular_expression).
+2. String-searching algorithm. (2023, April 8). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/String-searching_algorithm).""" ;
     :synonym "Regex",
         "Regexp" .
 
@@ -23875,6 +24359,9 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:seeAlso "https://public.cyber.mil/stigs/cci/" ;
     :version "2022-04-05" .
 
+:Connection-basedClustering a owl:NamedIndividual ;
+    :d3fend-id "D3A-CBC" .
+
 :DISA_FSO a :Organization,
         owl:NamedIndividual ;
     rdfs:label "DISA FSO" ;
@@ -25393,6 +25880,16 @@ This requires filesystem data to determine whether files have been created.""" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Cybersecurity and Infrastructure Security Agency" ;
     :kb-reference-title "Cybersecurity Incident & Vulnerability Response Playbooks" .
+
+:Reference-CyberVaccineAndPredictiveMalwareDefensiveMethodsAndSystems a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Cyber vaccine and predictive-malware-defense methods and systems" ;
+    :has-link "https://patents.google.com/patent/US10848519B2/" ;
+    :kb-abstract "Methods and systems for Predictive Malware Defense (PMD) are described. The systems and methods can utilize advanced machine-learning (ML) techniques to generate malware defenses preemptively. Embodiments of PMD can utilize models, which are trained on features extracted from malware families, to predict possible courses of malware evolution. PMD captures these predicted future evolutions in signatures of as yet unseen malware variants to function as a malware vaccine. These signatures of predicted future malware “evolutions” can be added to the training set of a machine-learning (ML) based malware detection and/or mitigation system so that it can detect these new variants as they arrive." ;
+    :kb-author "Michael Howard, Avi Pfeifer, Mukesh Dalal, Michael Reposa" ;
+    :kb-organization "Charles River Analytics Inc." ;
+    :kb-reference-of :FileContentAnalysis ;
+    :kb-reference-title "Cyber vaccine and predictive-malware-defense methods and systems" .
 
 :Reference-DaggerFactSheet a :InternetArticleReference,
         owl:NamedIndividual ;
