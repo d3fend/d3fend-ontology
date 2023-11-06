@@ -1,7 +1,7 @@
 # D3FEND Change Log
 
 
-## Version - 0.13.0-BETA-1 - 2023-07-07
+## Version - 0.13.0-BETA-1 - 2023-10-30
 
 - New "Restore" tactic and taxonomy of restore techniques. (#173)
 - New Analytic Technique Taxonomy and Analytic Characterization Framework.
