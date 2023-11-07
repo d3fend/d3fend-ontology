@@ -90,6 +90,6 @@ MITRE hereby grants express written permission to use, reproduce, distribute, mo
 
 ## NOTICE
 
-© 2022 The MITRE Corporation.
+© The MITRE Corporation
 
-Approved for Public Release; Distribution Unlimited #21-3978.
+Approved for Public Release; Distribution Unlimited #21-3978 and #23-1207.

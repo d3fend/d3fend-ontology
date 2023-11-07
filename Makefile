@@ -2,8 +2,8 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION :=0.12.0-BETA-2
-D3FEND_RELEASE_DATE :="2023-03-21T00:00:00.000Z"
+D3FEND_VERSION :=0.13.0-BETA-1
+D3FEND_RELEASE_DATE :="2023-10-30T00:00:00.000Z"
 
 JENA_VERSION := 4.5.0
 
@@ -110,7 +110,8 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 
 download-attack:
 	mkdir -p data
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-11.2.json
+	echo "Version: $(ATTACK_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
@@ -271,8 +272,9 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 	$(END)
 
 build/d3fend.csv: build/d3fend-public.owl ## make D3FEND csv, not part of build or all targets
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py
-	$(END)
+	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/csv_data.rq build/d3fend.csv
+
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/cleancsv.py
 
 build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
@@ -365,7 +367,8 @@ dist: distdir
 	chmod 644 dist/public/d3fend.ttl dist/public/d3fend.owl
 	$(END)
 
-all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
+#all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
+all: build extensions dist test  ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version
