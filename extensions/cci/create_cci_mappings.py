@@ -10,6 +10,7 @@ default_world.get_ontology(
     "build/d3fend-public.owl"
 ).load()  # Only needed for defensive technique lookups
 d3fend_world = default_world
+print("default world", default_world)
 
 relation_map = {
     "broader": "d3f:broader",
@@ -35,7 +36,7 @@ def get_d3fend_technique_name(d3fend_id):
     result = list(
         d3fend_world.sparql(query)
     )  # owlready2 sparql query to lookup technique name; could cache
-    # print("{} -> {}\n".format(d3fend_id, result))
+    print("{} -> {}\n".format(d3fend_id, result))
     if result[0] and result[0][0]:
         return result[0][0].name  # .namespace, .iri
     else:
