@@ -9,734 +9,1113 @@
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
 
-ocsf:EmailAuthentication
-        rdf:type             owl:Class;
-        rdfs:label           "Email Authentication";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Email Authentication object describes the Sender Policy Framework (SPF), DomainKeys Identified Mail (DKIM) and Domain-based Message Authentication, Reporting and Conformance (DMARC) attributes of an email.";
-        ocsf:attributes      "{\"dkim_domain\":{\"requirement\":\"recommended\"},\"dkim\":{\"requirement\":\"recommended\"},\"dkim_signature\":{\"requirement\":\"recommended\"},\"dmarc\":{\"requirement\":\"recommended\"},\"dmarc_override\":{\"requirement\":\"recommended\"},\"dmarc_policy\":{\"requirement\":\"recommended\"},\"spf\":{\"requirement\":\"recommended\"}}";
-        ocsf:name            "email_auth" .
-
-ocsf:Technique  rdf:type     owl:Class;
-        rdfs:label           "Technique";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Technique object describes the technique ID and/or name associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the attack technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003eActive Scanning\\u003c/code\\u003e.\"},\"src_url\":{\"description\":\"The versioned permalink of the attack technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003ehttps://attack.mitre.org/versions/v14/techniques/T1595/\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the attack technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003eT1595\\u003c/code\\u003e.\"}}";
-        ocsf:name            "technique" .
-
-ocsf:CISCSC  rdf:type        owl:Class;
-        rdfs:label           "CIS CSC";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The CIS Critical Security Control (CSC) contains information as defined by the Center for Internet Security Critical Security Control <a target='_blank' href='https://www.cisecurity.org/controls'>(CIS CSC)</a>. Prioritized set of actions to protect your organization and data from cyber-attack vectors.";
-        ocsf:attributes      "{\"control\":{\"requirement\":\"required\"},\"version\":{\"description\":\"The CIS critical security control version.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "cis_csc" .
-
-ocsf:EvidenceArtifacts
-        rdf:type             owl:Class;
-        rdfs:label           "Evidence Artifacts";
-        rdfs:subClassOf      "object";
-        dcterms:description  "A collection of evidence artifacts associated to the activity/activities that triggered a security detection.";
-        ocsf:attributes      "{\"actor\":{\"description\":\"Describes details about the user/role/process that was the source of the activity that triggered the detection.\",\"requirement\":\"recommended\"},\"api\":{\"description\":\"Describes details about the API call associated to the activity that triggered the detection.\",\"requirement\":\"recommended\"},\"connection_info\":{\"description\":\"Describes details about the network connection associated to the activity that triggered the detection.\",\"requirement\":\"recommended\"},\"data\":{\"description\":\"Additional evidence data that is not accounted for in the specific evidence attributes.\\u003ccode\\u003e Use only when absolutely necessary.\\u003c/code\\u003e\",\"requirement\":\"optional\"},\"dst_endpoint\":{\"description\":\"Describes details about the destination of the network activity that triggered the detection.\",\"requirement\":\"recommended\"},\"file\":{\"description\":\"Describes details about the file associated to the activity that triggered the detection.\",\"requirement\":\"recommended\"},\"process\":{\"description\":\"Describes details about the process associated to the activity that triggered the detection.\",\"requirement\":\"recommended\"},\"query\":{\"description\":\"Describes details about the DNS query associated to the activity that triggered the detection.\",\"requirement\":\"recommended\"},\"src_endpoint\":{\"description\":\"Describes details about the source of the network activity that triggered the detection.\",\"requirement\":\"recommended\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"actor\",\"api\",\"connection_info\",\"data\",\"dst_endpoint\",\"file\",\"process\",\"query\",\"src_endpoint\"]}";
-        ocsf:name            "evidences" .
-
-ocsf:EPSS  rdf:type          owl:Class;
-        rdfs:label           "EPSS";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Exploit Prediction Scoring System (EPSS) object describes the estimated probability a vulnerability will be exploited. EPSS is a community-driven effort to combine descriptive information about vulnerabilities (CVEs) with evidence of actual exploitation in-the-wild. (<a target='_blank' href='https://www.first.org/epss/'>EPSS</a>).";
-        ocsf:attributes      "{\"created_time\":{\"description\":\"The timestamp indicating when the EPSS score was calculated.\",\"requirement\":\"recommended\"},\"percentile\":{\"requirement\":\"optional\"},\"score\":{\"caption\":\"EPPS Score\",\"description\":\"The EPSS score representing the probability [0-1] of exploitation in the wild in the next 30 days (following score publication).\",\"requirement\":\"required\"},\"version\":{\"description\":\"The version of the EPSS model used to calcuate the score.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "epss" .
-
-ocsf:Rule  rdf:type          owl:Class;
-        rdfs:label           "Rule";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Rule object describes characteristics of a rule associated with a policy or an event.";
-        ocsf:attributes      "{\"category\":{\"description\":\"The rule category.\",\"requirement\":\"optional\"},\"desc\":{\"description\":\"The description of the rule that generated the event.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the rule that generated the event.\"},\"type\":{\"description\":\"The rule type.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the rule that generated the event.\"},\"version\":{\"description\":\"The rule version. For example: \\u003ccode\\u003e1.1\\u003c/code\\u003e.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "rule" .
-
-ocsf:NetworkConnectionInformation
-        rdf:type             owl:Class;
-        rdfs:label           "Network Connection Information";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Network Connection Information object describes characteristics of a network connection. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:NetworkSession/'>d3f:NetworkSession</a>.";
-        ocsf:attributes      "{\"boundary\":{},\"boundary_id\":{},\"direction\":{\"requirement\":\"optional\"},\"direction_id\":{\"requirement\":\"required\"},\"protocol_name\":{},\"protocol_num\":{\"requirement\":\"recommended\"},\"protocol_ver\":{\"caption\":\"IP Version\",\"description\":\"The Internet Protocol version.\"},\"protocol_ver_id\":{\"caption\":\"IP Version ID\",\"description\":\"The Internet Protocol version identifier.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"4\":{\"caption\":\"Internet Protocol version 4 (IPv4)\"},\"6\":{\"caption\":\"Internet Protocol version 6 (IPv6)\"},\"99\":{\"caption\":\"Other\"}}},\"tcp_flags\":{},\"uid\":{\"caption\":\"Connection UID\",\"description\":\"The unique identifier of the connection.\"}}";
-        ocsf:name            "network_connection_info" .
-
-ocsf:SubTechnique  rdf:type  owl:Class;
-        rdfs:label           "Sub Technique";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Sub Technique object describes the sub technique ID and/or name associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the attack sub technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003eScanning IP Blocks\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"src_url\":{\"description\":\"The versioned permalink of the attack sub technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003ehttps://attack.mitre.org/versions/v14/techniques/T1595/001/\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the attack sub technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003eT1595.001\\u003c/code\\u003e.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "sub_technique" .
-
-ocsf:AffectedSoftwarePackage
-        rdf:type             owl:Class;
-        rdfs:label           "Affected Software Package";
-        rdfs:subClassOf      "package";
-        dcterms:description  "The Affected Package object describes details about a software package identified as affected by a vulnerability/vulnerabilities.";
-        ocsf:attributes      "{\"fixed_in_version\":{\"requirement\":\"optional\"},\"package_manager\":{\"requirement\":\"optional\"},\"path\":{\"description\":\"The installation path of the affected package.\",\"requirement\":\"optional\"},\"remediation\":{\"requirement\":\"optional\"}}";
-        ocsf:name            "affected_package" .
-
-ocsf:Finding  rdf:type       owl:Class;
-        rdfs:label           "Finding";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Finding object describes metadata related to a security finding generated by a security tool or system.";
-        ocsf:attributes      "{\"created_time\":{\"description\":\"The time when the finding was created.\",\"requirement\":\"optional\"},\"desc\":{\"description\":\"The description of the reported finding.\",\"requirement\":\"optional\"},\"first_seen_time\":{\"description\":\"The time when the finding was first observed.\",\"requirement\":\"optional\"},\"last_seen_time\":{\"description\":\"The time when the finding was most recently observed.\",\"requirement\":\"optional\"},\"modified_time\":{\"description\":\"The time when the finding was last modified.\",\"requirement\":\"optional\"},\"product_uid\":{\"description\":\"The unique identifier of the product that reported the finding.\",\"requirement\":\"optional\"},\"related_events\":{\"requirement\":\"optional\"},\"remediation\":{\"requirement\":\"optional\"},\"src_url\":{\"description\":\"The URL pointing to the source of the finding.\",\"requirement\":\"optional\"},\"supporting_data\":{\"requirement\":\"optional\"},\"title\":{\"description\":\"A title or a brief phrase summarizing the reported finding.\",\"requirement\":\"required\"},\"types\":{\"description\":\"One or more types of the reported finding.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the reported finding.\",\"requirement\":\"required\"}}";
-        ocsf:name            "finding" .
-
-ocsf:Account  rdf:type       owl:Class;
-        rdfs:label           "Account";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Account object contains details about the account that initiated or performed a specific activity within a system or application.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the account (e.g. GCP Account Name).\"},\"type\":{\"caption\":\"Type\",\"description\":\"The account type, normalized to the caption of \\u0027account_type_id\\u0027. In the case of \\u0027Other\\u0027, it is defined by the event source.\",\"requirement\":\"optional\"},\"type_id\":{\"caption\":\"Type ID\",\"description\":\"The normalized account type identifier.\",\"enum\":{\"99\":{\"caption\":\"Other\",\"description\":\"The account type is not mapped.\"},\"0\":{\"caption\":\"Unknown\",\"description\":\"The account type is unknown.\"},\"1\":{\"caption\":\"LDAP Account\"},\"2\":{\"caption\":\"Windows Account\"},\"3\":{\"caption\":\"AWS IAM User\"},\"4\":{\"caption\":\"AWS IAM Role\"},\"5\":{\"caption\":\"GCP Account\"},\"6\":{\"caption\":\"Azure AD Account\"},\"7\":{\"caption\":\"Mac OS Account\"},\"8\":{\"caption\":\"Apple Account\"},\"9\":{\"caption\":\"Linux Account\"},\"10\":{\"caption\":\"AWS Account\"}},\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier of the account (e.g. AWS Account ID).\"}}";
-        ocsf:name            "account" .
-
-ocsf:Enrichment  rdf:type    owl:Class;
-        rdfs:label           "Enrichment";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Enrichment object provides inline enrichment data for specific attributes of interest within an event. It serves as a mechanism to enhance or supplement the information associated with the event by adding additional relevant details or context.";
-        ocsf:attributes      "{\"data\":{\"description\":\"The enrichment data associated with the attribute and value. The meaning of this data depends on the type the enrichment record.\",\"requirement\":\"required\"},\"name\":{\"description\":\"The name of the attribute to which the enriched data pertains.\",\"requirement\":\"required\"},\"provider\":{\"description\":\"The enrichment data provider name.\",\"requirement\":\"recommended\"},\"type\":{\"description\":\"The enrichment type. For example: \\u003ccode\\u003elocation\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"value\":{\"description\":\"The value of the attribute to which the enriched data pertains.\",\"requirement\":\"required\"}}";
-        ocsf:name            "enrichment" .
-
-ocsf:AuthorizationResult
-        rdf:type             owl:Class;
-        rdfs:label           "Authorization Result";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Authorization Result object provides details about the authorization outcome and associated policies related to activity.";
-        ocsf:attributes      "{\"decision\":{\"description\":\"Authorization Result/outcome, e.g. allowed, denied.\"},\"policy\":{\"description\":\"Details about the Identity/Access management policies that are applicable.\"}}";
-        ocsf:name            "authorization" .
-
-ocsf:Observable  rdf:type    owl:Class;
-        rdfs:label           "Observable";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The observable object is a pivot element that contains related information found in many places in the event.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The full name of the observable attribute. The \\u003ccode\\u003ename\\u003c/code\\u003e is a pointer/reference to an attribute within the event data. For example: \\u003ccode\\u003efile.name\\u003c/code\\u003e.\",\"requirement\":\"required\"},\"reputation\":{\"requirement\":\"optional\"},\"type\":{\"description\":\"The observable value type name.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The observable value type identifier.\",\"requirement\":\"required\",\"enum\":{\"0\":{\"caption\":\"Unknown\",\"description\":\"Unknown observable data type.\"},\"99\":{\"caption\":\"Other\",\"description\":\"The observable data type is not mapped. See the \\u003ccode\\u003etype\\u003c/code\\u003e attribute, which may contain data source specific value.\"}}},\"value\":{\"description\":\"The value associated with the observable attribute. The meaning of the value depends on the observable type.\\u003cbr/\\u003eIf the \\u003ccode\\u003ename\\u003c/code\\u003e refers to a scalar attribute, then the \\u003ccode\\u003evalue\\u003c/code\\u003e is the value of the attribute.\\u003cbr/\\u003eIf the \\u003ccode\\u003ename\\u003c/code\\u003e refers to an object attribute, then the \\u003ccode\\u003evalue\\u003c/code\\u003e is not populated.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "observable" .
-
-ocsf:Endpoint  rdf:type      owl:Class;
-        rdfs:label           "Endpoint";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Endpoint object describes a physical or virtual device that connects to and exchanges information with a computer network. Some examples of endpoints are mobile devices, desktop computers, virtual machines, embedded devices, and servers. Internet-of-Things devices—like cameras, lighting, refrigerators, security systems, smart speakers, and thermostats—are also endpoints.";
-        ocsf:attributes      "{\"domain\":{\"requirement\":\"optional\"},\"hostname\":{\"description\":\"The fully qualified name of the endpoint.\",\"requirement\":\"recommended\"},\"instance_uid\":{\"requirement\":\"recommended\"},\"interface_name\":{\"requirement\":\"recommended\"},\"interface_uid\":{\"requirement\":\"recommended\"},\"ip\":{\"description\":\"The IP address of the endpoint, in either IPv4 or IPv6 format.\",\"requirement\":\"recommended\"},\"location\":{\"description\":\"The geographical location of the endpoint.\",\"requirement\":\"optional\"},\"mac\":{\"description\":\"The Media Access Control (MAC) address of the endpoint.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The short name of the endpoint.\"},\"subnet_uid\":{\"requirement\":\"optional\"},\"type\":{\"caption\":\"Type\",\"description\":\"The endpoint type. For example: \\u003ccode\\u003eunknown\\u003c/code\\u003e, \\u003ccode\\u003eserver\\u003c/code\\u003e, \\u003ccode\\u003edesktop\\u003c/code\\u003e, \\u003ccode\\u003elaptop\\u003c/code\\u003e, \\u003ccode\\u003etablet\\u003c/code\\u003e, \\u003ccode\\u003emobile\\u003c/code\\u003e, \\u003ccode\\u003evirtual\\u003c/code\\u003e, \\u003ccode\\u003ebrowser\\u003c/code\\u003e, or \\u003ccode\\u003eother\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"type_id\":{\"caption\":\"Type ID\",\"description\":\"The endpoint type ID.\",\"enum\":{\"1\":{\"caption\":\"Server\"},\"2\":{\"caption\":\"Desktop\"},\"3\":{\"caption\":\"Laptop\"},\"4\":{\"caption\":\"Tablet\"},\"5\":{\"caption\":\"Mobile\"},\"6\":{\"caption\":\"Virtual\"},\"7\":{\"caption\":\"IOT\"},\"8\":{\"caption\":\"Browser\"}},\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier of the endpoint.\"},\"vlan_uid\":{\"requirement\":\"optional\"},\"vpc_uid\":{\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"ip\",\"uid\",\"name\",\"hostname\",\"instance_uid\",\"interface_uid\",\"interface_name\"]}";
-        ocsf:name            "endpoint";
-        ocsf:observable      20 .
-
-ocsf:FirewallRule  rdf:type  owl:Class;
-        rdfs:label           "Firewall Rule";
-        rdfs:subClassOf      "rule";
-        dcterms:description  "The Firewall Rule object represents a specific rule within a firewall policy or event. It contains information about a rule's configuration, properties, and associated actions that define how network traffic is handled by the firewall.";
-        ocsf:attributes      "{\"condition\":{\"requirement\":\"optional\"},\"sensitivity\":{\"requirement\":\"optional\"},\"match_location\":{\"requirement\":\"optional\"},\"match_details\":{\"requirement\":\"optional\"},\"rate_limit\":{\"requirement\":\"optional\"},\"duration\":{\"description\":\"The rule response time duration, usually used for challenge completion time.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "firewall_rule" .
-
 ocsf:CVSSScore  rdf:type     owl:Class;
         rdfs:label           "CVSS Score";
-        rdfs:subClassOf      "object";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:metrics;
+                               owl:someValuesFrom  ocsf:Metric
+                             ];
         dcterms:description  "The Common Vulnerability Scoring System (<a target='_blank' href='https://www.first.org/cvss/'>CVSS</a>) object provides a way to capture the principal characteristics of a vulnerability and produce a numerical score reflecting its severity.";
-        ocsf:attributes      "{\"base_score\":{\"description\":\"The CVSS base score. For example: \\u003ccode\\u003e9.1\\u003c/code\\u003e.\",\"requirement\":\"required\"},\"depth\":{\"requirement\":\"recommended\"},\"metrics\":{\"description\":\"The Common Vulnerability Scoring System metrics. This attribute contains information on the CVE\\u0027s impact. If the CVE has been analyzed, this attribute will contain any CVSSv2 or CVSSv3 information associated with the vulnerability. For example: \\u003ccode\\u003e{ {\\\"Access Vector\\\", \\\"Network\\\"}, {\\\"Access Complexity\\\", \\\"Low\\\"}, ...}\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"overall_score\":{\"description\":\"The CVSS overall score, impacted by base, temporal, and environmental metrics. For example: \\u003ccode\\u003e9.1\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"severity\":{\"description\":\"\\u003cp\\u003eThe Common Vulnerability Scoring System (CVSS) Qualitative Severity Rating. A textual representation of the numeric score.\\u003c/p\\u003e\\u003cstrong\\u003eCVSS v2.0\\u003c/strong\\u003e\\u003cul\\u003e\\u003cli\\u003eLow (0.0 – 3.9)\\u003c/li\\u003e\\u003cli\\u003eMedium (4.0 – 6.9)\\u003c/li\\u003e\\u003cli\\u003eHigh (7.0 – 10.0)\\u003c/li\\u003e\\u003c/ul\\u003e\\u003c/p\\u003e\\u003cstrong\\u003eCVSS v3.0\\u003c/strong\\u003e\\u003cul\\u003e\\u003cli\\u003eNone (0.0)\\u003c/li\\u003e\\u003cli\\u003eLow (0.1 - 3.9)\\u003c/li\\u003e\\u003cli\\u003eMedium (4.0 - 6.9)\\u003c/li\\u003e\\u003cli\\u003eHigh (7.0 - 8.9)\\u003c/li\\u003e\\u003cli\\u003eCritical (9.0 - 10.0)\\u003c/li\\u003e\\u003c/ul\\u003e\",\"requirement\":\"optional\"},\"vector_string\":{\"requirement\":\"optional\"},\"version\":{\"description\":\"The CVSS version. For example: \\u003ccode\\u003e3.1\\u003c/code\\u003e.\",\"requirement\":\"required\"}}";
         ocsf:name            "cvss" .
-
-ocsf:KernelExtension  rdf:type  owl:Class;
-        rdfs:label           "Kernel Extension";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Kernel Extension object describes a kernel driver that has been loaded or unloaded into the operating system (OS) kernel. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:KernelModule/'>d3f:KernelModule</a>.";
-        ocsf:attributes      "{\"file\":{\"description\":\"The driver/extension file object.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
-        ocsf:name            "kernel_driver" .
-
-ocsf:Job  rdf:type           owl:Class;
-        rdfs:label           "Job";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Job object provides information about a scheduled job or task, including its name, command line, and state. It encompasses attributes that describe the properties and status of the scheduled job.";
-        ocsf:attributes      "{\"cmd_line\":{\"description\":\"The job command line.\",\"requirement\":\"recommended\"},\"created_time\":{\"description\":\"The time when the job was created.\",\"requirement\":\"recommended\"},\"desc\":{\"description\":\"The description of the job.\",\"requirement\":\"recommended\"},\"file\":{\"description\":\"The file that pertains to the job.\",\"requirement\":\"required\"},\"last_run_time\":{\"description\":\"The time when the job was last run.\",\"requirement\":\"recommended\"},\"name\":{\"description\":\"The name of the job.\",\"requirement\":\"required\"},\"next_run_time\":{\"description\":\"The time when the job will next be run.\",\"requirement\":\"optional\"},\"run_state\":{\"description\":\"The run state of the job.\",\"requirement\":\"optional\"},\"run_state_id\":{\"description\":\"The run state ID of the job.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Ready\"},\"2\":{\"caption\":\"Queued\"},\"3\":{\"caption\":\"Running\"},\"4\":{\"caption\":\"Stopped\"},\"99\":{\"caption\":\"Other\"}},\"requirement\":\"recommended\"},\"user\":{\"description\":\"The user that created the job.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "job" .
-
-ocsf:Reputation  rdf:type    owl:Class;
-        rdfs:label           "Reputation";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Reputation object describes the reputation/risk score of an entity (e.g. device, user, domain).";
-        ocsf:attributes      "{\"base_score\":{\"caption\":\"Reputation Score\",\"description\":\"The reputation score as reported by the event source.\",\"requirement\":\"required\"},\"provider\":{\"description\":\"The provider of the reputation information.\",\"requirement\":\"recommended\"},\"score\":{\"requirement\":\"optional\"},\"score_id\":{\"requirement\":\"required\"}}";
-        ocsf:name            "reputation" .
-
-ocsf:DeviceHardwareInfo
-        rdf:type             owl:Class;
-        rdfs:label           "Device Hardware Info";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Device Hardware Information object contains details and specifications of the physical components that make up a device. This information provides an overview of the hardware capabilities, configuration, and characteristics of the device.";
-        ocsf:attributes      "{\"bios_date\":{\"requirement\":\"optional\"},\"bios_manufacturer\":{\"requirement\":\"optional\"},\"bios_ver\":{\"requirement\":\"optional\"},\"chassis\":{\"requirement\":\"optional\"},\"cpu_bits\":{\"requirement\":\"optional\"},\"cpu_count\":{\"requirement\":\"optional\"},\"cpu_cores\":{\"requirement\":\"optional\"},\"cpu_speed\":{\"requirement\":\"optional\"},\"cpu_type\":{\"requirement\":\"optional\"},\"desktop_display\":{\"requirement\":\"optional\"},\"keyboard_info\":{\"requirement\":\"optional\"},\"ram_size\":{\"requirement\":\"optional\"},\"serial_number\":{\"description\":\"The device manufacturer serial number.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "device_hw_info" .
-
-ocsf:Image  rdf:type         owl:Class;
-        rdfs:label           "Image";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Image object provides a description of a specific Virtual Machine (VM) or Container image. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:ContainerImage/'>d3f:ContainerImage</a>.";
-        ocsf:attributes      "{\"labels\":{\"description\":\"The image labels.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The image name. For example: \\u003ccode\\u003eelixir\\u003c/code\\u003e.\"},\"path\":{\"description\":\"The full path to the image file.\",\"requirement\":\"optional\"},\"tag\":{\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique image ID. For example: \\u003ccode\\u003e77af4d6b9913\\u003c/code\\u003e.\",\"requirement\":\"required\"}}";
-        ocsf:constraints     "{}";
-        ocsf:name            "image" .
-
-ocsf:Object  rdf:type        owl:Class;
-        rdfs:label           "Object";
-        dcterms:description  "An unordered collection of attributes. It defines a set of attributes available in all objects. It can be also used as a generic object to log objects that are not otherwise defined by the schema.";
-        ocsf:attributes      "{}";
-        ocsf:name            "object" .
-
-ocsf:Malware  rdf:type       owl:Class;
-        rdfs:label           "Malware";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Malware object describes the classification of known malicious software, which is intentionally designed to cause damage to a computer, server, client, or computer network.";
-        ocsf:attributes      "{\"classification_ids\":{\"requirement\":\"required\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Adware\"},\"2\":{\"caption\":\"Backdoor\"},\"3\":{\"caption\":\"Bot\"},\"4\":{\"caption\":\"Bootkit\"},\"5\":{\"caption\":\"DDOS\"},\"6\":{\"caption\":\"Downloader\"},\"7\":{\"caption\":\"Dropper\"},\"8\":{\"caption\":\"Exploit-Kit\"},\"9\":{\"caption\":\"Keylogger\"},\"10\":{\"caption\":\"Ransomware\"},\"11\":{\"caption\":\"Remote-Access-Trojan\"},\"13\":{\"caption\":\"Resource-Exploitation\"},\"14\":{\"caption\":\"Rogue-Security-Software\"},\"15\":{\"caption\":\"Rootkit\"},\"16\":{\"caption\":\"Screen-Capture\"},\"17\":{\"caption\":\"Spyware\"},\"18\":{\"caption\":\"Trojan\"},\"19\":{\"caption\":\"Virus\"},\"20\":{\"caption\":\"Webshell\"},\"21\":{\"caption\":\"Wiper\"},\"22\":{\"caption\":\"Worm\"},\"99\":{\"caption\":\"Other\"}}},\"classifications\":{\"requirement\":\"optional\"},\"cves\":{\"requirement\":\"optional\"},\"name\":{\"description\":\"The malware name, as reported by the detection engine.\"},\"path\":{\"description\":\"The filesystem path of the malware that was observed.\",\"requirement\":\"recommended\"},\"provider\":{\"description\":\"The provider of the malware information.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The malware unique identifier, as reported by the detection engine. For example a virus id or an IPS signature id.\"}}";
-        ocsf:name            "malware" .
-
-ocsf:FindingInformation
-        rdf:type             owl:Class;
-        rdfs:label           "Finding Information";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Finding Information object describes metadata related to a security finding generated by a security tool or system.";
-        ocsf:attributes      "{\"analytic\":{\"requirement\":\"recommended\"},\"attacks\":{\"description\":\"The \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org\\u0027\\u003eMITRE ATT\\u0026CK®\\u003c/a\\u003e technique and associated tactics related to the finding.\",\"requirement\":\"optional\"},\"created_time\":{\"description\":\"The time when the finding was created.\",\"requirement\":\"optional\"},\"data_sources\":{\"requirement\":\"optional\"},\"desc\":{\"description\":\"The description of the reported finding.\",\"requirement\":\"optional\"},\"first_seen_time\":{\"description\":\"The time when the finding was first observed.\",\"requirement\":\"optional\"},\"kill_chain\":{\"requirement\":\"optional\"},\"last_seen_time\":{\"description\":\"The time when the finding was most recently observed.\",\"requirement\":\"optional\"},\"modified_time\":{\"description\":\"The time when the finding was last modified.\",\"requirement\":\"optional\"},\"product_uid\":{\"description\":\"The unique identifier of the product that reported the finding.\",\"requirement\":\"optional\"},\"related_events\":{\"requirement\":\"optional\"},\"related_analytics\":{\"description\":\"Other analytics related to this finding.\",\"requirement\":\"optional\"},\"src_url\":{\"description\":\"The URL pointing to the source of the finding.\",\"requirement\":\"optional\"},\"title\":{\"description\":\"A title or a brief phrase summarizing the reported finding.\",\"requirement\":\"required\"},\"types\":{\"description\":\"One or more types of the reported finding.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the reported finding.\",\"requirement\":\"required\"}}";
-        ocsf:name            "finding_info" .
-
-ocsf:Resource  rdf:type      owl:Class;
-        rdfs:label           "Resource";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Resource object contains attributes that provide information about a particular resource. It serves as a base object, offering attributes that help identify and classify the resource effectively.";
-        ocsf:attributes      "{\"data\":{\"description\":\"Additional data describing the resource.\",\"requirement\":\"optional\"},\"labels\":{\"description\":\"The list of labels/tags associated to a resource.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the resource.\",\"requirement\":\"optional\"},\"type\":{\"description\":\"The resource type as defined by the event source.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the resource.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "_resource" .
-
-ocsf:HASSH  rdf:type         owl:Class;
-        rdfs:label           "HASSH";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The HASSH object contains SSH network fingerprinting values for specific client/server implementations. It provides a standardized way of identifying and categorizing SSH connections based on their unique characteristics and behavior.";
-        ocsf:attributes      "{\"algorithm\":{\"description\":\"The concatenation of key exchange, encryption, authentication and compression algorithms (separated by \\u0027;\\u0027). NOTE: This is not the underlying algorithm for the hash implementation.\",\"requirement\":\"recommended\"},\"fingerprint\":{\"description\":\"The hash of the key exchange, encryption, authentication and compression algorithms.\",\"requirement\":\"required\"}}";
-        ocsf:name            "hassh" .
 
 ocsf:Remediation  rdf:type   owl:Class;
         rdfs:label           "Remediation";
-        rdfs:subClassOf      "object";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:kb_articles;
+                               owl:someValuesFrom  ocsf:KBArticle
+                             ];
         dcterms:description  "The Remediation object describes the recommended remediation steps to address identified issue(s).";
-        ocsf:attributes      "{\"desc\":{\"description\":\"The description of the remediation strategy.\",\"requirement\":\"required\"},\"references\":{\"description\":\"A list of supporting URL/s, references that help describe the remediation strategy.\",\"requirement\":\"optional\"},\"kb_articles\":{\"requirement\":\"optional\"}}";
         ocsf:name            "remediation" .
 
-ocsf:Metadata  rdf:type      owl:Class;
-        rdfs:label           "Metadata";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Metadata object describes the metadata associated with the event. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Metadata/'>d3f:Metadata</a>.";
-        ocsf:attributes      "{\"correlation_uid\":{\"requirement\":\"optional\"},\"event_code\":{\"requirement\":\"optional\"},\"extension\":{\"requirement\":\"optional\",\"@deprecated\":{\"message\":\"Use the \\u003ccode\\u003e extensions \\u003c/code\\u003e attribute instead.\",\"since\":\"1.0.0\"}},\"extensions\":{\"requirement\":\"optional\"},\"labels\":{\"description\":\"\\u003cp\\u003eThe list of category labels attached to the event or specific attributes. Labels are user defined tags or aliases added at normalization time.\\u003c/p\\u003eFor example: \\u003ccode\\u003e[\\\"network\\\", \\\"connection.ip:destination\\\", \\\"device.ip:source\\\"]\\u003c/code\\u003e\",\"requirement\":\"optional\"},\"log_level\":{\"requirement\":\"optional\"},\"log_name\":{\"requirement\":\"recommended\"},\"log_provider\":{\"requirement\":\"recommended\"},\"log_version\":{\"requirement\":\"optional\"},\"logged_time\":{\"requirement\":\"optional\"},\"modified_time\":{\"description\":\"The time when the event was last modified or enriched.\",\"requirement\":\"optional\"},\"loggers\":{},\"original_time\":{\"requirement\":\"recommended\"},\"processed_time\":{\"requirement\":\"optional\"},\"product\":{\"requirement\":\"required\"},\"profiles\":{\"requirement\":\"optional\"},\"sequence\":{\"requirement\":\"optional\"},\"tenant_uid\":{\"requirement\":\"recommended\"},\"uid\":{\"caption\":\"Event UID\",\"description\":\"The logging system-assigned unique identifier of an event instance.\",\"requirement\":\"optional\"},\"version\":{\"description\":\"The version of the OCSF schema, using Semantic Versioning Specification (\\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://semver.org\\u0027\\u003eSemVer\\u003c/a\\u003e). For example: 1.0.0. Event consumers use the version to determine the available event attributes.\",\"requirement\":\"required\"}}";
-        ocsf:name            "metadata" .
-
-ocsf:HTTPRequest  rdf:type   owl:Class;
-        rdfs:label           "HTTP Request";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The HTTP Request object represents the attributes of a request made to a web server. It encapsulates the details and metadata associated with an HTTP request, including the request method, headers, URL, query parameters, body content, and other relevant information.";
-        ocsf:attributes      "{\"args\":{\"requirement\":\"optional\"},\"http_headers\":{\"requirement\":\"recommended\"},\"http_method\":{\"caption\":\"HTTP Method\",\"description\":\"The \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods\\u0027\\u003eHTTP request method\\u003c/a\\u003e indicates the desired action to be performed for a given resource.\",\"enum\":{\"CONNECT\":{\"caption\":\"Connect\",\"description\":\"The CONNECT method establishes a tunnel to the server identified by the target resource.\"},\"DELETE\":{\"caption\":\"Delete\",\"description\":\"The DELETE method deletes the specified resource.\"},\"GET\":{\"caption\":\"Get\",\"description\":\"The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.\"},\"HEAD\":{\"caption\":\"Head\",\"description\":\"The HEAD method asks for a response identical to a GET request, but without the response body.\"},\"OPTIONS\":{\"caption\":\"Options\",\"description\":\"The OPTIONS method describes the communication options for the target resource.\"},\"POST\":{\"caption\":\"Post\",\"description\":\"The POST method submits an entity to the specified resource, often causing a change in state or side effects on the server.\"},\"PUT\":{\"caption\":\"Put\",\"description\":\"The PUT method replaces all current representations of the target resource with the request payload.\"},\"TRACE\":{\"caption\":\"Trace\",\"description\":\"The TRACE method performs a message loop-back test along the path to the target resource.\"}},\"type\":\"string_t\"},\"length\":{\"caption\":\"Request Length\",\"description\":\"The HTTP request length, in number of bytes.\",\"requirement\":\"optional\"},\"referrer\":{\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the http request.\",\"requirement\":\"optional\"},\"url\":{\"description\":\"The URL object that pertains to the request.\",\"requirement\":\"recommended\"},\"user_agent\":{\"requirement\":\"recommended\"},\"version\":{\"caption\":\"HTTP Version\",\"description\":\"The Hypertext Transfer Protocol (HTTP) version.\",\"requirement\":\"recommended\"},\"x_forwarded_for\":{\"requirement\":\"optional\"}}";
-        ocsf:name            "http_request" .
-
-ocsf:SchemaExtension  rdf:type  owl:Class;
-        rdfs:label           "Schema Extension";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The OCSF Schema Extension object provides detailed information about the schema extension used to construct the event. The schema extensions are registered in the <a target='_blank' href='https://github.com/ocsf/ocsf-schema/blob/main/extensions.md'>extensions.md</a> file.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The schema extension name. For example: \\u003ccode\\u003edev\\u003c/code\\u003e.\",\"requirement\":\"required\"},\"uid\":{\"description\":\"The schema extension unique identifier. For example: \\u003ccode\\u003e999\\u003c/code\\u003e.\",\"requirement\":\"required\"},\"version\":{\"description\":\"The schema extension version. For example: \\u003ccode\\u003e1.0.0-alpha.2\\u003c/code\\u003e.\",\"requirement\":\"required\"}}";
-        ocsf:constraints     "{}";
-        ocsf:name            "extension" .
-
-ocsf:Display  rdf:type       owl:Class;
-        rdfs:label           "Display";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Display object contains information about the physical or virtual display connected to a computer system.";
-        ocsf:attributes      "{\"color_depth\":{\"requirement\":\"optional\"},\"physical_height\":{\"requirement\":\"optional\"},\"physical_orientation\":{\"requirement\":\"optional\"},\"physical_width\":{\"requirement\":\"optional\"},\"scale_factor\":{\"requirement\":\"optional\"}}";
-        ocsf:name            "display" .
-
-ocsf:DNS  rdf:type           owl:Class;
-        rdfs:label           "DNS";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Domain Name System (DNS) object represents the shared information associated with the DNS query and answer objects.";
-        ocsf:attributes      "{\"class\":{\"description\":\"The class of resource records being queried. See \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.rfc-editor.org/rfc/rfc1035.txt\\u0027\\u003eRFC1035\\u003c/a\\u003e. For example: \\u003ccode\\u003eIN\\u003c/code\\u003e.\",\"caption\":\"Resource Record Class\",\"requirement\":\"recommended\"},\"packet_uid\":{\"description\":\"The DNS packet identifier assigned by the program that generated the query. The identifier is copied to the response.\",\"requirement\":\"recommended\"},\"type\":{\"description\":\"The type of resource records being queried. See \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.rfc-editor.org/rfc/rfc1035.txt\\u0027\\u003eRFC1035\\u003c/a\\u003e. For example: A, AAAA, CNAME, MX, and NS.\",\"caption\":\"Resource Record Type\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "_dns" .
-
-ocsf:GeoLocation  rdf:type   owl:Class;
-        rdfs:label           "Geo Location";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Geo Location object describes a geographical location, usually associated with an IP address. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:PhysicalLocation/'>d3f:PhysicalLocation</a>.";
-        ocsf:attributes      "{\"city\":{\"requirement\":\"recommended\"},\"continent\":{\"requirement\":\"recommended\"},\"coordinates\":{\"requirement\":\"recommended\"},\"country\":{\"requirement\":\"recommended\"},\"desc\":{\"description\":\"The description of the geographical location.\",\"requirement\":\"optional\"},\"is_on_premises\":{\"requirement\":\"optional\"},\"isp\":{\"requirement\":\"optional\"},\"postal_code\":{\"requirement\":\"optional\"},\"provider\":{\"description\":\"The provider of the geographical location data.\",\"requirement\":\"optional\"},\"region\":{\"description\":\"The alphanumeric code that identifies the principal subdivision (e.g. province or state) of the country. Region codes are defined at \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.iso.org/iso-3166-country-codes.html\\u0027\\u003eISO 3166-2\\u003c/a\\u003e and have a limit of three characters. For example, see \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.iso.org/obp/ui/#iso:code:3166:US\\u0027\\u003ethe region codes for the US\\u003c/a\\u003e.\",\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"coordinates\",\"city\",\"country\",\"postal_code\",\"region\"]}";
-        ocsf:name            "location";
-        ocsf:observable      26 .
-
-ocsf:Email  rdf:type         owl:Class;
-        rdfs:label           "Email";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Email object describes the email metadata such as sender, recipients, and direction. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Email/'>d3f:Email</a>.";
-        ocsf:attributes      "{\"cc\":{\"requirement\":\"optional\"},\"delivered_to\":{\"requirement\":\"optional\"},\"from\":{\"requirement\":\"required\"},\"message_uid\":{\"requirement\":\"recommended\"},\"raw_header\":{\"requirement\":\"optional\"},\"reply_to\":{\"requirement\":\"recommended\"},\"size\":{\"description\":\"The size in bytes of the email, including attachments.\",\"requirement\":\"recommended\"},\"smtp_from\":{\"requirement\":\"recommended\"},\"smtp_to\":{\"requirement\":\"recommended\"},\"subject\":{\"caption\":\"Subject\",\"description\":\"The email header Subject value, as defined by RFC 5322.\"},\"to\":{\"requirement\":\"required\"},\"x_originating_ip\":{\"requirement\":\"optional\"},\"uid\":{\"caption\":\"Email UID\",\"description\":\"The email unique identifier.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "email";
-        ocsf:observable      22 .
-
-ocsf:IdentityProvider
-        rdf:type             owl:Class;
-        rdfs:label           "Identity Provider";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Identity Provider object contains detailed information about a provider responsible for creating, maintaining, and managing identity information while offering authentication services to applications. An Identity Provider (IdP) serves as a trusted authority that verifies the identity of users and issues authentication tokens or assertions to enable secure access to applications or services.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the identity provider.\"},\"uid\":{\"description\":\"The unique identifier of the identity provider.\"}}";
-        ocsf:name            "idp" .
-
-ocsf:TransportLayerSecurityTLS
-        rdf:type             owl:Class;
-        rdfs:label           "Transport Layer Security (TLS)";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Transport Layer Security (TLS) object describes the negotiated TLS protocol used for secure communications over an establish network connection.";
-        ocsf:attributes      "{\"alert\":{\"requirement\":\"optional\"},\"certificate\":{\"requirement\":\"recommended\"},\"certificate_chain\":{\"requirement\":\"recommended\"},\"cipher\":{\"requirement\":\"recommended\"},\"client_ciphers\":{\"requirement\":\"recommended\"},\"extension_list\":{\"requirement\":\"optional\"},\"handshake_dur\":{\"requirement\":\"optional\"},\"ja3_hash\":{\"requirement\":\"recommended\"},\"ja3s_hash\":{\"requirement\":\"recommended\"},\"key_length\":{\"requirement\":\"optional\"},\"sans\":{\"requirement\":\"optional\"},\"server_ciphers\":{\"requirement\":\"optional\"},\"sni\":{\"requirement\":\"recommended\"},\"version\":{\"description\":\"The TLS protocol version.\",\"requirement\":\"required\"}}";
-        ocsf:name            "tls" .
-
-ocsf:Organization  rdf:type  owl:Class;
-        rdfs:label           "Organization";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Organization object describes characteristics of an orgnization or company and its division if any.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the organization. For example, Widget, Inc.\"},\"ou_name\":{\"requirement\":\"recommended\"},\"ou_uid\":{\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the organization. For example, its Active Directory or AWS Org ID.\"}}";
-        ocsf:name            "organization" .
-
-ocsf:API  rdf:type           owl:Class;
-        rdfs:label           "API";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The API, or Application Programming Interface, object represents  information pertaining to an API request and response.";
-        ocsf:attributes      "{\"group\":{\"description\":\"The information pertaining to the API group.\",\"requirement\":\"optional\"},\"operation\":{\"requirement\":\"required\"},\"request\":{\"description\":\"Details pertaining to the API request.\",\"requirement\":\"recommended\"},\"response\":{\"description\":\"Details pertaining to the API response.\",\"requirement\":\"recommended\"},\"service\":{\"description\":\"The information pertaining to the API service.\",\"requirement\":\"optional\"},\"version\":{\"description\":\"The version of the API service.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "api" .
-
-ocsf:Analytic  rdf:type      owl:Class;
-        rdfs:label           "Analytic";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Analytic object contains details about the analytic technique used to analyze and derive insights from the data or information that led to the creation of a finding or conclusion.";
-        ocsf:attributes      "{\"category\":{\"description\":\"The analytic category.\",\"requirement\":\"optional\"},\"desc\":{\"description\":\"The description of the analytic that generated the finding.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the analytic that generated the finding.\"},\"related_analytics\":{\"@deprecated\":{\"message\":\"Related Analytics has been decoupled from this object, instead use \\u003ccode\\u003efinding_info.related_analytics\\u003c/code\\u003e.\",\"since\":\"1.0.0\"},\"description\":\"Other analytics related to this analytic.\",\"requirement\":\"optional\"},\"type\":{\"description\":\"The analytic type.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The analytic type ID.\",\"requirement\":\"required\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Rule\"},\"2\":{\"caption\":\"Behavioral\"},\"3\":{\"caption\":\"Statistical\"},\"4\":{\"caption\":\"Learning (ML/DL)\"},\"99\":{\"caption\":\"Other\"}}},\"uid\":{\"description\":\"The unique identifier of the analytic that generated the finding.\"},\"version\":{\"description\":\"The analytic version. For example: \\u003ccode\\u003e1.1\\u003c/code\\u003e.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "analytic" .
-
-ocsf:Group  rdf:type         owl:Class;
-        rdfs:label           "Group";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Group object represents a collection or association of entities, such as users, policies, or devices. It serves as a logical grouping mechanism to organize and manage entities with similar characteristics or permissions within a system or organization.";
-        ocsf:attributes      "{\"desc\":{\"description\":\"The group description.\",\"requirement\":\"optional\"},\"domain\":{\"description\":\"The domain where the group is defined. For example: the LDAP or Active Directory domain.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The group name.\"},\"privileges\":{\"description\":\"The group privileges.\",\"requirement\":\"optional\"},\"type\":{\"description\":\"The type of the group or account.\",\"caption\":\"Account Type\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the group. For example, for Windows events this is the security identifier (SID) of the group.\"}}";
-        ocsf:name            "group" .
-
-ocsf:PeripheralDevice
-        rdf:type             owl:Class;
-        rdfs:label           "Peripheral Device";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The peripheral device object describes the identity, vendor and model of a peripheral device.";
-        ocsf:attributes      "{\"class\":{\"description\":\"The class of the peripheral device.\",\"requirement\":\"required\"},\"model\":{\"requirement\":\"recommended\"},\"name\":{\"description\":\"The name of the peripheral device.\",\"requirement\":\"required\"},\"serial_number\":{\"description\":\"The peripheral device serial number.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier of the peripheral device.\",\"requirement\":\"recommended\"},\"vendor_name\":{\"description\":\"The peripheral device vendor.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "peripheral_device" .
-
-ocsf:User  rdf:type          owl:Class;
-        rdfs:label           "User";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The User object describes the characteristics of a user/person or a security principal. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:UserAccount/'>d3f:UserAccount</a>.";
-        ocsf:attributes      "{\"account\":{\"description\":\"The user\\u0027s account or the account associated with the user.\",\"requirement\":\"optional\"},\"credential_uid\":{\"requirement\":\"optional\"},\"domain\":{\"description\":\"The domain where the user is defined. For example: the LDAP or Active Directory domain.\",\"requirement\":\"optional\"},\"email_addr\":{\"requirement\":\"optional\"},\"full_name\":{\"requirement\":\"optional\"},\"groups\":{\"description\":\"The administrative groups to which the user belongs.\",\"requirement\":\"optional\"},\"ldap_person\":{\"description\":\"The additonal LDAP attributes that describe a person.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The username. For example, \\u003ccode\\u003ejanedoe1\\u003c/code\\u003e.\",\"requirement\":\"recommended\",\"type\":\"username_t\"},\"org\":{\"description\":\"Organization and org unit related to the user.\",\"requirement\":\"optional\"},\"type\":{\"description\":\"The type of the user. For example, System, AWS IAM User, etc.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The account type identifier.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"User\",\"description\":\"Regular user account.\"},\"2\":{\"caption\":\"Admin\",\"description\":\"Admin/root user account.\"},\"3\":{\"caption\":\"System\",\"description\":\"System account. For example, Windows computer accounts with a trailing dollar sign ($).\"},\"99\":{\"caption\":\"Other\"}},\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique user identifier. For example, the Windows user SID, ActiveDirectory DN or AWS user ARN.\",\"requirement\":\"recommended\"},\"uid_alt\":{\"description\":\"The alternate user identifier. For example, the Active Directory user GUID or AWS user Principal ID.\",\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"account\",\"name\",\"uid\"]}";
-        ocsf:name            "user";
-        ocsf:observable      21 .
-
-ocsf:Product  rdf:type       owl:Class;
-        rdfs:label           "Product";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Product object describes characteristics of a software product.";
-        ocsf:attributes      "{\"feature\":{},\"cpe_name\":{\"requirement\":\"optional\"},\"lang\":{\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the product.\"},\"path\":{\"description\":\"The installation path of the product.\"},\"uid\":{\"description\":\"The unique identifier of the product.\"},\"url_string\":{\"description\":\"The URL pointing towards the product.\"},\"vendor_name\":{\"description\":\"The name of the vendor of the product.\",\"requirement\":\"required\"},\"version\":{\"description\":\"The version of the product, as defined by the event source. For example: \\u003ccode\\u003e2013.1.3-beta\\u003c/code\\u003e.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "product" .
-
-ocsf:Compliance  rdf:type    owl:Class;
-        rdfs:label           "Compliance";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Compliance object contains information about Industry and Regulatory Framework standards, controls and requirements.";
-        ocsf:attributes      "{\"control\":{\"requirement\":\"recommended\"},\"requirements\":{\"requirement\":\"optional\"},\"standards\":{\"requirement\":\"required\"},\"status\":{\"description\":\"The resultant status of the compliance check  normalized to the caption of the \\u003ccode\\u003estatus_id\\u003c/code\\u003e value. In the case of \\u0027Other\\u0027, it is defined by the event source.\",\"requirement\":\"recommended\"},\"status_code\":{\"description\":\"The resultant status code of the compliance check.\",\"requirement\":\"optional\"},\"status_detail\":{\"description\":\"The contextual description of the status, status_code values.\",\"requirement\":\"optional\"},\"status_id\":{\"description\":\"The normalized status identifier of the compliance check.\",\"enum\":{\"1\":{\"caption\":\"Pass\",\"description\":\"The compliance check passed for all the evaluated resources.\"},\"2\":{\"caption\":\"Warning\",\"description\":\"The compliance check did not yeild a result due to missing information.\"},\"3\":{\"caption\":\"Fail\",\"description\":\"The compliance check failed for at least one of the evaluated resources.\"}},\"requirement\":\"recommended\"}}";
-        ocsf:name            "compliance" .
-
-ocsf:KernelResource  rdf:type  owl:Class;
-        rdfs:label           "Kernel Resource";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Kernel Resource object provides information about a specific kernel resource, including its name and type. It describes essential attributes associated with a resource managed by the kernel of an operating system. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Kernel/'>d3f:Kernel</a>.";
-        ocsf:attributes      "{\"is_system\":{\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the kernel resource.\",\"requirement\":\"required\"},\"path\":{\"description\":\"The full path of the kernel resource.\",\"requirement\":\"optional\"},\"system_call\":{\"requirement\":\"optional\"},\"type\":{\"description\":\"The type of the kernel resource.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The type of the kernel resource.\",\"enum\":{\"1\":{\"caption\":\"Shared Mutex\"},\"2\":{\"caption\":\"System Call\"}},\"requirement\":\"required\"}}";
-        ocsf:name            "kernel" .
-
-ocsf:KBArticle  rdf:type     owl:Class;
-        rdfs:label           "KB Article";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The KB Article object contains metadata that describes the patch or update.";
-        ocsf:attributes      "{\"title\":{\"description\":\"The title of the kb article.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier for the kb article.\",\"requirement\":\"required\"},\"os\":{\"description\":\"The operating system the kb article applies.\",\"requirement\":\"recommended\"},\"severity\":{\"description\":\"The severity of the kb article.\",\"requirement\":\"recommended\"},\"bulletin\":{\"description\":\"The kb article bulletin identifier.\",\"requirement\":\"optional\"},\"product\":{\"description\":\"The product details the kb article applies.\",\"requirement\":\"optional\"},\"is_superseded\":{\"description\":\"The kb article has been replaced by another.\",\"requirement\":\"optional\"},\"created_time\":{\"description\":\"The date the kb article was released by the vendor.\",\"requirement\":\"optional\"},\"size\":{\"description\":\"The size in bytes for the kb article.\",\"requirement\":\"optional\"},\"src_url\":{\"description\":\"The kb article link from the source vendor.\",\"requirement\":\"optional\"},\"classification\":{\"description\":\"The vendors classification of the kb article.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "kb_article" .
-
-ocsf:Policy  rdf:type        owl:Class;
-        rdfs:label           "Policy";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Policy object describes the policies that are applicable. <p>Policy attributes provide traceability to the operational state of the security product at the time that the event was captured, facilitating forensics, troubleshooting, and policy tuning/adjustments.</p>";
-        ocsf:attributes      "{\"desc\":{\"description\":\"The description of the policy.\",\"requirement\":\"optional\"},\"group\":{\"description\":\"The policy group.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The policy name. For example: \\u003ccode\\u003eIAM Policy\\u003c/code\\u003e.\"},\"uid\":{\"description\":\"A unique identifier of the policy instance.\"},\"version\":{\"description\":\"The policy version number.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "policy" .
-
-ocsf:Container  rdf:type     owl:Class;
-        rdfs:label           "Container";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Container object describes an instance of a specific container. A container is a prepackaged, portable system image that runs isolated on an existing system using a container runtime like containerd.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The container name.\",\"requirement\":\"recommended\"},\"image\":{\"description\":\"The container image used as a template to run the container.\",\"requirement\":\"recommended\"},\"runtime\":{\"requirement\":\"optional\"},\"uid\":{\"description\":\"The full container unique identifier for this instantiation of the container. For example: \\u003ccode\\u003eac2ea168264a08f9aaca0dfc82ff3551418dfd22d02b713142a6843caa2f61bf\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"orchestrator\":{\"requirement\":\"optional\"},\"pod_uuid\":{\"requirement\":\"optional\"},\"tag\":{\"description\":\"The tag used by the container. It can indicate version, format, OS.\",\"requirement\":\"optional\"},\"size\":{\"description\":\"The size of the container image.\",\"requirement\":\"recommended\"},\"hash\":{\"description\":\"Commit hash of image created for docker or the SHA256 hash of the container. For example: \\u003ccode\\u003e13550340a8681c84c861aac2e5b440161c2b33a3e4f302ac680ca5b686de48de\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"network_driver\":{\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"uid\",\"name\"]}";
-        ocsf:name            "container";
-        ocsf:observable      27 .
-
-ocsf:CVE  rdf:type           owl:Class;
-        rdfs:label           "CVE";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Common Vulnerabilities and Exposures (CVE) object represents publicly disclosed cybersecurity vulnerabilities defined in CVE Program catalog (<a target='_blank' href='https://cve.mitre.org/'>CVE</a>). There is one CVE Record for each vulnerability in the catalog.";
-        ocsf:attributes      "{\"created_time\":{\"description\":\"The Record Creation Date identifies when the CVE ID was issued to a CVE Numbering Authority (CNA) or the CVE Record was published on the CVE List. Note that the Record Creation Date does not necessarily indicate when this vulnerability was discovered, shared with the affected vendor, publicly disclosed, or updated in CVE.\",\"requirement\":\"recommended\"},\"cvss\":{\"requirement\":\"recommended\"},\"cwe\":{\"requirement\":\"optional\"},\"desc\":{\"description\":\"A brief description of the CVE Record.\",\"requirement\":\"optional\"},\"epss\":{\"requirement\":\"optional\"},\"modified_time\":{\"description\":\"The Record Modified Date identifies when the CVE record was last updated.\",\"requirement\":\"optional\"},\"product\":{\"description\":\"The product where the vulnerability was discovered.\",\"requirement\":\"optional\"},\"references\":{\"description\":\"A list of reference URLs with additional information about the CVE Record.\",\"requirement\":\"recommended\"},\"title\":{\"description\":\"A title or a brief phrase summarizing the CVE record.\",\"requirement\":\"recommended\"},\"type\":{\"caption\":\"Vulnerability Type\",\"description\":\"\\u003cp\\u003eThe vulnerability type as selected from a large dropdown menu during CVE refinement.\\u003c/p\\u003eMost frequently used vulnerability types are: \\u003ccode\\u003eDoS\\u003c/code\\u003e, \\u003ccode\\u003eCode Execution\\u003c/code\\u003e, \\u003ccode\\u003eOverflow\\u003c/code\\u003e, \\u003ccode\\u003eMemory Corruption\\u003c/code\\u003e, \\u003ccode\\u003eSql Injection\\u003c/code\\u003e, \\u003ccode\\u003eXSS\\u003c/code\\u003e, \\u003ccode\\u003eDirectory Traversal\\u003c/code\\u003e, \\u003ccode\\u003eHttp Response Splitting\\u003c/code\\u003e, \\u003ccode\\u003eBypass something\\u003c/code\\u003e, \\u003ccode\\u003eGain Information\\u003c/code\\u003e, \\u003ccode\\u003eGain Privileges\\u003c/code\\u003e, \\u003ccode\\u003eCSRF\\u003c/code\\u003e, \\u003ccode\\u003eFile Inclusion\\u003c/code\\u003e. For more information see \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.cvedetails.com/vulnerabilities-by-types.php\\u0027\\u003eVulnerabilities By Type\\u003c/a\\u003e distributions.\",\"requirement\":\"recommended\"},\"uid\":{\"caption\":\"CVE ID\",\"description\":\"The Common Vulnerabilities and Exposures unique number assigned to a specific computer vulnerability. A CVE Identifier begins with 4 digits representing the year followed by a sequence of digits that acts as a unique identifier. For example: \\u003ccode\\u003eCVE-2021-12345\\u003c/code\\u003e.\",\"requirement\":\"required\"}}";
-        ocsf:name            "cve" .
-
-ocsf:DigitalCertificate
-        rdf:type             owl:Class;
-        rdfs:label           "Digital Certificate";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Digital Certificate, also known as a Public Key Certificate, object contains information about the ownership and usage of a public key. It serves as a means to establish trust in the authenticity and integrity of the public key and the associated entity. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Certificate/'>d3f:Certificate</a>.";
-        ocsf:attributes      "{\"created_time\":{\"description\":\"The time when the certificate was created.\",\"requirement\":\"recommended\"},\"expiration_time\":{\"description\":\"The expiration time of the certificate.\",\"requirement\":\"recommended\"},\"fingerprints\":{\"description\":\"The fingerprint list of the certificate.\",\"requirement\":\"required\"},\"issuer\":{\"caption\":\"Issuer Distinguished Name\",\"description\":\"The certificate issuer distinguished name.\",\"requirement\":\"required\"},\"serial_number\":{\"description\":\"The serial number of the certificate used to create the digital signature.\",\"caption\":\"Certificate Serial Number\",\"requirement\":\"required\"},\"subject\":{\"caption\":\"Subject Distinguished Name\",\"description\":\"The certificate subject distinguished name.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier of the certificate.\",\"requirement\":\"optional\"},\"version\":{\"description\":\"The certificate version.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "certificate" .
-
-ocsf:NetworkEndpoint  rdf:type  owl:Class;
-        rdfs:label           "Network Endpoint";
-        rdfs:subClassOf      "endpoint";
-        dcterms:description  "The Network Endpoint object describes characteristics of a network endpoint. These can be a source or destination of a network connection.";
-        ocsf:attributes      "{\"intermediate_ips\":{\"requirement\":\"optional\"},\"port\":{\"description\":\"The port used for communication within the network connection.\",\"requirement\":\"recommended\"},\"svc_name\":{\"requirement\":\"recommended\"},\"type\":{\"description\":\"The network endpoint type. For example: \\u003ccode\\u003eunknown\\u003c/code\\u003e, \\u003ccode\\u003eserver\\u003c/code\\u003e, \\u003ccode\\u003edesktop\\u003c/code\\u003e, \\u003ccode\\u003elaptop\\u003c/code\\u003e, \\u003ccode\\u003etablet\\u003c/code\\u003e, \\u003ccode\\u003emobile\\u003c/code\\u003e, \\u003ccode\\u003evirtual\\u003c/code\\u003e, \\u003ccode\\u003ebrowser\\u003c/code\\u003e, or \\u003ccode\\u003eother\\u003c/code\\u003e.\"},\"type_id\":{\"description\":\"The network endpoint type ID.\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"ip\",\"uid\",\"name\",\"hostname\",\"svc_name\",\"instance_uid\",\"interface_uid\",\"interface_name\"]}";
-        ocsf:name            "network_endpoint" .
-
-ocsf:ResponseElements
-        rdf:type             owl:Class;
-        rdfs:label           "Response Elements";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Response Elements object describes characteristics of an API response.";
-        ocsf:attributes      "{\"code\":{\"requirement\":\"recommended\"},\"containers\":{\"requirement\":\"optional\"},\"data\":{\"description\":\"The additional data that is associated with the api response.\",\"requirement\":\"optional\"},\"error\":{\"requirement\":\"recommended\"},\"error_message\":{\"requirement\":\"recommended\"},\"flags\":{\"requirement\":\"optional\"},\"message\":{\"requirement\":\"recommended\"}}";
-        ocsf:name            "response" .
-
-ocsf:CISBenchmark  rdf:type  owl:Class;
-        rdfs:label           "CIS Benchmark";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The CIS Benchmark object describes best practices for securely configuring IT systems, software, networks, and cloud infrastructure as defined by the <a target='_blank' href='https://www.cisecurity.org/cis-benchmarks/'>Center for Internet Security</a>. See also <a target='_blank' href='https://www.cisecurity.org/insights/blog/getting-to-know-the-cis-benchmarks'>Getting to Know the CIS Benchmarks</a>.";
-        ocsf:attributes      "{\"cis_controls\":{\"requirement\":\"recommended\"},\"desc\":{\"description\":\"The CIS Benchmark description. For example: \\u003ci\\u003eThe cramfs filesystem type is a compressed read-only Linux filesystem embedded in small footprint systems. A cramfs image can be used without having to first decompress the image.\\u003c/i\\u003e\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The CIS Benchmark name. For example: \\u003ci\\u003eEnsure mounting of cramfs filesystems is disabled.\\u003c/i\\u003e\",\"requirement\":\"required\"}}";
-        ocsf:name            "cis_benchmark" .
-
-ocsf:Tactic  rdf:type        owl:Class;
-        rdfs:label           "Tactic";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Tactic object describes the tactic ID and/or name that is associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The tactic name that is associated with the attack technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003eReconnaissance\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"src_url\":{\"description\":\"The versioned permalink of the attack tactic, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003ehttps://attack.mitre.org/versions/v14/tactics/TA0043/\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The tactic ID that is associated with the attack technique, as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e. For example: \\u003ccode\\u003eTA0043\\u003c/code\\u003e.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "tactic" .
-
-ocsf:TLSExtension  rdf:type  owl:Class;
-        rdfs:label           "TLS Extension";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The TLS Extension object describes additional attributes that extend the base Transport Layer Security (TLS) object.";
-        ocsf:attributes      "{\"data\":{\"description\":\"The data contains information specific to the particular extension type.\",\"requirement\":\"recommended\"},\"type\":{\"description\":\"The TLS extension type. For example: \\u003ccode\\u003eServer Name\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The TLS extension type identifier. See \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://datatracker.ietf.org/doc/html/rfc8446#page-35\\u0027\\u003eThe Transport Layer Security (TLS) extension page\\u003c/a\\u003e.\",\"requirement\":\"required\",\"enum\":{\"0\":{\"caption\":\"server_name\",\"description\":\"The Server Name Indication extension.\"},\"1\":{\"caption\":\"maximum_fragment_length\",\"description\":\"The Maximum Fragment Length Negotiation extension.\"},\"5\":{\"caption\":\"status_request\",\"description\":\"The Certificate Status Request extension.\"},\"10\":{\"caption\":\"supported_groups\",\"description\":\"The Supported Groups extension.\"},\"13\":{\"caption\":\"signature_algorithms\",\"description\":\"The Signature Algorithms extension.\"},\"14\":{\"caption\":\"use_srtp\",\"description\":\"The Use SRTP data protection extension.\"},\"15\":{\"caption\":\"heartbeat\",\"description\":\"The Heartbeat extension.\"},\"16\":{\"caption\":\"application_layer_protocol_negotiation\",\"description\":\"The Application-Layer Protocol Negotiation extension.\"},\"18\":{\"caption\":\"signed_certificate_timestamp\",\"description\":\"The Signed Certificate Timestamp extension.\"},\"19\":{\"caption\":\"client_certificate_type\",\"description\":\"The Client Certificate Type extension.\"},\"20\":{\"caption\":\"server_certificate_type\",\"description\":\"The Server Certificate Type extension.\"},\"21\":{\"caption\":\"padding\",\"description\":\"The Padding extension.\"},\"41\":{\"caption\":\"pre_shared_key\",\"description\":\"The Pre Shared Key extension.\"},\"42\":{\"caption\":\"early_data\",\"description\":\"The Early Data extension.\"},\"43\":{\"caption\":\"supported_versions\",\"description\":\"The Supported Versions extension.\"},\"44\":{\"caption\":\"cookie\",\"description\":\"The Cookie extension.\"},\"45\":{\"caption\":\"psk_key_exchange_modes\",\"description\":\"The Pre-Shared Key Exchange Modes extension.\"},\"47\":{\"caption\":\"certificate_authorities\",\"description\":\"The Certificate Authorities extension.\"},\"48\":{\"caption\":\"oid_filters\",\"description\":\"The OID Filters extension.\"},\"49\":{\"caption\":\"post_handshake_auth\",\"description\":\"The Post-Handshake Client Authentication extension.\"},\"50\":{\"caption\":\"signature_algorithms_cert\",\"description\":\"The Signature Algorithms extension.\"},\"51\":{\"caption\":\"key_share\",\"description\":\"The Key Share extension.\"}}}}";
-        ocsf:name            "tls_extension" .
-
-ocsf:File  rdf:type          owl:Class;
-        rdfs:label           "File";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The File object represents the metadata associated with a file stored in a computer system. It encompasses information about the file itself, including its attributes, properties, and organizational details. Defined by D3FEND <a target='_blank' href='https://next.d3fend.mitre.org/dao/artifact/d3f:File/'>d3f:File</a>.";
-        ocsf:attributes      "{\"accessed_time\":{\"requirement\":\"optional\"},\"accessor\":{\"requirement\":\"optional\"},\"attributes\":{\"requirement\":\"optional\"},\"company_name\":{\"requirement\":\"optional\"},\"confidentiality\":{\"requirement\":\"optional\"},\"confidentiality_id\":{\"requirement\":\"optional\"},\"created_time\":{\"description\":\"The time when the file was created.\",\"requirement\":\"optional\"},\"creator\":{\"description\":\"The user that created the file.\",\"requirement\":\"optional\"},\"desc\":{\"description\":\"The description of the file, as returned by file system. For example: the description as returned by the Unix file command or the Windows file type.\",\"requirement\":\"optional\"},\"hashes\":{\"requirement\":\"recommended\"},\"is_system\":{\"requirement\":\"optional\"},\"mime_type\":{\"requirement\":\"optional\"},\"modified_time\":{\"description\":\"The time when the file was last modified.\",\"requirement\":\"optional\"},\"modifier\":{\"description\":\"The user that last modified the file.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the file. For example: \\u003ccode\\u003esvchost.exe\\u003c/code\\u003e\",\"requirement\":\"required\",\"type\":\"file_name_t\"},\"owner\":{\"requirement\":\"optional\"},\"parent_folder\":{\"requirement\":\"optional\"},\"path\":{\"description\":\"The full path to the file. For example: \\u003ccode\\u003ec:\\\\windows\\\\system32\\\\svchost.exe\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"product\":{\"description\":\"The product that created or installed the file.\",\"requirement\":\"optional\"},\"security_descriptor\":{\"requirement\":\"optional\"},\"signature\":{\"requirement\":\"optional\"},\"size\":{\"requirement\":\"optional\"},\"type\":{\"description\":\"The file type.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The file type ID.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Regular File\"},\"2\":{\"caption\":\"Folder\"},\"3\":{\"caption\":\"Character Device\"},\"4\":{\"caption\":\"Block Device\"},\"5\":{\"caption\":\"Local Socket\"},\"6\":{\"caption\":\"Named Pipe\"},\"7\":{\"caption\":\"Symbolic Link\"},\"99\":{\"caption\":\"Other\"}},\"requirement\":\"required\"},\"uid\":{\"description\":\"The unique identifier of the file as defined by the storage system, such the file system file ID.\",\"requirement\":\"optional\"},\"version\":{\"description\":\"The file version. For example: \\u003ccode\\u003e8.0.7601.17514\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"xattributes\":{\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{}";
-        ocsf:name            "file";
-        ocsf:observable      24 .
-
-ocsf:DNSQuery  rdf:type      owl:Class;
-        rdfs:label           "DNS Query";
-        rdfs:subClassOf      "_dns";
-        dcterms:description  "The DNS query object represents a specific request made to the Domain Name System (DNS) to retrieve information about a domain or perform a DNS operation. This object encapsulates the necessary attributes and methods to construct and send DNS queries, specify the query type (e.g., A, AAAA, MX). Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:DNSLookup/'>d3f:DNSLookup</a>.";
-        ocsf:attributes      "{\"hostname\":{\"description\":\"The hostname or domain being queried. For example: \\u003ccode\\u003ewww.example.com\\u003c/code\\u003e\",\"requirement\":\"required\"},\"opcode\":{\"requirement\":\"optional\"},\"opcode_id\":{\"requirement\":\"recommended\"}}";
-        ocsf:name            "dns_query" .
-
-ocsf:MITREATTCK  rdf:type    owl:Class;
-        rdfs:label           "MITRE ATT&CK®";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The <a target='_blank' href='https://attack.mitre.org'>MITRE ATT&CK®</a> object describes the tactic, technique & sub-technique associated to an attack as defined in <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
-        ocsf:attributes      "{\"tactic\":{\"requirement\":\"optional\"},\"tactics\":{\"requirement\":\"optional\"},\"technique\":{\"requirement\":\"optional\"},\"sub_technique\":{\"requirement\":\"optional\"},\"version\":{\"description\":\"The \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e version.\",\"requirement\":\"recommended\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"tactic\",\"technique\",\"sub_technique\"]}";
-        ocsf:name            "attack" .
-
-ocsf:NetworkInterface
-        rdf:type             owl:Class;
-        rdfs:label           "Network Interface";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Network Interface object describes the type and associated attributes of a network interface.";
-        ocsf:attributes      "{\"hostname\":{\"description\":\"The hostname associated with the network interface.\",\"requirement\":\"recommended\"},\"ip\":{\"description\":\"The IP address associated with the network interface.\",\"requirement\":\"recommended\"},\"mac\":{\"description\":\"The MAC address of the network interface.\",\"requirement\":\"recommended\"},\"name\":{\"description\":\"The name of the network interface.\"},\"namespace\":{\"requirement\":\"optional\"},\"subnet_prefix\":{\"requirement\":\"optional\"},\"type\":{\"description\":\"The type of network interface.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The network interface type identifier.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Wired\"},\"2\":{\"caption\":\"Wireless\"},\"3\":{\"caption\":\"Mobile\"},\"4\":{\"caption\":\"Tunnel\"},\"99\":{\"caption\":\"Other\"}},\"requirement\":\"required\"},\"uid\":{\"description\":\"The unique identifier for the network interface.\",\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"ip\",\"mac\",\"name\",\"hostname\"]}";
-        ocsf:name            "network_interface" .
+ocsf:Finding  rdf:type       owl:Class;
+        rdfs:label           "Finding";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:remediation;
+                               owl:someValuesFrom  ocsf:Remediation
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:related_events;
+                               owl:someValuesFrom  ocsf:RelatedEvent
+                             ];
+        dcterms:description  "The Finding object describes metadata related to a security finding generated by a security tool or system.";
+        ocsf:name            "finding" .
 
 ocsf:RelatedEvent  rdf:type  owl:Class;
         rdfs:label           "Related Event";
-        rdfs:subClassOf      "object";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:observables;
+                               owl:someValuesFrom  ocsf:Observable
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:kill_chain;
+                               owl:someValuesFrom  ocsf:KillChainPhase
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:attacks;
+                               owl:someValuesFrom  ocsf:MITREATTCK
+                             ];
         dcterms:description  "The Related Event object describes an event related to a finding or detection as identified by the security product.";
-        ocsf:attributes      "{\"attacks\":{\"requirement\":\"optional\"},\"kill_chain\":{\"requirement\":\"optional\"},\"observables\":{\"requirement\":\"optional\"},\"product_uid\":{\"description\":\"The unique identifier of the product that reported the related event.\",\"requirement\":\"optional\"},\"type\":{\"description\":\"The type of the related event. For example: Process Activity: Launch.\",\"requirement\":\"optional\"},\"type_uid\":{\"description\":\"The unique identifier of the related event type. For example: 100701.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier of the related event.\",\"requirement\":\"required\"}}";
         ocsf:name            "related_event" .
 
-ocsf:NetworkProxyEndpoint
-        rdf:type             owl:Class;
-        rdfs:label           "Network Proxy Endpoint";
-        rdfs:subClassOf      "network_endpoint";
-        dcterms:description  "The network proxy endpoint object describes a proxy server, which acts as an intermediary between a client requesting a resource and the server providing that resource.  Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:ProxyServer/'>d3f:ProxyServer</a>.";
-        ocsf:attributes      "{}";
-        ocsf:name            "network_proxy" .
-
-ocsf:HTTPHeader  rdf:type    owl:Class;
-        rdfs:label           "HTTP Header";
-        rdfs:subClassOf      "object";
-        dcterms:description  "TThe HTTP Header object represents the headers sent in an HTTP request or response. HTTP headers are key-value pairs that convey additional information about the HTTP message, including details about the content, caching, authentication, encoding, and other aspects of the communication.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the header\",\"requirement\":\"required\"},\"value\":{\"description\":\"The value of the header\",\"requirement\":\"required\"}}";
-        ocsf:name            "http_header" .
-
-ocsf:CISControl  rdf:type    owl:Class;
-        rdfs:label           "CIS Control";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The CIS Control (aka Critical Security Control) object describes a prioritized set of actions to protect your organization and data from cyber-attack vectors. The <a target='_blank' href='https://www.cisecurity.org/controls'>CIS Controls</a> are defined by the Center for Internet Security.";
-        ocsf:attributes      "{\"desc\":{\"description\":\"The CIS Control description. For example: \\u003ci\\u003eUninstall or disable unnecessary services on enterprise assets and software, such as an unused file sharing service, web application module, or service function.\\u003c/i\\u003e\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The CIS Control name. For example: \\u003ci\\u003e4.8 Uninstall or Disable Unnecessary Services on Enterprise Assets and Software.\\u003c/i\\u003e\",\"requirement\":\"required\"},\"version\":{\"description\":\"The CIS Control version. For example: \\u003ci\\u003ev8\\u003c/i\\u003e.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "cis_control" .
-
-ocsf:OperatingSystemOS
-        rdf:type             owl:Class;
-        rdfs:label           "Operating System (OS)";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Operating System (OS) object describes characteristics of an OS, such as Linux or Windows. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:OperatingSystem/'>d3f:OperatingSystem</a>.";
-        ocsf:attributes      "{\"build\":{\"requirement\":\"optional\"},\"country\":{\"description\":\"The operating system country code, as defined by the ISO 3166-1 standard (Alpha-2 code). For the complete list of country codes, see \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.iso.org/obp/ui/#iso:pub:PUB500001:en\\u0027\\u003eISO 3166-1 alpha-2 codes\\u003c/a\\u003e.\",\"requirement\":\"optional\"},\"cpe_name\":{\"requirement\":\"optional\"},\"cpu_bits\":{\"requirement\":\"optional\"},\"edition\":{\"requirement\":\"optional\"},\"lang\":{\"requirement\":\"optional\"},\"name\":{\"description\":\"The operating system name.\",\"requirement\":\"required\"},\"sp_name\":{\"requirement\":\"optional\"},\"sp_ver\":{\"requirement\":\"optional\"},\"type\":{\"description\":\"The type of the operating system.\",\"requirement\":\"optional\"},\"type_id\":{\"description\":\"The type identifier of the operating system.\",\"requirement\":\"required\",\"enum\":{\"100\":{\"caption\":\"Windows\"},\"101\":{\"caption\":\"Windows Mobile\"},\"200\":{\"caption\":\"Linux\"},\"201\":{\"caption\":\"Android\"},\"300\":{\"caption\":\"macOS\"},\"301\":{\"caption\":\"iOS\"},\"302\":{\"caption\":\"iPadOS\"},\"400\":{\"caption\":\"Solaris\"},\"401\":{\"caption\":\"AIX\"},\"402\":{\"caption\":\"HP-UX\"}}},\"version\":{\"description\":\"The version of the OS running on the device that originated the event. For example: \\\"Windows 10\\\", \\\"OS X 10.7\\\", or \\\"iOS 9\\\".\",\"requirement\":\"optional\"}}";
-        ocsf:name            "os" .
-
-ocsf:Entity  rdf:type        owl:Class;
-        rdfs:label           "Entity";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Entity object is an unordered collection of attributes, with a name and unique identifier. It serves as a base object that defines a set of attributes and default constraints available in all objects that extend it.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the entity.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The unique identifier of the entity.\",\"requirement\":\"recommended\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"name\",\"uid\"]}";
-        ocsf:name            "_entity" .
-
-ocsf:SoftwarePackage  rdf:type  owl:Class;
-        rdfs:label           "Software Package";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Software Package object describes details about a software package. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:SoftwarePackage/'>d3f:SoftwarePackage</a>.";
-        ocsf:attributes      "{\"architecture\":{\"requirement\":\"recommended\"},\"epoch\":{\"requirement\":\"optional\"},\"license\":{\"description\":\"The software license applied to this package.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The software package name.\",\"requirement\":\"required\"},\"purl\":{\"requirement\":\"optional\"},\"release\":{\"requirement\":\"optional\"},\"version\":{\"description\":\"The software package version.\",\"requirement\":\"required\"}}";
-        ocsf:name            "package" .
-
-ocsf:DCERPC  rdf:type        owl:Class;
-        rdfs:label           "DCE/RPC";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The DCE/RPC, or Distributed Computing Environment/Remote Procedure Call, object describes the remote procedure call system for distributed computing environments. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:RemoteProcedureCall/'>d3f:RemoteProcedureCall</a>.";
-        ocsf:attributes      "{\"command\":{\"description\":\"The request command (e.g. REQUEST, BIND).\",\"requirement\":\"recommended\"},\"command_response\":{\"description\":\"The reply to the request command (e.g. RESPONSE, BINDACK or FAULT).\",\"requirement\":\"recommended\"},\"flags\":{\"description\":\"The list of interface flags.\",\"requirement\":\"required\"},\"rpc_interface\":{\"requirement\":\"required\"},\"opnum\":{\"requirement\":\"recommended\"}}";
-        ocsf:name            "dce_rpc" .
-
-ocsf:Metric  rdf:type        owl:Class;
-        rdfs:label           "Metric";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Metric object defines a simple name/value pair entity for a metric.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the metric.\",\"requirement\":\"required\"},\"value\":{\"description\":\"The value of the metric.\",\"requirement\":\"required\"}}";
-        ocsf:name            "metric" .
-
-ocsf:Module  rdf:type        owl:Class;
-        rdfs:label           "Module";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Module object describes the load attributes of a module.";
-        ocsf:attributes      "{\"base_address\":{\"requirement\":\"recommended\"},\"file\":{\"description\":\"The module file object.\",\"requirement\":\"recommended\"},\"function_name\":{\"requirement\":\"optional\"},\"load_type\":{\"requirement\":\"optional\"},\"load_type_id\":{\"requirement\":\"required\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Standard\",\"description\":\"A normal module loaded by the normal windows loading mechanism i.e. LoadLibrary.\"},\"2\":{\"caption\":\"Non Standard\",\"description\":\"A module loaded in a way avoidant of normal windows procedures. i.e. Bootstrapped Loading/Manual Dll Loading.\"},\"3\":{\"caption\":\"ShellCode\",\"description\":\"A raw module in process memory that is READWRITE_EXECUTE and had a thread started in its range.\"},\"4\":{\"caption\":\"Mapped\",\"description\":\"A memory mapped file, typically created with CreatefileMapping/MapViewOfFile.\"},\"5\":{\"caption\":\"NonStandard Backed\",\"description\":\"A module loaded in a non standard way. However, GetModuleFileName succeeds on this allocation.\"},\"99\":{\"caption\":\"Other\"}}},\"start_address\":{\"requirement\":\"recommended\"},\"type\":{\"description\":\"The module type.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "module" .
-
-ocsf:CISBenchmarkResult
-        rdf:type             owl:Class;
-        rdfs:label           "CIS Benchmark Result";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The CIS Benchmark Result object contains information as defined by the Center for Internet Security (<a target='_blank' href='https://www.cisecurity.org/cis-benchmarks/'>CIS</a>) benchmark result. CIS Benchmarks are a collection of best practices for securely configuring IT systems, software, networks, and cloud infrastructure.";
-        ocsf:attributes      "{\"desc\":{\"description\":\"The CIS benchmark description.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The CIS benchmark name.\",\"requirement\":\"required\"},\"remediation\":{\"requirement\":\"optional\"},\"rule\":{\"description\":\"The CIS benchmark rule.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "cis_benchmark_result" .
-
-ocsf:Cloud  rdf:type         owl:Class;
-        rdfs:label           "Cloud";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Cloud object contains information about a cloud account such as AWS Account ID, regions, etc.";
-        ocsf:attributes      "{\"account\":{\"requirement\":\"optional\"},\"org\":{\"requirement\":\"optional\"},\"project_uid\":{\"requirement\":\"optional\"},\"provider\":{\"description\":\"The unique name of the Cloud services provider, such as AWS, MS Azure, GCP, etc.\",\"requirement\":\"required\"},\"region\":{\"description\":\"The name of the cloud region, as defined by the cloud provider.\",\"requirement\":\"recommended\"},\"zone\":{\"description\":\"The availability zone in the cloud region, as defined by the cloud provider.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "cloud" .
-
-ocsf:DigitalSignature
-        rdf:type             owl:Class;
-        rdfs:label           "Digital Signature";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Digital Signature object contains information about the cryptographic mechanism used to verify the authenticity, integrity, and origin of the file or application.";
-        ocsf:attributes      "{\"algorithm\":{\"description\":\"The digital signature algorithm used to create the signature, normalized to the caption of \\u0027algorithm_id\\u0027. In the case of \\u0027Other\\u0027, it is defined by the event source.\",\"requirement\":\"optional\"},\"algorithm_id\":{\"description\":\"The identifier of the normalized digital signature algorithm.\",\"enum\":{\"99\":{\"caption\":\"Other\"},\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"DSA\",\"description\":\"Digital Signature Algorithm (DSA).\"},\"2\":{\"caption\":\"RSA\",\"description\":\"Rivest-Shamir-Adleman (RSA) Algorithm.\"},\"3\":{\"caption\":\"ECDSA\",\"description\":\"Elliptic Curve Digital Signature Algorithm.\"},\"4\":{\"caption\":\"Authenticode\",\"description\":\"Microsoft Authenticode Digital Signature Algorithm.\"}},\"requirement\":\"required\"},\"certificate\":{\"requirement\":\"recommended\"},\"created_time\":{\"description\":\"The time when the digital signature was created.\",\"requirement\":\"optional\"},\"developer_uid\":{\"requirement\":\"optional\"},\"digest\":{\"requirement\":\"optional\"}}";
-        ocsf:name            "digital_signature" .
-
-ocsf:VulnerabilityDetails
-        rdf:type             owl:Class;
-        rdfs:label           "Vulnerability Details";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The vulnerability is an unintended characteristic of a computing component or system configuration that multiplies the risk of an adverse event or a loss occurring either due to accidental exposure, deliberate attack, or conflict with new system components.";
-        ocsf:attributes      "{\"affected_code\":{\"requirement\":\"optional\"},\"affected_packages\":{\"requirement\":\"optional\"},\"cve\":{\"requirement\":\"recommended\"},\"cwe\":{\"requirement\":\"recommended\"},\"desc\":{\"description\":\"The description of the vulnerability.\",\"requirement\":\"optional\"},\"first_seen_time\":{\"description\":\"The time when the vulnerability was first observed.\",\"requirement\":\"optional\"},\"fix_available\":{\"requirement\":\"optional\"},\"kb_articles\":{\"requirement\":\"optional\"},\"is_exploit_available\":{\"requirement\":\"optional\"},\"is_fix_available\":{\"requirement\":\"optional\"},\"last_seen_time\":{\"description\":\"The time when the vulnerability was most recently observed.\",\"requirement\":\"optional\"},\"packages\":{\"requirement\":\"optional\"},\"references\":{\"description\":\"A list of reference URLs with additional information about the vulnerability.\",\"requirement\":\"recommended\"},\"related_vulnerabilities\":{\"requirement\":\"optional\"},\"remediation\":{\"description\":\"The remediation recommendations on how to mitigate the identified vulnerability.\",\"requirement\":\"optional\"},\"severity\":{\"description\":\"The vendor assigned severity of the vulnerability.\",\"requirement\":\"optional\"},\"title\":{\"description\":\"A title or a brief phrase summarizing the discovered vulnerability.\",\"requirement\":\"optional\"},\"vendor_name\":{\"description\":\"The name of the vendor that identified the vulnerability.\",\"requirement\":\"optional\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"cve\",\"cwe\"]}";
-        ocsf:name            "vulnerability" .
-
-ocsf:Fingerprint  rdf:type   owl:Class;
-        rdfs:label           "Fingerprint";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Fingerprint object provides detailed information about a digital fingerprint, which is a compact representation of data used to identify a longer piece of information, such as a public key or file content. It contains the algorithm and value of the fingerprint, enabling efficient and reliable identification of the associated data.";
-        ocsf:attributes      "{\"algorithm\":{\"description\":\"The hash algorithm used to create the digital fingerprint, normalized to the caption of \\u0027algorithm_id\\u0027. In the case of \\u0027Other\\u0027, it is defined by the event source.\",\"requirement\":\"optional\"},\"algorithm_id\":{\"description\":\"The identifier of the normalized hash algorithm, which was used to create the digital fingerprint.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"MD5\",\"description\":\"MD5 message-digest algorithm producing a 128-bit (16-byte) hash value.\"},\"2\":{\"caption\":\"SHA-1\",\"description\":\"Secure Hash Algorithm 1 producing a 160-bit (20-byte) hash value.\"},\"3\":{\"caption\":\"SHA-256\",\"description\":\"Secure Hash Algorithm 2 producing a 256-bit (32-byte) hash value.\"},\"4\":{\"caption\":\"SHA-512\",\"description\":\"Secure Hash Algorithm 2 producing a 512-bit (64-byte) hash value.\"},\"5\":{\"caption\":\"CTPH\",\"description\":\"The ssdeep generated fuzzy checksum. Also known as Context Triggered Piecewise Hash (CTPH).\"},\"6\":{\"caption\":\"TLSH\",\"description\":\"The TLSH fuzzy hashing algorithm.\"},\"7\":{\"caption\":\"quickXorHash\",\"description\":\"Microsoft simple non-cryptographic hash algorithm that works by XORing the bytes in a circular-shifting fashion.\"},\"99\":{\"caption\":\"Other\"}},\"requirement\":\"required\"},\"value\":{\"description\":\"The digital fingerprint value.\",\"requirement\":\"required\",\"type\":\"file_hash_t\"}}";
-        ocsf:name            "fingerprint";
-        ocsf:observable      30 .
-
-ocsf:NetworkTraffic  rdf:type  owl:Class;
-        rdfs:label           "Network Traffic";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Network Traffic object describes characteristics of network traffic. Network traffic refers to data moving across a network at a given point of time. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:NetworkTraffic/'>d3f:NetworkTraffic</a>.";
-        ocsf:attributes      "{\"bytes\":{\"requirement\":\"recommended\"},\"bytes_in\":{},\"bytes_out\":{},\"packets\":{\"requirement\":\"recommended\"},\"packets_in\":{},\"packets_out\":{}}";
-        ocsf:name            "network_traffic" .
-
-ocsf:SubjectAlternativeName
-        rdf:type             owl:Class;
-        rdfs:label           "Subject Alternative Name";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Subject Alternative name (SAN) object describes a SAN secured by a digital certificate";
-        ocsf:attributes      "{\"name\":{\"description\":\"Name of SAN (e.g. The actual IP Address or domain.)\",\"requirement\":\"required\"},\"type\":{\"description\":\"Type descriptor of SAN (e.g. IP Address/domain/etc.)\",\"requirement\":\"required\"}}";
-        ocsf:name            "san" .
-
-ocsf:ResourceDetails  rdf:type  owl:Class;
-        rdfs:label           "Resource Details";
-        rdfs:subClassOf      "_resource";
-        dcterms:description  "The Resource Details object describes details about resources that were affected by the activity/event.";
-        ocsf:attributes      "{\"cloud_partition\":{\"profile\":\"cloud\",\"requirement\":\"optional\"},\"criticality\":{\"description\":\"The criticality of the resource as defined by the event source.\",\"requirement\":\"optional\"},\"group\":{\"description\":\"The name of the related resource group.\",\"requirement\":\"optional\"},\"namespace\":{\"description\":\"The namespace is useful when similar entities exist that you need to keep separate.\",\"requirement\":\"optional\"},\"owner\":{\"description\":\"The identity of the service or user account that owns the resource.\",\"requirement\":\"recommended\"},\"region\":{\"description\":\"The cloud region of the resource.\",\"profile\":\"cloud\",\"requirement\":\"optional\"},\"version\":{\"description\":\"The version of the resource. For example \\u003ccode\\u003e1.2.3\\u003c/code\\u003e.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "resource_details" .
-
-ocsf:HTTPResponse  rdf:type  owl:Class;
-        rdfs:label           "HTTP Response";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The HTTP Response object contains detailed information about the response sent from a web server to the requester. It encompasses attributes and metadata that describe the response status, headers, body content, and other relevant information.";
-        ocsf:attributes      "{\"code\":{\"description\":\"The Hypertext Transfer Protocol (HTTP) status code returned from the web server to the client. For example, 200.\",\"requirement\":\"required\"},\"content_type\":{\"requirement\":\"optional\"},\"http_headers\":{\"requirement\":\"recommended\"},\"latency\":{\"requirement\":\"optional\"},\"length\":{\"requirement\":\"optional\"},\"message\":{\"requirement\":\"optional\"},\"status\":{\"requirement\":\"optional\",\"description\":\"The response status. For example: A successful HTTP status of \\u0027OK\\u0027 which corresponds to a code of 200.\"}}";
-        ocsf:name            "http_response" .
-
-ocsf:AffectedCode  rdf:type  owl:Class;
-        rdfs:label           "Affected Code";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Affected Code object describes details about a code block identified as vulnerable.";
-        ocsf:attributes      "{\"end_line\":{\"requirement\":\"recommended\"},\"file\":{\"description\":\"Details about the file that contains the affected code block.\",\"requirement\":\"required\"},\"owner\":{\"description\":\"Details about the user that owns the affected file.\",\"requirement\":\"optional\"},\"remediation\":{\"requirement\":\"optional\"},\"start_line\":{\"requirement\":\"recommended\"}}";
-        ocsf:name            "affected_code" .
-
-ocsf:Actor  rdf:type         owl:Class;
-        rdfs:label           "Actor";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Actor object contains details about the user, role, or process that initiated or performed a specific activity.";
-        ocsf:attributes      "{\"authorizations\":{\"requirement\":\"optional\"},\"idp\":{\"requirement\":\"optional\"},\"invoked_by\":{\"requirement\":\"optional\"},\"process\":{\"description\":\"The process that initiated the activity.\",\"requirement\":\"recommended\"},\"session\":{\"description\":\"The user session from which the activity was initiated.\",\"requirement\":\"optional\"},\"user\":{\"description\":\"The user that initiated the activity or the user context from which the activity was initiated.\",\"requirement\":\"recommended\"}}";
-        ocsf:constraints     "{\"at_least_one\":[\"process\",\"user\",\"invoked_by\",\"session\"]}";
-        ocsf:name            "actor" .
-
-ocsf:ManagedEntity  rdf:type  owl:Class;
-        rdfs:label           "Managed Entity";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Managed Entity object describes the type and version of an entity, such as a policy or configuration.";
-        ocsf:attributes      "{\"data\":{\"description\":\"The managed entity content as a JSON object.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the managed entity.\"},\"type\":{\"description\":\"The managed entity type. For example: \\u003ccode\\u003epolicy\\u003c/code\\u003e, \\u003ccode\\u003euser\\u003c/code\\u003e, \\u003ccode\\u003eorganizational unit\\u003c/code\\u003e, \\u003ccode\\u003edevice\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"uid\":{\"description\":\"The identifier of the managed entity.\"},\"version\":{\"description\":\"The version of the managed entity. For example: \\u003ccode\\u003e1.2.3\\u003c/code\\u003e.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "managed_entity" .
-
-ocsf:Device  rdf:type        owl:Class;
-        rdfs:label           "Device";
-        rdfs:subClassOf      "endpoint";
-        dcterms:description  "The Device object represents an addressable computer system or host, which is typically connected to a computer network and participates in the transmission or processing of data within the computer network. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Host/'>d3f:Host</a>.";
-        ocsf:attributes      "{\"autoscale_uid\":{\"requirement\":\"optional\"},\"created_time\":{\"description\":\"The time when the device was known to have been created.\",\"requirement\":\"optional\"},\"desc\":{\"caption\":\"Description\",\"description\":\"The description of the device, ordinarily as reported by the operating system.\",\"requirement\":\"optional\"},\"domain\":{\"description\":\"The network domain where the device resides. For example: \\u003ccode\\u003ework.example.com\\u003c/code\\u003e.\"},\"first_seen_time\":{\"description\":\"The initial discovery time of the device.\",\"requirement\":\"optional\"},\"groups\":{\"description\":\"The group names to which the device belongs. For example: \\u003ccode\\u003e[\\\"Windows Laptops\\\", \\\"Engineering\\\"]\\u003ccode/\\u003e.\",\"requirement\":\"optional\"},\"hostname\":{\"description\":\"The device hostname.\"},\"hw_info\":{\"requirement\":\"optional\"},\"hypervisor\":{\"requirement\":\"optional\"},\"image\":{\"description\":\"The image used as a template to run the virtual machine.\",\"requirement\":\"optional\"},\"imei\":{\"requirement\":\"optional\"},\"ip\":{\"description\":\"The device IP address, in either IPv4 or IPv6 format.\"},\"is_compliant\":{\"requirement\":\"optional\"},\"is_managed\":{\"requirement\":\"optional\"},\"is_personal\":{\"requirement\":\"optional\"},\"is_trusted\":{\"requirement\":\"optional\"},\"last_seen_time\":{\"description\":\"The most recent discovery time of the device.\",\"requirement\":\"optional\"},\"location\":{\"description\":\"The geographical location of the device.\"},\"mac\":{\"description\":\"The device Media Access Control (MAC) address.\"},\"modified_time\":{\"description\":\"The time when the device was last known to have been modified.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The alternate device name, ordinarily as assigned by an administrator. \\u003cp\\u003e\\u003cb\\u003eNote:\\u003c/b\\u003e The \\u003cb\\u003eName\\u003c/b\\u003e could be any other string that helps to identify the device, such as a phone number; for example \\u003ccode\\u003e310-555-1234\\u003c/code\\u003e.\\u003c/p\\u003e\"},\"network_interfaces\":{\"requirement\":\"optional\"},\"org\":{\"description\":\"Organization and org unit related to the device.\",\"requirement\":\"optional\"},\"os\":{\"requirement\":\"optional\"},\"region\":{\"description\":\"The region where the virtual machine is located. For example, an AWS Region.\",\"requirement\":\"recommended\"},\"risk_level\":{\"requirement\":\"optional\"},\"risk_level_id\":{\"requirement\":\"optional\"},\"risk_score\":{\"requirement\":\"optional\"},\"subnet\":{\"requirement\":\"optional\"},\"type\":{\"description\":\"The device type. For example: \\u003ccode\\u003eunknown\\u003c/code\\u003e, \\u003ccode\\u003eserver\\u003c/code\\u003e, \\u003ccode\\u003edesktop\\u003c/code\\u003e, \\u003ccode\\u003elaptop\\u003c/code\\u003e, \\u003ccode\\u003etablet\\u003c/code\\u003e, \\u003ccode\\u003emobile\\u003c/code\\u003e, \\u003ccode\\u003evirtual\\u003c/code\\u003e, \\u003ccode\\u003ebrowser\\u003c/code\\u003e, or \\u003ccode\\u003eother\\u003c/code\\u003e.\"},\"type_id\":{\"description\":\"The device type ID.\",\"requirement\":\"required\"},\"uid\":{\"description\":\"The unique identifier of the device. For example the Windows TargetSID or AWS EC2 ARN.\"},\"uid_alt\":{\"description\":\"An alternate unique identifier of the device if any. For example the ActiveDirectory DN.\"}}";
-        ocsf:name            "device" .
+ocsf:HASSH  rdf:type         owl:Class;
+        rdfs:label           "HASSH";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:fingerprint
+                             ];
+        dcterms:description  "The HASSH object contains SSH network fingerprinting values for specific client/server implementations. It provides a standardized way of identifying and categorizing SSH connections based on their unique characteristics and behavior.";
+        ocsf:name            "hassh" .
 
 ocsf:Process  rdf:type       owl:Class;
         rdfs:label           "Process";
-        rdfs:subClassOf      "_entity";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:parent_process;
+                               owl:someValuesFrom  ocsf:Process
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:xattributes;
+                               owl:someValuesFrom  ocsf:Object
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:session;
+                               owl:someValuesFrom  ocsf:Session
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:file;
+                               owl:someValuesFrom  ocsf:File
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:user;
+                               owl:someValuesFrom  ocsf:User
+                             ];
         dcterms:description  "The Process object describes a running instance of a launched program. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Process/'>d3f:Process</a>.";
-        ocsf:attributes      "{\"$include\":[\"profiles/container.json\"],\"cmd_line\":{\"requirement\":\"recommended\"},\"created_time\":{\"description\":\"The time when the process was created/started.\",\"requirement\":\"recommended\"},\"file\":{\"description\":\"The process file object.\",\"requirement\":\"recommended\"},\"integrity\":{\"requirement\":\"optional\"},\"integrity_id\":{\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Untrusted\"},\"2\":{\"caption\":\"Low\"},\"3\":{\"caption\":\"Medium\"},\"4\":{\"caption\":\"High\"},\"5\":{\"caption\":\"System\"},\"6\":{\"caption\":\"Protected\"},\"99\":{\"caption\":\"Other\"}},\"requirement\":\"optional\"},\"lineage\":{\"requirement\":\"optional\"},\"loaded_modules\":{\"requirement\":\"optional\"},\"name\":{\"description\":\"The friendly name of the process, for example: \\u003ccode\\u003eNotepad++\\u003c/code\\u003e.\",\"type\":\"process_name_t\"},\"parent_process\":{\"requirement\":\"recommended\"},\"pid\":{\"requirement\":\"recommended\"},\"sandbox\":{\"requirement\":\"optional\"},\"session\":{\"description\":\"The user session under which this process is running.\",\"requirement\":\"optional\"},\"terminated_time\":{\"description\":\"The time when the process was terminated.\",\"requirement\":\"optional\"},\"tid\":{\"requirement\":\"optional\"},\"uid\":{\"description\":\"A unique identifier for this process assigned by the producer (tool).  Facilitates correlation of a process event with other events for that process.\"},\"user\":{\"description\":\"The user under which this process is running.\",\"requirement\":\"recommended\"},\"xattributes\":{\"description\":\"An unordered collection of zero or more name/value pairs that represent a process extended attribute.\",\"requirement\":\"optional\"}}";
         ocsf:constraints     "{\"at_least_one\":[\"pid\",\"uid\"]}";
         ocsf:name            "process";
         ocsf:observable      25;
         ocsf:profiles        "[\"container\"]" .
 
-ocsf:Feature  rdf:type       owl:Class;
-        rdfs:label           "Feature";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Feature object provides information about the software product feature that generated a specific event. It encompasses details related to the capabilities, components, user interface (UI) design, and performance upgrades associated with the feature.";
-        ocsf:attributes      "{\"name\":{\"description\":\"The name of the feature.\"},\"uid\":{\"description\":\"The unique identifier of the feature.\"},\"version\":{\"description\":\"The version of the feature.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "feature" .
+ocsf:NetworkTraffic  rdf:type  owl:Class;
+        rdfs:label           "Network Traffic";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Network Traffic object describes characteristics of network traffic. Network traffic refers to data moving across a network at a given point of time. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:NetworkTraffic/'>d3f:NetworkTraffic</a>.";
+        ocsf:name            "network_traffic" .
 
-ocsf:DNSAnswer  rdf:type     owl:Class;
-        rdfs:label           "DNS Answer";
-        rdfs:subClassOf      "_dns";
-        dcterms:description  "The DNS Answer object represents a specific response provided by the Domain Name System (DNS) when querying for information about a domain or performing a DNS operation. It encapsulates the relevant details and data returned by the DNS server in response to a query.";
-        ocsf:attributes      "{\"class\":{\"description\":\"The class of DNS data contained in this resource record. See \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.rfc-editor.org/rfc/rfc1035.txt\\u0027\\u003eRFC1035\\u003c/a\\u003e. For example: \\u003ccode\\u003eIN\\u003c/code\\u003e.\"},\"flag_ids\":{\"caption\":\"DNS Header Flags\",\"description\":\"The list of DNS answer header flag IDs.\",\"enum\":{\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Authoritative Answer\"},\"2\":{\"caption\":\"Truncated Response\"},\"3\":{\"caption\":\"Recursion Desired\"},\"4\":{\"caption\":\"Recursion Available\"},\"5\":{\"caption\":\"Authentic Data\"},\"6\":{\"caption\":\"Checking Disabled\"},\"99\":{\"caption\":\"Other\",\"description\":\"The event DNS header flag is not mapped.\"}}},\"flags\":{\"caption\":\"DNS Header Flags\",\"description\":\"The list of DNS answer header flags.\"},\"rdata\":{\"requirement\":\"required\"},\"ttl\":{\"requirement\":\"recommended\"},\"type\":{\"description\":\"The type of data contained in this resource record. See \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://www.rfc-editor.org/rfc/rfc1035.txt\\u0027\\u003eRFC1035\\u003c/a\\u003e. For example: \\u003ccode\\u003eCNAME\\u003c/code\\u003e.\"}}";
-        ocsf:name            "dns_answer" .
+ocsf:Organization  rdf:type  owl:Class;
+        rdfs:label           "Organization";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Organization object describes characteristics of an orgnization or company and its division if any.";
+        ocsf:name            "organization" .
 
-ocsf:Session  rdf:type       owl:Class;
-        rdfs:label           "Session";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Session object describes details about an authenticated session. e.g. Session Creation Time, Session Issuer. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Session/'>d3f:Session</a>.";
-        ocsf:attributes      "{\"created_time\":{\"description\":\"The time when the session was created.\",\"requirement\":\"recommended\"},\"credential_uid\":{\"requirement\":\"optional\"},\"expiration_time\":{\"description\":\"The session expiration time.\",\"requirement\":\"optional\"},\"is_remote\":{\"requirement\":\"recommended\"},\"is_mfa\":{\"requirement\":\"optional\"},\"issuer\":{\"description\":\"The identifier of the session issuer.\",\"requirement\":\"recommended\"},\"terminal\":{\"description\":\"The Pseudo Terminal associated with the session. Ex: the tty or pts value.\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the session.\",\"requirement\":\"recommended\"},\"uid_alt\":{\"description\":\"The alternate unique identifier of the session. e.g. AWS ARN - \\u003ccode\\u003earn:aws:sts::123344444444:assumed-role/Admin/example-session\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"uuid\":{\"description\":\"The universally unique identifier of the session.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "session" .
+ocsf:Compliance  rdf:type    owl:Class;
+        rdfs:label           "Compliance";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Compliance object contains information about Industry and Regulatory Framework standards, controls and requirements.";
+        ocsf:name            "compliance" .
 
-ocsf:Logger  rdf:type        owl:Class;
-        rdfs:label           "Logger";
-        rdfs:subClassOf      "_entity";
-        dcterms:description  "The Logger object represents the device and product where events are stored with times for receipt and transmission.  This may be at the source device where the event occurred, a remote scanning device, intermediate hops, or the ultimate destination.";
-        ocsf:attributes      "{\"device\":{\"description\":\"The device where the events are logged.\",\"requirement\":\"recommended\"},\"log_level\":{\"requirement\":\"optional\"},\"log_name\":{\"requirement\":\"recommended\"},\"log_provider\":{\"requirement\":\"recommended\"},\"log_version\":{\"requirement\":\"optional\"},\"logged_time\":{},\"name\":{\"description\":\"The name of the logging product instance.\",\"requirement\":\"recommended\"},\"product\":{\"description\":\"The product logging the event.  This may be the event source product, a management server product, a scanning product, a SIEM, etc.\",\"requirement\":\"recommended\"},\"transmit_time\":{\"description\":\"The time when the event was transmitted from the logging device to it\\u0027s next destination\",\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique identifier of the logging product instance.\",\"requirement\":\"recommended\"},\"version\":{\"description\":\"The version of the logging product.\",\"requirement\":\"optional\"}}";
-        ocsf:name            "logger" .
+ocsf:PeripheralDevice
+        rdf:type             owl:Class;
+        rdfs:label           "Peripheral Device";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The peripheral device object describes the identity, vendor and model of a peripheral device.";
+        ocsf:name            "peripheral_device" .
 
-ocsf:HTTPCookie  rdf:type    owl:Class;
-        rdfs:label           "HTTP Cookie";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The HTTP Cookie object, also known as a web cookie or browser cookie, contains details and values pertaining to a small piece of data that a server sends to a user's web browser. This data is then stored by the browser and sent back to the server with subsequent requests, allowing the server to remember and track certain information about the user's browsing session or preferences.";
-        ocsf:attributes      "{\"domain\":{\"requirement\":\"optional\"},\"expiration_time\":{\"description\":\"The expiration time of the HTTP cookie.\",\"requirement\":\"optional\"},\"http_only\":{\"requirement\":\"optional\"},\"is_http_only\":{\"requirement\":\"optional\"},\"is_secure\":{\"requirement\":\"optional\"},\"name\":{\"description\":\"The HTTP cookie name.\",\"requirement\":\"required\"},\"path\":{\"description\":\"The path of the HTTP cookie.\",\"requirement\":\"optional\"},\"samesite\":{\"requirement\":\"optional\"},\"secure\":{\"requirement\":\"optional\"},\"value\":{\"description\":\"The HTTP cookie value.\",\"requirement\":\"required\"}}";
-        ocsf:name            "http_cookie" .
+ocsf:DigitalCertificate
+        rdf:type             owl:Class;
+        rdfs:label           "Digital Certificate";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:fingerprints
+                             ];
+        dcterms:description  "The Digital Certificate, also known as a Public Key Certificate, object contains information about the ownership and usage of a public key. It serves as a means to establish trust in the authenticity and integrity of the public key and the associated entity. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Certificate/'>d3f:Certificate</a>.";
+        ocsf:name            "certificate" .
+
+ocsf:KernelResource  rdf:type  owl:Class;
+        rdfs:label           "Kernel Resource";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Kernel Resource object provides information about a specific kernel resource, including its name and type. It describes essential attributes associated with a resource managed by the kernel of an operating system. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Kernel/'>d3f:Kernel</a>.";
+        ocsf:name            "kernel" .
+
+ocsf:File  rdf:type          owl:Class;
+        rdfs:label           "File";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:signature;
+                               owl:someValuesFrom  ocsf:DigitalSignature
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:xattributes;
+                               owl:someValuesFrom  ocsf:Object
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:product;
+                               owl:someValuesFrom  ocsf:Product
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:owner;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:hashes;
+                               owl:someValuesFrom  ocsf:Fingerprint
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:creator;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:accessor;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:modifier;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        dcterms:description  "The File object represents the metadata associated with a file stored in a computer system. It encompasses information about the file itself, including its attributes, properties, and organizational details. Defined by D3FEND <a target='_blank' href='https://next.d3fend.mitre.org/dao/artifact/d3f:File/'>d3f:File</a>.";
+        ocsf:constraints     "{}";
+        ocsf:name            "file";
+        ocsf:observable      24 .
+
+ocsf:CISBenchmarkResult
+        rdf:type             owl:Class;
+        rdfs:label           "CIS Benchmark Result";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:rule;
+                               owl:someValuesFrom  ocsf:Rule
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:remediation;
+                               owl:someValuesFrom  ocsf:Remediation
+                             ];
+        dcterms:description  "The CIS Benchmark Result object contains information as defined by the Center for Internet Security (<a target='_blank' href='https://www.cisecurity.org/cis-benchmarks/'>CIS</a>) benchmark result. CIS Benchmarks are a collection of best practices for securely configuring IT systems, software, networks, and cloud infrastructure.";
+        ocsf:name            "cis_benchmark_result" .
+
+ocsf:CISControl  rdf:type    owl:Class;
+        rdfs:label           "CIS Control";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The CIS Control (aka Critical Security Control) object describes a prioritized set of actions to protect your organization and data from cyber-attack vectors. The <a target='_blank' href='https://www.cisecurity.org/controls'>CIS Controls</a> are defined by the Center for Internet Security.";
+        ocsf:name            "cis_control" .
+
+ocsf:VulnerabilityDetails
+        rdf:type             owl:Class;
+        rdfs:label           "Vulnerability Details";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:affected_code;
+                               owl:someValuesFrom  ocsf:AffectedCode
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:remediation;
+                               owl:someValuesFrom  ocsf:Remediation
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:packages;
+                               owl:someValuesFrom  ocsf:SoftwarePackage
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:affected_packages;
+                               owl:someValuesFrom  ocsf:AffectedSoftwarePackage
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:cwe;
+                               owl:someValuesFrom  ocsf:CWE
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:cve;
+                               owl:someValuesFrom  ocsf:CVE
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:kb_articles;
+                               owl:someValuesFrom  ocsf:KBArticle
+                             ];
+        dcterms:description  "The vulnerability is an unintended characteristic of a computing component or system configuration that multiplies the risk of an adverse event or a loss occurring either due to accidental exposure, deliberate attack, or conflict with new system components.";
+        ocsf:constraints     "{\"at_least_one\":[\"cve\",\"cwe\"]}";
+        ocsf:name            "vulnerability" .
+
+ocsf:DeviceHardwareInfo
+        rdf:type             owl:Class;
+        rdfs:label           "Device Hardware Info";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:keyboard_info;
+                               owl:someValuesFrom  ocsf:KeyboardInformation
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:desktop_display;
+                               owl:someValuesFrom  ocsf:Display
+                             ];
+        dcterms:description  "The Device Hardware Information object contains details and specifications of the physical components that make up a device. This information provides an overview of the hardware capabilities, configuration, and characteristics of the device.";
+        ocsf:name            "device_hw_info" .
+
+ocsf:Endpoint  rdf:type      owl:Class;
+        rdfs:label           "Endpoint";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:location;
+                               owl:someValuesFrom  ocsf:GeoLocation
+                             ];
+        dcterms:description  "The Endpoint object describes a physical or virtual device that connects to and exchanges information with a computer network. Some examples of endpoints are mobile devices, desktop computers, virtual machines, embedded devices, and servers. Internet-of-Things devices—like cameras, lighting, refrigerators, security systems, smart speakers, and thermostats—are also endpoints.";
+        ocsf:constraints     "{\"at_least_one\":[\"ip\",\"uid\",\"name\",\"hostname\",\"instance_uid\",\"interface_uid\",\"interface_name\"]}";
+        ocsf:name            "endpoint";
+        ocsf:observable      20 .
+
+ocsf:KillChainPhase  rdf:type  owl:Class;
+        rdfs:label           "Kill Chain Phase";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Kill Chain Phase object represents a single phase of a cyber attack, including the initial reconnaissance and planning stages up to the final objective of the attacker. It provides a detailed description of each phase and its associated activities within the broader context of a cyber attack. See <a target='_blank' href='https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html'>Cyber Kill Chain®</a>.";
+        ocsf:name            "kill_chain_phase" .
+
+ocsf:Cloud  rdf:type         owl:Class;
+        rdfs:label           "Cloud";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:org;
+                               owl:someValuesFrom  ocsf:Organization
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:account;
+                               owl:someValuesFrom  ocsf:Account
+                             ];
+        dcterms:description  "The Cloud object contains information about a cloud account such as AWS Account ID, regions, etc.";
+        ocsf:name            "cloud" .
+
+ocsf:DNSQuery  rdf:type      owl:Class;
+        rdfs:label           "DNS Query";
+        rdfs:subClassOf      ocsf:DNS;
+        dcterms:description  "The DNS query object represents a specific request made to the Domain Name System (DNS) to retrieve information about a domain or perform a DNS operation. This object encapsulates the necessary attributes and methods to construct and send DNS queries, specify the query type (e.g., A, AAAA, MX). Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:DNSLookup/'>d3f:DNSLookup</a>.";
+        ocsf:name            "dns_query" .
 
 ocsf:RequestElements  rdf:type  owl:Class;
         rdfs:label           "Request Elements";
-        rdfs:subClassOf      "object";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:containers;
+                               owl:someValuesFrom  ocsf:Container
+                             ];
         dcterms:description  "The Request Elements object describes characteristics of an API request.";
-        ocsf:attributes      "{\"containers\":{\"requirement\":\"optional\"},\"data\":{\"description\":\"The additional data that is associated with the api request.\",\"requirement\":\"optional\"},\"flags\":{\"requirement\":\"optional\"},\"uid\":{\"description\":\"The unique request identifier.\",\"requirement\":\"required\"}}";
         ocsf:name            "request" .
 
-ocsf:RPCInterface  rdf:type  owl:Class;
-        rdfs:label           "RPC Interface";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The RPC Interface represents the remote procedure call interface used in the DCE/RPC session.";
-        ocsf:attributes      "{\"ack_reason\":{\"requirement\":\"recommended\"},\"ack_result\":{\"requirement\":\"recommended\"},\"uuid\":{\"description\":\"The unique identifier of the particular remote procedure or service.\",\"requirement\":\"required\"},\"version\":{\"description\":\"The version of the DCE/RPC protocol being used in the session.\",\"requirement\":\"required\"}}";
-        ocsf:name            "rpc_interface" .
+ocsf:Job  rdf:type           owl:Class;
+        rdfs:label           "Job";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:user;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:file
+                             ];
+        dcterms:description  "The Job object provides information about a scheduled job or task, including its name, command line, and state. It encompasses attributes that describe the properties and status of the scheduled job.";
+        ocsf:name            "job" .
 
-ocsf:CWE  rdf:type           owl:Class;
-        rdfs:label           "CWE";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The CWE object represents a weakness in a software system that can be exploited by a threat actor to perform an attack. The CWE object is based on the <a target='_blank' href='https://cwe.mitre.org/'>Common Weakness Enumeration (CWE)</a> catalog.";
-        ocsf:attributes      "{\"caption\":{\"description\":\"The caption assigned to the Common Weakness Enumeration unique identifier.\",\"requirement\":\"optional\"},\"src_url\":{\"description\":\"URL pointing to the CWE Specification. For more information see \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://cwe.mitre.org/\\u0027\\u003eCWE.\\u003c/a\\u003e\",\"requirement\":\"optional\"},\"uid\":{\"caption\":\"CWE ID\",\"description\":\"The Common Weakness Enumeration unique number assigned to a specific weakness. A CWE Identifier begins \\\"CWE\\\" followed by a sequence of digits that acts as a unique identifier. For example: \\u003ccode\\u003eCWE-123\\u003c/code\\u003e.\",\"requirement\":\"required\"}}";
-        ocsf:name            "cwe" .
-
-ocsf:KeyboardInformation
+ocsf:FindingInformation
         rdf:type             owl:Class;
-        rdfs:label           "Keyboard Information";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Keyboard Information object contains details and attributes related to a computer or device keyboard. It encompasses information that describes the characteristics, capabilities, and configuration of the keyboard.";
-        ocsf:attributes      "{\"function_keys\":{\"requirement\":\"optional\"},\"ime\":{\"requirement\":\"optional\"},\"keyboard_layout\":{\"requirement\":\"optional\"},\"keyboard_subtype\":{\"requirement\":\"optional\"},\"keyboard_type\":{\"requirement\":\"optional\"}}";
-        ocsf:name            "keyboard_info" .
+        rdfs:label           "Finding Information";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:kill_chain;
+                               owl:someValuesFrom  ocsf:KillChainPhase
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:attacks;
+                               owl:someValuesFrom  ocsf:MITREATTCK
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:analytic;
+                               owl:someValuesFrom  ocsf:Analytic
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:related_analytics;
+                               owl:someValuesFrom  ocsf:Analytic
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:related_events;
+                               owl:someValuesFrom  ocsf:RelatedEvent
+                             ];
+        dcterms:description  "The Finding Information object describes metadata related to a security finding generated by a security tool or system.";
+        ocsf:name            "finding_info" .
 
-ocsf:WebResource  rdf:type   owl:Class;
-        rdfs:label           "Web Resource";
-        rdfs:subClassOf      "_resource";
-        dcterms:description  "The Web Resource object describes characteristics of a web resource that was affected by the activity/event.";
-        ocsf:attributes      "{\"data\":{\"description\":\"Details of the web resource, e.g, \\u003ccode\\u003efile\\u003c/code\\u003e details, \\u003ccode\\u003esearch\\u003c/code\\u003e results or application-defined resource.\",\"requirement\":\"optional\"},\"desc\":{\"description\":\"Description of the web resource.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the web resource.\"},\"type\":{\"description\":\"The web resource type as defined by the event source.\"},\"uid\":{\"description\":\"The unique identifier of the web resource.\"},\"url_string\":{\"description\":\"The URL pointing towards the source of the web resource.\",\"requirement\":\"recommended\"}}";
-        ocsf:name            "web_resource" .
+ocsf:CISBenchmark  rdf:type  owl:Class;
+        rdfs:label           "CIS Benchmark";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:cis_controls;
+                               owl:someValuesFrom  ocsf:CISControl
+                             ];
+        dcterms:description  "The CIS Benchmark object describes best practices for securely configuring IT systems, software, networks, and cloud infrastructure as defined by the <a target='_blank' href='https://www.cisecurity.org/cis-benchmarks/'>Center for Internet Security</a>. See also <a target='_blank' href='https://www.cisecurity.org/insights/blog/getting-to-know-the-cis-benchmarks'>Getting to Know the CIS Benchmarks</a>.";
+        ocsf:name            "cis_benchmark" .
+
+ocsf:KBArticle  rdf:type     owl:Class;
+        rdfs:label           "KB Article";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:product;
+                               owl:someValuesFrom  ocsf:Product
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:os;
+                               owl:someValuesFrom  ocsf:OperatingSystemOS
+                             ];
+        dcterms:description  "The KB Article object contains metadata that describes the patch or update.";
+        ocsf:name            "kb_article" .
 
 ocsf:Service  rdf:type       owl:Class;
         rdfs:label           "Service";
-        rdfs:subClassOf      "_entity";
+        rdfs:subClassOf      ocsf:Entity;
         dcterms:description  "The Service object describes characteristics of a service, <code> e.g. AWS EC2. </code>";
-        ocsf:attributes      "{\"labels\":{\"description\":\"The list of labels associated with the service.\",\"requirement\":\"optional\"},\"name\":{\"description\":\"The name of the service.\"},\"uid\":{\"description\":\"The unique identifier of the service.\"},\"version\":{\"description\":\"The version of the service.\",\"requirement\":\"recommended\"}}";
         ocsf:name            "service" .
+
+ocsf:GeoLocation  rdf:type   owl:Class;
+        rdfs:label           "Geo Location";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Geo Location object describes a geographical location, usually associated with an IP address. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:PhysicalLocation/'>d3f:PhysicalLocation</a>.";
+        ocsf:constraints     "{\"at_least_one\":[\"coordinates\",\"city\",\"country\",\"postal_code\",\"region\"]}";
+        ocsf:name            "location";
+        ocsf:observable      26 .
+
+ocsf:DigitalSignature
+        rdf:type             owl:Class;
+        rdfs:label           "Digital Signature";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:digest;
+                               owl:someValuesFrom  ocsf:Fingerprint
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:certificate;
+                               owl:someValuesFrom  ocsf:DigitalCertificate
+                             ];
+        dcterms:description  "The Digital Signature object contains information about the cryptographic mechanism used to verify the authenticity, integrity, and origin of the file or application.";
+        ocsf:name            "digital_signature" .
+
+ocsf:AffectedSoftwarePackage
+        rdf:type             owl:Class;
+        rdfs:label           "Affected Software Package";
+        rdfs:subClassOf      ocsf:SoftwarePackage;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:remediation;
+                               owl:someValuesFrom  ocsf:Remediation
+                             ];
+        dcterms:description  "The Affected Package object describes details about a software package identified as affected by a vulnerability/vulnerabilities.";
+        ocsf:name            "affected_package" .
+
+ocsf:Metric  rdf:type        owl:Class;
+        rdfs:label           "Metric";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Metric object defines a simple name/value pair entity for a metric.";
+        ocsf:name            "metric" .
+
+ocsf:CISCSC  rdf:type        owl:Class;
+        rdfs:label           "CIS CSC";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The CIS Critical Security Control (CSC) contains information as defined by the Center for Internet Security Critical Security Control <a target='_blank' href='https://www.cisecurity.org/controls'>(CIS CSC)</a>. Prioritized set of actions to protect your organization and data from cyber-attack vectors.";
+        ocsf:name            "cis_csc" .
+
+ocsf:SubTechnique  rdf:type  owl:Class;
+        rdfs:label           "Sub Technique";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Sub Technique object describes the sub technique ID and/or name associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
+        ocsf:name            "sub_technique" .
+
+ocsf:EPSS  rdf:type          owl:Class;
+        rdfs:label           "EPSS";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Exploit Prediction Scoring System (EPSS) object describes the estimated probability a vulnerability will be exploited. EPSS is a community-driven effort to combine descriptive information about vulnerabilities (CVEs) with evidence of actual exploitation in-the-wild. (<a target='_blank' href='https://www.first.org/epss/'>EPSS</a>).";
+        ocsf:name            "epss" .
+
+ocsf:SoftwarePackage  rdf:type  owl:Class;
+        rdfs:label           "Software Package";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Software Package object describes details about a software package. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:SoftwarePackage/'>d3f:SoftwarePackage</a>.";
+        ocsf:name            "package" .
+
+ocsf:User  rdf:type          owl:Class;
+        rdfs:label           "User";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:account;
+                               owl:someValuesFrom  ocsf:Account
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:ldap_person;
+                               owl:someValuesFrom  ocsf:LDAPPerson
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:org;
+                               owl:someValuesFrom  ocsf:Organization
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:groups;
+                               owl:someValuesFrom  ocsf:Group
+                             ];
+        dcterms:description  "The User object describes the characteristics of a user/person or a security principal. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:UserAccount/'>d3f:UserAccount</a>.";
+        ocsf:constraints     "{\"at_least_one\":[\"account\",\"name\",\"uid\"]}";
+        ocsf:name            "user";
+        ocsf:observable      21 .
+
+ocsf:Device  rdf:type        owl:Class;
+        rdfs:label           "Device";
+        rdfs:subClassOf      ocsf:Endpoint;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:location;
+                               owl:someValuesFrom  ocsf:GeoLocation
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:org;
+                               owl:someValuesFrom  ocsf:Organization
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:os;
+                               owl:someValuesFrom  ocsf:OperatingSystemOS
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:network_interfaces;
+                               owl:someValuesFrom  ocsf:NetworkInterface
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:hw_info;
+                               owl:someValuesFrom  ocsf:DeviceHardwareInfo
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:image;
+                               owl:someValuesFrom  ocsf:Image
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:groups;
+                               owl:someValuesFrom  ocsf:Group
+                             ];
+        dcterms:description  "The Device object represents an addressable computer system or host, which is typically connected to a computer network and participates in the transmission or processing of data within the computer network. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Host/'>d3f:Host</a>.";
+        ocsf:name            "device" .
+
+ocsf:Metadata  rdf:type      owl:Class;
+        rdfs:label           "Metadata";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:product
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:loggers;
+                               owl:someValuesFrom  ocsf:Logger
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:extensions;
+                               owl:someValuesFrom  ocsf:SchemaExtension
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:extension;
+                               owl:someValuesFrom  ocsf:SchemaExtension
+                             ];
+        dcterms:description  "The Metadata object describes the metadata associated with the event. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Metadata/'>d3f:Metadata</a>.";
+        ocsf:name            "metadata" .
+
+ocsf:HTTPRequest  rdf:type   owl:Class;
+        rdfs:label           "HTTP Request";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:url;
+                               owl:someValuesFrom  ocsf:UniformResourceLocator
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:http_headers;
+                               owl:someValuesFrom  ocsf:HTTPHeader
+                             ];
+        dcterms:description  "The HTTP Request object represents the attributes of a request made to a web server. It encapsulates the details and metadata associated with an HTTP request, including the request method, headers, URL, query parameters, body content, and other relevant information.";
+        ocsf:name            "http_request" .
+
+ocsf:Reputation  rdf:type    owl:Class;
+        rdfs:label           "Reputation";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Reputation object describes the reputation/risk score of an entity (e.g. device, user, domain).";
+        ocsf:name            "reputation" .
+
+ocsf:EvidenceArtifacts
+        rdf:type             owl:Class;
+        rdfs:label           "Evidence Artifacts";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:query;
+                               owl:someValuesFrom  ocsf:DNSQuery
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:connection_info;
+                               owl:someValuesFrom  ocsf:NetworkConnectionInformation
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:process;
+                               owl:someValuesFrom  ocsf:Process
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:api;
+                               owl:someValuesFrom  ocsf:API
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:file;
+                               owl:someValuesFrom  ocsf:File
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:src_endpoint;
+                               owl:someValuesFrom  ocsf:NetworkEndpoint
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:dst_endpoint;
+                               owl:someValuesFrom  ocsf:NetworkEndpoint
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:actor;
+                               owl:someValuesFrom  ocsf:Actor
+                             ];
+        dcterms:description  "A collection of evidence artifacts associated to the activity/activities that triggered a security detection.";
+        ocsf:constraints     "{\"at_least_one\":[\"actor\",\"api\",\"connection_info\",\"data\",\"dst_endpoint\",\"file\",\"process\",\"query\",\"src_endpoint\"]}";
+        ocsf:name            "evidences" .
+
+ocsf:WebResource  rdf:type   owl:Class;
+        rdfs:label           "Web Resource";
+        rdfs:subClassOf      ocsf:Resource;
+        dcterms:description  "The Web Resource object describes characteristics of a web resource that was affected by the activity/event.";
+        ocsf:name            "web_resource" .
+
+ocsf:TransportLayerSecurityTLS
+        rdf:type             owl:Class;
+        rdfs:label           "Transport Layer Security (TLS)";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:extension_list;
+                               owl:someValuesFrom  ocsf:TLSExtension
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:certificate;
+                               owl:someValuesFrom  ocsf:DigitalCertificate
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:sans;
+                               owl:someValuesFrom  ocsf:SubjectAlternativeName
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:ja3s_hash;
+                               owl:someValuesFrom  ocsf:Fingerprint
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:ja3_hash;
+                               owl:someValuesFrom  ocsf:Fingerprint
+                             ];
+        dcterms:description  "The Transport Layer Security (TLS) object describes the negotiated TLS protocol used for secure communications over an establish network connection.";
+        ocsf:name            "tls" .
+
+ocsf:Module  rdf:type        owl:Class;
+        rdfs:label           "Module";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:file;
+                               owl:someValuesFrom  ocsf:File
+                             ];
+        dcterms:description  "The Module object describes the load attributes of a module.";
+        ocsf:name            "module" .
+
+ocsf:Resource  rdf:type      owl:Class;
+        rdfs:label           "Resource";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Resource object contains attributes that provide information about a particular resource. It serves as a base object, offering attributes that help identify and classify the resource effectively.";
+        ocsf:name            "_resource" .
+
+ocsf:Session  rdf:type       owl:Class;
+        rdfs:label           "Session";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Session object describes details about an authenticated session. e.g. Session Creation Time, Session Issuer. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Session/'>d3f:Session</a>.";
+        ocsf:name            "session" .
+
+ocsf:RPCInterface  rdf:type  owl:Class;
+        rdfs:label           "RPC Interface";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The RPC Interface represents the remote procedure call interface used in the DCE/RPC session.";
+        ocsf:name            "rpc_interface" .
+
+ocsf:NetworkConnectionInformation
+        rdf:type             owl:Class;
+        rdfs:label           "Network Connection Information";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Network Connection Information object describes characteristics of a network connection. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:NetworkSession/'>d3f:NetworkSession</a>.";
+        ocsf:name            "network_connection_info" .
+
+ocsf:NetworkInterface
+        rdf:type             owl:Class;
+        rdfs:label           "Network Interface";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Network Interface object describes the type and associated attributes of a network interface.";
+        ocsf:constraints     "{\"at_least_one\":[\"ip\",\"mac\",\"name\",\"hostname\"]}";
+        ocsf:name            "network_interface" .
 
 ocsf:UniformResourceLocator
         rdf:type             owl:Class;
         rdfs:label           "Uniform Resource Locator";
-        rdfs:subClassOf      "object";
+        rdfs:subClassOf      ocsf:Object;
         dcterms:description  "The Uniform Resource Locator(URL) object describes the characteristics of a URL. Defined in <a target='_blank' href='https://datatracker.ietf.org/doc/html/rfc1738'>RFC 1738</a> and by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:URL/'>d3f:URL</a>.";
-        ocsf:attributes      "{\"categories\":{},\"category_ids\":{\"requirement\":\"recommended\"},\"hostname\":{\"description\":\"The URL host as extracted from the URL. For example: \\u003ccode\\u003ewww.example.com\\u003c/code\\u003e from \\u003ccode\\u003ewww.example.com/download/trouble\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"path\":{\"description\":\"The URL path as extracted from the URL. For example: \\u003ccode\\u003e/download/trouble\\u003c/code\\u003e from \\u003ccode\\u003ewww.example.com/download/trouble\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"port\":{\"description\":\"The URL port. For example: \\u003ccode\\u003e80\\u003c/code\\u003e.\",\"requirement\":\"recommended\"},\"query_string\":{\"requirement\":\"recommended\"},\"resource_type\":{\"description\":\"The context in which a resource was retrieved in a web request.\"},\"scheme\":{\"requirement\":\"recommended\"},\"subdomain\":{\"requirement\":\"optional\"},\"url_string\":{\"description\":\"The URL string. See RFC 1738. For example: \\u003ccode\\u003ehttp://www.example.com/download/trouble.exe\\u003c/code\\u003e. Note: The URL path should not populate the URL string.\",\"requirement\":\"recommended\"}}";
         ocsf:constraints     "{\"at_least_one\":[\"url_string\",\"path\"]}";
         ocsf:name            "url";
         ocsf:observable      23 .
 
-ocsf:KillChainPhase  rdf:type  owl:Class;
-        rdfs:label           "Kill Chain Phase";
-        rdfs:subClassOf      "object";
-        dcterms:description  "The Kill Chain Phase object represents a single phase of a cyber attack, including the initial reconnaissance and planning stages up to the final objective of the attacker. It provides a detailed description of each phase and its associated activities within the broader context of a cyber attack. See <a target='_blank' href='https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html'>Cyber Kill Chain®</a>.";
-        ocsf:attributes      "{\"phase\":{\"requirement\":\"recommended\"},\"phase_id\":{\"requirement\":\"required\",\"sibling\":\"phase\"}}";
-        ocsf:name            "kill_chain_phase" .
+ocsf:DCERPC  rdf:type        owl:Class;
+        rdfs:label           "DCE/RPC";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:rpc_interface
+                             ];
+        dcterms:description  "The DCE/RPC, or Distributed Computing Environment/Remote Procedure Call, object describes the remote procedure call system for distributed computing environments. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:RemoteProcedureCall/'>d3f:RemoteProcedureCall</a>.";
+        ocsf:name            "dce_rpc" .
+
+ocsf:Feature  rdf:type       owl:Class;
+        rdfs:label           "Feature";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Feature object provides information about the software product feature that generated a specific event. It encompasses details related to the capabilities, components, user interface (UI) design, and performance upgrades associated with the feature.";
+        ocsf:name            "feature" .
+
+ocsf:Technique  rdf:type     owl:Class;
+        rdfs:label           "Technique";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Technique object describes the technique ID and/or name associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
+        ocsf:name            "technique" .
+
+ocsf:KeyboardInformation
+        rdf:type             owl:Class;
+        rdfs:label           "Keyboard Information";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Keyboard Information object contains details and attributes related to a computer or device keyboard. It encompasses information that describes the characteristics, capabilities, and configuration of the keyboard.";
+        ocsf:name            "keyboard_info" .
+
+ocsf:Policy  rdf:type        owl:Class;
+        rdfs:label           "Policy";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:group;
+                               owl:someValuesFrom  ocsf:Group
+                             ];
+        dcterms:description  "The Policy object describes the policies that are applicable. <p>Policy attributes provide traceability to the operational state of the security product at the time that the event was captured, facilitating forensics, troubleshooting, and policy tuning/adjustments.</p>";
+        ocsf:name            "policy" .
+
+ocsf:Observable  rdf:type    owl:Class;
+        rdfs:label           "Observable";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:reputation;
+                               owl:someValuesFrom  ocsf:Reputation
+                             ];
+        dcterms:description  "The observable object is a pivot element that contains related information found in many places in the event.";
+        ocsf:name            "observable" .
+
+ocsf:AffectedCode  rdf:type  owl:Class;
+        rdfs:label           "Affected Code";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:remediation;
+                               owl:someValuesFrom  ocsf:Remediation
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:owner;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:file
+                             ];
+        dcterms:description  "The Affected Code object describes details about a code block identified as vulnerable.";
+        ocsf:name            "affected_code" .
+
+ocsf:SubjectAlternativeName
+        rdf:type             owl:Class;
+        rdfs:label           "Subject Alternative Name";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Subject Alternative name (SAN) object describes a SAN secured by a digital certificate";
+        ocsf:name            "san" .
+
+ocsf:Group  rdf:type         owl:Class;
+        rdfs:label           "Group";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Group object represents a collection or association of entities, such as users, policies, or devices. It serves as a logical grouping mechanism to organize and manage entities with similar characteristics or permissions within a system or organization.";
+        ocsf:name            "group" .
+
+ocsf:SchemaExtension  rdf:type  owl:Class;
+        rdfs:label           "Schema Extension";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The OCSF Schema Extension object provides detailed information about the schema extension used to construct the event. The schema extensions are registered in the <a target='_blank' href='https://github.com/ocsf/ocsf-schema/blob/main/extensions.md'>extensions.md</a> file.";
+        ocsf:constraints     "{}";
+        ocsf:name            "extension" .
+
+ocsf:Malware  rdf:type       owl:Class;
+        rdfs:label           "Malware";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:cves;
+                               owl:someValuesFrom  ocsf:CVE
+                             ];
+        dcterms:description  "The Malware object describes the classification of known malicious software, which is intentionally designed to cause damage to a computer, server, client, or computer network.";
+        ocsf:name            "malware" .
+
+ocsf:Rule  rdf:type          owl:Class;
+        rdfs:label           "Rule";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Rule object describes characteristics of a rule associated with a policy or an event.";
+        ocsf:name            "rule" .
+
+ocsf:CVE  rdf:type           owl:Class;
+        rdfs:label           "CVE";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:product;
+                               owl:someValuesFrom  ocsf:Product
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:epss;
+                               owl:someValuesFrom  ocsf:EPSS
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:cwe;
+                               owl:someValuesFrom  ocsf:CWE
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:cvss;
+                               owl:someValuesFrom  ocsf:CVSSScore
+                             ];
+        dcterms:description  "The Common Vulnerabilities and Exposures (CVE) object represents publicly disclosed cybersecurity vulnerabilities defined in CVE Program catalog (<a target='_blank' href='https://cve.mitre.org/'>CVE</a>). There is one CVE Record for each vulnerability in the catalog.";
+        ocsf:name            "cve" .
+
+ocsf:IdentityProvider
+        rdf:type             owl:Class;
+        rdfs:label           "Identity Provider";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Identity Provider object contains detailed information about a provider responsible for creating, maintaining, and managing identity information while offering authentication services to applications. An Identity Provider (IdP) serves as a trusted authority that verifies the identity of users and issues authentication tokens or assertions to enable secure access to applications or services.";
+        ocsf:name            "idp" .
+
+ocsf:Product  rdf:type       owl:Class;
+        rdfs:label           "Product";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:feature;
+                               owl:someValuesFrom  ocsf:Feature
+                             ];
+        dcterms:description  "The Product object describes characteristics of a software product.";
+        ocsf:name            "product" .
+
+ocsf:Email  rdf:type         owl:Class;
+        rdfs:label           "Email";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Email object describes the email metadata such as sender, recipients, and direction. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:Email/'>d3f:Email</a>.";
+        ocsf:name            "email";
+        ocsf:observable      22 .
+
+ocsf:AuthorizationResult
+        rdf:type             owl:Class;
+        rdfs:label           "Authorization Result";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:policy;
+                               owl:someValuesFrom  ocsf:Policy
+                             ];
+        dcterms:description  "The Authorization Result object provides details about the authorization outcome and associated policies related to activity.";
+        ocsf:name            "authorization" .
+
+ocsf:HTTPCookie  rdf:type    owl:Class;
+        rdfs:label           "HTTP Cookie";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The HTTP Cookie object, also known as a web cookie or browser cookie, contains details and values pertaining to a small piece of data that a server sends to a user's web browser. This data is then stored by the browser and sent back to the server with subsequent requests, allowing the server to remember and track certain information about the user's browsing session or preferences.";
+        ocsf:name            "http_cookie" .
+
+ocsf:Account  rdf:type       owl:Class;
+        rdfs:label           "Account";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Account object contains details about the account that initiated or performed a specific activity within a system or application.";
+        ocsf:name            "account" .
+
+ocsf:ResourceDetails  rdf:type  owl:Class;
+        rdfs:label           "Resource Details";
+        rdfs:subClassOf      ocsf:Resource;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:owner;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:group;
+                               owl:someValuesFrom  ocsf:Group
+                             ];
+        dcterms:description  "The Resource Details object describes details about resources that were affected by the activity/event.";
+        ocsf:name            "resource_details" .
+
+ocsf:DNS  rdf:type           owl:Class;
+        rdfs:label           "DNS";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Domain Name System (DNS) object represents the shared information associated with the DNS query and answer objects.";
+        ocsf:name            "_dns" .
+
+ocsf:NetworkProxyEndpoint
+        rdf:type             owl:Class;
+        rdfs:label           "Network Proxy Endpoint";
+        rdfs:subClassOf      ocsf:NetworkEndpoint;
+        dcterms:description  "The network proxy endpoint object describes a proxy server, which acts as an intermediary between a client requesting a resource and the server providing that resource.  Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:ProxyServer/'>d3f:ProxyServer</a>.";
+        ocsf:name            "network_proxy" .
+
+ocsf:FirewallRule  rdf:type  owl:Class;
+        rdfs:label           "Firewall Rule";
+        rdfs:subClassOf      ocsf:Rule;
+        dcterms:description  "The Firewall Rule object represents a specific rule within a firewall policy or event. It contains information about a rule's configuration, properties, and associated actions that define how network traffic is handled by the firewall.";
+        ocsf:name            "firewall_rule" .
+
+ocsf:Container  rdf:type     owl:Class;
+        rdfs:label           "Container";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:hash;
+                               owl:someValuesFrom  ocsf:Fingerprint
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:image;
+                               owl:someValuesFrom  ocsf:Image
+                             ];
+        dcterms:description  "The Container object describes an instance of a specific container. A container is a prepackaged, portable system image that runs isolated on an existing system using a container runtime like containerd.";
+        ocsf:constraints     "{\"at_least_one\":[\"uid\",\"name\"]}";
+        ocsf:name            "container";
+        ocsf:observable      27 .
+
+ocsf:HTTPHeader  rdf:type    owl:Class;
+        rdfs:label           "HTTP Header";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "TThe HTTP Header object represents the headers sent in an HTTP request or response. HTTP headers are key-value pairs that convey additional information about the HTTP message, including details about the content, caching, authentication, encoding, and other aspects of the communication.";
+        ocsf:name            "http_header" .
+
+ocsf:NetworkEndpoint  rdf:type  owl:Class;
+        rdfs:label           "Network Endpoint";
+        rdfs:subClassOf      ocsf:Endpoint;
+        dcterms:description  "The Network Endpoint object describes characteristics of a network endpoint. These can be a source or destination of a network connection.";
+        ocsf:constraints     "{\"at_least_one\":[\"ip\",\"uid\",\"name\",\"hostname\",\"svc_name\",\"instance_uid\",\"interface_uid\",\"interface_name\"]}";
+        ocsf:name            "network_endpoint" .
+
+ocsf:HTTPResponse  rdf:type  owl:Class;
+        rdfs:label           "HTTP Response";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:http_headers;
+                               owl:someValuesFrom  ocsf:HTTPHeader
+                             ];
+        dcterms:description  "The HTTP Response object contains detailed information about the response sent from a web server to the requester. It encompasses attributes and metadata that describe the response status, headers, body content, and other relevant information.";
+        ocsf:name            "http_response" .
+
+ocsf:EmailAuthentication
+        rdf:type             owl:Class;
+        rdfs:label           "Email Authentication";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Email Authentication object describes the Sender Policy Framework (SPF), DomainKeys Identified Mail (DKIM) and Domain-based Message Authentication, Reporting and Conformance (DMARC) attributes of an email.";
+        ocsf:name            "email_auth" .
+
+ocsf:Actor  rdf:type         owl:Class;
+        rdfs:label           "Actor";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:session;
+                               owl:someValuesFrom  ocsf:Session
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:process;
+                               owl:someValuesFrom  ocsf:Process
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:authorizations;
+                               owl:someValuesFrom  ocsf:AuthorizationResult
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:user;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:idp;
+                               owl:someValuesFrom  ocsf:IdentityProvider
+                             ];
+        dcterms:description  "The Actor object contains details about the user, role, or process that initiated or performed a specific activity.";
+        ocsf:constraints     "{\"at_least_one\":[\"process\",\"user\",\"invoked_by\",\"session\"]}";
+        ocsf:name            "actor" .
+
+ocsf:MITREATTCK  rdf:type    owl:Class;
+        rdfs:label           "MITRE ATT&CK®";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:sub_technique;
+                               owl:someValuesFrom  ocsf:SubTechnique
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:tactic;
+                               owl:someValuesFrom  ocsf:Tactic
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:tactics;
+                               owl:someValuesFrom  ocsf:Tactic
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:technique;
+                               owl:someValuesFrom  ocsf:Technique
+                             ];
+        dcterms:description  "The <a target='_blank' href='https://attack.mitre.org'>MITRE ATT&CK®</a> object describes the tactic, technique & sub-technique associated to an attack as defined in <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
+        ocsf:constraints     "{\"at_least_one\":[\"tactic\",\"technique\",\"sub_technique\"]}";
+        ocsf:name            "attack" .
+
+ocsf:Image  rdf:type         owl:Class;
+        rdfs:label           "Image";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Image object provides a description of a specific Virtual Machine (VM) or Container image. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:ContainerImage/'>d3f:ContainerImage</a>.";
+        ocsf:constraints     "{}";
+        ocsf:name            "image" .
+
+ocsf:CWE  rdf:type           owl:Class;
+        rdfs:label           "CWE";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The CWE object represents a weakness in a software system that can be exploited by a threat actor to perform an attack. The CWE object is based on the <a target='_blank' href='https://cwe.mitre.org/'>Common Weakness Enumeration (CWE)</a> catalog.";
+        ocsf:name            "cwe" .
+
+ocsf:DNSAnswer  rdf:type     owl:Class;
+        rdfs:label           "DNS Answer";
+        rdfs:subClassOf      ocsf:DNS;
+        dcterms:description  "The DNS Answer object represents a specific response provided by the Domain Name System (DNS) when querying for information about a domain or performing a DNS operation. It encapsulates the relevant details and data returned by the DNS server in response to a query.";
+        ocsf:name            "dns_answer" .
+
+ocsf:KernelExtension  rdf:type  owl:Class;
+        rdfs:label           "Kernel Extension";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type         owl:Restriction;
+                               owl:cardinality  1;
+                               owl:onProperty   ocsf:file
+                             ];
+        dcterms:description  "The Kernel Extension object describes a kernel driver that has been loaded or unloaded into the operating system (OS) kernel. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:KernelModule/'>d3f:KernelModule</a>.";
+        ocsf:name            "kernel_driver" .
+
+ocsf:OperatingSystemOS
+        rdf:type             owl:Class;
+        rdfs:label           "Operating System (OS)";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Operating System (OS) object describes characteristics of an OS, such as Linux or Windows. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:OperatingSystem/'>d3f:OperatingSystem</a>.";
+        ocsf:name            "os" .
+
+ocsf:Analytic  rdf:type      owl:Class;
+        rdfs:label           "Analytic";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:related_analytics;
+                               owl:someValuesFrom  ocsf:Analytic
+                             ];
+        dcterms:description  "The Analytic object contains details about the analytic technique used to analyze and derive insights from the data or information that led to the creation of a finding or conclusion.";
+        ocsf:name            "analytic" .
+
+ocsf:TLSExtension  rdf:type  owl:Class;
+        rdfs:label           "TLS Extension";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The TLS Extension object describes additional attributes that extend the base Transport Layer Security (TLS) object.";
+        ocsf:name            "tls_extension" .
+
+ocsf:Entity  rdf:type        owl:Class;
+        rdfs:label           "Entity";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Entity object is an unordered collection of attributes, with a name and unique identifier. It serves as a base object that defines a set of attributes and default constraints available in all objects that extend it.";
+        ocsf:constraints     "{\"at_least_one\":[\"name\",\"uid\"]}";
+        ocsf:name            "_entity" .
+
+ocsf:Logger  rdf:type        owl:Class;
+        rdfs:label           "Logger";
+        rdfs:subClassOf      ocsf:Entity;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:product;
+                               owl:someValuesFrom  ocsf:Product
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:device;
+                               owl:someValuesFrom  ocsf:Device
+                             ];
+        dcterms:description  "The Logger object represents the device and product where events are stored with times for receipt and transmission.  This may be at the source device where the event occurred, a remote scanning device, intermediate hops, or the ultimate destination.";
+        ocsf:name            "logger" .
+
+ocsf:Enrichment  rdf:type    owl:Class;
+        rdfs:label           "Enrichment";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Enrichment object provides inline enrichment data for specific attributes of interest within an event. It serves as a mechanism to enhance or supplement the information associated with the event by adding additional relevant details or context.";
+        ocsf:name            "enrichment" .
 
 ocsf:LDAPPerson  rdf:type    owl:Class;
         rdfs:label           "LDAP Person";
-        rdfs:subClassOf      "object";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:manager;
+                               owl:someValuesFrom  ocsf:User
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:location;
+                               owl:someValuesFrom  ocsf:GeoLocation
+                             ];
         dcterms:description  "The additonal LDAP attributes that describe a person.";
-        ocsf:attributes      "{\"cost_center\":{\"requirement\":\"optional\"},\"created_time\":{\"description\":\"The timestamp when the user was created.\",\"requirement\":\"optional\"},\"deleted_time\":{\"requirement\":\"optional\"},\"email_addrs\":{\"requirement\":\"optional\"},\"employee_uid\":{\"requirement\":\"optional\"},\"given_name\":{\"requirement\":\"optional\"},\"hire_time\":{\"requirement\":\"optional\"},\"job_title\":{\"requirement\":\"optional\"},\"labels\":{\"description\":\"The labels associated with the user. For example in AD this could be the \\u003ccode\\u003euserType\\u003c/code\\u003e, \\u003ccode\\u003eemployeeType\\u003c/code\\u003e. For example: \\u003ccode\\u003eMember, Employee\\u003c/code\\u003e.\",\"requirement\":\"optional\"},\"last_login_time\":{\"requirement\":\"optional\"},\"ldap_cn\":{\"requirement\":\"optional\"},\"ldap_dn\":{\"requirement\":\"optional\"},\"leave_time\":{\"requirement\":\"optional\"},\"location\":{\"description\":\"The geographical location associated with a user. This is typically the user\\u0027s usual work location.\",\"requirement\":\"optional\"},\"manager\":{\"requirement\":\"optional\"},\"modified_time\":{\"description\":\"The timestamp when the user entry was last modified.\",\"requirement\":\"optional\"},\"office_location\":{\"requirement\":\"optional\"},\"surname\":{\"requirement\":\"optional\"}}";
         ocsf:name            "ldap_person" .
+
+ocsf:Fingerprint  rdf:type   owl:Class;
+        rdfs:label           "Fingerprint";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Fingerprint object provides detailed information about a digital fingerprint, which is a compact representation of data used to identify a longer piece of information, such as a public key or file content. It contains the algorithm and value of the fingerprint, enabling efficient and reliable identification of the associated data.";
+        ocsf:name            "fingerprint";
+        ocsf:observable      30 .
+
+ocsf:Display  rdf:type       owl:Class;
+        rdfs:label           "Display";
+        rdfs:subClassOf      ocsf:Object;
+        dcterms:description  "The Display object contains information about the physical or virtual display connected to a computer system.";
+        ocsf:name            "display" .
+
+ocsf:ResponseElements
+        rdf:type             owl:Class;
+        rdfs:label           "Response Elements";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:containers;
+                               owl:someValuesFrom  ocsf:Container
+                             ];
+        dcterms:description  "The Response Elements object describes characteristics of an API response.";
+        ocsf:name            "response" .
+
+ocsf:API  rdf:type           owl:Class;
+        rdfs:label           "API";
+        rdfs:subClassOf      ocsf:Object;
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:service;
+                               owl:someValuesFrom  ocsf:Service
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:response;
+                               owl:someValuesFrom  ocsf:ResponseElements
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:request;
+                               owl:someValuesFrom  ocsf:RequestElements
+                             ];
+        rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                               owl:onProperty      ocsf:group;
+                               owl:someValuesFrom  ocsf:Group
+                             ];
+        dcterms:description  "The API, or Application Programming Interface, object represents  information pertaining to an API request and response.";
+        ocsf:name            "api" .
+
+ocsf:Tactic  rdf:type        owl:Class;
+        rdfs:label           "Tactic";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Tactic object describes the tactic ID and/or name that is associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
+        ocsf:name            "tactic" .
+
+ocsf:ManagedEntity  rdf:type  owl:Class;
+        rdfs:label           "Managed Entity";
+        rdfs:subClassOf      ocsf:Entity;
+        dcterms:description  "The Managed Entity object describes the type and version of an entity, such as a policy or configuration.";
+        ocsf:name            "managed_entity" .
+
+ocsf:Object  rdf:type        owl:Class;
+        rdfs:label           "Object";
+        rdfs:subClassOf      ocsf:CISBenchmarkResult , ocsf:Metadata , ocsf:KillChainPhase , ocsf:UniformResourceLocator , ocsf:HTTPHeader , ocsf:NetworkInterface , ocsf:Endpoint , ocsf:TLSExtension , ocsf:DeviceHardwareInfo , ocsf:PeripheralDevice , ocsf:GeoLocation , ocsf:EPSS , ocsf:Device , ocsf:CVE , ocsf:CISBenchmark , ocsf:Organization , ocsf:Policy , ocsf:HTTPResponse , ocsf:EvidenceArtifacts , ocsf:IdentityProvider , ocsf:Metric , ocsf:User , ocsf:KeyboardInformation , ocsf:MITREATTCK , ocsf:Logger , ocsf:Job , ocsf:NetworkTraffic , ocsf:DNSAnswer , ocsf:API , ocsf:Reputation , ocsf:NetworkEndpoint , ocsf:Analytic , ocsf:KernelExtension , ocsf:Object , ocsf:RequestElements , ocsf:CWE , ocsf:EmailAuthentication , ocsf:DigitalCertificate , ocsf:Remediation , ocsf:CVSSScore , ocsf:VulnerabilityDetails , ocsf:Compliance , ocsf:Observable , ocsf:Resource , ocsf:FindingInformation , ocsf:Rule , ocsf:CISControl , ocsf:File , ocsf:WebResource , ocsf:Session , ocsf:DNS , ocsf:FirewallRule , ocsf:KernelResource , ocsf:Technique , ocsf:KBArticle , ocsf:AffectedCode , ocsf:Malware , ocsf:Display , ocsf:SubTechnique , ocsf:SubjectAlternativeName , ocsf:NetworkConnectionInformation , ocsf:Email , ocsf:Product , ocsf:HTTPCookie , ocsf:Module , ocsf:Image , ocsf:TransportLayerSecurityTLS , ocsf:Process , ocsf:Group , ocsf:RelatedEvent , ocsf:SoftwarePackage , ocsf:ResourceDetails , ocsf:RPCInterface , ocsf:Container , ocsf:OperatingSystemOS , ocsf:DigitalSignature , ocsf:Feature , ocsf:HTTPRequest , ocsf:AuthorizationResult , ocsf:Finding , ocsf:NetworkProxyEndpoint , ocsf:DCERPC , ocsf:Service , ocsf:DNSQuery , ocsf:Fingerprint , ocsf:LDAPPerson , ocsf:Tactic , ocsf:AffectedSoftwarePackage , ocsf:Entity , ocsf:Actor , ocsf:ManagedEntity , ocsf:ResponseElements , ocsf:SchemaExtension , ocsf:Enrichment , ocsf:HASSH , ocsf:Cloud , ocsf:CISCSC , ocsf:Account;
+        dcterms:description  "An unordered collection of attributes. It defines a set of attributes available in all objects. It can be also used as a generic object to log objects that are not otherwise defined by the schema.";
+        ocsf:name            "object" .
