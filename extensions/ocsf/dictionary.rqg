@@ -1,0 +1,47 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.1.0-dev/ontology/>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX jsonschema: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+GENERATE {
+  GENERATE {
+    GENERATE <https://schema.ocsf.io/1.1.0-dev/type> ( ?type, ?typeIRI, ?typeKey ) .
+  } ITERATOR iter:JSONListKeys ( ?sourceTypes ) AS ?typeKey 
+  WHERE {
+    BIND( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?typeKey) AS ?typeIRI )
+    BIND( fun:JSONPath( ?sourceTypes, "$.['{ ?typeKey }']") AS ?type )
+    BIND(
+	 COALESCE(IF(?type = "object", jsonschema:ObjectSchema, 1/0),
+		  rdf:Property
+		  ) AS ?typeType
+	 )
+  } .
+  GENERATE {
+    GENERATE <https://schema.ocsf.io/1.1.0-dev/attribute> ( ?attribute, ?attributeIRI, ?attributeKey ) .
+  } ITERATOR iter:JSONListKeys ( ?sourceAttributes ) AS ?attributeKey 
+  WHERE {
+    BIND( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?attributeKey) AS ?attributeIRI )
+    BIND( fun:JSONPath( ?sourceAttributes, "$.['{ ?attributeKey }']") AS ?attribute )
+    BIND(
+	   COALESCE(IF(?type = "object", jsonschema:ObjectSchema, 1/0),
+		    rdf:Property
+		    ) AS ?attributeType
+	   )
+  } .
+} 
+
+ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/dictionary.json> , "$", "$.caption", "$.description", "$.name", "$.attributes", "$.types.attributes" ) 
+AS ?source ?sourceCaption ?sourceDescription ?sourceName ?sourceAttributes ?sourceTypes
+
+WHERE {
+
+}
+
+

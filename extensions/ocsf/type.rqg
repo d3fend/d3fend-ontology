@@ -1,0 +1,44 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.1.0-dev/ontology/>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX jsonschema: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+GENERATE <https://schema.ocsf.io/1.1.0-dev/type> ( ?source, ?typeIRI, ?typeKey ) {
+  ?typeIRI a rdfs:Datatype ;
+    rdfs:subClassOf ?supertype ;
+    rdfs:label ?caption ;
+    dcterms:description ?description ;
+    ocsf:observable ?observable ;
+    jsonschema:maxLength ?max_len ;
+    jsonschema:pattern ?regex ;
+    ocsf:range ?range .
+        
+}
+
+ITERATOR iter:JSONPath(?source, "$", "$.caption", "$.description", "$.observable", "$.type", "$.type_name", "$.max_len", "$.regex", "$.range") AS ?this ?caption ?description ?observable ?type ?type_name ?max_len ?regex ?range
+
+WHERE {
+  BIND (COALESCE(
+		 IF(?type = "string_t", xsd:string, 1/0),
+		 IF(?typeKey = "string_t", xsd:string, 1/0),
+		 IF(?type = "integer_t", xsd:integer, 1/0),
+		 IF(?typeKey = "integer_t", xsd:integer, 1/0),
+		 IF(?type = "float_t", xsd:decimal, 1/0),
+		 IF(?typeKey = "float_t", xsd:decimal, 1/0),
+		 IF(?type = "boolean_t", xsd:boolean, 1/0),
+		 IF(?typeKey = "boolean_t", xsd:boolean, 1/0),
+		 IF(?type = "long_t", xsd:long, 1/0),
+		 IF(?typeKey = "long_t", xsd:long, 1/0),
+		 IF(?type = "json_t", rdf:JSON, 1/0),
+		 IF(?typeKey = "json_t", rdf:JSON, 1/0),
+		 rdfs:Literal
+		 ) 
+	AS ?supertype)
+}

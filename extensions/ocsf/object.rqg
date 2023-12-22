@@ -1,0 +1,148 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.1.0-dev/ontology/>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX jsonschema: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+# {
+#     "$id": "https://schema.ocsf.io/object.schema.json",
+#     "$schema": "https://json-schema.org/draft/2020-12/schema",
+#     "title": "Object",
+#     "description": "An object is a collection of contextually related attributes, usually representing an entity, and may include other objects. Each object is also a data type in OCSF. Examples of object data types are Process, Device, User, Malware and File.",
+#     "type": "object",
+#     "anyOf": [
+#         {
+#             "required": [
+#                 "description",
+#                 "caption",
+#                 "name",
+#                 "attributes"
+#             ]
+#         },
+#         {
+#             "required": [
+#                 "extends"
+#             ]
+#         }
+#     ],
+#     "properties": {
+#         "@deprecated": {
+#             "$ref": "deprecated.schema.json"
+#         },
+#         "description": {
+#           "type": "string",
+#           "description": "A concise description of the object."
+#         },
+#         "caption": {
+#           "type": "string",
+#           "description": "A short, human friendly name for the object."
+#         },
+#         "name": {
+#           "type": "string",
+#           "description": "A name of the object. It must be a unique name. The name is all lower case letters, combine words using underscore.",
+#           "pattern": "^[a-z0-9_]*$"
+#         },
+#         "extends": {
+#             "type": "string",
+#             "description": "An object that this one extends from."
+#         },
+#         "observable": {
+#             "$ref": "observable.schema.json"
+#         },
+#         "constraints": {
+#             "type": "object",
+#             "description": "Constraints that apply to the attribute requirements.",
+#             "properties": {
+#                 "at_least_one": {
+#                     "type": "array",
+#                     "items": {"type": "string"}
+#                 },
+#                 "just_one": {
+#                     "type": "array",
+#                     "items": {"type": "string"}
+#                 }
+#             },
+#             "additionalProperties": false
+#         },
+#         "profiles": {
+#             "type": "array",
+#             "items": {"type": "string"},
+#             "description": "The list of profiles used to create the event."
+#         },
+#         "attributes": {
+#             "type": "object",
+#             "description": "A dictionary of attributes for the object.",
+#             "properties": {
+#                 "$include": {
+#                     "description": "A reference to another schema for attributes to include.",
+#                     "type": "array",
+#                     "items": {
+#                         "type": "string",
+#                         "format": "uri-reference"
+#                     }
+#                 }
+#             },
+#             "patternProperties": {
+#                 "^[a-z0-9_]*$": {
+#                     "$ref": "attribute.schema.json"
+#                 }
+#             },
+#             "additionalProperties": false
+#         }
+#     }
+# }
+
+GENERATE <https://schema.ocsf.io/1.1.0-dev/object> ( ?source ) {
+  ?this a owl:Class ;
+    rdfs:subClassOf ?extendsClass ;
+    rdfs:label ?caption ;
+    ocsf:name ?name ;
+    dcterms:description ?description ;
+    ocsf:observable ?observable ;
+    ocsf:constraints ?constraints ;
+    ocsf:profiles ?profiles .
+
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+			    owl:onProperty ?attribute ;
+			    ?restrictionP ?restrictionO ] .
+  } ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName 
+  WHERE {
+    BIND ( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?attributeName) AS ?attribute )
+    BIND(
+	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",owl:cardinality, 1/0),
+		  
+		  owl:someValuesFrom
+		  ) AS ?restrictionP
+	 )
+
+    ?attribute rdfs:range ?range .
+    BIND(
+	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",1, 1/0),
+		  IF(fun:JSONPath(?attributes, "$.{?attributeName}.type"),IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + fun:JSONPath(?attributes, "$.{?attributeName}.type")), 1/0),
+		  
+		  ?range
+		  ) AS ?restrictionO
+	 )
+  } .
+    
+}
+
+ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes") AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes
+
+WHERE {
+  BIND(
+       COALESCE(IF(BOUND(?caption),IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + fun:camelCase(?caption)), 1/0),
+		
+		IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + fun:camelCase(?name))
+		) AS ?this
+       )
+
+  ?extendsClass ocsf:name ?extends .
+}

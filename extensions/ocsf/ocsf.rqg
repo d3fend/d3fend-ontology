@@ -1,0 +1,53 @@
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX jsonschema: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+GENERATE {
+  ?versionURI a owl:Ontology ;
+    owl:imports <http://d3fend.mitre.org/ontologies/d3fend.owl> .
+
+  GENERATE {
+    # ?category a owl:Class ;
+    #   rdfs:label ?caption ;
+    #   rdfs:comment ?description ;
+    #   dcterms:identifier ?name ;
+    #   dcterms:isPartOf ?versionURI .
+
+    GENERATE {            
+      GENERATE {
+	?attributeURI a owl:DatatypeProperty .
+
+      } ITERATOR iter:JSONPath ( ?attribute , "$", "$.caption", "$.description", "$.uid" ) 
+      AS ?cat ?categoryCaption ?categoryDescription ?categoryUID 
+      WHERE {
+	BIND(IRI(CONCAT(?versionURI, "category/", ?name, "/attribute/", ?categoryUID)) AS ?attributeURI)
+      } .
+    } ITERATOR iter:JSONListKeys ( ?attribute ) AS ?attributeName .
+    
+  } ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/categories.json> , "$", "$.caption", "$.description", "$.attributes" ) 
+  AS ?category ?caption ?description ?attribute .
+
+  GENERATE {
+    ?attribute rdfs:label ?caption .
+
+  } ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/dictionary.json> , "$", "$.caption", "$.description", "$.attributes[*]" ) 
+  AS ?entry ?caption ?description ?attribute .
+
+} 
+
+
+
+SOURCE <https://github.com/ocsf/ocsf-schema/raw/main/version.json> 
+AS ?version
+
+WHERE {
+  BIND(URI(CONCAT("https://schema.ocsf.io/", fun:JSONPath(?version, "$.version"), "/ontology/")) AS ?versionURI)
+  BIND(<http://www.iana.org/assignments/media-types/application/json> AS ?json)
+}

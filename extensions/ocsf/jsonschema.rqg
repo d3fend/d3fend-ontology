@@ -1,0 +1,127 @@
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX jsonschema: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+# {
+#   "@context": {
+#     "@version": 1.1,
+#     "xsd": "http://www.w3.org/2001/XMLSchema#",
+#     "@vocab": "https://www.w3.org/2019/wot/json-schema#",
+#     "jsonschema": "https://www.w3.org/2019/wot/json-schema#",
+#     "dcterms": "http://purl.org/dc/terms/",
+#     "id": { "@id": "@id" },
+#     "type": { "@id": "@type" },
+#     "object": "ObjectSchema",
+#     "array": "ArraySchema",
+#     "boolean": "BooleanSchema",
+#     "string": "StringSchema",
+#     "number": "NumberSchema",
+#     "integer": "IntegerSchema",
+#     "null": "NullSchema",
+#     "properties": {
+#       "@container": "@index",
+#       "@index": "propertyName"
+#     },
+#     "items": { "@type": "@vocab" },
+#     "oneOf": { "@type": "@vocab", "@container": "@set" },
+#     "allOf": { "@type": "@vocab", "@container": "@set" },
+#     "anyOf": { "@type": "@vocab", "@container": "@set" },
+#     "minItems": { "@type": "xsd:nonNegativeInteger" },
+#     "maxItems": { "@type": "xsd:nonNegativeInteger" },
+#     "minimum": { "@type": "xsd:decimal" },
+#     "maximum": { "@type": "xsd:decimal" },
+#     "enum": { "@container": "@set", "@type": "@json" },
+#     "writeOnly": { "@type": "xsd:boolean" },
+#     "readOnly": { "@type": "xsd:boolean" },
+#     "format": { "@type": "xsd:string" },
+#     "required": { "@type": "xsd:string", "@container": "@set" },
+#     "title": { "@id": "dcterms:title", "@type": "xsd:string" },
+#     "description": { "@id": "dcterms:description", "@type": "xsd:string" }
+#   }
+# }
+
+GENERATE <https://www.w3.org/2019/wot/json-schema#> (?source) {
+
+  ?this a ?schemaClass ;
+    dcterms:title ?schemaTitle ;
+    dcterms:description ?schemaDescription .
+
+  GENERATE {
+    ?this jsonschema:properties ?definitionIRI .
+    GENERATE { 
+      ?definitionIRI a ?class ;
+      dcterms:title ?title ;
+      dcterms:description ?description ;
+      jsonschema:propertyName ?key ;
+      # jsonschema:properties ?properties ;
+      # jsonschema:required ?required ;
+      # jsonschema:additionalProperties ?additionalProperties ;
+      # jsonschema:writeOnly ?writeOnly ;
+      # jsonschema:readOnly ?readOnly ;
+      # jsonschema:format ?format ;
+      # jsonschema:oneOf ?oneOf ;
+      # jsonschema:allOf ?allOf ;
+      # jsonschema:anyOf ?anyOf ;
+      jsonschema:minItems ?minItems ;
+      jsonschema:maxItems ?maxItems ;
+      jsonschema:minimum ?minimum ;
+      jsonschema:maximum ?maximum ;
+      jsonschema:minLength ?minLength ;
+      jsonschema:pattern ?pattern ;
+      # jsonschema:enum ?enum ;
+      # jsonschema:items ?items ;
+      # jsonschema:$ref ?ref .
+    } 
+    ITERATOR iter:JSONPath ( ?definitions, "$.['{?key}']", "$.description", "$.type", "$.title", "$.properties", "$.required", "$.additionalProperties", "$.writeOnly", "$.readOnly", "$.format", "$.oneOf", "$.allOf", "$.anyOf", "$.minItems", "$.maxItems", "$.minimum", "$.maximum", "$.enum", "$.items", "$.$ref", "$.minLength", "$.pattern", "$.patternProperties" )
+    AS ?definition ?description ?type ?title ?properties ?required ?additionalProperties ?writeOnly ?readOnly ?format ?oneOf ?allOf ?anyOf ?minItems ?maxItems ?minimum ?maximum ?enum ?items ?ref ?minLength ?pattern ?patternProperties
+    WHERE {
+      BIND(
+	   COALESCE(
+		    IF(?type = "object", jsonschema:ObjectSchema, 1/0),
+		    IF(?type = "array", jsonschema:ArraySchema, 1/0),
+		    IF(?type = "boolean", jsonschema:BooleanSchema, 1/0),
+		    IF(?type = "string", jsonschema:StringSchema, 1/0),
+		    IF(?type = "number", jsonschema:NumberSchema, 1/0),
+		    IF(?type = "integer", jsonschema:IntegerSchema, 1/0),
+		    IF(?type = "null", jsonschema:NullSchema, 1/0),
+		    IF(BOUND(?ref), IRI("https://schema.ocsf.io/" + ?ref), 1/0),
+		    jsonschema:DataSchema
+		    ) AS ?class
+	   )
+    } .
+  }
+  ITERATOR iter:JSONListKeys( ?definitions ) as ?key
+  WHERE {
+    BIND( IRI(?id + '#' + ?key) as ?definitionIRI)
+  } .
+} 
+
+WHERE {
+  BIND (fun:JSONPath(?source, "$.$schema") AS ?schema)
+  BIND (fun:JSONPath(?source, "$.$id") AS ?id)
+  BIND (fun:JSONPath(?source, "$.type") AS ?schemaType)
+  BIND (fun:JSONPath(?source, "$.title") AS ?schemaTitle)
+  BIND (fun:JSONPath(?source, "$.description") AS ?schemaDescription)  
+  BIND (fun:JSONPath(?source, "$.required.[*]") AS ?schemaRequired)  
+  BIND (fun:JSONPath(?source, "$.properties") AS ?definitions)  
+  BIND(
+       COALESCE(
+		IF(?schemaType = "object", jsonschema:ObjectSchema, 1/0),
+		IF(?schemaType = "array", jsonschema:ArraySchema, 1/0),
+		IF(?schemaType = "boolean", jsonschema:BooleanSchema, 1/0),
+		IF(?schemaType = "string", jsonschema:StringSchema, 1/0),
+		IF(?schemaType = "number", jsonschema:NumberSchema, 1/0),
+		IF(?schemaType = "integer", jsonschema:IntegerSchema, 1/0),
+		IF(?schemaType = "null", jsonschema:NullSchema, 1/0),
+		jsonschema:DataSchema
+		) AS ?schemaClass
+       )
+
+  BIND (IRI(?id) as ?this)
+}

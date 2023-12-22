@@ -1,0 +1,1473 @@
+@prefix d3f:        <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+@prefix dcterms:    <http://purl.org/dc/terms/> .
+@prefix fun:        <http://w3id.org/sparql-generate/fn/> .
+@prefix iter:       <http://w3id.org/sparql-generate/iter/> .
+@prefix jsonschema: <https://www.w3.org/2019/wot/json-schema#> .
+@prefix ocsf:       <https://schema.ocsf.io/1.1.0-dev/ontology/> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+ocsf:APIActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "API Activity";
+        rdfs:subClassOf      "application";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "API events describe general CRUD (Create, Read, Update, Delete) API activities, e.g. (AWS Cloudtrail)";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\",\"description\":\"The API call in the event pertains to a \\u0027create\\u0027 activity.\"},\"2\":{\"caption\":\"Read\",\"description\":\"The API call in the event pertains to a \\u0027read\\u0027 activity.\"},\"3\":{\"caption\":\"Update\",\"description\":\"The API call in the event pertains to a \\u0027update\\u0027 activity.\"},\"4\":{\"caption\":\"Delete\",\"description\":\"The API call in the event pertains to a \\u0027delete\\u0027 activity.\"}}},\"api\":{\"group\":\"primary\",\"requirement\":\"required\"},\"dst_endpoint\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"http_request\":{\"description\":\"Details about the underlying http request.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"actor\":{\"group\":\"primary\",\"requirement\":\"required\"},\"resources\":{\"description\":\"Details about resources that were affected by the activity/event.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"src_endpoint\":{\"description\":\"Details about the source of the activity.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "api_activity";
+        ocsf:uid             3 .
+
+ocsf:FindingEvent  rdf:type  owl:Class;
+        rdfs:label           "Finding";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The Finding event is a generic event that defines a set of attributes available in the Findings category.";
+        ocsf:attributes      "{\"activity_name\":{\"description\":\"The finding activity name, as defined by the \\u003ccode\\u003eactivity_id\\u003c/code\\u003e.\"},\"activity_id\":{\"description\":\"The normalized identifier of the finding activity.\",\"enum\":{\"1\":{\"caption\":\"Create\",\"description\":\"A finding was created.\"},\"2\":{\"caption\":\"Update\",\"description\":\"A finding was updated.\"},\"3\":{\"caption\":\"Close\",\"description\":\"A finding was closed.\"}}},\"comment\":{\"description\":\"A user provided comment about the finding.\",\"group\":\"context\",\"requirement\":\"optional\"},\"confidence\":{\"group\":\"context\",\"requirement\":\"optional\"},\"confidence_id\":{\"group\":\"context\",\"requirement\":\"recommended\"},\"confidence_score\":{\"group\":\"context\",\"requirement\":\"optional\"},\"end_time\":{\"description\":\"The time of the most recent event included in the finding.\",\"requirement\":\"optional\"},\"finding_info\":{\"group\":\"primary\",\"requirement\":\"required\"},\"start_time\":{\"description\":\"The time of the least recent event included in the finding.\",\"requirement\":\"optional\"},\"status\":{\"description\":\"The normalized status of the Finding set by the consumer normalized to the caption of the status_id value. In the case of \\u0027Other\\u0027, it is defined by the source.\",\"group\":\"context\",\"requirement\":\"optional\"},\"status_id\":{\"description\":\"The normalized status identifier of the Finding, set by the consumer.\",\"group\":\"context\",\"requirement\":\"recommended\",\"enum\":{\"1\":{\"caption\":\"New\",\"description\":\"The Finding is new and yet to be reviewed.\"},\"2\":{\"caption\":\"In Progress\",\"description\":\"The Finding is under review.\"},\"3\":{\"caption\":\"Suppressed\",\"description\":\"The Finding was reviewed, determined to be benign or a false positive and is now suppressed.\"},\"4\":{\"caption\":\"Resolved\",\"description\":\"The Finding was reviewed, remediated and is now considered resolved.\"}}}}";
+        ocsf:category        "findings";
+        ocsf:name            "finding" .
+
+ocsf:SecurityFindingEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Security Finding";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Security Finding events describe findings, detections, anomalies, alerts and/or actions performed by security products";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\",\"description\":\"A security finding was created.\"},\"2\":{\"caption\":\"Update\",\"description\":\"A security finding was updated.\"},\"3\":{\"caption\":\"Close\",\"description\":\"A security finding was closed.\"}}},\"analytic\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"attacks\":{\"description\":\"The attack object describes the technique and associated tactics as defined by \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://attack.mitre.org/wiki/ATT\\u0026CK_Matrix\\u0027\\u003eATT\\u0026CK Matrix\\u003csup\\u003eTM\\u003c/sup\\u003e\\u003c/a\\u003e.\",\"group\":\"context\",\"requirement\":\"optional\"},\"cis_csc\":{\"group\":\"context\",\"requirement\":\"optional\"},\"compliance\":{\"group\":\"context\",\"requirement\":\"optional\"},\"confidence\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"confidence_id\":{\"group\":\"primary\",\"requirement\":\"recommended\",\"sibling\":\"confidence\"},\"confidence_score\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"data_sources\":{\"group\":\"context\",\"requirement\":\"optional\"},\"evidence\":{\"group\":\"context\",\"requirement\":\"optional\"},\"finding\":{\"group\":\"primary\",\"requirement\":\"required\"},\"impact\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"impact_id\":{\"group\":\"primary\",\"requirement\":\"recommended\",\"sibling\":\"impact\"},\"impact_score\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"kill_chain\":{\"group\":\"context\",\"requirement\":\"optional\"},\"malware\":{\"group\":\"context\",\"requirement\":\"optional\"},\"nist\":{\"group\":\"context\",\"requirement\":\"optional\"},\"process\":{\"group\":\"context\",\"requirement\":\"optional\"},\"resources\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"risk_level\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"risk_level_id\":{\"group\":\"primary\",\"requirement\":\"optional\",\"sibling\":\"risk_level\"},\"risk_score\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"state\":{\"description\":\"The normalized state of a security finding.\",\"group\":\"context\",\"requirement\":\"optional\"},\"state_id\":{\"description\":\"The normalized state identifier of a security finding.\",\"enum\":{\"1\":{\"caption\":\"New\",\"description\":\"The finding is new and yet to be reviewed.\"},\"2\":{\"caption\":\"In Progress\",\"description\":\"The finding is under review.\"},\"3\":{\"caption\":\"Suppressed\",\"description\":\"The finding was reviewed, considered as a false positive and is now suppressed.\"},\"4\":{\"caption\":\"Resolved\",\"description\":\"The finding was reviewed and remediated and is now considered resolved.\"}},\"group\":\"context\",\"requirement\":\"required\"},\"vulnerabilities\":{\"group\":\"context\",\"requirement\":\"optional\"}}";
+        ocsf:category        "findings";
+        ocsf:name            "security_finding";
+        ocsf:uid             1 .
+
+ocsf:IdentityAccessManagementEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Identity & Access Management";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The Identity & Access Management event is a generic event that defines a set of attributes available in the access control events. As a generic event, it could be used to log events that are not otherwise defined by the IAM category.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\"]}";
+        ocsf:category        "iam";
+        ocsf:name            "iam";
+        ocsf:profiles        "[\"host\"]" .
+
+ocsf:HTTPActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "HTTP Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "HTTP Activity events report HTTP connection and traffic information.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Connect\",\"description\":\"The CONNECT method establishes a tunnel to the server identified by the target resource.\"},\"2\":{\"caption\":\"Delete\",\"description\":\"The DELETE method deletes the specified resource.\"},\"3\":{\"caption\":\"Get\",\"description\":\"The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.\"},\"4\":{\"caption\":\"Head\",\"description\":\"The HEAD method asks for a response identical to a GET request, but without the response body.\"},\"5\":{\"caption\":\"Options\",\"description\":\"The OPTIONS method describes the communication options for the target resource.\"},\"6\":{\"caption\":\"Post\",\"description\":\"The POST method submits an entity to the specified resource, often causing a change in state or side effects on the server.\"},\"7\":{\"caption\":\"Put\",\"description\":\"The PUT method replaces all current representations of the target resource with the request payload.\"},\"8\":{\"caption\":\"Trace\",\"description\":\"The TRACE method performs a message loop-back test along the path to the target resource.\"}}},\"http_cookies\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"http_request\":{\"group\":\"primary\",\"requirement\":\"required\"},\"http_response\":{\"group\":\"primary\",\"requirement\":\"required\"},\"http_status\":{\"group\":\"primary\"}}";
+        ocsf:category        "network";
+        ocsf:name            "http_activity";
+        ocsf:uid             2 .
+
+ocsf:JobInfoEvent  rdf:type  owl:Class;
+        rdfs:label           "Job Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Job Info events report information about scheduled jobs.";
+        ocsf:attributes      "{\"job\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "job_info";
+        ocsf:uid             10 .
+
+ocsf:NetworkEvent  rdf:type  owl:Class;
+        rdfs:label           "Network";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Network event is a generic event that defines a set of attributes available in the Network category.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\",\"profiles/network_proxy.json\",\"profiles/security_control.json\"],\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Open\",\"description\":\"A new network connection was opened.\"},\"2\":{\"caption\":\"Close\",\"description\":\"The network connection was closed.\"},\"3\":{\"caption\":\"Reset\",\"description\":\"The network connection was abnormally terminated or closed by a middle device like firewalls.\"},\"4\":{\"caption\":\"Fail\",\"description\":\"The network connection failed. For example a connection timeout or no route to host.\"},\"5\":{\"caption\":\"Refuse\",\"description\":\"The network connection was refused. For example an attempt to connect to a server port which is not open.\"},\"6\":{\"caption\":\"Traffic\",\"description\":\"Network traffic report.\"}}},\"app_name\":{\"group\":\"context\",\"requirement\":\"optional\"},\"connection_info\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"dst_endpoint\":{\"description\":\"The responder (server) in a network connection.\",\"group\":\"primary\",\"requirement\":\"required\"},\"proxy\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"src_endpoint\":{\"description\":\"The initiator (client) of the network connection.\",\"group\":\"primary\",\"requirement\":\"required\"},\"tls\":{\"group\":\"primary\"},\"traffic\":{\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:category        "network";
+        ocsf:name            "network";
+        ocsf:profiles        "[\"host\",\"network_proxy\",\"security_control\"]" .
+
+ocsf:FTPActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "FTP Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "File Transfer Protocol (FTP) Activity events report file transfers between a server and a client as seen on the network.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Put\",\"description\":\"File upload to the FTP or SFTP site.\"},\"2\":{\"caption\":\"Get\",\"description\":\"File download from the FTP or SFTP site.\"},\"3\":{\"caption\":\"Poll\",\"description\":\"Poll directory for specific file(s) or folder(s) at the FTP or SFTP site location.\"},\"4\":{\"caption\":\"Delete\",\"description\":\"Delete file(s) from the FTP or SFTP site.\"},\"5\":{\"caption\":\"Rename\",\"description\":\"Rename the file(s) in the FTP or SFTP site.\"},\"6\":{\"caption\":\"List\",\"description\":\"List files in a specified directory.\"}}},\"codes\":{\"description\":\"The list of return codes to the FTP command.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"command\":{\"description\":\"The FTP command.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"command_responses\":{\"description\":\"The list of responses to the FTP command.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"name\":{\"description\":\"The name of the data affiliated with the command.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"port\":{\"description\":\"The dynamic port established for impending data transfers.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"type\":{\"description\":\"The type of FTP network connection (e.g. active, passive).\",\"group\":\"primary\",\"requirement\":\"recommended\"}}";
+        ocsf:name            "ftp_activity";
+        ocsf:uid             8 .
+
+ocsf:ComplianceFindingEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Compliance Finding";
+        rdfs:subClassOf      "finding";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Compliance Finding events describe results of evaluations performed against resources, to check compliance with various Industry Frameworks or Security Standards such as <code>NIST SP 800-53, CIS AWS Foundations Benchmark v1.4.0, ISO/IEC 27001</code> etc.";
+        ocsf:attributes      "{\"compliance\":{\"group\":\"primary\",\"requirement\":\"required\"},\"remediation\":{\"group\":\"context\",\"requirement\":\"recommended\"},\"resource\":{\"description\":\"Describes details about the resource that is the subject of the compliance check.\",\"group\":\"primary\",\"requirement\":\"recommended\"}}";
+        ocsf:category        "findings";
+        ocsf:name            "compliance_finding";
+        ocsf:uid             3 .
+
+ocsf:EntityManagementEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Entity Management";
+        rdfs:subClassOf      "iam";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Entity Management events report activity by a managed client, a micro service, or a user at a management console. The activity can be a create, read, update, and delete operation on a managed entity.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\"},\"2\":{\"caption\":\"Read\"},\"3\":{\"caption\":\"Update\"},\"4\":{\"caption\":\"Delete\"}}},\"actor\":{\"description\":\"Use for when the entity acting upon another entity is a process or user.\",\"group\":\"context\"},\"comment\":{\"description\":\"The user provided comment about why the entity was changed.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"entity\":{\"group\":\"primary\",\"requirement\":\"required\"},\"entity_result\":{\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:name            "entity_management";
+        ocsf:uid             4 .
+
+ocsf:WebResourceAccessActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Web Resource Access Activity";
+        rdfs:subClassOf      "application";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Web Resource Access Activity events describe successful/failed attempts to access a web resource over HTTP.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\",\"profiles/network_proxy.json\"],\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Access Grant\",\"description\":\"The incoming request has permission to the web resource.\"},\"2\":{\"caption\":\"Access Deny\",\"description\":\"The incoming request does not have permission to the web resource.\"},\"3\":{\"caption\":\"Access Revoke\",\"description\":\"The incoming request\\u0027s access has been revoked due to security policy enforcements.\"},\"4\":{\"caption\":\"Access Error\",\"description\":\"An error occurred during processing the request.\"}}},\"http_request\":{\"description\":\"Details about the underlying HTTP request.\",\"group\":\"context\",\"requirement\":\"required\"},\"http_response\":{\"description\":\"Details about the HTTP response, if available.\",\"group\":\"context\",\"requirement\":\"optional\"},\"proxy\":{\"description\":\"Details about the proxy service, if available.\",\"group\":\"context\",\"requirement\":\"optional\"},\"web_resources\":{\"description\":\"Details about the resource that is the target of the activity.\",\"group\":\"primary\",\"requirement\":\"required\"},\"src_endpoint\":{\"description\":\"Details about the source endpoint of the request.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"tls\":{\"description\":\"The Transport Layer Security (TLS) attributes, if available.\",\"group\":\"context\",\"requirement\":\"optional\"}}";
+        ocsf:category        "application";
+        ocsf:name            "web_resource_access_activity";
+        ocsf:profiles        "[\"host\",\"network_proxy\"]";
+        ocsf:uid             4 .
+
+ocsf:ModuleInfoEvent  rdf:type  owl:Class;
+        rdfs:label           "Module Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Module Info events report information about loaded modules.";
+        ocsf:attributes      "{\"module\":{\"group\":\"primary\",\"requirement\":\"required\"},\"process\":{\"description\":\"The process that loaded the module.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "module_info";
+        ocsf:uid             11 .
+
+ocsf:DNSActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "DNS Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "DNS Activity events report DNS queries and answers as seen on the network.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Query\",\"description\":\"The DNS query request.\"},\"2\":{\"caption\":\"Response\",\"description\":\"The DNS query response.\"}}},\"answers\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"connection_info\":{\"group\":\"context\",\"requirement\":\"optional\"},\"query\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"query_time\":{\"group\":\"occurrence\",\"requirement\":\"recommended\"},\"rcode\":{\"description\":\"The DNS server response code, normalized to the caption of the rcode_id value. In the case of \\u0027Other\\u0027, it is defined by the event source.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"rcode_id\":{\"caption\":\"Response Code ID\",\"description\":\"The normalized identifier of the DNS server response code. See \\u003ca target\\u003d\\u0027_blank\\u0027 href\\u003d\\u0027https://datatracker.ietf.org/doc/html/rfc6895\\u0027\\u003eRFC-6895\\u003c/a\\u003e.\",\"group\":\"primary\",\"requirement\":\"optional\",\"enum\":{\"0\":{\"caption\":\"NoError\",\"description\":\"No Error.\"},\"1\":{\"caption\":\"FormError\",\"description\":\"Format Error.\"},\"2\":{\"caption\":\"ServError\",\"description\":\"Server Failure.\"},\"3\":{\"caption\":\"NXDomain\",\"description\":\"Non-Existent Domain.\"},\"4\":{\"caption\":\"NotImp\",\"description\":\"Not Implemented.\"},\"5\":{\"caption\":\"Refused\",\"description\":\"Query Refused.\"},\"6\":{\"caption\":\"YXDomain\",\"description\":\"Name Exists when it should not.\"},\"7\":{\"caption\":\"YXRRSet\",\"description\":\"RR Set Exists when it should not.\"},\"8\":{\"caption\":\"NXRRSet\",\"description\":\"RR Set that should exist does not.\"},\"9\":{\"caption\":\"NotAuth\",\"description\":\"Not Authorized or Server Not Authoritative for zone.\"},\"10\":{\"caption\":\"NotZone\",\"description\":\"Name not contained in zone.\"},\"11\":{\"caption\":\"DSOTYPENI\",\"description\":\"DSO-TYPE Not Implemented.\"},\"16\":{\"caption\":\"BADSIG_VERS\",\"description\":\"TSIG Signature Failure or Bad OPT Version.\"},\"17\":{\"caption\":\"BADKEY\",\"description\":\"Key not recognized.\"},\"18\":{\"caption\":\"BADTIME\",\"description\":\"Signature out of time window.\"},\"19\":{\"caption\":\"BADMODE\",\"description\":\"Bad TKEY Mode.\"},\"20\":{\"caption\":\"BADNAME\",\"description\":\"Duplicate key name.\"},\"21\":{\"caption\":\"BADALG\",\"description\":\"Algorithm not supported.\"},\"22\":{\"caption\":\"BADTRUNC\",\"description\":\"Bad Truncation.\"},\"23\":{\"caption\":\"BADCOOKIE\",\"description\":\"Bad/missing Server Cookie.\"},\"24\":{\"caption\":\"Unassigned\",\"description\":\"The codes deemed to be unassigned by the RFC (unassigned codes: 12-15, 24-3840, 4096-65534).\"},\"25\":{\"caption\":\"Reserved\",\"description\":\"The codes deemed to be reserved by the RFC (codes: 3841-4095, 65535).\"},\"99\":{\"caption\":\"Other\",\"description\":\"The dns response code is not defined by the RFC.\"}}},\"response_time\":{\"group\":\"occurrence\",\"requirement\":\"recommended\"},\"traffic\":{\"group\":\"context\",\"requirement\":\"optional\"}}";
+        ocsf:name            "dns_activity";
+        ocsf:uid             3 .
+
+ocsf:ScheduledJobActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Scheduled Job Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Scheduled Job Activity events report activities related to scheduled jobs or tasks.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\"},\"2\":{\"caption\":\"Update\"},\"3\":{\"caption\":\"Delete\"},\"4\":{\"caption\":\"Enable\"},\"5\":{\"caption\":\"Disable\"},\"6\":{\"caption\":\"Start\"}}},\"actor\":{\"description\":\"The actor that performed the activity on the \\u003ccode\\u003ejob\\u003c/code\\u003e object.\",\"requirement\":\"optional\"},\"job\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "scheduled_job_activity";
+        ocsf:uid             6 .
+
+ocsf:SSHActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "SSH Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "SSH Activity events report remote client connections to a server using the Secure Shell (SSH) Protocol.";
+        ocsf:attributes      "{\"auth_type\":{\"description\":\"The SSH authentication type, normalized to the caption of \\u0027auth_type_id\\u0027. In the case of \\u0027Other\\u0027, it is defined by the event source.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"auth_type_id\":{\"description\":\"The normalized identifier of the SSH authentication type.\",\"enum\":{\"99\":{\"caption\":\"Other\"},\"0\":{\"caption\":\"Unknown\"},\"1\":{\"caption\":\"Certificate Based\",\"description\":\"Authentication using digital certificates.\"},\"2\":{\"caption\":\"GSSAPI\",\"description\":\"GSSAPI for centralized authentication.\"},\"3\":{\"caption\":\"Host Based\",\"description\":\"Authentication based on the client host\\u0027s identity.\"},\"4\":{\"caption\":\"Keyboard Interactive\",\"description\":\"Multi-step, interactive authentication.\"},\"5\":{\"caption\":\"Password\",\"description\":\"Password Authentication.\"},\"6\":{\"caption\":\"Public Key\",\"description\":\"Paired public key authentication.\"}},\"group\":\"primary\",\"requirement\":\"recommended\"},\"client_hassh\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"protocol_ver\":{\"caption\":\"SSH Version\",\"description\":\"The Secure Shell Protocol version.\",\"group\":\"context\",\"requirement\":\"recommended\"},\"server_hassh\":{\"group\":\"primary\",\"requirement\":\"recommended\"}}";
+        ocsf:name            "ssh_activity";
+        ocsf:uid             7 .
+
+ocsf:RDPActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "RDP Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Remote Desktop Protocol (RDP) Activity events report remote client connections to a server as seen on the network.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Initial Request\",\"description\":\"The initial RDP request.\"},\"2\":{\"caption\":\"Initial Response\",\"description\":\"The initial RDP response.\"},\"3\":{\"caption\":\"Connect Request\",\"description\":\"An RDP connection request.\"},\"4\":{\"caption\":\"Connect Response\",\"description\":\"An RDP connection response.\"},\"5\":{\"caption\":\"TLS Handshake\",\"description\":\"The TLS handshake.\"},\"6\":{\"caption\":\"Traffic\",\"description\":\"Network traffic report.\"}}},\"capabilities\":{\"requirement\":\"optional\"},\"certificate_chain\":{\"description\":\"The list of observed certificates in an RDP TLS connection.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"device\":{\"description\":\"The device instigating the RDP connection.\",\"requirement\":\"optional\"},\"identifier_cookie\":{\"group\":\"context\",\"requirement\":\"optional\"},\"protocol_ver\":{\"caption\":\"RDP Version\",\"description\":\"The Remote Desktop Protocol version.\",\"group\":\"context\",\"requirement\":\"recommended\"},\"remote_display\":{\"requirement\":\"optional\"},\"request\":{\"description\":\"The client request in an RDP network connection.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"response\":{\"description\":\"The server response in an RDP network connection.\",\"group\":\"primary\",\"requirement\":\"recommended\"}}";
+        ocsf:name            "rdp_activity";
+        ocsf:uid             5 .
+
+ocsf:AccountChangeEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Account Change";
+        rdfs:subClassOf      "iam";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Account Change events report when specific user account management tasks are performed, such as a user/role being created, changed, deleted, renamed, disabled, enabled, locked out or unlocked.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\",\"description\":\"A user/role was created.\"},\"2\":{\"caption\":\"Enable\",\"description\":\"A user/role was enabled.\"},\"3\":{\"caption\":\"Password Change\",\"description\":\"An attempt was made to change an account\\u0027s password.\"},\"4\":{\"caption\":\"Password Reset\",\"description\":\"An attempt was made to reset an account\\u0027s password.\"},\"5\":{\"caption\":\"Disable\",\"description\":\"A user/role was disabled.\"},\"6\":{\"caption\":\"Delete\",\"description\":\"A user/role was deleted.\"},\"7\":{\"caption\":\"Attach Policy\",\"description\":\"An IAM Policy was attached to a user/role.\"},\"8\":{\"caption\":\"Detach Policy\",\"description\":\"An IAM Policy was detached from a user/role.\"},\"9\":{\"caption\":\"Lock\",\"description\":\"A user account was locked out.\"},\"10\":{\"caption\":\"MFA Factor Enable\",\"description\":\"An authentication factor was enabled for an account.\"},\"11\":{\"caption\":\"MFA Factor Disable\",\"description\":\"An authentication factor was disabled for an account.\"}}},\"actor\":{\"group\":\"context\",\"requirement\":\"recommended\"},\"http_request\":{\"description\":\"Details about the underlying http request.\",\"group\":\"context\",\"requirement\":\"optional\"},\"policy\":{\"description\":\"Details about the IAM policy associated to the Attach/Detach Policy activities.\",\"group\":\"context\",\"requirement\":\"optional\"},\"src_endpoint\":{\"description\":\"Details about the source of the activity.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"user\":{\"description\":\"The user that was a target of an activity.\",\"group\":\"primary\",\"requirement\":\"required\"},\"user_result\":{\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:name            "account_change";
+        ocsf:uid             1 .
+
+ocsf:VulnerabilityFindingEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Vulnerability Finding";
+        rdfs:subClassOf      "finding";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The Vulnerability Finding event is a notification about weakness in an information system, system security procedures, internal controls, or implementation that could be exploited or triggered by a threat source.";
+        ocsf:attributes      "{\"device\":{\"description\":\"The device where the vulnerabilities were discovered.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"resource\":{\"description\":\"Describes details about the resource that is affected by the vulnerability/vulnerabilities.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"vulnerabilities\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "vulnerability_finding";
+        ocsf:uid             2 .
+
+ocsf:NetworkActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Network Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Network Activity events report network connection and traffic activity.";
+        ocsf:attributes      "{\"url\":{\"description\":\"The URL details relevant to the network traffic.\",\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:category        "network";
+        ocsf:name            "network_activity";
+        ocsf:uid             1 .
+
+ocsf:KernelExtensionActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Kernel Extension Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Kernel Extension events report when a driver/extension is loaded or unloaded into the kernel";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Load\",\"description\":\"A driver/extension was loaded into the kernel\"},\"2\":{\"caption\":\"Unload\",\"description\":\"A driver/extension was unloaded (removed) from the kernel\"}}},\"actor\":{\"description\":\"The actor process that loaded or unloaded the driver/extension.\",\"requirement\":\"required\"},\"driver\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "kernel_extension";
+        ocsf:uid             2 .
+
+ocsf:DeviceInventoryInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Device Inventory Info";
+        rdfs:subClassOf      "discovery";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Device Inventory Info events report device inventory data.";
+        ocsf:attributes      "{\"actor\":{\"group\":\"context\",\"requirement\":\"optional\"},\"device\":{\"group\":\"primary\",\"requirement\":\"required\",\"description\":\"The device that is being discovered by an inventory process.\"}}";
+        ocsf:name            "inventory_info";
+        ocsf:profiles        "[\"host\"]";
+        ocsf:uid             1 .
+
+ocsf:BaseEvent  rdf:type  owl:Class;
+        rdfs:label           "Base Event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The base event is a generic and concrete event. It also defines a set of attributes available in most event classes. As a generic event that does not belong to any event category, it could be used to log events that are not otherwise defined by the schema.";
+        ocsf:attributes      "{\"$include\":[\"includes/classification.json\",\"includes/occurrence.json\",\"profiles/cloud.json\",\"profiles/datetime.json\"],\"enrichments\":{\"group\":\"context\",\"requirement\":\"optional\"},\"message\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"metadata\":{\"group\":\"context\",\"requirement\":\"required\"},\"observables\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"raw_data\":{\"group\":\"context\",\"requirement\":\"optional\"},\"severity\":{\"group\":\"classification\",\"requirement\":\"optional\"},\"severity_id\":{\"group\":\"classification\",\"requirement\":\"required\"},\"status\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"status_code\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"status_detail\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"status_id\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"unmapped\":{\"group\":\"context\",\"requirement\":\"optional\"}}";
+        ocsf:category        "other";
+        ocsf:name            "base_event";
+        ocsf:profiles        "[\"cloud\",\"datetime\"]" .
+
+ocsf:EmailFileActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Email File Activity";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Email File Activity events report files within emails.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\",\"profiles/security_control.json\"],\"activity_id\":{\"requirement\":\"optional\",\"enum\":{\"1\":{\"caption\":\"Send\"},\"2\":{\"caption\":\"Receive\"},\"3\":{\"caption\":\"Scan\",\"description\":\"Email file being scanned (example: security scanning).\"}}},\"email_uid\":{\"requirement\":\"required\",\"group\":\"primary\"},\"file\":{\"description\":\"The email file attachment.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:category        "network";
+        ocsf:name            "email_file_activity";
+        ocsf:profiles        "[\"host\",\"security_control\"]";
+        ocsf:uid             11 .
+
+ocsf:ServiceInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Service Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Service Info events report information about running services.";
+        ocsf:attributes      "{\"service\":{\"requirement\":\"required\",\"group\":\"primary\"}}";
+        ocsf:name            "service_info";
+        ocsf:uid             16 .
+
+ocsf:DeviceConfigStateEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Device Config State";
+        rdfs:subClassOf      "discovery";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Device Config State events report device configuration data.";
+        ocsf:attributes      "{\"actor\":{\"group\":\"context\",\"requirement\":\"optional\"},\"device\":{\"group\":\"primary\",\"requirement\":\"required\",\"description\":\"The device that is being discovered by an inventory process.\"},\"cis_benchmark_result\":{\"group\":\"primary\"}}";
+        ocsf:name            "config_state";
+        ocsf:profiles        "[\"host\"]";
+        ocsf:uid             2 .
+
+ocsf:KernelObjectInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Kernel Object Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Kernel Object Info events report information about discovered kernel resources.";
+        ocsf:attributes      "{\"kernel\":{\"description\":\"The kernel object that pertains to the event.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "kernel_object_info";
+        ocsf:uid             6 .
+
+ocsf:AuthorizeSessionEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Authorize Session";
+        rdfs:subClassOf      "iam";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Authorize Session events report privileges or groups assigned to a new user session, usually at login time.";
+        ocsf:associations    "{\"session\":[\"user\"],\"user\":[\"session\"]}";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"description\":\"Assign special privileges to a new logon.\",\"caption\":\"Assign Privileges\"},\"2\":{\"description\":\"Assign special groups to a new logon.\",\"caption\":\"Assign Groups\"},\"3\":{\"description\":\"Start a new session.\",\"caption\":\"Start Session\"},\"4\":{\"description\":\"End a session.\",\"caption\":\"End Session\"}}},\"dst_endpoint\":{\"description\":\"The Endpoint for which the user session was targeted.\",\"group\":\"context\",\"requirement\":\"optional\"},\"group\":{\"description\":\"Group that was assigned to the new user session.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"privileges\":{\"description\":\"The list of sensitive privileges, assigned to the new user session.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"session\":{\"description\":\"The user session with the assigned privileges.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"user\":{\"description\":\"The user to which new privileges were assigned.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:constraints     "{\"just_one\":[\"privileges\",\"group\"]}";
+        ocsf:name            "authorize_session";
+        ocsf:uid             3 .
+
+ocsf:FileInfoEvent  rdf:type  owl:Class;
+        rdfs:label           "File Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "File Info events report information about files that are present on the system.";
+        ocsf:attributes      "{\"file\":{\"description\":\"The file that is the target of the query.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "file_info";
+        ocsf:uid             7 .
+
+ocsf:AuthenticationEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Authentication";
+        rdfs:subClassOf      "iam";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Authentication events report authentication session activities such as user attempts a logon or logoff, successfully or otherwise.";
+        ocsf:associations    "{\"actor.user\":[\"src_endpoint\"],\"dst_endpoint\":[\"user\"],\"src_endpoint\":[\"actor.user\"],\"user\":[\"dst_endpoint\"]}";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Logon\",\"description\":\"A new logon session was requested.\"},\"2\":{\"caption\":\"Logoff\",\"description\":\"A logon session was terminated and no longer exists.\"},\"3\":{\"caption\":\"Authentication Ticket\",\"description\":\"A Kerberos authentication ticket (TGT) was requested.\"},\"4\":{\"caption\":\"Service Ticket Request\",\"description\":\"A Kerberos service ticket was requested.\"},\"5\":{\"caption\":\"Service Ticket Renew\",\"description\":\"A Kerberos service ticket was renewed.\"}}},\"actor\":{\"description\":\"The actor that requested the authentication.\",\"group\":\"context\"},\"auth_protocol\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"auth_protocol_id\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"certificate\":{\"description\":\"The certificate associated with the authentication or pre-authentication (Kerberos).\",\"group\":\"primary\",\"requirement\":\"optional\"},\"dst_endpoint\":{\"description\":\"The endpoint to which the authentication was targeted.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"http_request\":{\"description\":\"Details about the underlying http request.\",\"group\":\"context\",\"requirement\":\"optional\"},\"is_cleartext\":{\"group\":\"context\",\"requirement\":\"optional\"},\"is_mfa\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"is_new_logon\":{\"group\":\"context\",\"requirement\":\"optional\"},\"is_remote\":{\"group\":\"primary\",\"requirement\":\"recommended\",\"description\":\"The attempted authentication is over a remote connection.\"},\"logon_process\":{\"group\":\"context\"},\"logon_type\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"logon_type_id\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"service\":{\"description\":\"The service or gateway to which the user or process is being authenticated\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"session\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"src_endpoint\":{\"description\":\"The Endpoint from which the authentication was requested.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"status_detail\":{\"description\":\"The details about the authentication request. For example, possible details for Windows logon or logoff events are:\\u003cul\\u003e\\u003cli\\u003eSuccess\\u003c/li\\u003e\\u003cul\\u003e\\u003cli\\u003eLOGOFF_USER_INITIATED\\u003c/li\\u003e\\u003cli\\u003eLOGOFF_OTHER\\u003c/li\\u003e\\u003c/ul\\u003e\\u003cli\\u003eFailure\\u003c/li\\u003e\\u003cul\\u003e\\u003cli\\u003eUSER_DOES_NOT_EXIST\\u003c/li\\u003e\\u003cli\\u003eINVALID_CREDENTIALS\\u003c/li\\u003e\\u003cli\\u003eACCOUNT_DISABLED\\u003c/li\\u003e\\u003cli\\u003eACCOUNT_LOCKED_OUT\\u003c/li\\u003e\\u003cli\\u003ePASSWORD_EXPIRED\\u003c/li\\u003e\\u003c/ul\\u003e\\u003c/ul\\u003e\"},\"user\":{\"description\":\"The subject (user/role or account) to authenticate.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:constraints     "{\"at_least_one\":[\"service\",\"dst_endpoint\"]}";
+        ocsf:name            "authentication";
+        ocsf:uid             2 .
+
+ocsf:UserInfoEvent  rdf:type  owl:Class;
+        rdfs:label           "User Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "User Info events report user data that have been discovered, queried, polled or searched. This event differs from User Inventory as it describes the result of a targeted search by filtering a subset of user attributes.";
+        ocsf:attributes      "{\"user\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "user_info";
+        ocsf:uid             18 .
+
+ocsf:FolderInfoEvent  rdf:type  owl:Class;
+        rdfs:label           "Folder Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Folder Info events report information about folders that are present on the system.";
+        ocsf:attributes      "{\"folder\":{\"description\":\"The folder that is the target of the query.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "folder_info";
+        ocsf:uid             8 .
+
+ocsf:NetworkFileActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Network File Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Network File Activity events report file activities traversing the network, including file storage services such as Box, MS OneDrive, or Google Drive.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Upload\",\"description\":\"Upload a file.\"},\"2\":{\"caption\":\"Download\",\"description\":\"Download a file.\"},\"3\":{\"caption\":\"Update\",\"description\":\"Update a file.\"},\"4\":{\"caption\":\"Delete\",\"description\":\"Delete a file.\"},\"5\":{\"caption\":\"Rename\",\"description\":\"Rename a file.\"},\"6\":{\"caption\":\"Copy\",\"description\":\"Copy a file.\"},\"7\":{\"caption\":\"Move\",\"description\":\"Move a file.\"},\"8\":{\"caption\":\"Restore\",\"description\":\"Restore a file.\"},\"9\":{\"caption\":\"Preview\",\"description\":\"Preview a file.\"},\"10\":{\"caption\":\"Lock\",\"description\":\"Lock a file.\"},\"11\":{\"caption\":\"Unlock\",\"description\":\"Unlock a file.\"},\"12\":{\"caption\":\"Share\",\"description\":\"Share a file.\"},\"13\":{\"caption\":\"Unshare\",\"description\":\"Unshare a file.\"},\"14\":{\"caption\":\"Open\",\"description\":\"Open a file.\"},\"15\":{\"caption\":\"Sync\",\"description\":\"Mark a file or folder to sync with a computer.\"},\"16\":{\"caption\":\"Unsync\",\"description\":\"Mark a file or folder to not sync with a computer.\"}}},\"actor\":{\"description\":\"The actor that performed the activity on the target file.\",\"group\":\"primary\",\"requirement\":\"required\"},\"connection_info\":{\"requirement\":\"optional\"},\"dst_endpoint\":{\"description\":\"The endpoint that received the activity on the target file.\",\"requirement\":\"recommended\"},\"expiration_time\":{\"description\":\"The share expiration time.\",\"group\":\"context\",\"requirement\":\"optional\"},\"file\":{\"description\":\"The file that is the target of the activity.\",\"group\":\"primary\",\"requirement\":\"required\"},\"src_endpoint\":{\"description\":\"The endpoint that performed the activity on the target file.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:category        "network";
+        ocsf:name            "network_file_activity";
+        ocsf:uid             10 .
+
+ocsf:SystemActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "System Activity";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The System Activity event is a generic event that defines a set of attributes available in the system activity events. As a generic event, it could be used to log events that are not otherwise defined by the System Activity category.";
+        ocsf:associations    "{\"device\":[\"actor.user\"],\"actor.user\":[\"device\"]}";
+        ocsf:attributes      "{\"$include\":[\"profiles/security_control.json\"],\"actor\":{\"group\":\"primary\",\"requirement\":\"required\"},\"device\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:category        "system";
+        ocsf:name            "system";
+        ocsf:profiles        "[\"host\",\"security_control\"]" .
+
+ocsf:FileSystemActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "File System Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "File System Activity events report when a process performs an action on a file or folder.";
+        ocsf:attributes      "{\"access_mask\":{\"group\":\"context\",\"requirement\":\"optional\"},\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\",\"description\":\"A request to create a new file on a file system.\"},\"2\":{\"caption\":\"Read\",\"description\":\"A request to read data from a file on a file system.\"},\"3\":{\"caption\":\"Update\",\"description\":\"A request to write data to a file on a file system.\"},\"4\":{\"caption\":\"Delete\",\"description\":\"A request to delete a file on a file system.\"},\"5\":{\"caption\":\"Rename\",\"description\":\"A request to rename a file on a file system.\"},\"6\":{\"caption\":\"Set Attributes\",\"description\":\"A request to set attributes for a file on a file system.\"},\"7\":{\"caption\":\"Set Security\",\"description\":\"A request to set security for a file on a file system.\"},\"8\":{\"caption\":\"Get Attributes\",\"description\":\"A request to get attributes for a file on a file system.\"},\"9\":{\"caption\":\"Get Security\",\"description\":\"A request to get security for a file on a file system.\"},\"10\":{\"caption\":\"Encrypt\",\"description\":\"A request to encrypt a file on a file system.\"},\"11\":{\"caption\":\"Decrypt\",\"description\":\"A request to decrypt a file on a file system.\"},\"12\":{\"caption\":\"Mount\",\"description\":\"A request to mount a file on a file system.\"},\"13\":{\"caption\":\"Unmount\",\"description\":\"A request to unmount a file from a file system.\"},\"14\":{\"caption\":\"Open\",\"description\":\"A request to create a file handle.\"}}},\"actor\":{\"description\":\"The actor that performed the activity on the \\u003ccode\\u003efile\\u003c/code\\u003e object\",\"requirement\":\"required\"},\"component\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"connection_uid\":{\"group\":\"context\",\"requirement\":\"optional\"},\"create_mask\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"file\":{\"description\":\"The file that is the target of the activity.\",\"group\":\"primary\",\"requirement\":\"required\"},\"file_diff\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"file_result\":{\"description\":\"The resulting file object when the activity was allowed and successful.\",\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:name            "file_activity";
+        ocsf:uid             1 .
+
+ocsf:ApplicationActivityEvent
+        rdf:type         owl:Class;
+        rdfs:label       "Application Activity";
+        rdfs:subClassOf  "base_event";
+        rdfs:subClassOf  d3f:DigitalEvent;
+        ocsf:attributes  "{}";
+        ocsf:category    "application";
+        ocsf:name        "application" .
+
+ocsf:ModuleActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Module Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Module  Activity events report when a process loads or unloads the <code>module</code>.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Load\"},\"2\":{\"caption\":\"Unload\"}}},\"actor\":{\"description\":\"The actor that loaded or unloaded the \\u003ccode\\u003emodule\\u003c/code\\u003e.\",\"requirement\":\"required\"},\"module\":{\"description\":\"The module that was loaded or unloaded.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "module_activity";
+        ocsf:uid             5 .
+
+ocsf:KernelActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Kernel Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Kernel Activity events report when an process creates, reads, or deletes a kernel resource.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\"},\"2\":{\"caption\":\"Read\"},\"3\":{\"caption\":\"Delete\"},\"4\":{\"caption\":\"Invoke\"}}},\"kernel\":{\"description\":\"The target kernel resource.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "kernel_activity";
+        ocsf:uid             3 .
+
+ocsf:AdminGroupInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Admin Group Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Group Info events report information about administrative groups.";
+        ocsf:attributes      "{\"group\":{\"description\":\"The administrative group.\",\"group\":\"primary\",\"requirement\":\"required\"},\"users\":{\"description\":\"The users that belong to the administrative group.\",\"group\":\"primary\",\"requirement\":\"recommended\"}}";
+        ocsf:name            "admin_group_info";
+        ocsf:uid             9 .
+
+ocsf:NetworksInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Networks Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Networks Info events report information about network adapters.";
+        ocsf:attributes      "{\"network_interfaces\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "networks_info";
+        ocsf:uid             13 .
+
+ocsf:ProcessActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Process Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Process Activity events report when a process launches, injects, opens or terminates another process, successful or otherwise.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Launch\"},\"2\":{\"caption\":\"Terminate\"},\"3\":{\"caption\":\"Open\"},\"4\":{\"caption\":\"Inject\"},\"5\":{\"caption\":\"Set User ID\"}}},\"actor\":{\"description\":\"The actor that performed the activity on the target \\u003ccode\\u003eprocess\\u003c/code\\u003e. For example, the process that started a new process or injected code into another process.\"},\"actual_permissions\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"exit_code\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"injection_type\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"injection_type_id\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"module\":{\"description\":\"The module that was injected by the actor process.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"process\":{\"description\":\"The process that was launched, injected into, opened, or terminated.\",\"group\":\"primary\",\"requirement\":\"required\"},\"requested_permissions\":{\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:name            "process_activity";
+        ocsf:uid             7 .
+
+ocsf:DHCPActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "DHCP Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "DHCP Activity events report MAC to IP assignment via DHCP from a client or server.";
+        ocsf:attributes      "{\"$include\":[\"profiles/cloud.json\",\"profiles/host.json\"],\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Discover\",\"description\":\"DHCPDISCOVER\"},\"2\":{\"caption\":\"Offer\",\"description\":\"DHCPOFFER\"},\"3\":{\"caption\":\"Request\",\"description\":\"DHCPREQUEST\"},\"4\":{\"caption\":\"Decline\",\"description\":\"DHCPDECLINE\"},\"5\":{\"caption\":\"Ack\",\"description\":\"DHCPACK: The server accepts the request by sending the client a DHCP Acknowledgment message.\"},\"6\":{\"caption\":\"Nak\",\"description\":\"DHCPNAK\"},\"7\":{\"caption\":\"Release\",\"description\":\"DHCPRELEASE: A DHCP client sends a DHCPRELEASE packet to the server to release the IP address and cancel any remaining lease.\"},\"8\":{\"caption\":\"Inform\",\"description\":\"DHCPINFORM\"},\"9\":{\"caption\":\"Expire\",\"description\":\"DHCPEXPIRE: A DHCP lease expired.\"}},\"requirement\":\"required\"},\"dst_endpoint\":{\"description\":\"The responder (server) of the DHCP connection.\",\"requirement\":\"recommended\",\"group\":\"primary\"},\"is_renewal\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"lease_dur\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"src_endpoint\":{\"description\":\"The initiator (client) of the DHCP connection.\",\"requirement\":\"recommended\",\"group\":\"primary\"},\"relay\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"transaction_uid\":{\"description\":\"The unique identifier of the transaction. This is typically a random number generated from the client to associate a dhcp request/response pair.\",\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:category        "network";
+        ocsf:name            "dhcp_activity";
+        ocsf:profiles        "[\"host\"]";
+        ocsf:uid             4 .
+
+ocsf:DetectionFindingEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Detection Finding";
+        rdfs:subClassOf      "finding";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "A Detection Finding describes detections or alerts generated by security products using correlation engines, detection engines or other methodologies.";
+        ocsf:attributes      "{\"evidences\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"impact\":{\"group\":\"context\",\"requirement\":\"optional\"},\"impact_id\":{\"group\":\"context\",\"requirement\":\"optional\"},\"impact_score\":{\"group\":\"context\",\"requirement\":\"optional\"},\"malware\":{\"group\":\"context\",\"requirement\":\"optional\"},\"remediation\":{\"group\":\"context\",\"requirement\":\"optional\"},\"resources\":{\"caption\":\"Affected Resources\",\"description\":\"Describes details about resources that were the target of the activity that triggered the finding.\",\"group\":\"context\",\"requirement\":\"recommended\"},\"risk_level\":{\"group\":\"context\",\"requirement\":\"optional\"},\"risk_level_id\":{\"group\":\"context\",\"requirement\":\"optional\"},\"risk_score\":{\"group\":\"context\",\"requirement\":\"optional\"},\"vulnerabilities\":{\"description\":\"Describes vulnerabilities reported in a Detection Finding.\",\"group\":\"context\",\"requirement\":\"optional\"}}";
+        ocsf:category        "findings";
+        ocsf:name            "detection_finding";
+        ocsf:uid             4 .
+
+ocsf:ProcessInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Process Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Process Info events report information about running processes.";
+        ocsf:attributes      "{\"process\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "process_info";
+        ocsf:uid             15 .
+
+ocsf:DiscoveryEvent  rdf:type  owl:Class;
+        rdfs:label           "Discovery";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The Discovery event is a generic event that defines a set of attributes available in Discovery category events. As a generic event, it could be used to log events that are not otherwise defined by the Discovery specific event classes.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Log\",\"description\":\"The discovered information is via a log.\"},\"2\":{\"caption\":\"Collect\",\"description\":\"The discovered information is via a collection process.\"}}}}";
+        ocsf:category        "discovery";
+        ocsf:name            "discovery" .
+
+ocsf:NetworkConnectionInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Network Connection Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Network Connection Info events report information about active network connections.";
+        ocsf:attributes      "{\"connection_info\":{\"requirement\":\"required\",\"group\":\"primary\"},\"process\":{\"description\":\"The process that owns the socket.\",\"requirement\":\"required\",\"group\":\"primary\"},\"state_id\":{\"description\":\"The state of the socket.\",\"requirement\":\"required\",\"enum\":{\"0\":{\"caption\":\"Unknown\",\"description\":\"The socket state is unknown.\"},\"1\":{\"caption\":\"ESTABLISHED\",\"description\":\"The socket has an established connection between a local application and a remote peer.\"},\"2\":{\"caption\":\"SYN_SENT\",\"description\":\"The socket is actively trying to establish a connection to a remote peer.\"},\"3\":{\"caption\":\"SYN_RECV\",\"description\":\"The socket has passively received a connection request from a remote peer.\"},\"4\":{\"caption\":\"FIN_WAIT1\",\"description\":\"The socket connection has been closed by the local application, the remote peer has not yet acknowledged the close, and the system is waiting for it to close its half of the connection.\"},\"5\":{\"caption\":\"FIN_WAIT2\",\"description\":\"The socket connection has been closed by the local application, the remote peer has acknowledged the close, and the system is waiting for it to close its half of the connection.\"},\"6\":{\"caption\":\"TIME_WAIT\",\"description\":\"The socket connection has been closed by the local application, the remote peer has closed its half of the connection, and the system is waiting to be sure that the remote peer received the last acknowledgement.\"},\"7\":{\"caption\":\"CLOSED\",\"description\":\"The socket is not in use.\"},\"8\":{\"caption\":\"CLOSE_WAIT\",\"description\":\"The socket connection has been closed by the remote peer, and the system is waiting for the local application to close its half of the connection.\"},\"9\":{\"caption\":\"LAST_ACK\",\"description\":\"The socket connection has been closed by the remote peer, the local application has closed its half of the connection, and the system is waiting for the remote peer to acknowledge the close.\"},\"10\":{\"caption\":\"LISTEN\",\"description\":\"The socket is listening for incoming connections.\"},\"11\":{\"caption\":\"CLOSING\",\"description\":\"The socket connection has been closed by the local application and the remote peer simultaneously, and the remote peer has not yet acknowledged the close attempt of the local application.\"}},\"group\":\"primary\"}}";
+        ocsf:name            "network_connection_info";
+        ocsf:uid             12 .
+
+ocsf:EmailActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Email Activity";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Email events report activities of emails.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\",\"profiles/security_control.json\"],\"activity_id\":{\"requirement\":\"optional\",\"enum\":{\"1\":{\"caption\":\"Send\"},\"2\":{\"caption\":\"Receive\"},\"3\":{\"caption\":\"Scan\",\"description\":\"Email being scanned (example: security scanning)\"}}},\"attempt\":{\"requirement\":\"optional\",\"description\":\"The attempt number for attempting to deliver the email.\",\"group\":\"context\"},\"banner\":{\"requirement\":\"optional\",\"group\":\"context\"},\"direction\":{\"description\":\"The direction of the email, as defined by the \\u003ccode\\u003edirection_id\\u003c/code\\u003e value.\",\"group\":\"context\",\"requirement\":\"optional\"},\"direction_id\":{\"description\":\"\\u003cp\\u003eThe direction of the email relative to the scanning host or organization.\\u003c/p\\u003eEmail scanned at an internet gateway might be characterized as inbound to the organization from the Internet, outbound from the organization to the Internet, or internal within the organization. Email scanned at a workstation might be characterized as inbound to, or outbound from the workstation.\",\"enum\":{\"0\":{\"caption\":\"Unknown\",\"description\":\"The email direction is unknown.\"},\"1\":{\"caption\":\"Inbound\",\"description\":\"Email Inbound, from the Internet or outside network destined for an entity inside network.\"},\"2\":{\"caption\":\"Outbound\",\"description\":\"Email Outbound, from inside the network destined for an entity outside network.\"},\"3\":{\"caption\":\"Internal\",\"description\":\"Email Internal, from inside the network destined for an entity inside network.\"},\"99\":{\"caption\":\"Other\"}},\"group\":\"context\",\"requirement\":\"required\"},\"dst_endpoint\":{\"description\":\"The responder (server) receiving the email.\",\"requirement\":\"optional\",\"group\":\"primary\"},\"email\":{\"requirement\":\"required\",\"group\":\"primary\"},\"email_auth\":{\"requirement\":\"recommended\",\"group\":\"primary\"},\"src_endpoint\":{\"description\":\"The initiator (client) sending the email.\",\"requirement\":\"optional\",\"group\":\"primary\"},\"smtp_hello\":{\"description\":\"The value of the SMTP HELO or EHLO command sent by the initiator (client).\",\"requirement\":\"recommended\",\"group\":\"primary\"}}";
+        ocsf:category        "network";
+        ocsf:name            "email_activity";
+        ocsf:profiles        "[\"host\",\"security_control\"]";
+        ocsf:uid             9 .
+
+ocsf:UserAccessManagementEvent
+        rdf:type             owl:Class;
+        rdfs:label           "User Access Management";
+        rdfs:subClassOf      "iam";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "User Access Management events report management updates to a user's privileges.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"description\":\"Assign privileges to a user.\",\"caption\":\"Assign Privileges\"},\"2\":{\"description\":\"Revoke privileges from a user.\",\"caption\":\"Revoke Privileges\"}}},\"privileges\":{\"description\":\"List of privileges assigned to a user.\",\"group\":\"primary\",\"requirement\":\"required\"},\"resource\":{\"description\":\"Resource that the privileges give access to.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"user\":{\"description\":\"User to which privileges were assigned.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "user_access";
+        ocsf:uid             5 .
+
+ocsf:NTPActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "NTP Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "The Network Time Protocol (NTP) Activity events report instances of remote clients synchronizing their clocks with an NTP server, as observed on the network.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"0\":{\"caption\":\"Unknown\",\"description\":\"Not used in standard NTP implementations.\"},\"1\":{\"caption\":\"Symmetric Active Exchange\",\"description\":\"Bidirectional time exchange between devices.\"},\"2\":{\"caption\":\"Symmetric Passive Response\",\"description\":\"Device responds as a server to peers in symmetric active mode.\"},\"3\":{\"caption\":\"Client Synchronization\",\"description\":\"NTP client, syncs with servers.\"},\"4\":{\"caption\":\"Server Response\",\"description\":\"Dedicated NTP time server, responds to clients.\"},\"5\":{\"caption\":\"Broadcast\",\"description\":\"Broadcast time info to network devices.\"},\"6\":{\"caption\":\"Control\",\"description\":\"Monitoring and control messaging.\"},\"7\":{\"caption\":\"Private Use Case\",\"description\":\"Reserved - Not defined in standard NTP specifications.\"},\"99\":{\"caption\":\"Other\",\"description\":\"The event activity is not mapped.\"}}},\"delay\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"dispersion\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"precision\":{\"description\":\"The NTP precision quantifies a clock\\u0027s accuracy and stability in log2 seconds, as defined in RFC-5905.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"stratum\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"stratum_id\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"version\":{\"description\":\"The version number of the NTP protocol.\",\"group\":\"context\",\"requirement\":\"required\"}}";
+        ocsf:name            "ntp_activity";
+        ocsf:uid             13 .
+
+ocsf:UserInventoryInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "User Inventory Info";
+        rdfs:subClassOf      "discovery";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "For example, this can be utilized to collect user information by gathering Active Directory data.";
+        ocsf:attributes      "{\"actor\":{\"description\":\"The actor describes the process that was the source of the inventory activity. In the case of user inventory data, that could be a particular procss or script that is run to scrape the user data. For example, it could be a powershell process that runs to pull data from the Azure AD graph API.\",\"group\":\"context\",\"requirement\":\"optional\"},\"user\":{\"group\":\"primary\",\"requirement\":\"required\",\"description\":\"The user that is being discovered by an inventory process.\"}}";
+        ocsf:name            "user_inventory";
+        ocsf:uid             3 .
+
+ocsf:WebResourcesActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Web Resources Activity";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Web Resources Activity events describe actions executed on a set of Web Resources.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\",\"profiles/network_proxy.json\",\"profiles/security_control.json\"],\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Create\",\"description\":\"One or more web resources were created.\"},\"2\":{\"caption\":\"Read\",\"description\":\"One or more web resources were read / viewed.\"},\"3\":{\"caption\":\"Update\",\"description\":\"One or more web resources were updated.\"},\"4\":{\"caption\":\"Delete\",\"description\":\"One or more web resources were deleted.\"},\"5\":{\"caption\":\"Search\",\"description\":\"A search was performed on one or more web resources.\"},\"6\":{\"caption\":\"Import\",\"description\":\"One or more web resources were imported into an Application.\"},\"7\":{\"caption\":\"Export\",\"description\":\"One or more web resources were exported from an Application.\"},\"8\":{\"caption\":\"Share\",\"description\":\"One or more web resources were shared.\"}}},\"dst_endpoint\":{\"description\":\"Details about server providing the web resources.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"http_request\":{\"description\":\"Details about the underlying HTTP request.\",\"group\":\"context\",\"requirement\":\"recommended\"},\"http_response\":{\"description\":\"Details about the HTTP response, if available.\",\"group\":\"context\",\"requirement\":\"optional\"},\"src_endpoint\":{\"description\":\"Details about the endpoint from which the request originated.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"tls\":{\"description\":\"The Transport Layer Security (TLS) attributes, if available.\",\"group\":\"context\",\"requirement\":\"optional\"},\"web_resources\":{\"group\":\"primary\",\"requirement\":\"required\"},\"web_resources_result\":{\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:category        "application";
+        ocsf:name            "web_resources_activity";
+        ocsf:profiles        "[\"host\",\"network_proxy\",\"security_control\"]";
+        ocsf:uid             1 .
+
+ocsf:GroupManagementEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Group Management";
+        rdfs:subClassOf      "iam";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Group Management events report management updates to a group, including updates to membership and permissions.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"description\":\"Assign privileges to a group.\",\"caption\":\"Assign Privileges\"},\"2\":{\"description\":\"Revoke privileges from a group.\",\"caption\":\"Revoke Privileges\"},\"3\":{\"description\":\"Add user to a group.\",\"caption\":\"Add User\"},\"4\":{\"description\":\"Remove user from a group.\",\"caption\":\"Remove User\"}}},\"group\":{\"description\":\"Group that was the target of the event.\",\"group\":\"primary\",\"requirement\":\"required\"},\"privileges\":{\"description\":\"A list of privileges assigned to the group.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"resource\":{\"description\":\"Resource that the privileges give access to.\",\"group\":\"primary\",\"requirement\":\"optional\"},\"user\":{\"description\":\"A user that was added to or removed from the group.\",\"group\":\"primary\",\"requirement\":\"recommended\"}}";
+        ocsf:constraints     "{\"at_least_one\":[\"privileges\",\"user\"]}";
+        ocsf:name            "group_management";
+        ocsf:uid             6 .
+
+ocsf:SMBActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "SMB Activity";
+        rdfs:subClassOf      "network";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Server Message Block (SMB) Protocol Activity events report client/server connections sharing resources within the network.";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"File Supersede\",\"description\":\"The event pertains to file superseded activity (overwritten if it exists and created if not).\"},\"2\":{\"caption\":\"File Open\",\"description\":\"The event pertains to file open activity (the file is opened if it exists and fails to open if it doesn\\u0027t).\"},\"3\":{\"caption\":\"File Create\",\"description\":\"The event pertains to file creation activity (a file is created if it does not exist and fails if it does).\"},\"4\":{\"caption\":\"File Open If\",\"description\":\"The event pertains to file open activity (the file is opened if it exists and is created if it doesn\\u0027t).\"},\"5\":{\"caption\":\"File Overwrite\",\"description\":\"The event pertains to file overwrite activity (the file is opened in a truncated form if it exists and fails if it doesn\\u0027t).\"},\"6\":{\"caption\":\"File Overwrite If\",\"description\":\"The event pertains to file overwrite activity (the file is opened in a truncated form if it exists and created otherwise)\"}}},\"client_dialects\":{\"group\":\"context\",\"requirement\":\"recommended\"},\"command\":{\"description\":\"The command name (e.g. SMB2_COMMAND_CREATE, SMB1_COMMAND_WRITE_ANDX).\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"dce_rpc\":{\"group\":\"context\",\"requirement\":\"optional\"},\"dialect\":{\"group\":\"context\",\"requirement\":\"recommended\"},\"file\":{\"description\":\"The file that is the target of the SMB activity.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"open_type\":{\"description\":\"Indicates how the file was opened (e.g. normal, delete on close).\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"response\":{\"description\":\"The server response in an SMB network connection.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"share\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"share_type\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"share_type_id\":{\"group\":\"primary\",\"requirement\":\"recommended\"},\"tree_uid\":{\"group\":\"primary\",\"requirement\":\"optional\"}}";
+        ocsf:name            "smb_activity";
+        ocsf:uid             6 .
+
+ocsf:PeripheralDeviceInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Peripheral Device Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Peripheral Device Info events report information about peripheral devices.";
+        ocsf:attributes      "{\"peripheral_device\":{\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "peripheral_device_info";
+        ocsf:uid             14 .
+
+ocsf:EmailURLActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Email URL Activity";
+        rdfs:subClassOf      "base_event";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Email URL Activity events report URLs within an email.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\",\"profiles/security_control.json\"],\"activity_id\":{\"requirement\":\"optional\",\"enum\":{\"1\":{\"caption\":\"Send\"},\"2\":{\"caption\":\"Receive\"},\"3\":{\"caption\":\"Scan\",\"description\":\"Email URL being scanned (example: security scanning).\"}}},\"email_uid\":{\"requirement\":\"required\",\"group\":\"primary\"},\"url\":{\"description\":\"The URL included in the email content.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:category        "network";
+        ocsf:name            "email_url_activity";
+        ocsf:profiles        "[\"host\",\"security_control\"]";
+        ocsf:uid             12 .
+
+ocsf:OperatingSystemPatchStateEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Operating System Patch State";
+        rdfs:subClassOf      "discovery";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Operating System Patch State reports the installation of an OS patch.";
+        ocsf:attributes      "{\"device\":{\"group\":\"primary\",\"requirement\":\"required\"},\"kb_articles\":{\"group\":\"primary\"}}";
+        ocsf:constraints     "{\"at_least_one\":[\"device.os.sp_name\",\"device.os.sp_ver\",\"device.os.version\"]}";
+        ocsf:name            "patch_state";
+        ocsf:profiles        "[\"host\"]";
+        ocsf:uid             4 .
+
+ocsf:UserSessionInfoEvent
+        rdf:type             owl:Class;
+        rdfs:label           "User Session Info";
+        rdfs:subClassOf      "discovery_result";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "User Session Info events report information about existing user sessions.";
+        ocsf:attributes      "{\"session\":{\"requirement\":\"required\",\"group\":\"primary\"}}";
+        ocsf:name            "session_info";
+        ocsf:uid             17 .
+
+ocsf:ApplicationLifecycleEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Application Lifecycle";
+        rdfs:subClassOf      "application";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Application Lifecycle events report installation, removal, start, stop of an application or service.";
+        ocsf:attributes      "{\"$include\":[\"profiles/host.json\"],\"activity_id\":{\"requirement\":\"required\",\"enum\":{\"1\":{\"caption\":\"Install\"},\"2\":{\"caption\":\"Remove\"},\"3\":{\"caption\":\"Start\"},\"4\":{\"caption\":\"Stop\"}}},\"app\":{\"description\":\"The application that was affected by the lifecycle event.  This also applies to self-updating application systems.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "application_lifecycle";
+        ocsf:profiles        "[\"host\"]";
+        ocsf:uid             2 .
+
+ocsf:MemoryActivityEvent
+        rdf:type             owl:Class;
+        rdfs:label           "Memory Activity";
+        rdfs:subClassOf      "system";
+        rdfs:subClassOf      d3f:DigitalEvent;
+        dcterms:description  "Memory Activity events report when a process has memory allocated, read/modified, or other manipulation activities - such as a buffer overflow or turning off data execution protection (DEP).";
+        ocsf:attributes      "{\"activity_id\":{\"enum\":{\"1\":{\"caption\":\"Allocate Page\"},\"2\":{\"caption\":\"Modify Page\"},\"3\":{\"caption\":\"Delete Page\"},\"4\":{\"caption\":\"Buffer Overflow\"},\"5\":{\"description\":\"Data Execution Permission\",\"caption\":\"Disable DEP\"},\"6\":{\"description\":\"Data Execution Permission\",\"caption\":\"Enable DEP\"},\"7\":{\"description\":\"Read (Example: \\u003ccode\\u003eReadProcessMemory\\u003c/code\\u003e)\",\"caption\":\"Read\"},\"8\":{\"description\":\"Write (Example: \\u003ccode\\u003eWriteProcessMemory\\u003c/code\\u003e)\",\"caption\":\"Write\"}}},\"actual_permissions\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"base_address\":{\"description\":\"The memory address that was access or requested.\",\"group\":\"primary\",\"requirement\":\"recommended\"},\"requested_permissions\":{\"group\":\"primary\",\"requirement\":\"optional\"},\"size\":{\"description\":\"The memory size that was access or requested.\",\"group\":\"primary\"},\"process\":{\"description\":\"The process that had memory allocated, read/written, or had other manipulation activities performed on it.\",\"group\":\"primary\",\"requirement\":\"required\"}}";
+        ocsf:name            "memory_activity";
+        ocsf:uid             4 .
+
+ocsf:related_analytics
+        rdf:type             rdf:Property;
+        rdfs:label           "Related Analytics";
+        rdfs:range           ocsf:Analytic;
+        dcterms:description  "Describes analytics related to the analytic of a finding or detection as identified by the security product.";
+        ocsf:is_array        true .
+
+ocsf:manager  rdf:type       rdf:Property;
+        rdfs:label           "Manager";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The user's manager. This helps in understanding an org hierarchy. This should only ever be populated once in an event. I.e. there should not be a manager's manager in an event." .
+
+ocsf:feature  rdf:type       rdf:Property;
+        rdfs:label           "Feature";
+        rdfs:range           ocsf:Feature;
+        dcterms:description  "The feature that reported the event." .
+
+ocsf:users  rdf:type         rdf:Property;
+        rdfs:label           "Users";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The users that pertain to the event or object.";
+        ocsf:is_array        true .
+
+ocsf:connection_info  rdf:type  rdf:Property;
+        rdfs:label           "Connection Info";
+        rdfs:range           ocsf:NetworkConnectionInformation;
+        dcterms:description  "The network connection information." .
+
+ocsf:ip_t  rdf:type           rdfs:Datatype;
+        rdfs:label            "IP Address";
+        rdfs:subClassOf       xsd:string;
+        dcterms:description   "Internet Protocol address (IP address), in either IPv4 or IPv6 format. For example, <code>192.168.200.24</code> or <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>.";
+        ocsf:observable       2;
+        jsonschema:maxLength  40;
+        jsonschema:pattern    "((^\\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\\s*$)|(^\\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?\\s*$))" .
+
+ocsf:groups  rdf:type        rdf:Property;
+        rdfs:label           "Groups";
+        rdfs:range           ocsf:Group;
+        dcterms:description  "The groups to which an entity belongs. See specific usage.";
+        ocsf:is_array        true .
+
+ocsf:cloud  rdf:type         rdf:Property;
+        rdfs:label           "Cloud";
+        rdfs:range           ocsf:Cloud;
+        dcterms:description  "Describes details about the Cloud environment where the event was originally created or logged." .
+
+ocsf:extension_list  rdf:type  rdf:Property;
+        rdfs:label           "Extension List";
+        rdfs:range           ocsf:TLSExtension;
+        dcterms:description  "The list of TLS extensions.";
+        ocsf:is_array        true .
+
+ocsf:remediation  rdf:type   rdf:Property;
+        rdfs:label           "Remediation Guidance";
+        rdfs:range           ocsf:Remediation;
+        dcterms:description  "Describes the recommended remediation steps to address identified issue(s)." .
+
+ocsf:owner  rdf:type         rdf:Property;
+        rdfs:label           "Owner";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The user that owns the file/object." .
+
+ocsf:cvss  rdf:type          rdf:Property;
+        rdfs:label           "CVSS Score";
+        rdfs:range           ocsf:CVSSScore;
+        dcterms:description  "The CVSS object details Common Vulnerability Scoring System (<a target='_blank' href='https://www.first.org/cvss/'>CVSS</a>) scores from the advisory that are related to the vulnerability.";
+        ocsf:is_array        true .
+
+ocsf:malware  rdf:type       rdf:Property;
+        rdfs:label           "Malware";
+        rdfs:range           ocsf:Malware;
+        dcterms:description  "A list of Malware objects, decribing details about the identified malware.";
+        ocsf:is_array        true .
+
+ocsf:keyboard_info  rdf:type  rdf:Property;
+        rdfs:label           "Keyboard Information";
+        rdfs:range           ocsf:KeyboardInformation;
+        dcterms:description  "The keyboard detailed information." .
+
+ocsf:folder  rdf:type        rdf:Property;
+        rdfs:label           "Folder";
+        rdfs:range           ocsf:File;
+        dcterms:description  "The folder that pertains to the event." .
+
+ocsf:ja3s_hash  rdf:type     rdf:Property;
+        rdfs:label           "JA3S Hash";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "The MD5 hash of a JA3S string." .
+
+ocsf:extension  rdf:type     rdf:Property;
+        rdfs:label           "Schema Extension";
+        rdfs:range           ocsf:SchemaExtension;
+        dcterms:description  "The schema extension used to create the event." .
+
+ocsf:extensions  rdf:type    rdf:Property;
+        rdfs:label           "Schema Extensions";
+        rdfs:range           ocsf:SchemaExtension;
+        dcterms:description  "The schema extensions used to create the event.";
+        ocsf:is_array        true .
+
+ocsf:product  rdf:type       rdf:Property;
+        rdfs:label           "Product";
+        rdfs:range           ocsf:Product;
+        dcterms:description  "The product that reported the event." .
+
+ocsf:url  rdf:type           rdf:Property;
+        rdfs:label           "URL";
+        rdfs:range           ocsf:UniformResourceLocator;
+        dcterms:description  "The URL object that pertains to the event or object. See specific usage." .
+
+ocsf:cwe  rdf:type           rdf:Property;
+        rdfs:label           "CWE";
+        rdfs:range           ocsf:CWE;
+        dcterms:description  "The CWE object represents a weakness in a software system that can be exploited by a threat actor to perform an attack. The CWE object is based on the <a target='_blank' href='https://cwe.mitre.org/'>Common Weakness Enumeration (CWE)</a> catalog." .
+
+ocsf:email_t  rdf:type       rdfs:Datatype;
+        rdfs:label           "Email Address";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "Email address. For example: <code>john_doe@example.com</code>.";
+        ocsf:observable      5;
+        jsonschema:pattern   "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$" .
+
+ocsf:idp  rdf:type           rdf:Property;
+        rdfs:label           "Identity Provider";
+        rdfs:range           ocsf:IdentityProvider;
+        dcterms:description  "This object describes details about the Identity Provider used." .
+
+ocsf:org  rdf:type           rdf:Property;
+        rdfs:label           "Organization";
+        rdfs:range           ocsf:Organization;
+        dcterms:description  "Organization and org unit relevant to the event or object." .
+
+ocsf:account  rdf:type       rdf:Property;
+        rdfs:label           "Account";
+        rdfs:range           ocsf:Account;
+        dcterms:description  "The account object describes details about the account that was the source or target of the activity." .
+
+ocsf:entity  rdf:type        rdf:Property;
+        rdfs:label           "Entity";
+        rdfs:range           ocsf:ManagedEntity;
+        dcterms:description  "The managed entity that is being acted upon." .
+
+ocsf:response  rdf:type      rdf:Property;
+        rdfs:label           "API Response Details";
+        rdfs:range           ocsf:ResponseElements;
+        dcterms:description  "General Purpose API Response Object. See specific usage." .
+
+ocsf:authorizations  rdf:type  rdf:Property;
+        rdfs:label           "Authorization Information";
+        rdfs:range           ocsf:AuthorizationResult;
+        dcterms:description  "Provides details about an authorization, such as authorization outcome, and any associated policies related to the activity/event.";
+        ocsf:is_array        true .
+
+ocsf:server_hassh  rdf:type  rdf:Property;
+        rdfs:label           "Server HASSH";
+        rdfs:range           ocsf:HASSH;
+        dcterms:description  "The Server HASSH fingerprinting object." .
+
+ocsf:driver  rdf:type        rdf:Property;
+        rdfs:label           "Kernel Driver";
+        rdfs:range           ocsf:KernelExtension;
+        dcterms:description  "The driver that was loaded/unloaded into the kernel" .
+
+ocsf:device  rdf:type        rdf:Property;
+        rdfs:label           "Device";
+        rdfs:range           ocsf:Device;
+        dcterms:description  "An addressable device, computer system or host." .
+
+ocsf:integer_t  rdf:type     rdfs:Datatype;
+        rdfs:label           "Integer";
+        rdfs:subClassOf      xsd:integer;
+        dcterms:description  "Signed integer value." .
+
+ocsf:accessor  rdf:type      rdf:Property;
+        rdfs:label           "Accessor";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The name of the user who last accessed the object." .
+
+ocsf:web_resources  rdf:type  rdf:Property;
+        rdfs:label           "Web Resources";
+        rdfs:range           ocsf:WebResource;
+        dcterms:description  "Describes details about web resources that were affected by an activity/event.";
+        ocsf:is_array        true .
+
+ocsf:resource  rdf:type      rdf:Property;
+        rdfs:label           "Resource";
+        rdfs:range           ocsf:ResourceDetails;
+        dcterms:description  "The target resource." .
+
+ocsf:rpc_interface  rdf:type  rdf:Property;
+        rdfs:label           "Remote Procedure Call Interface";
+        rdfs:range           ocsf:RPCInterface;
+        dcterms:description  "The RPC Interface object describes the details pertaining to the remote procedure call interface." .
+
+ocsf:long_t  rdf:type        rdfs:Datatype;
+        rdfs:label           "Long";
+        rdfs:subClassOf      xsd:long;
+        dcterms:description  "8-byte long, signed integer value." .
+
+ocsf:finding_info  rdf:type  rdf:Property;
+        rdfs:label           "Finding Information";
+        rdfs:range           ocsf:FindingInformation;
+        dcterms:description  "Describes the supporting information about a generated finding." .
+
+ocsf:client_hassh  rdf:type  rdf:Property;
+        rdfs:label           "Client HASSH";
+        rdfs:range           ocsf:HASSH;
+        dcterms:description  "The Client HASSH fingerprinting object." .
+
+ocsf:resource_uid_t  rdf:type  rdfs:Datatype;
+        rdfs:label            "Resource UID";
+        rdfs:subClassOf       xsd:string;
+        dcterms:description   "Resource unique identifier. For example, S3 Bucket name or EC2 Instance ID.";
+        ocsf:observable       10;
+        jsonschema:maxLength  64 .
+
+ocsf:answers  rdf:type       rdf:Property;
+        rdfs:label           "DNS Answer";
+        rdfs:range           ocsf:DNSAnswer;
+        dcterms:description  "The Domain Name System (DNS) answers.";
+        ocsf:is_array        true .
+
+ocsf:evidences  rdf:type     rdf:Property;
+        rdfs:label           "Evidence Artifacts";
+        rdfs:range           ocsf:EvidenceArtifacts;
+        dcterms:description  "Describes various evidence artifacts associated to the activity/activities that triggered a security detection.";
+        ocsf:is_array        true .
+
+ocsf:signature  rdf:type     rdf:Property;
+        rdfs:label           "Digital Signature";
+        rdfs:range           ocsf:DigitalSignature;
+        dcterms:description  "The digital signature of the file." .
+
+ocsf:devices  rdf:type       rdf:Property;
+        rdfs:label           "Devices";
+        rdfs:range           ocsf:Device;
+        dcterms:description  "The object describes details related to the list of devices.";
+        ocsf:is_array        true .
+
+ocsf:api  rdf:type           rdf:Property;
+        rdfs:label           "API Details";
+        rdfs:range           ocsf:API;
+        dcterms:description  "Describes details about a typical API (Application Programming Interface) call." .
+
+ocsf:remote_display  rdf:type  rdf:Property;
+        rdfs:label           "Remote Display";
+        rdfs:range           ocsf:Display;
+        dcterms:description  "The remote display affiliated with the event" .
+
+ocsf:affected_code  rdf:type  rdf:Property;
+        rdfs:label           "Affected Code";
+        rdfs:range           ocsf:AffectedCode;
+        dcterms:description  "List of Affected Code objects that describe details about code blocks identified as vulnerable.";
+        ocsf:is_array        true .
+
+ocsf:tls  rdf:type           rdf:Property;
+        rdfs:label           "TLS";
+        rdfs:range           ocsf:TransportLayerSecurityTLS;
+        dcterms:description  "The Transport Layer Security (TLS) attributes." .
+
+ocsf:location  rdf:type      rdf:Property;
+        rdfs:label           "Geo Location";
+        rdfs:range           ocsf:GeoLocation;
+        dcterms:description  "The detailed geographical location usually associated with an IP address." .
+
+ocsf:creator  rdf:type       rdf:Property;
+        rdfs:label           "Creator";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The user that created the object associated with event. See specific usage." .
+
+ocsf:hashes  rdf:type        rdf:Property;
+        rdfs:label           "Hashes";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "An array of hash attributes.";
+        ocsf:is_array        true .
+
+ocsf:vulnerabilities  rdf:type  rdf:Property;
+        rdfs:label           "Vulnerabilities";
+        rdfs:range           ocsf:VulnerabilityDetails;
+        dcterms:description  "This object describes vulnerabilities reported in a security finding.";
+        ocsf:is_array        true .
+
+ocsf:boolean_t  rdf:type     rdfs:Datatype;
+        rdfs:label           "Boolean";
+        rdfs:subClassOf      xsd:boolean;
+        dcterms:description  "Boolean value. One of <code>true</code> or <code>false</code>." .
+
+ocsf:port_t  rdf:type        rdfs:Datatype;
+        rdfs:label           "Port";
+        rdfs:subClassOf      xsd:integer;
+        dcterms:description  "The TCP/UDP port number. For example: <code>80</code> or <code>22</code>.";
+        ocsf:range           "[0,65535]" .
+
+ocsf:file_hash_t  rdf:type    rdfs:Datatype;
+        rdfs:label            "File Hash";
+        rdfs:subClassOf       xsd:string;
+        dcterms:description   "File hash. A unique value that corresponds to the content of the file.";
+        ocsf:observable       8;
+        jsonschema:maxLength  64 .
+
+ocsf:logon_process  rdf:type  rdf:Property;
+        rdfs:label           "Logon Process";
+        rdfs:range           ocsf:Process;
+        dcterms:description  "The trusted process that validated the authentication credentials." .
+
+ocsf:network_interfaces
+        rdf:type             rdf:Property;
+        rdfs:label           "Network Interfaces";
+        rdfs:range           ocsf:NetworkInterface;
+        dcterms:description  "The network interfaces that are associated with the device, one for each unique MAC address/IP address/hostname/name combination.<p><b>Note:</b> The first element of the array is the network information that pertains to the event.</p>";
+        ocsf:is_array        true .
+
+ocsf:subnet_t  rdf:type       rdfs:Datatype;
+        rdfs:label            "Subnet";
+        rdfs:subClassOf       xsd:string;
+        dcterms:description   "The subnet represented in a CIDR notation, using the format network_address/prefix_length. The network_address can be in either IPv4 or IPv6 format. The prefix length indicates the number of bits used for the network portion, and the remaining bits are available for host addresses within that subnet. <div>For example:<ul><li>192.168.1.0/24</li><li>2001:0db8:85a3:0000::/64</li></ul></div>";
+        jsonschema:maxLength  42 .
+
+ocsf:bytestring_t  rdf:type  rdfs:Datatype;
+        rdfs:label           "Byte String";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "Base64 encoded immutable byte sequence." .
+
+ocsf:policy  rdf:type        rdf:Property;
+        rdfs:label           "Policy";
+        rdfs:range           ocsf:Policy;
+        dcterms:description  "Describes details of a policy. See specific usage." .
+
+ocsf:modifier  rdf:type      rdf:Property;
+        rdfs:label           "Modifier";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The user that last modified the object associated with the event. See specific usage." .
+
+ocsf:file  rdf:type          rdf:Property;
+        rdfs:label           "File";
+        rdfs:range           ocsf:File;
+        dcterms:description  "The file that pertains to the event or object. See specific usage." .
+
+ocsf:cves  rdf:type          rdf:Property;
+        rdfs:label           "CVE List";
+        rdfs:range           ocsf:CVE;
+        dcterms:description  "List of Common Vulnerabilities and Exposures (<a target='_blank' href='https://cve.mitre.org/'>CVE</a>).";
+        ocsf:is_array        true .
+
+ocsf:user_result  rdf:type   rdf:Property;
+        rdfs:label           "User Result";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The result of the user account change. It should contain the new values of the changed attributes." .
+
+ocsf:affected_packages
+        rdf:type             rdf:Property;
+        rdfs:label           "Affected Software Packages";
+        rdfs:range           ocsf:AffectedSoftwarePackage;
+        dcterms:description  "List of software packages identified as affected by a vulnerability/vulnerabilities.";
+        ocsf:is_array        true .
+
+ocsf:certificate  rdf:type   rdf:Property;
+        rdfs:label           "Certificate";
+        rdfs:range           ocsf:DigitalCertificate;
+        dcterms:description  "The certificate object containing information about the digital certificate." .
+
+ocsf:hw_info  rdf:type       rdf:Property;
+        rdfs:label           "Hardware Info";
+        rdfs:range           ocsf:DeviceHardwareInfo;
+        dcterms:description  "The device hardware information." .
+
+ocsf:ja3_hash  rdf:type      rdf:Property;
+        rdfs:label           "JA3 Hash";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "The MD5 hash of a JA3 string." .
+
+ocsf:group  rdf:type         rdf:Property;
+        rdfs:label           "Group";
+        rdfs:range           ocsf:Group;
+        dcterms:description  "The group object associated with an entity such as user, policy, or rule." .
+
+ocsf:tactics  rdf:type       rdf:Property;
+        rdfs:label           "Tactics";
+        rdfs:range           ocsf:Tactic;
+        dcterms:description  "The Tactic object describes the tactic ID and/or tactic name that are associated with the attack technique, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>.";
+        ocsf:is_array        true .
+
+ocsf:hash  rdf:type          rdf:Property;
+        rdfs:label           "Hash";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "The hash attribute is the value of a digital fingerprint including information about its algorithm." .
+
+ocsf:email_auth  rdf:type    rdf:Property;
+        rdfs:label           "Email Authentication";
+        rdfs:range           ocsf:EmailAuthentication;
+        dcterms:description  "The SPF, DKIM and DMARC attributes of an email." .
+
+ocsf:proxy_http_response
+        rdf:type             rdf:Property;
+        rdfs:label           "Proxy HTTP Response";
+        rdfs:range           ocsf:HTTPResponse;
+        dcterms:description  "The HTTP Response from the remote server to the proxy server." .
+
+ocsf:os  rdf:type            rdf:Property;
+        rdfs:label           "OS";
+        rdfs:range           ocsf:OperatingSystemOS;
+        dcterms:description  "The device operating system." .
+
+ocsf:dst_endpoint  rdf:type  rdf:Property;
+        rdfs:label           "Destination Endpoint";
+        rdfs:range           ocsf:NetworkEndpoint;
+        dcterms:description  "The network destination endpoint." .
+
+ocsf:desktop_display  rdf:type  rdf:Property;
+        rdfs:label           "Desktop Display";
+        rdfs:range           ocsf:Display;
+        dcterms:description  "The desktop display affiliated with the event" .
+
+ocsf:dce_rpc  rdf:type       rdf:Property;
+        rdfs:label           "Distributed Computing Environment/Remote Procedure Call (DCE/RPC)";
+        rdfs:range           ocsf:DCERPC;
+        dcterms:description  "The DCE/RPC object describes the remote procedure call system for distributed computing environments." .
+
+ocsf:url_t  rdf:type         rdfs:Datatype;
+        rdfs:label           "URL String";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "Uniform Resource Locator (URL) string. For example: <code>http://www.example.com/download/trouble.exe</code>.";
+        ocsf:observable      6 .
+
+ocsf:process_name_t  rdf:type  rdfs:Datatype;
+        rdfs:label           "Process Name";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "Process name. For example: <code>Notepad</code>.";
+        ocsf:observable      9 .
+
+ocsf:resources_result
+        rdf:type             rdf:Property;
+        rdfs:label           "Resource Results Array";
+        rdfs:range           ocsf:ResourceDetails;
+        dcterms:description  "Updated resources after an activity/event.";
+        ocsf:is_array        true .
+
+ocsf:cis_benchmark  rdf:type  rdf:Property;
+        rdfs:label           "CIS Benchmark";
+        rdfs:range           ocsf:CISBenchmark;
+        dcterms:description  "The CIS Benchmark describes best practices for securely configuring IT systems, software, networks, and cloud infrastructure as defined by the Center for Internet Security (<a target='_blank' href='https://www.cisecurity.org/cis-benchmarks/'>CIS</a>)." .
+
+ocsf:email  rdf:type         rdf:Property;
+        rdfs:label           "Email";
+        rdfs:range           ocsf:Email;
+        dcterms:description  "The email object." .
+
+ocsf:mac_t  rdf:type          rdfs:Datatype;
+        rdfs:label            "MAC Address";
+        rdfs:subClassOf       xsd:string;
+        dcterms:description   "Media Access Control (MAC) address. For example: <code>18:36:F3:98:4F:9A</code>.";
+        ocsf:observable       3;
+        jsonschema:maxLength  32;
+        jsonschema:pattern    "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$" .
+
+ocsf:proxy_traffic  rdf:type  rdf:Property;
+        rdfs:label           "Proxy Traffic";
+        rdfs:range           ocsf:NetworkTraffic;
+        dcterms:description  "The network traffic refers to the amount of data moving across a network, from proxy to remote server at a given point of time." .
+
+ocsf:finding  rdf:type       rdf:Property;
+        rdfs:label           "Finding";
+        rdfs:range           ocsf:Finding;
+        dcterms:description  "The Finding object provides details about a finding/detection generated by a security tool." .
+
+ocsf:proxy_http_request
+        rdf:type             rdf:Property;
+        rdfs:label           "Proxy HTTP Request";
+        rdfs:range           ocsf:HTTPRequest;
+        dcterms:description  "The HTTP Request from the proxy server to the remote server." .
+
+ocsf:uuid_t  rdf:type        rdfs:Datatype;
+        rdfs:label           "UUID";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "128-bit universal unique identifier. For example: <code>123e4567-e89b-12d3-a456-42661417400</code>.";
+        jsonschema:pattern   "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" .
+
+ocsf:entity_result  rdf:type  rdf:Property;
+        rdfs:label           "Entity Result";
+        rdfs:range           ocsf:ManagedEntity;
+        dcterms:description  "The updated managed entity." .
+
+ocsf:loggers  rdf:type       rdf:Property;
+        rdfs:label           "Loggers";
+        rdfs:range           ocsf:Logger;
+        dcterms:description  "An array of Logger objects that describe the devices and logging products between the event source and its eventual destination. Note, this attribute can be used when there is a complex end-to-end path of event flow.";
+        ocsf:is_array        true .
+
+ocsf:package  rdf:type       rdf:Property;
+        rdfs:label           "Software Package";
+        rdfs:range           ocsf:SoftwarePackage;
+        dcterms:description  "The Software Package object describes details about a software package. Defined by D3FEND <a target='_blank' href='https://d3fend.mitre.org/dao/artifact/d3f:SoftwarePackage/'>d3f:SoftwarePackage</a>." .
+
+ocsf:http_request  rdf:type  rdf:Property;
+        rdfs:label           "HTTP Request";
+        rdfs:range           ocsf:HTTPRequest;
+        dcterms:description  "The HTTP Request Object documents attributes of a request made to a web server." .
+
+ocsf:firewall_rule  rdf:type  rdf:Property;
+        rdfs:label           "Firewall Rule";
+        rdfs:range           ocsf:FirewallRule;
+        dcterms:description  "The firewall rule that triggered the event." .
+
+ocsf:attacks  rdf:type       rdf:Property;
+        rdfs:label           "MITRE ATT&CK® Details";
+        rdfs:range           ocsf:MITREATTCK;
+        dcterms:description  "An array of <a target='_blank' href='https://attack.mitre.org'>MITRE ATT&CK®</a> objects describing the tactics, techniques & sub-techniques identified by a security control or finding.";
+        ocsf:is_array        true .
+
+ocsf:query  rdf:type         rdf:Property;
+        rdfs:label           "DNS Query";
+        rdfs:range           ocsf:DNSQuery;
+        dcterms:description  "The Domain Name System (DNS) query." .
+
+ocsf:process  rdf:type       rdf:Property;
+        rdfs:label           "Process";
+        rdfs:range           ocsf:Process;
+        dcterms:description  "The process object." .
+
+ocsf:unmapped  rdf:type      rdf:Property;
+        rdfs:label           "Unmapped Data";
+        rdfs:range           ocsf:Object;
+        dcterms:description  "The attributes that are not mapped to the event schema. The names and values of those attributes are specific to the event source." .
+
+ocsf:fingerprint  rdf:type   rdf:Property;
+        rdfs:label           "Fingerprint";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "The digital fingerprint associated with an object." .
+
+ocsf:proxy_tls  rdf:type     rdf:Property;
+        rdfs:label           "Proxy TLS";
+        rdfs:range           ocsf:TransportLayerSecurityTLS;
+        dcterms:description  "The TLS protocol negotiated between the proxy server and the remote server." .
+
+ocsf:sub_technique  rdf:type  rdf:Property;
+        rdfs:label           "Sub Technique";
+        rdfs:range           ocsf:SubTechnique;
+        dcterms:description  "The Sub Technique object describes the sub technique ID and/or name associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>." .
+
+ocsf:job  rdf:type           rdf:Property;
+        rdfs:label           "Job";
+        rdfs:range           ocsf:Job;
+        dcterms:description  "The job object that pertains to the event." .
+
+ocsf:hostname_t  rdf:type    rdfs:Datatype;
+        rdfs:label           "Hostname";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "Unique name assigned to a device connected to a computer network. A domain name in general is an Internet address that can be resolved through the Domain Name System (DNS). For example: <code>r2-d2.example.com</code>.";
+        ocsf:observable      1;
+        jsonschema:pattern   "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$" .
+
+ocsf:traffic  rdf:type       rdf:Property;
+        rdfs:label           "Traffic";
+        rdfs:range           ocsf:NetworkTraffic;
+        dcterms:description  "The network traffic refers to the amount of data moving across a network at a given point of time. Intended to be used alongside Network Connection." .
+
+ocsf:user  rdf:type          rdf:Property;
+        rdfs:label           "User";
+        rdfs:range           ocsf:User;
+        dcterms:description  "The user that pertains to the event or object." .
+
+ocsf:peripheral_device
+        rdf:type             rdf:Property;
+        rdfs:label           "Peripheral Device";
+        rdfs:range           ocsf:PeripheralDevice;
+        dcterms:description  "The peripheral device that triggered the event." .
+
+ocsf:proxy  rdf:type         rdf:Property;
+        rdfs:label           "Proxy";
+        rdfs:range           ocsf:NetworkProxyEndpoint;
+        dcterms:description  "The proxy (server) in a network connection." .
+
+ocsf:cis_benchmark_result
+        rdf:type             rdf:Property;
+        rdfs:label           "CIS Benchmark Result";
+        rdfs:range           ocsf:CISBenchmarkResult;
+        dcterms:description  "The CIS benchmark result." .
+
+ocsf:containers  rdf:type    rdf:Property;
+        rdfs:label           "Containers";
+        rdfs:range           ocsf:Container;
+        dcterms:description  "When working with containerized applications, the set of containers which write to the standard the output of a particular logging driver. For example, this may be the set of containers involved in handling api requests and responses for a containerized application.";
+        ocsf:is_array        true .
+
+ocsf:actor  rdf:type         rdf:Property;
+        rdfs:label           "Actor";
+        rdfs:range           ocsf:Actor;
+        dcterms:description  "The actor object describes details about the user/role/process that was the source of the activity." .
+
+ocsf:ldap_person  rdf:type   rdf:Property;
+        rdfs:label           "LDAP Person";
+        rdfs:range           ocsf:LDAPPerson;
+        dcterms:description  "The additonal LDAP attributes that describe a person." .
+
+ocsf:app  rdf:type           rdf:Property;
+        rdfs:label           "Application";
+        rdfs:range           ocsf:Product;
+        dcterms:description  "The application that reported the event." .
+
+ocsf:image  rdf:type         rdf:Property;
+        rdfs:label           "Image";
+        rdfs:range           ocsf:Image;
+        dcterms:description  "The image used as a template to run a container or virtual machine." .
+
+ocsf:web_resources_result
+        rdf:type             rdf:Property;
+        rdfs:label           "Web Resources Result";
+        rdfs:range           ocsf:WebResource;
+        dcterms:description  "The results of the activity on web resources. It should contain the new values of the changed attributes of the web resources.";
+        ocsf:is_array        true .
+
+ocsf:related_events  rdf:type  rdf:Property;
+        rdfs:label           "Related Events";
+        rdfs:range           ocsf:RelatedEvent;
+        dcterms:description  "Describes events and/or other findings related to the finding as identified by the security product.";
+        ocsf:is_array        true .
+
+ocsf:sans  rdf:type          rdf:Property;
+        rdfs:label           "Subject Alternative Names";
+        rdfs:range           ocsf:SubjectAlternativeName;
+        dcterms:description  "The list of subject alternative names that are secured by a specific certificate.";
+        ocsf:is_array        true .
+
+ocsf:metrics  rdf:type       rdf:Property;
+        rdfs:label           "Metrics";
+        rdfs:range           ocsf:Metric;
+        dcterms:description  "The general purpose metrics associated with the event. See specific usage.";
+        ocsf:is_array        true .
+
+ocsf:analytic  rdf:type      rdf:Property;
+        rdfs:label           "Analytic";
+        rdfs:range           ocsf:Analytic;
+        dcterms:description  "The analytic technique used to analyze and derive insights from the data or information that led to the finding or conclusion." .
+
+ocsf:string_t  rdf:type       rdfs:Datatype;
+        rdfs:label            "String";
+        rdfs:subClassOf       xsd:string;
+        dcterms:description   "UTF-8 encoded byte sequence.";
+        jsonschema:maxLength  65535 .
+
+ocsf:resources  rdf:type     rdf:Property;
+        rdfs:label           "Resources Array";
+        rdfs:range           ocsf:ResourceDetails;
+        dcterms:description  "Describes details about resources that were affected by the activity/event.";
+        ocsf:is_array        true .
+
+ocsf:parent_process  rdf:type  rdf:Property;
+        rdfs:label           "Parent Process";
+        rdfs:range           ocsf:Process;
+        dcterms:description  "The parent process of this process object. It is recommended to only populate this field for the first process object, to prevent deep nesting." .
+
+ocsf:module  rdf:type        rdf:Property;
+        rdfs:label           "Module";
+        rdfs:range           ocsf:Module;
+        dcterms:description  "The module that pertains to the event." .
+
+ocsf:float_t  rdf:type       rdfs:Datatype;
+        rdfs:label           "Float";
+        rdfs:subClassOf      xsd:decimal;
+        dcterms:description  "Real floating-point value. For example: <code>3.14</code>." .
+
+ocsf:proxy_endpoint  rdf:type  rdf:Property;
+        rdfs:label           "Proxy Endpoint";
+        rdfs:range           ocsf:NetworkProxyEndpoint;
+        dcterms:description  "The proxy (server) in a network connection." .
+
+ocsf:metadata  rdf:type      rdf:Property;
+        rdfs:label           "Metadata";
+        rdfs:range           ocsf:Metadata;
+        dcterms:description  "The metadata associated with the event or a finding." .
+
+ocsf:enrichments  rdf:type   rdf:Property;
+        rdfs:label           "Enrichments";
+        rdfs:range           ocsf:Enrichment;
+        dcterms:description  "The additional information from an external data source, which is associated with the event or a finding. For example add location information for the IP address in the DNS answers:</p><code>[{\"name\": \"answers.ip\", \"value\": \"92.24.47.250\", \"type\": \"location\", \"data\": {\"city\": \"Socotra\", \"continent\": \"Asia\", \"coordinates\": [-25.4153, 17.0743], \"country\": \"YE\", \"desc\": \"Yemen\"}}]</code>";
+        ocsf:is_array        true .
+
+ocsf:http_headers  rdf:type  rdf:Property;
+        rdfs:label           "HTTP Headers";
+        rdfs:range           ocsf:HTTPHeader;
+        dcterms:description  "Additional HTTP headers of an HTTP request or response.";
+        ocsf:is_array        true .
+
+ocsf:digest  rdf:type        rdf:Property;
+        rdfs:label           "Message Digest";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "The message digest attribute contains the fixed length message hash representation and the corresponding hashing algorithm information." .
+
+ocsf:tactic  rdf:type        rdf:Property;
+        rdfs:label           "Tactic";
+        rdfs:range           ocsf:Tactic;
+        dcterms:description  "The Tactic object describes the tactic ID and/or name that is associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>." .
+
+ocsf:kill_chain  rdf:type    rdf:Property;
+        rdfs:label           "Kill Chain";
+        rdfs:range           ocsf:KillChainPhase;
+        dcterms:description  "The <a target='_blank' href='https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html'>Cyber Kill Chain®</a> provides a detailed description of each phase and its associated activities within the broader context of a cyber attack.";
+        ocsf:is_array        true .
+
+ocsf:request  rdf:type       rdf:Property;
+        rdfs:label           "API Request Details";
+        rdfs:range           ocsf:RequestElements;
+        dcterms:description  "General Purpose API Request Object. See specific usage" .
+
+ocsf:cis_csc  rdf:type       rdf:Property;
+        rdfs:label           "CIS CSC";
+        rdfs:range           ocsf:CISCSC;
+        dcterms:description  "The CIS Critical Security Controls is a list of top 20 actions and practices an organization’s security team can take on such that cyber attacks or malware, are minimized and prevented.";
+        ocsf:is_array        true .
+
+ocsf:service  rdf:type       rdf:Property;
+        rdfs:label           "Service";
+        rdfs:range           ocsf:Service;
+        dcterms:description  "The service that pertains to the event." .
+
+ocsf:file_name_t  rdf:type   rdfs:Datatype;
+        rdfs:label           "File Name";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "File name. For example: <code>text-file.txt</code>.";
+        ocsf:observable      7 .
+
+ocsf:technique  rdf:type     rdf:Property;
+        rdfs:label           "Technique";
+        rdfs:range           ocsf:Technique;
+        dcterms:description  "The Technique object describes the technique ID and/or name associated to an attack, as defined by <a target='_blank' href='https://attack.mitre.org/wiki/ATT&CK_Matrix'>ATT&CK Matrix<sup>TM</sup></a>." .
+
+ocsf:reputation  rdf:type    rdf:Property;
+        rdfs:label           "Reputation Scores";
+        rdfs:range           ocsf:Reputation;
+        dcterms:description  "Contains the original and normalized reputation scores." .
+
+ocsf:rule  rdf:type          rdf:Property;
+        rdfs:label           "Rule";
+        rdfs:range           ocsf:Rule;
+        dcterms:description  "The rules that reported the events." .
+
+ocsf:xattributes  rdf:type   rdf:Property;
+        rdfs:label           "Extended Attributes";
+        rdfs:range           ocsf:Object;
+        dcterms:description  "An unordered collection of zero or more name/value pairs where each pair represents a file or folder extended attribute.</p>For example: Windows alternate data stream attributes (ADS stream name, ADS size, etc.), user-defined or application-defined attributes, ACL, owner, primary group, etc. Examples from DCS: </p><ul><li><strong>ads_name</strong></li><li><strong>ads_size</strong></li><li><strong>dacl</strong></li><li><strong>owner</strong></li><li><strong>primary_group</strong></li><li><strong>link_name</strong> - name of the link associated to the file.</li><li><strong>hard_link_count</strong> - the number of links that are associated to the file.</li></ul>" .
+
+ocsf:json_t  rdf:type        rdfs:Datatype;
+        rdfs:label           "JSON";
+        rdfs:subClassOf      rdf:JSON;
+        dcterms:description  "Embedded JSON value. A value can be a string, or a number, or true or false or null, or an object or an array. These structures can be nested. See <a target='_blank' href='https://www.json.org'>www.json.org</a>." .
+
+ocsf:packages  rdf:type      rdf:Property;
+        rdfs:label           "Software Packages";
+        rdfs:range           ocsf:SoftwarePackage;
+        dcterms:description  "List of vulnerable packages as identified by the security product";
+        ocsf:is_array        true .
+
+ocsf:kernel  rdf:type        rdf:Property;
+        rdfs:label           "Kernel";
+        rdfs:range           ocsf:KernelResource;
+        dcterms:description  "The kernel resource object that pertains to the event." .
+
+ocsf:fingerprints  rdf:type  rdf:Property;
+        rdfs:label           "Fingerprints";
+        rdfs:range           ocsf:Fingerprint;
+        dcterms:description  "An array of digital fingerprint objects.";
+        ocsf:is_array        true .
+
+ocsf:cis_controls  rdf:type  rdf:Property;
+        rdfs:label           "CIS Controls";
+        rdfs:range           ocsf:CISControl;
+        dcterms:description  "The CIS Critical Security Controls is a prioritized set of actions to protect your organization and data from cyber-attack vectors.";
+        ocsf:is_array        true .
+
+ocsf:src_endpoint  rdf:type  rdf:Property;
+        rdfs:label           "Source Endpoint";
+        rdfs:range           ocsf:NetworkEndpoint;
+        dcterms:description  "The network source endpoint." .
+
+ocsf:file_result  rdf:type   rdf:Property;
+        rdfs:label           "File Result";
+        rdfs:range           ocsf:File;
+        dcterms:description  "The result of the file change. It should contain the new values of the changed attributes." .
+
+ocsf:relay  rdf:type         rdf:Property;
+        rdfs:label           "Relay";
+        rdfs:range           ocsf:NetworkInterface;
+        dcterms:description  "The network relay that is associated with the event." .
+
+ocsf:epss  rdf:type          rdf:Property;
+        rdfs:label           "EPSS";
+        rdfs:range           ocsf:EPSS;
+        dcterms:description  "The Exploit Prediction Scoring System (EPSS) object describes the estimated probability a vulnerability will be exploited. EPSS is a community-driven effort to combine descriptive information about vulnerabilities (CVEs) with evidence of actual exploitation in-the-wild. (<a target='_blank' href='https://www.first.org/epss/'>EPSS</a>)." .
+
+ocsf:http_response  rdf:type  rdf:Property;
+        rdfs:label           "HTTP Response";
+        rdfs:range           ocsf:HTTPResponse;
+        dcterms:description  "The HTTP Response from a web server to a requester." .
+
+ocsf:vulnerability  rdf:type  rdf:Property;
+        rdfs:label           "Vulnerability";
+        rdfs:range           ocsf:VulnerabilityDetails;
+        dcterms:description  "The vulnerability object describes details related to the observed vulnerability" .
+
+ocsf:kb_articles  rdf:type   rdf:Property;
+        rdfs:label           "Knowledgebase Articles";
+        rdfs:range           ocsf:KBArticle;
+        dcterms:description  "The KB article/s related to the entity. A KB Article contains metadata that describes the patch or an update.";
+        ocsf:is_array        true .
+
+ocsf:http_cookies  rdf:type  rdf:Property;
+        rdfs:label           "HTTP Cookies";
+        rdfs:range           ocsf:HTTPCookie;
+        dcterms:description  "The cookies object describes details about HTTP cookies";
+        ocsf:is_array        true .
+
+ocsf:session  rdf:type       rdf:Property;
+        rdfs:label           "Session";
+        rdfs:range           ocsf:Session;
+        dcterms:description  "The authenticated user or service session." .
+
+ocsf:cve  rdf:type           rdf:Property;
+        rdfs:label           "CVE";
+        rdfs:range           ocsf:CVE;
+        dcterms:description  "The Common Vulnerabilities and Exposures (<a target='_blank' href='https://cve.mitre.org/'>CVE</a>)." .
+
+ocsf:timestamp_t  rdf:type   rdfs:Datatype;
+        rdfs:label           "Timestamp";
+        rdfs:subClassOf      xsd:long;
+        dcterms:description  "The timestamp format is the number of milliseconds since the Epoch 01/01/1970 00:00:00 UTC. For example <code>1618524549901</code>." .
+
+ocsf:username_t  rdf:type    rdfs:Datatype;
+        rdfs:label           "User Name";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "User name. For example: <code>john_doe</code>.";
+        ocsf:observable      4 .
+
+ocsf:compliance  rdf:type    rdf:Property;
+        rdfs:label           "Compliance";
+        rdfs:range           ocsf:Compliance;
+        dcterms:description  "The compliance object provides context to compliance findings (e.g., a check against a specific regulatory or best practice framework such as CIS, NIST etc.) and contains compliance related details." .
+
+ocsf:proxy_connection_info
+        rdf:type             rdf:Property;
+        rdfs:label           "Proxy Connection Info";
+        rdfs:range           ocsf:NetworkConnectionInformation;
+        dcterms:description  "The connection information from the proxy server to the remote server." .
+
+ocsf:container  rdf:type     rdf:Property;
+        rdfs:label           "Container";
+        rdfs:range           ocsf:Container;
+        dcterms:description  "The information describing an instance of a container. A container is a prepackaged, portable system image that runs isolated on an existing system using a container runtime like containerd." .
+
+ocsf:observables  rdf:type   rdf:Property;
+        rdfs:label           "Observables";
+        rdfs:range           ocsf:Observable;
+        dcterms:description  "The observables associated with the event or a finding.";
+        ocsf:is_array        true .
+
+ocsf:datetime_t  rdf:type    rdfs:Datatype;
+        rdfs:label           "Datetime";
+        rdfs:subClassOf      xsd:string;
+        dcterms:description  "The Internet Date/Time format as defined in <a target='_blank' href='https://www.rfc-editor.org/rfc/rfc3339.html'>RFC-3339</a>. For example <code>1985-04-12T23:20:50.52Z</code>.";
+        jsonschema:pattern   "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(Z|[\\+-]\\d{2}:\\d{2})?$" .
