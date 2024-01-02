@@ -5,7 +5,7 @@ The extension is generated using SPARQL-Generate.
 
 ## Queries
 
-### metaschema.rqg
+### metaschema.rqg (optional)
 The metaschema contains JSON Schema for each OCSF concept. This can be
 used for validation, though at the moment it is just used for queries.
 
@@ -21,4 +21,29 @@ OCSF attributes. Restrictions are added for each related attribute.
 Objects are collections of contextually related attributes in OCSF
 that represent an entity. These object classes types should be mapped
 to equivalent classes in D3FEND wherever appropriate. 
+
+### attribute.rqg
+This SPARQL-Generate function should take a source attribute in JSON
+and construct an owl:DatatypeProperty or owl:ObjectProperty based on
+the known constraints declared in OCSF via the attribute dictionary.
+
+### type.rqg
+This SPARQL-Generate function should take a source type in JSON
+and construct an rdfs:Datatype definition for it.
+
+### event.rqg
+This SPARQL-Generate function should take a source event in JSON
+and construct an owl:Class definition for it with restrictions based
+on the related attributes.
+
+### object.rqg
+This SPARQL-Generate function should take a source object in JSON
+and construct an owl:Class definition for it with restrictions based
+on the related attributes.
+
+### jsonschema.rqg
+This SPARQL-Generate function should take a source object in JSON
+Schema and construct a basic JSON Schema in RDF class representing it.
+
+
 
