@@ -13,6 +13,12 @@ used for validation, though at the moment it is just used for queries.
 The attribute dictionary contains all available OCSF attributes and their
 rdfs:range mapped to OWL classes and RDFS datatypes. 
 
+This is the main source of properties to be mapped into D3FEND because
+it declares attributes that are shared, and potentially overloaded, by
+different events and objects. This should play well with a graph
+model. The individual event and object classes can declare
+restrictions on what properties are relevant to them.
+
 ### events.rqg
 Events are declared subclasses of d3f:DigitalEvent that are related to
 OCSF attributes. Restrictions are added for each related attribute.
