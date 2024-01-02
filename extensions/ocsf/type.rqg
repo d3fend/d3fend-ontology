@@ -56,14 +56,14 @@ GENERATE <https://schema.ocsf.io/1.1.0-dev/type> ( ?source, ?typeIRI, ?typeKey )
     rdfs:subClassOf ?supertype ;
     rdfs:label ?caption ;
     dcterms:description ?description ;
-    ocsf:observable ?observable ;
-    jsonschema:maxLength ?max_len ;
-    jsonschema:pattern ?regex ;
-    ocsf:range ?range .
-        
+    # ocsf:observable ?observable ;
+    # jsonschema:maxLength ?max_len ;
+    xsd:minInclusive ?min ;
+    xsd:maxInclusive ?max ;
+    xsd:pattern ?regex .
 }
 
-ITERATOR iter:JSONPath(?source, "$", "$.caption", "$.description", "$.observable", "$.type", "$.type_name", "$.max_len", "$.regex", "$.range") AS ?this ?caption ?description ?observable ?type ?type_name ?max_len ?regex ?range
+ITERATOR iter:JSONPath(?source, "$", "$.caption", "$.description", "$.observable", "$.type", "$.type_name", "$.max_len", "$.regex", "$.range", "$.values") AS ?this ?caption ?description ?observable ?type ?type_name ?max_len ?regex ?range ?values
 
 WHERE {
   BIND (COALESCE(
@@ -82,4 +82,7 @@ WHERE {
 		 rdfs:Literal
 		 ) 
 	AS ?supertype)
+
+  BIND ( fun:JSONPath(?range, "$[0]") AS ?min )
+  BIND ( fun:JSONPath(?range, "$[1]") AS ?max )
 }

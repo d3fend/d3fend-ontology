@@ -10,13 +10,16 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX iter: <http://w3id.org/sparql-generate/iter/>
 PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 
-# rdfs:seeAlso <https://schema.ocsf.io/1.1.0-dev/dictionary>
-
 # {
-#     "$id": "https://schema.ocsf.io/attribute.schema.json",
+#     "$id": "https://schema.ocsf.io/dictionary-attribute.schema.json",
 #     "$schema": "https://json-schema.org/draft/2020-12/schema",
-#     "title": "Attribute",
+#     "title": "Dictionary Attribute",
 #     "type": "object",
+#     "required": [
+#         "caption",
+#         "description",
+#         "type"
+#     ],
 #     "properties": {
 #         "@deprecated": {
 #             "$ref": "deprecated.schema.json"
@@ -50,39 +53,61 @@ PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 #                 }
 #             }
 #         },
-#         "group": {
-#             "type": "string",
-#             "description": "The group that the attribute is a part of.",
-#             "enum": ["context", "classification", "occurrence", "primary"]
-#         },
-#         "requirement": {
-#             "type": "string",
-#             "description": "The requirement placed on the attribute for inclusion in the schema.",
-#             "enum": ["optional", "recommended", "required"]
-#         },
 #         "sibling": {
 #             "type": "string",
 #             "description": "Sibling attributes are string attributes paired with a source enum id attribute. If the source attribute maps to a defined enumeration value, the sibling attribute should be populated with the label of the enum. In the case that the source attribute is `Other`, the sibling attribute is populated with a custom label."
+#         },
+#         "type": {
+#             "type": "string",
+#             "description": "The data type for this attribute."
+#         },
+#         "is_array": {
+#             "type": "boolean",
+#             "description": "A flag used when the attribute represents an array of values rather than a single value."
 #         }
-#     }
+#     },
+#     "additionalProperties": false
 # }
 
 GENERATE <https://schema.ocsf.io/1.1.0-dev/attribute> ( ?source, ?attributeIRI, ?attributeKey ) {
-  ?attributeIRI a rdf:Property ;
+  ?attributeIRI a ?propertyType ;
     rdfs:label ?caption ;
     dcterms:description ?description ;
-    ocsf:enum ?enum ;
-    ocsf:sibling ?sibling ;
-    rdfs:range ?typeIRI ;
-    ocsf:is_array ?is_array .
+    rdfs:range ?typeIRI .
+
+  # I think these should be owl:NamedIndividual(s)?
+
+  # ocsf:LogonTypeId a owl:Class, owl:NamedIndividual ;
+
+  GENERATE {
+    ?attributeIRI jsonschema:enum ?enumCaption .
+  } ITERATOR iter:JSONListKeys(?enum) as ?enumKey
+  WHERE {
+    BIND ( fun:JSONPath(?enum, "$.{?enumKey}.caption") AS ?enumCaption )
+    BIND ( fun:JSONPath(?enum, "$.{?enumKey}.description") AS ?enumDescription )
+    # BIND ( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + fun:camelCase(?enumCaption)) AS ?enumIRI )
+  } .
 }
 
 ITERATOR iter:JSONPath(?source, "$", "$.caption", "$.description", "$.enum", "$.sibling", "$.type", "$.is_array") AS ?attribute ?caption ?description ?enum ?sibling ?type ?is_array 
 
-WHERE {
-  # BIND ( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?type) AS ?typeIRI )
-  ?typeIRI a owl:Class .
-  ?typeIRI ocsf:name ?type .
-}
+WHERE {  
+  # primitive types are mapped to owl:DatatypeProperty, all others are mapped to owl:ObjectProperty
+  
+  BIND(
+       COALESCE(IF(STRENDS(?type, "_t"), owl:DatatypeProperty, 1/0),
+		owl:ObjectProperty
+		) AS ?propertyType
+       )
 
-ORDER BY DESC(?caption)
+  OPTIONAL { ?class ocsf:name ?type . }
+
+  # If the type is primitive then use its IRI otherwise use the optionally bound class IRI
+
+  BIND(
+       COALESCE(IF(STRENDS(?type, "_t"), IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?type), 1/0),
+		?class
+		) AS ?typeIRI
+       )
+
+}
