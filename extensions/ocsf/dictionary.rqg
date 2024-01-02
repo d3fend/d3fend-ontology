@@ -10,38 +10,31 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX iter: <http://w3id.org/sparql-generate/iter/>
 PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 
-GENERATE {
+# The OCSF Attribute Dictionary defines attributes and includes references to the events and objects in which they are used. 
+
+GENERATE {  
+  # Generate the data types defined by the dictionary
   GENERATE {
     GENERATE <https://schema.ocsf.io/1.1.0-dev/type> ( ?type, ?typeIRI, ?typeKey ) .
-  } ITERATOR iter:JSONListKeys ( ?sourceTypes ) AS ?typeKey 
+  } ITERATOR iter:JSONListKeys ( ?types ) AS ?typeKey 
   WHERE {
-    BIND( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?typeKey) AS ?typeIRI )
-    BIND( fun:JSONPath( ?sourceTypes, "$.['{ ?typeKey }']") AS ?type )
-    BIND(
-	 COALESCE(IF(?type = "object", jsonschema:ObjectSchema, 1/0),
-		  rdf:Property
-		  ) AS ?typeType
-	 )
+    BIND( IRI(?versionIRI + ?typeKey) AS ?typeIRI )
+    BIND( fun:JSONPath( ?types, "$.['{ ?typeKey }']") AS ?type )
   } .
+
+  # Generate the attributes defined by the dictionary
   GENERATE {
     GENERATE <https://schema.ocsf.io/1.1.0-dev/attribute> ( ?attribute, ?attributeIRI, ?attributeKey ) .
-  } ITERATOR iter:JSONListKeys ( ?sourceAttributes ) AS ?attributeKey 
+  } ITERATOR iter:JSONListKeys ( ?attributes ) AS ?attributeKey 
   WHERE {
-    BIND( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?attributeKey) AS ?attributeIRI )
-    BIND( fun:JSONPath( ?sourceAttributes, "$.['{ ?attributeKey }']") AS ?attribute )
-    BIND(
-	   COALESCE(IF(?type = "object", jsonschema:ObjectSchema, 1/0),
-		    rdf:Property
-		    ) AS ?attributeType
-	   )
+    BIND( IRI(?versionIRI + ?attributeKey) AS ?attributeIRI )
+    BIND( fun:JSONPath( ?attributes, "$.['{ ?attributeKey }']") AS ?attribute )
   } .
 } 
 
-ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/dictionary.json> , "$", "$.caption", "$.description", "$.name", "$.attributes", "$.types.attributes" ) 
-AS ?source ?sourceCaption ?sourceDescription ?sourceName ?sourceAttributes ?sourceTypes
+ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/dictionary.json> , "$", "$.attributes", "$.types.attributes" ) 
+AS ?source ?attributes ?types
 
 WHERE {
-
+  BIND("https://schema.ocsf.io/1.1.0-dev/ontology/" AS ?versionIRI)
 }
-
-
