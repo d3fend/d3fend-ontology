@@ -15,7 +15,7 @@ dictionary:
 	java -jar sparql-generate-2.1.0.jar -q dictionary.rqg -o dictionary.ttl
 
 ocsf: 
-	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o ocsf.ttl
+	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o dataset/ocsf.ttl
 
 clean:
 	rm -Rf *ttl
