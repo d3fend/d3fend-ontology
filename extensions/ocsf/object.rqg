@@ -105,14 +105,17 @@ GENERATE <https://schema.ocsf.io/1.1.0-dev/object> ( ?source ) {
     rdfs:label ?caption ;
     ocsf:name ?name ;
     dcterms:description ?description ;
-    ocsf:observable ?observable ;
-    ocsf:constraints ?constraints ;
-    ocsf:profiles ?profiles .
+    ocsf:constraints ?constraints .
 
   GENERATE {
     ?this rdfs:subClassOf [ a owl:Restriction ;
 			    owl:onProperty ?attribute ;
 			    ?restrictionP ?restrictionO ] .
+    GENERATE {
+      ?this ocsf:profiles ?profile .
+    } ITERATOR iter:JSONPath(?profiles, "$[*]") AS ?profile .
+    
+
   } ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName 
   WHERE {
     BIND ( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?attributeName) AS ?attribute )
@@ -123,7 +126,7 @@ GENERATE <https://schema.ocsf.io/1.1.0-dev/object> ( ?source ) {
 		  ) AS ?restrictionP
 	 )
 
-    ?attribute rdfs:range ?range .
+    OPTIONAL { ?attribute rdfs:range ?range . }
     BIND(
 	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",1, 1/0),
 		  IF(fun:JSONPath(?attributes, "$.{?attributeName}.type"),IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + fun:JSONPath(?attributes, "$.{?attributeName}.type")), 1/0),
@@ -131,7 +134,9 @@ GENERATE <https://schema.ocsf.io/1.1.0-dev/object> ( ?source ) {
 		  ?range
 		  ) AS ?restrictionO
 	 )
-  } .
+
+    FILTER (BOUND(?restrictionO))
+  } .  
     
 }
 
@@ -146,4 +151,5 @@ WHERE {
        )
 
   ?extendsClass ocsf:name ?extends .
+
 }

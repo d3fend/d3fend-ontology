@@ -64,17 +64,18 @@ GENERATE <https://schema.ocsf.io/1.1.0-dev/event> ( ?source ) {
     rdfs:label ?caption ;
     ocsf:name ?name ;
     dcterms:description ?description ;
-    ocsf:observable ?observable ;
-    ocsf:constraints ?constraints ;
-    ocsf:profiles ?profiles ;
     ocsf:associations ?associations ;
-    ocsf:category ?category ;
-    ocsf:uid ?uid .
+    ocsf:category ?category .
 
   GENERATE {
     ?this rdfs:subClassOf [ a owl:Restriction ;
                             owl:onProperty ?attribute ;
                             ?restrictionP ?restrictionO ] .
+
+    GENERATE {
+      ?this ocsf:profiles ?profile .
+    } ITERATOR iter:JSONPath(?profiles, "$[*]") AS ?profile .
+
   } ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName 
   WHERE {
     BIND ( IRI("https://schema.ocsf.io/1.1.0-dev/ontology/" + ?attributeName) AS ?attribute )
@@ -94,6 +95,10 @@ GENERATE <https://schema.ocsf.io/1.1.0-dev/event> ( ?source ) {
                   ) AS ?restrictionO
 	 )
   } .
+
+  GENERATE {
+    ?this ocsf:constraints ?constraints .    
+  } WHERE {FILTER (STR(?constraints) != "\{\}")} .
 }
 
 ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
@@ -111,6 +116,7 @@ WHERE {
   OPTIONAL {
     ?extendsClass a owl:Class ;
       ocsf:name ?extends .
-  }
+  }  
+
 }
 
