@@ -17,7 +17,10 @@ dictionary:
 ocsf: 
 	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o dataset/ocsf.ttl
 
+equivalentClasses: 
+	java -jar sparql-generate-2.1.0.jar -q mappings.rqg -o mappings/d3fend-ocsf-mappings.ttl
+
 clean:
 	rm -Rf *ttl
 
-all: ocsf
+all: ocsf equivalentClasses
