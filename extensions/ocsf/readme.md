@@ -19,7 +19,7 @@ model. The individual event and object classes can declare
 restrictions on what properties are relevant to them.
 
 If the attribute is a owl:DatatypeProperty then its rdfs:range should
-be generated with the OCSF Datatype and when the class is known
+be generated with the OCSF Datatype and when the class is known.
 
 ### events.rqg
 Events are declared subclasses of d3f:DigitalEvent that are related to
@@ -53,5 +53,30 @@ on the related attributes.
 This SPARQL-Generate function should take a source object in JSON
 Schema and construct a basic JSON Schema in RDF class representing it.
 
+## Output (Goal)
+Example outputs used to steer the generation toward useful RDF constructs.
+### datatype
 
+``` turtle
+ocsf:port_t a rdfs:Datatype;
+  rdfs:label           "Port";
+  rdfs:subClassOf      xsd:integer;
+  dcterms:description  "The TCP/UDP port number. For example: <code>80</code> or <code>22</code>.";
+  xsd:maxInclusive     65535;
+  xsd:minInclusive     0 .
+```
 
+### datatype property
+
+``` turtle
+ocsf:port a owl:DatatypeProperty;
+  rdfs:label           "Port";
+  rdfs:range           ocsf:port_t;
+  dcterms:description  "The TCP/UDP port number associated with a connection. See specific usage." .
+```
+
+### object property
+
+``` turtle
+
+```

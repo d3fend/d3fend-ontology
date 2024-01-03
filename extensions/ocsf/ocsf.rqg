@@ -1,3 +1,4 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.1.0-dev/ontology/>
 PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -13,41 +14,15 @@ GENERATE {
   ?versionURI a owl:Ontology ;
     owl:imports <http://d3fend.mitre.org/ontologies/d3fend.owl> .
 
-  GENERATE {
-    # ?category a owl:Class ;
-    #   rdfs:label ?caption ;
-    #   rdfs:comment ?description ;
-    #   dcterms:identifier ?name ;
-    #   dcterms:isPartOf ?versionURI .
+  GENERATE <https://schema.ocsf.io/1.1.0-dev/dictionary> () .
+  GENERATE <https://schema.ocsf.io/1.1.0-dev/events> () .
+  GENERATE <https://schema.ocsf.io/1.1.0-dev/objects> () .
 
-    GENERATE {            
-      GENERATE {
-	?attributeURI a owl:DatatypeProperty .
-
-      } ITERATOR iter:JSONPath ( ?attribute , "$", "$.caption", "$.description", "$.uid" ) 
-      AS ?cat ?categoryCaption ?categoryDescription ?categoryUID 
-      WHERE {
-	BIND(IRI(CONCAT(?versionURI, "category/", ?name, "/attribute/", ?categoryUID)) AS ?attributeURI)
-      } .
-    } ITERATOR iter:JSONListKeys ( ?attribute ) AS ?attributeName .
-    
-  } ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/categories.json> , "$", "$.caption", "$.description", "$.attributes" ) 
-  AS ?category ?caption ?description ?attribute .
-
-  GENERATE {
-    ?attribute rdfs:label ?caption .
-
-  } ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/main/dictionary.json> , "$", "$.caption", "$.description", "$.attributes[*]" ) 
-  AS ?entry ?caption ?description ?attribute .
-
-} 
-
-
+}
 
 SOURCE <https://github.com/ocsf/ocsf-schema/raw/main/version.json> 
 AS ?version
 
 WHERE {
-  BIND(URI(CONCAT("https://schema.ocsf.io/", fun:JSONPath(?version, "$.version"), "/ontology/")) AS ?versionURI)
-  BIND(<http://www.iana.org/assignments/media-types/application/json> AS ?json)
+  BIND(IRI(CONCAT("https://schema.ocsf.io/", fun:JSONPath(?version, "$.version"), "/ontology/")) AS ?versionURI)
 }

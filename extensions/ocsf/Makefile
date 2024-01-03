@@ -5,9 +5,6 @@ install-sparql-generate:
 # Put in the bin/jar directory
 install-deps: install-sparql-generate
 
-metaschema: 
-	java -jar sparql-generate-2.1.0.jar -q metaschema.rqg -o metaschema.ttl
-
 events: 
 	java -jar sparql-generate-2.1.0.jar -q events.rqg -o events.ttl
 
@@ -17,7 +14,10 @@ objects:
 dictionary: 
 	java -jar sparql-generate-2.1.0.jar -q dictionary.rqg -o dictionary.ttl
 
+ocsf: 
+	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o ocsf.ttl
+
 clean:
 	rm -Rf *ttl
 
-all: metaschema
+all: ocsf
