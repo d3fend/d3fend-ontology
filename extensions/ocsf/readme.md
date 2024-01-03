@@ -83,7 +83,7 @@ ocsf:port a owl:DatatypeProperty;
 ### todo
 How to represent that an ocsf:attack can be related to a
 d3f:OffensiveTactic, d3f:OffensiveTechnique, etc. The sub-techniques
-are represented by subclasses of the top leveel offensive techniques
+are represented by subclasses of the top level offensive techniques
 in D3FEND. So maybe the inference should be any d3f:ATTACKThing?
 ``` turtle
 ocsf:attack rdfs:range d3f:ATTACKThing . 
