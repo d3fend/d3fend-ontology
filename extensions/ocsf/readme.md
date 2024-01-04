@@ -103,3 +103,20 @@ ocsf:attack rdfs:range d3f:ATTACKThing .
 # tactic
 ?something ocsf:attack d3f:LateralMovement .
 ```
+
+## Bugs
+
+* Generating multiples of the same restriction -- should this be
+  filtered with another query?
+
+``` turtle
+rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                       owl:onProperty      ocsf:status_id;
+                       owl:someValuesFrom  ocsf:integer_t
+                     ];
+rdfs:subClassOf      [ rdf:type            owl:Restriction;
+                       owl:onProperty      ocsf:status_id;
+                       owl:someValuesFrom  ocsf:integer_t
+                     ];
+```
+
