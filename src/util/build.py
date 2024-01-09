@@ -1,6 +1,6 @@
 from rdflib import Graph, Namespace, URIRef
 
-PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public.owl"
+PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public-with-controls.owl"
 PUBLIC_DEST_DIR = "build/"
 
 DEFAULT_CONTEXT = {
@@ -35,24 +35,23 @@ def log(message, error=False, info=False):
         print(colors.OKGREEN + message)
 
 
-def get_graph():
+def get_graph(filename=PUBLIC_ONTOLOGY_FILEPATH):
     g = Graph()
-    filename = PUBLIC_ONTOLOGY_FILEPATH
     g.parse(filename)
     log(filename)
     log(f"The graph has {len(g)} triples", info=True)
     return g
 
 
+_base = "http://d3fend.mitre.org/ontologies/d3fend.owl"
+_xmlns = _base + "#"
+xmlns = Namespace(_xmlns)
+
 if __name__ == "__main__":
-    output_fname = "d3fend-public"
+    output_fname = "d3fend-public-with-controls"
 
     g = get_graph()
 
-    _base = "http://d3fend.mitre.org/ontologies/d3fend.owl"
-    _xmlns = _base + "#"
-
-    xmlns = Namespace(_xmlns)
     g.namespace_manager.bind("", xmlns, override=True, replace=True)
     ## Unbind may be indicated if desire serialization to manifest
     ## 'd3f:' prefix instead of ':' (i.e., empty prefix). See

@@ -2,13 +2,14 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION :=0.10.0-BETA-2
+D3FEND_VERSION :=0.13.0-BETA-1
+D3FEND_RELEASE_DATE :="2023-10-30T00:00:00.000Z"
 
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL := "https://d3fend.pages.mitre.org/deps/robot/robot.jar"
+ROBOT_URL := "https://github.com/ontodev/robot/releases/download/v1.9.0/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -54,22 +55,22 @@ db-delete-prod:
 	@curl -s -o /dev/null -w "deleted ${DB_PROD}${DB_REST_PATH} %{http_code}\n"  ${DB_PROD}${DB_REST_PATH_BD} --data-urlencode "update=DROP ALL;"
 	@curl -s -o /dev/null -w "deleted ${DB_PROD}${DB_REST_PATH_BD_INF} %{http_code}\n" ${DB_PROD}${DB_REST_PATH_BD_INF} --data-urlencode "update=DROP ALL;"
 
-db-sync-local: db-delete-local db-load-local
-
 db-load-local:
-	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_LOCAL}${DB_REST_PATH}
-	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_LOCAL}${DB_REST_PATH_INF}
+	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_LOCAL}${DB_REST_PATH}
+	@curl -s -o /dev/null -w "loaded ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_LOCAL}${DB_REST_PATH_INF}
 
 db-load-prod:
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_PROD}${DB_REST_PATH_BD}
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file dist/public/d3fend.owl ${DB_PROD}${DB_REST_PATH_BD_INF}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_PROD}${DB_REST_PATH_BD}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${DB_PROD}${DB_REST_PATH_BD_INF}
 
 db-sync-prod: db-delete-prod db-load-prod
 
+db-sync-local: db-delete-local db-load-local
+
 db-load-prod-restore:
-	curl -D- -H 'Content-Type:application/rdf+xml' -v -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH_BD}
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH}
-	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/rdf+xml'  -X POST --upload-file "BACKUPFILE".owl ${DB_PROD}${DB_REST_PATH_INF}
+	curl -D- -H 'Content-Type:application/x-turtle' -v -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH_BD}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH}
+	@curl -s -o /dev/null -w "loaded ${DB_PROD}${DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file "BACKUPFILE".ttl ${DB_PROD}${DB_REST_PATH_INF}
 
 # run make-onto again at end to rebuild the csv with latest data
 db-sync-all: db-delete-local db-load-local db-delete-prod db-load-prod ## sync local and prod dbs with current ontology
@@ -108,8 +109,13 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 	$(END)
 
 download-attack:
-	mkdir data
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-10.0.json
+	mkdir -p data
+	echo "Version: $(ATTACK_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
+	$(END)
+
+update-attack:
+	bash src/util/update_attack.sh
 	$(END)
 
 # See also how to configure one's own checks and labels for checks for report:
@@ -183,6 +189,8 @@ build/d3fend-prefixes.json: builddir ## create d3fend-specific prefix file for u
 build/d3fend-with-header.owl:	src/ontology/d3fend-protege.ttl
 	./bin/robot annotate --input src/ontology/d3fend-protege.ttl \
 		--version-iri "http://d3fend.mitre.org/ontologies/d3fend/${D3FEND_VERSION}/d3fend.owl" \
+		--typed-annotation "http://d3fend.mitre.org/ontologies/d3fend.owl#release-date" ${D3FEND_RELEASE_DATE} xsd:dateTime \
+		--annotation owl:versionInfo ${D3FEND_VERSION} \
 		--output build/d3fend-with-header.owl
 	$(END)
 
@@ -264,8 +272,9 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 	$(END)
 
 build/d3fend.csv: build/d3fend-public.owl ## make D3FEND csv, not part of build or all targets
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/makecsv.py
-	$(END)
+	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/csv_data.rq build/d3fend.csv
+
+	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/cleancsv.py
 
 build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
@@ -279,12 +288,34 @@ build/d3fend-public-mapped.owl: build/d3fend-public.owl
 	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
 	$(END)
 
+build/d3fend-public.ttl: build/d3fend-public.owl
+	./bin/robot convert --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" --input build/d3fend-public.owl --output build/d3fend-public.ttl
+
 build/d3fend-inferred-relationships.csv:
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
 	$(END)
 
-build: 	builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
-	pipenv run python3 src/util/build.py # expects a build/d3fend-public.owl file
+build/cci-to-d3fend-mapping.ttl: build/d3fend-public.owl
+	pipenv run python extensions/cci/create_cci_mappings.py
+	$(END)
+
+build/sp800-53r5-control-to-d3fend-mapping.ttl: build/d3fend-public.owl
+	pipenv run python extensions/nist/create_nist_mappings.py
+	$(END)
+
+build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl ## build D3FEND Extensions
+	cat build/d3fend-public.ttl > build/d3fend-public-with-controls.ttl
+	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
+	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
+	pipenv run ttlfmt build/d3fend-public-with-controls.ttl
+	./bin/robot convert --input build/d3fend-public-with-controls.ttl --output build/d3fend-public-with-controls.owl
+	$(END)
+
+build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+	$(END)
+
+build: build/ontology # build the D3FEND Ontology and Extensions
+	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
 	$(END)
 
 reportsdir:
@@ -299,16 +330,16 @@ distdir:
 	$(END)
 
 test-load-owl:	reportsdir build/d3fend-public.owl ## Used to check d3fend.owl file as parseable and useable for DL profile.
-	./bin/robot validate-profile --profile DL --input build/d3fend-public.owl --output reports/test-owl-validation.txt > reports/test-owl-validation-stdout.txt
+	./bin/robot validate-profile --profile DL --input build/d3fend-public-with-controls.owl --output reports/test-owl-validation.txt > reports/test-owl-validation-stdout.txt
 	$(END)
 
 test-load-ttl:	reportsdir build/d3fend-public.ttl ## Used to check d3fend.ttl file as parseable and useable for DL profile.
-	./bin/robot validate-profile --profile DL --input build/d3fend-public.ttl --output reports/test-ttl-validation.txt > reports/test-ttl-validation-stdout.txt
+	./bin/robot validate-profile --profile DL --input build/d3fend-public-with-controls.ttl --output reports/test-ttl-validation.txt > reports/test-ttl-validation-stdout.txt
 	$(END)
 
 test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
 #	./bin/robot validate-profile --profile DL --input d3fend.json --output reports/json-validation.txt # JSON-LD serialized by RDFlib not read by ROBOT or Protege
-	@pipenv run python3 src/tests/test_load_json.py build/d3fend-public.json > reports/test-load-json.txt
+	@pipenv run python3 src/tests/test_load_json.py build/d3fend-public-with-controls.json > reports/test-load-json.txt
 	$(END)
 
 test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
@@ -316,25 +347,28 @@ test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and use
 	$(END)
 
 test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable for jena libraries
-	@${JENA_PATH}/riot --validate build/d3fend-public.owl > reports/test-owl-jena-validation.txt
+	@${JENA_PATH}/riot --validate build/d3fend-public-with-controls.owl > reports/test-owl-jena-validation.txt
 	$(END)
 
+test-reasoner:
+	./bin/robot reason --reasoner ELK --input build/d3fend-public-with-controls.ttl -D reports/test-reasoner-results.ttl
 
-test:	test-load-owl test-load-ttl test-load-json test-load-full test-jena ## Checks all ontology build files as parseable and DL-compatible.
+test:	test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
 	$(END)
 
 dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
-	cp build/d3fend-public.owl dist/public/d3fend.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
-	cp build/d3fend-public.ttl dist/public/d3fend.ttl
-	cp build/d3fend-public.json dist/public/d3fend.json
+	cp build/d3fend-public-with-controls.ttl dist/public/d3fend.ttl # For now, roll in the CCI & NIST controls extensions to base .ttl release
+	cp build/d3fend-public-with-controls.owl dist/public/d3fend.owl # For now, roll in the CCI & NIST controls extensions to base .owl release
+	cp build/d3fend-public-with-controls.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
-	chmod 644 dist/public/d3fend.ttl
+	chmod 644 dist/public/d3fend.ttl dist/public/d3fend.owl
 	$(END)
 
-all: build dist test ## build all, check for unallowed content, and test load files
+#all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
+all: build extensions dist test  ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version
@@ -344,7 +378,7 @@ print-new-techniques: build/d3fend.csv ## compare local build against current pu
 help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-format:
+format: ## Format ttl to canonical, stable format for effective diffing (accomplished before any commits)
 	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
 
 # requires https://pre-commit.com/#install

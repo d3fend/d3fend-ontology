@@ -22,7 +22,7 @@ to many lines in the file. This enables efficient code reviews.
 ## System Dependencies
 
 - java 15.0.1, other versions may work however
-- python 3.8
+- python 3.9
 - python pipenv package with `pipenv` in your PATH
 
 ## Building
@@ -90,6 +90,6 @@ MITRE hereby grants express written permission to use, reproduce, distribute, mo
 
 ## NOTICE
 
-© 2022 The MITRE Corporation.
+© The MITRE Corporation
 
-Approved for Public Release; Distribution Unlimited #21-3978.
+Approved for Public Release; Distribution Unlimited #21-3978 and #23-1207.
