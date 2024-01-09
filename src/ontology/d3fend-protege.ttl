@@ -3686,6 +3686,54 @@ Another approach passively inspects network traffic with application protocol an
 Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.""" ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/image" .
 
+:ContainerImageAnalysis a :AssetVulnerabilityEnumeration,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Container Image Analysis" ;
+    rdfs:subClassOf :AssetVulnerabilityEnumeration,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :ContainerImage ] ;
+    :d3fend-id "D3-CIA" ;
+    :definition "Analyzing a Container Image with respect to a set of policies." ;
+    :kb-article """## How it works
+
+Container images are standalone collections of the executable code and
+content that are used to populate a container environment.
+They are usually created by either building a container from scratch or by
+building on top of an existing image pulled from a repository.
+
+Throughout the container build workflow,
+images should be scanned to identify:
+
+- outdated libraries,
+- known vulnerabilities,
+- or misconfigurations, such as insecure ports or permissions.
+
+Scanning should also provide the flexibility to disregard false positives
+for vulnerability detection where knowledgeable
+cybersecurity professionals have deemed alerts to be inaccurate.
+
+One approach to implementing image scanning is to use an admission controller
+to block deployments if the image does not comply with the organization's
+security policies.
+
+An admission controller is a Container Orchestration feature that can intercept and
+process requests to the Container Orchestration API prior to persistence of the object,
+but after the request is authenticated and authorized.
+A webhook can be implemented to scan any image before it is deployed in the orchestrator.
+This admission controller
+
+## Considerations
+
+* Image scanning is key to ensuring deployed containers are secure.
+* Using trusted repositories to build containers is a critical part of the container build workflow.
+* This technique does not necessarly prevent the build process to add insecure or unsecured
+  files to the Image.
+""" ;
+    :kb-reference :Reference-ContainerImageAnalysis ;
+    :synonym "Container Image Scanning" .
+
 :ContainerOrchestrationSoftware a owl:Class ;
     rdfs:label "Container Orchestration Software" ;
     rdfs:subClassOf :ServiceApplication ;
@@ -25985,6 +26033,17 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-author "Microsoft" ;
     :kb-reference-of :UserAccountPermissions ;
     :kb-reference-title "Configure User Access Control and Permissions" .
+
+:Reference-ContainerImageAnalysis a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Container Image Analysis" ;
+    :has-link "https://media.defense.gov/2021/Aug/03/2002820425/-1/-1/0/CTR_Kubernetes_Hardening_Guidance_1.1_20220315.PDF"^^xsd:anyURI ;
+    :kb-abstract """Container Images can contain unneeded, unsecured or insecure files.
+        By analyzing the container image, we can identify whether it respects
+        a specific set of predefined policies.""" ;
+    :kb-author "National Security Agency" ;
+    :kb-reference-of :ContainerImageAnalysis ;
+    :kb-reference-title "Kubernetes Hardening Guide" .
 
 :Reference-CreateRemoteProcessViaWMIC_MITRE_Other a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
