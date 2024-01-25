@@ -3089,8 +3089,7 @@ Google Developers. (n.d.). Clustering Algorithms. [Link](https://developers.goog
     rdfs:label "Certificate-based Authentication" ;
     rdfs:subClassOf :CredentialHardening ;
     :d3fend-id "D3-CBAN" ;
-    :definition "Requiring a digital certificate in order to authenticate a user." ;
-    :kb-reference :Reference-TokenlessBiometricTransactionAuthorizationMethodAndSystem .
+    :definition "Requiring a digital certificate in order to authenticate a user." .
 
 :CertificateAnalysis a :CertificateAnalysis,
         :NetworkTrafficAnalysis,
@@ -3127,18 +3126,16 @@ TLS certificates are designed to expire to ensure that the cryptographic keys ar
             owl:onProperty :authenticates ;
             owl:someValuesFrom :PublicKey ] ;
     :d3fend-id "D3-CP" ;
-    :definition "Persisting either a server's X509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections." ;
+    :definition "Persisting either a server's X.509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections." ;
     :kb-article """## How it works
 Pinning allows for a trusted copy of a certificate or public key to be associated with a server and thus reducing the likelihood of frequently visited sites being subjected to man-in-the-middle attacks. Certificates or public keys can be pinned after a trusted connection has been established or the pinning can be preloaded in an application, which is the preferred method for mobile applications.
 
 Pinning can take the form of certificate pinning or public key pinning.
 
 ## Forms of Pinning
-* Certificate Pinning
-Certificate Pinning (CP) allows for the client to verify the X509 certificate with a preloaded certificate. Typically, this is involves storing a hash of the certificate and using the stored hash for comparison to the hash of the certificate submitted during the SSL handshake.
+* Certificate Pinning (CP) allows for the client to verify the X.509 certificate with a preloaded certificate. Typically, this is involves storing a hash of the certificate and using the stored hash for comparison to the hash of the certificate submitted during the SSL handshake.
 
-* Public Key Pinning
-Public Key Pinning (PKP) requires the extraction of a public key from server's certificate. The stored public key is compared to the server's presented public key. A public key is expected to rotate less frequently than an X509 certificate and is generally favored over certificate pinning.
+* Public Key Pinning (PKP) requires the extraction of a public key from server's certificate. The stored public key is compared to the server's presented public key. A public key is expected to rotate less frequently than an X.509 certificate and is generally favored over certificate pinning.
 
 An extension of PKP is Subject Public Key Information Pinning (SPKI) includes public key pinning plus additional information for SSL connections. The additional information can include preferred algorithms.
 
@@ -3149,7 +3146,8 @@ An extension of PKP is Subject Public Key Information Pinning (SPKI) includes pu
 * Servers can become unavailable if pinned objects are set and not updated with the rotated identities. This may require a pinning strategy to be developed.
 * The application of this technique within web browser applications has been [deprecated](https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning) by  popular web browser developers. They now favor certificate analysis via public certificate transparency logs, and the EXPECT-CT HTTP header.""" ;
     :kb-reference :Reference-CertificateAndPublicKeyPinning,
-        :Reference-End-to-endCertificatePinning .
+        :Reference-End-to-endCertificatePinning,
+        :Reference-PublicKeyPinningExtensionForHTTP .
 
 :CertificateTrustStore a owl:Class ;
     rdfs:label "Certificate Trust Store" ;
@@ -3687,6 +3685,54 @@ Another approach passively inspects network traffic with application protocol an
 
 Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.""" ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/image" .
+
+:ContainerImageAnalysis a :AssetVulnerabilityEnumeration,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Container Image Analysis" ;
+    rdfs:subClassOf :AssetVulnerabilityEnumeration,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :ContainerImage ] ;
+    :d3fend-id "D3-CIA" ;
+    :definition "Analyzing a Container Image with respect to a set of policies." ;
+    :kb-article """## How it works
+
+Container images are standalone collections of the executable code and
+content that are used to populate a container environment.
+They are usually created by either building a container from scratch or by
+building on top of an existing image pulled from a repository.
+
+Throughout the container build workflow,
+images should be scanned to identify:
+
+- outdated libraries,
+- known vulnerabilities,
+- or misconfigurations, such as insecure ports or permissions.
+
+Scanning should also provide the flexibility to disregard false positives
+for vulnerability detection where knowledgeable
+cybersecurity professionals have deemed alerts to be inaccurate.
+
+One approach to implementing image scanning is to use an admission controller
+to block deployments if the image does not comply with the organization's
+security policies.
+
+An admission controller is a Container Orchestration feature that can intercept and
+process requests to the Container Orchestration API prior to persistence of the object,
+but after the request is authenticated and authorized.
+A webhook can be implemented to scan any image before it is deployed in the orchestrator.
+This admission controller
+
+## Considerations
+
+* Image scanning is key to ensuring deployed containers are secure.
+* Using trusted repositories to build containers is a critical part of the container build workflow.
+* This technique does not necessarly prevent the build process to add insecure or unsecured
+  files to the Image.
+""" ;
+    :kb-reference :Reference-ContainerImageAnalysis ;
+    :synonym "Container Image Scanning" .
 
 :ContainerOrchestrationSoftware a owl:Class ;
     rdfs:label "Container Orchestration Software" ;
@@ -13964,7 +14010,7 @@ Administrators collect information on network nodes in their architecture using 
 
 ## Considerations
 * Scanning and probing techniques using mapping tools can result in side effects to information technology (IT) and operational technology (OT) systems.
-* An adversary conducting network enumeration may engage in activities that parallel normal hardware inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
+* An adversary conducting network enumeration may engage in activities that parallel normal network node inventorying activities, but would require escalating to admin privileges for most of the operations requiting administrative tools
 
 ## Examples
 * Link-layer discovery
@@ -16208,8 +16254,9 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     rdfs:seeAlso <http://dbpedia.org/resource/Read_(system_call)> .
 
 :Reconnaissance a owl:Class ;
+    rdfs:label "Reconnaissance" ;
     rdfs:subClassOf :OffensiveTactic ;
-    :display-order 0 .
+    :display-order -1 .
 
 :ReconnaissanceTechnique a owl:Class ;
     rdfs:label "Reconnaissance Technique" ;
@@ -16478,14 +16525,15 @@ This technique analyzes a user's resource accesses by comparing the user's recen
 
 :ResourceDevelopment a owl:Class ;
     rdfs:label "Resource Development" ;
-    rdfs:subClassOf :OffensiveTactic .
+    rdfs:subClassOf :OffensiveTactic ;
+    :display-order 0 .
 
 :ResourceDevelopmentTechnique a owl:Class ;
     rdfs:label "Resource Development Technique" ;
     rdfs:subClassOf :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Reconnaissance ] .
+            owl:someValuesFrom :ResourceDevelopment ] .
 
 :ResourceFork a owl:Class ;
     rdfs:label "Resource Fork" ;
@@ -17111,7 +17159,6 @@ Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Advers
 :Server a owl:Class ;
     rdfs:label "Server" ;
     rdfs:subClassOf :Host,
-        :NetworkResource,
         [ a owl:Restriction ;
             owl:onProperty :manages ;
             owl:someValuesFrom :ServiceApplicationProcess ],
@@ -23588,7 +23635,7 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
     :d3fend-id "D3-TAAN" ;
     :definition "Validating that server components of a messaging infrastructure are authorized to send a particular message." ;
     :kb-article """## How it works
-Transfer Agent Authentication can be accomplished in different ways for depending on the protocol. In Email,  Sender Policy Framework (SPF), Domain Key Identified Email (DKIM) or Domain-based Message Authentication Reporting and Conformance (DMARC) to validate sender domain ownership.
+Transfer Agent Authentication can be accomplished in different ways for depending on the protocol. In Email, Sender Policy Framework (SPF), Domain Key Identified Email (DKIM) or Domain-based Message Authentication Reporting and Conformance (DMARC) are used to validate sender domain ownership.
 
 ### SPF
 SPF protocol allows for mail domain owners to specify the mail servers they use when sending email. SPF requires the use of SPF records published in the Domain Name System (DNS). The records record the authorized IPs for email senders. SPF uses the return-path address for domain IP identification. Email that is forwarded may cause the return-path validation problems.
@@ -24146,6 +24193,11 @@ It is a combination of VPN hardware and software technologies that provides VPN 
         "Logic present in hardware or software which enables an attacker to violate the intended security policy." ;
     :definition "A weakness is a condition in a software, firmware, hardware, or service component that, under certain circumstances, could contribute to the introduction of vulnerabilities." .
 
+:WebAPIResource a owl:Class ;
+    rdfs:label "Web API Resource" ;
+    rdfs:subClassOf :WebResource ;
+    :definition "A web API resource is an API resource identified by a Uniform Resource Identifier (URI) and made available from one host to another host via a web protocol and across a network or networks." .
+
 :WebApplicationFirewall a owl:Class ;
     rdfs:label "Web Application Firewall" ;
     skos:altLabel "WAF" ;
@@ -24169,18 +24221,23 @@ It is a combination of VPN hardware and software technologies that provides VPN 
 
 :WebFileResource a owl:Class ;
     rdfs:label "Web File Resource" ;
-    skos:altLabel "Web Resource" ;
     rdfs:subClassOf :NetworkFileResource,
+        :WebResource,
         [ a owl:Restriction ;
             owl:onProperty :addressed-by ;
             owl:someValuesFrom :URL ] ;
-    :definition "A web resource is a resource identified by a Uniform Resource Identifier (URI) and made available from one host to another host via a web protocol and across a network or networks." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Web_resource> .
+    :definition "A web file resource is a file resource identified by a Uniform Resource Identifier (URI) and made available from one host to another host via a web protocol and across a network or networks." .
 
 :WebNetworkTraffic a owl:Class ;
     rdfs:label "Web Network Traffic" ;
     rdfs:subClassOf :NetworkTraffic ;
     :definition "Web network traffic is network traffic that uses a standard web protocol." .
+
+:WebResource a owl:Class ;
+    rdfs:label "Web Resource" ;
+    rdfs:subClassOf :NetworkResource ;
+    :definition "A web resource is a resource identified by a Uniform Resource Identifier (URI) and made available from one host to another host via a web protocol and across a network or networks." ;
+    rdfs:seeAlso "http://dbpedia.org/resource/Web_resource" .
 
 :WebResourceAccess a owl:Class ;
     rdfs:label "Web Resource Access" ;
@@ -25977,6 +26034,17 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-reference-of :UserAccountPermissions ;
     :kb-reference-title "Configure User Access Control and Permissions" .
 
+:Reference-ContainerImageAnalysis a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Container Image Analysis" ;
+    :has-link "https://media.defense.gov/2021/Aug/03/2002820425/-1/-1/0/CTR_Kubernetes_Hardening_Guidance_1.1_20220315.PDF"^^xsd:anyURI ;
+    :kb-abstract """Container Images can contain unneeded, unsecured or insecure files.
+        By analyzing the container image, we can identify whether it respects
+        a specific set of predefined policies.""" ;
+    :kb-author "National Security Agency" ;
+    :kb-reference-of :ContainerImageAnalysis ;
+    :kb-reference-title "Kubernetes Hardening Guide" .
+
 :Reference-CreateRemoteProcessViaWMIC_MITRE_Other a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2016-03-002: Create Remote Process via WMIC - MITRE" ;
@@ -27605,6 +27673,16 @@ Powershell can be used to hide monitored command line execution such as:
     :kb-organization "Microsoft" ;
     :kb-reference-of :ProcessSuspension ;
     :kb-reference-title "PsSuspend" .
+
+:Reference-PublicKeyPinningExtensionForHTTP a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Public Key Pinning Extension for HTTP" ;
+    :has-link "https://datatracker.ietf.org/doc/html/rfc7469"^^xsd:anyURI ;
+    :kb-abstract "RFC 7469 describes an HTTP extension that allows web host operators to instruct user agents to remember ('pin') the hosts' cryptographic identities over a period of time. This decreases the risk of MITM attacks due to compromised Certificate Authorities." ;
+    :kb-author "C. Evans, C. Palmer, R. Sleevi" ;
+    :kb-organization "Internet Engineering Task Force (IETF)" ;
+    :kb-reference-of :CertificatePinning ;
+    :kb-reference-title "Public Key Pinning Extension for HTTP" .
 
 :Reference-QualysNetworkPassiveSensorGettingStartedGuide a owl:NamedIndividual,
         :UserManualReference ;
