@@ -13,13 +13,36 @@
 #does not appear to be necessary:
 @base <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
 
-# <http://d3fend.mitre.org/ontologies/d3fend.owl#> rdf:type owl:Ontology .
-#    owl:imports <http://www.w3.org/2002/07/owl> .
-#    owl:imports <https://www.w3.org/2009/08/skos-reference/skos.rdf> .
-#    owl:imports <https://www.dublincore.org/specifications/bibo/bibo/bibo.rdf.xml> ;
-    # dc namespace uri does not actually work...
-#    owl:imports <http://purl.org/dc/terms> .
+# No imports required and none specified on d3fend-protege.ttl, so
+# imports here are different territory and depnding on imports can
+# lead to complications.
 
+# The assertions in this assertion about d3fend NamedIndividual tha
+# is an owl:Ontology, with all imports seen below (some commented
+# out, when used in merge creates an ontology that appears to have
+# conflicts; in any event, errors are thrown when read by the OWLAPI
+# as evidenced by Protege's log and resuling behavior.  When the
+# merged ontology from ROBOT (defend-public-merged.ttl) is loaded
+# into Protege, the OWLAPI
+# gets confused in handling the result of the merge (resolving
+# duplicates and/or inconsistent axioms?) and throws errors that
+# result in Error(n) classes being generated (e.g., Error1, Error4,
+# etc.)  The lack of useful debuggin information is a problelm with
+# OWLAPI and has been noted for some imports that repeat, esp. noted
+# in some circular references/imports. [The parsing process is complex
+# and some guessing on clues can be made during loads to avoid
+# multiple passes.]
+
+# In theory though, merging two files for the same ontology---that
+# both reference the same ontology (same NamedIndividual)---is
+# supported by ROBOT.
+
+<http://d3fend.mitre.org/ontologies/d3fend.owl#> rdf:type owl:Ontology ;
+     owl:imports <https://www.w3.org/2009/08/skos-reference/skos.rdf> . # Only fully clean import.  Import with owl import generates 3 errors. By itself, no errors, warns, and Pellet reasoner completes.
+#    owl:imports <http://purl.org/dc/terms> . # Import with owl import generates 3 errors.  By itself, no errors, 14 warns on "illegal redeclaration [can't be annotationproperty and namedindividual", and Pellet reasoner completes
+#    owl:imports <http://www.w3.org/2002/07/owl> . # By itself, three "Entity not properly recognized... owlapi/error#Error1... DataType-colored errors on import, no warns.
+#    owl:imports <https://www.dublincore.org/specifications/bibo/bibo/bibo.rdf.xml> . # Import with owl import generates 9 errors. By itself, two warns on "illegal redeclarations of entities for description and title", and Pellet reasoner completes.  With skos and bibo alone, no errors, but all the the dc/terms warnings about illegal redeclaration [can't be annotationproperty and namedindividual" come through, and Pellet reasonser completes.
+														
 
 ################################################################################
 ####
@@ -37,6 +60,18 @@
     :comment "maps to skos:definition" ;
     owl:sameAs skos:definition .
 
+
+################################################################################
+######## Dublic Core Mappings:
+
+# Cannot make d3f:contributor sameAs/equiv to dcterms:contributor, as
+# dcterms:contributor is just generic Property and not ObjectProperty,
+# might work for AnnotationProperty?
+# 
+##  d3f:contributor
+# :contributor rdf:type owl:ObjectProperty ;
+#     :comment "mapped to dc" ;
+#     owl:sameAs dcterms:contributor .
 
 
 # ################################################################################
