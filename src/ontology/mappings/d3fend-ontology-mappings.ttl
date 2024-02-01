@@ -1,5 +1,5 @@
 @prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
-@prefix dc: <http://purl.org/dc/elements/> .
+# @prefix dc: <http://purl.org/dc/elements/> .
 # not necessary:
 @prefix d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -13,12 +13,12 @@
 #does not appear to be necessary:
 @base <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
 
-<http://d3fend.mitre.org/ontologies/d3fend.owl#> rdf:type owl:Ontology ;
-    owl:imports <http://www.w3.org/2002/07/owl> ;
-    owl:imports <https://www.w3.org/2009/08/skos-reference/skos.rdf> ;
-    owl:imports <https://www.dublincore.org/specifications/bibo/bibo/bibo.rdf.xml> ;
+# <http://d3fend.mitre.org/ontologies/d3fend.owl#> rdf:type owl:Ontology .
+#    owl:imports <http://www.w3.org/2002/07/owl> .
+#    owl:imports <https://www.w3.org/2009/08/skos-reference/skos.rdf> .
+#    owl:imports <https://www.dublincore.org/specifications/bibo/bibo/bibo.rdf.xml> ;
     # dc namespace uri does not actually work...
-    owl:imports <http://purl.org/dc/terms> .
+#    owl:imports <http://purl.org/dc/terms> .
 
 
 ################################################################################
@@ -33,42 +33,41 @@
 ######## SKOS Mappings:
 
 ##  d3f:definition
-:definition rdf:type owl:ObjectProperty ;
-    :comment "mapped to skos" .
-    # owl:equivalentProperty skos:definition . ## Isn't handled well by OWLAPI/Robot; and capturing this semantic equivalence is unused, so comment enough; ontologizing not important at this time.
+:definition rdf:type owl:AnnotationProperty ;
+    :comment "maps to skos:definition" ;
+    owl:sameAs skos:definition .
 
 
-################################################################################
-######## BIBO Mappings:
 
-##  d3f:cites
+# ################################################################################
+# ######## BIBO Mappings:
+
+# ##  d3f:cited-by
+:cited-by rdf:type owl:ObjectProperty ;
+    owl:sameAs bibo:citedBy .
+
+# ##  d3f:cites
 :cites rdf:type owl:ObjectProperty ;
-    :comment "mapped to bibo" ;
-    owl:equivalentProperty bibo:cites .
+     :comment "mapped to bibo" ;
+     owl:sameAs bibo:cites ;
+     rdfs:subPropertyOf dcterms:references .
 
-##  d3f:producer
+# ##  d3f:producer
 :producer rdf:type owl:ObjectProperty ;
-    :comment "mapped to bibo" ;
-    owl:equivalentProperty bibo:producer .
+     :comment "mapped to bibo" ;
+     owl:sameAs bibo:producer .
 
-##  d3f:identifier
+# ##  d3f:identifier
 :identifier rdf:type owl:DatatypeProperty ;
     :comment "mapped to bibo" ;
-    owl:equivalentProperty bibo:identifier .
+    owl:sameAs bibo:identifier .
 
-##  d3f:license
+# ##  d3f:license
 :license rdf:type owl:ObjectProperty ;
     rdfs:subPropertyOf bibo:rights .
 
 ##  d3f:contributor
 :contributor rdf:type owl:ObjectProperty ;
     :comment "mapped to bibo; also shadows a dublin code property" .
-    # owl:equivalentProperty bibo:contributor . ## Isn't handled well by OWLAPI/Robot; and capturing this semantic equivalence is unused, so comment enough; ontologizing not important at this time.
+    owl:sameAs bibo:contributor . ## Isn't handled well by OWLAPI/Robot; and capturing this semantic equivalence is unused, so comment enough; ontologizing not important at this time.
 
-##  d3f:cites
-:cites rdf:type owl:ObjectProperty ;
-    rdfs:subPropertyOf bibo:references . 
-
-##  d3f:cited-by
-:cited-by rdf:type owl:ObjectProperty ;
-    owl:equivalentProperty bibo:citedBy .
