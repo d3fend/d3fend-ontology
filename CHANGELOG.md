@@ -1,5 +1,11 @@
 # D3FEND Change Log
 
+## Version - 0.14.0 - 2024-01-26
+
+ - New Container Image Analysis technique. (#37)
+ - Updates refereces to Certificate Pinning and addtional minor bugfixes. (#207)
+ - Added digital artifact for T1542. (#211)
+
 
 ## Version - 0.13.0-BETA-1 - 2023-10-30
 
