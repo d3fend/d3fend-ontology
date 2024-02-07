@@ -22,6 +22,10 @@
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/01163606-v> ;
     :definition "x abuses y: The entity x applies an artifact y to a wrong thing or person; x applies y badly or incorrectly." .
 
+:access-mediated-by a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :mediates-access-to .
+
 :accessed-by a owl:ObjectProperty ;
     rdfs:label "accessed-by" ;
     rdfs:subPropertyOf :associated-with,
@@ -425,6 +429,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x has-account y: The subject x has ownership or possession of some account y." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/02209474-v> .
 
+:has-agent a owl:ObjectProperty ;
+    rdfs:label "has-agent" ;
+    rdfs:subPropertyOf :has-participant .
+
 :has-audience a owl:ObjectProperty ;
     rdfs:subPropertyOf :d3fend-use-case-object-property .
 
@@ -463,10 +471,18 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x has-location y: The entity x is situated in a particular spot or position y." ;
     rdfs:seeAlso <http://www.obofoundry.org/ro/#OBO_REL:located_in> .
 
+:has-mediator a owl:ObjectProperty ;
+    rdfs:label "has-mediator" ;
+    rdfs:subPropertyOf :has-participant .
+
 :has-member a owl:ObjectProperty ;
     rdfs:label "has-member" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
     owl:inverseOf :member-of .
+
+:has-participant a owl:ObjectProperty ;
+    rdfs:label "has-participant" ;
+    rdfs:subPropertyOf :associated-with .
 
 :has-prerequisite a owl:ObjectProperty ;
     rdfs:subPropertyOf :d3fend-use-case-object-property .
@@ -524,6 +540,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "implements" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
     rdfs:domain :CapabilityImplementation .
+
+:initiates a owl:ObjectProperty ;
+    rdfs:label "initiates" ;
+    rdfs:subPropertyOf :associated-with .
 
 :injects a owl:ObjectProperty ;
     rdfs:label "injects" ;
@@ -845,6 +865,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "may-transfer" ;
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "x may-transfer y: They entity x might send the thing y; that is, 'x transfers y' may be true." .
+
+:mediates-access-to a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :mediates-access-to .
 
 :member-of a owl:ObjectProperty ;
     rdfs:label "member-of" ;
@@ -1236,18 +1260,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :d3fend-annotation ;
     :definition "x d3fend-private-annotation: The d3fend object x has the internal comment or tracking property y.  Not for use external to the MITRE development team." .
 
-dcterms:description a owl:AnnotationProperty ;
-    rdfs:label "description" .
-
-dcterms:license a owl:AnnotationProperty ;
-    rdfs:label "license" .
-
-dcterms:title a owl:AnnotationProperty ;
-    rdfs:label "title" .
-
 :definition a owl:AnnotationProperty ;
-    rdfs:label "comment",
-        "definition" ;
+    rdfs:label "definition" ;
     rdfs:subPropertyOf :d3fend-annotation ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/IAO_0000115> ;
     :comment "Intended d3fend equivalent to http://purl.obolibrary.org/obo/IAO_0000115; will take over from use of rdfs:comment to hold definition." ;
@@ -1340,10 +1354,6 @@ rdfs:seeAlso a owl:AnnotationProperty .
         owl:versionInfo ;
     :definition "x release-date y: The object x has the release-date y." ;
     :todo "remove and place info in versionInfo on ontology annotations header" .
-
-skos:altLabel a owl:AnnotationProperty ;
-    rdfs:label "altLabel"@en ;
-    rdfs:isDefinedBy skos: .
 
 :synonym a owl:AnnotationProperty ;
     rdfs:label "synonym" ;
@@ -1603,6 +1613,16 @@ skos:altLabel a owl:AnnotationProperty ;
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Academic Paper" .
 
+:Access a owl:Class ;
+    rdfs:label "Access" ;
+    rdfs:subClassOf :Action,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Resource ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-mediator ;
+            owl:someValuesFrom :AccessMediator ] .
+
 :AccessControlConfiguration a owl:Class ;
     rdfs:label "Access Control Configuration" ;
     rdfs:subClassOf :ConfigurationResource ;
@@ -1626,6 +1646,20 @@ skos:altLabel a owl:AnnotationProperty ;
             owl:someValuesFrom :UserGroup ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> ;
     :definition "A list of permissions attached to an object." .
+
+:AccessMediator a owl:Class ;
+    rdfs:label "Access Mediator" ;
+    rdfs:subClassOf :D3FENDCore,
+        :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :implements ;
+            owl:someValuesFrom :AccessControlConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :mediates-access-to ;
+            owl:someValuesFrom :Resource ],
+        [ a owl:Restriction ;
+            owl:onProperty :used-by ;
+            owl:someValuesFrom :Agent ] .
 
 :AccessModeling a :OperationalActivityMapping,
         owl:Class,
@@ -1678,6 +1712,13 @@ Management servers with enterprise policies for account management provide the a
 * JumpCloud""" ;
     :kb-reference :Reference-AccountMonitoring_ForescoutTechnologies,
         :Reference-FrameworkForNotifyingADirectoryServiceOfAuthenticationEventsProcessedOutsideTheDirectoryService_OracleInternationalCorp .
+
+:Action a owl:Class ;
+    rdfs:label "Action" ;
+    rdfs:subClassOf :D3FENDCore,
+        [ a owl:Restriction ;
+            owl:onProperty :has-agent ;
+            owl:someValuesFrom :Agent ] .
 
 :ActiveCertificateAnalysis a :ActiveCertificateAnalysis,
         :CertificateAnalysis,
@@ -1804,7 +1845,7 @@ GeeksforGeeks. (n.d.). Adaptive Resonance Theory (ART). [Link](https://www.geeks
 
 :AddressSpace a owl:Class ;
     rdfs:label "Address Space" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Address_space" ;
     :definition "An address space defines a range of discrete addresses, each of which may correspond to a network host, peripheral device, disk sector, a memory cell or other logical or physical entity. For software programs to save and retrieve stored data, each unit of data must have an address where it can be located. The number of address spaces available depends on the underlying address structure, which is usually limited by the computer architecture being used." .
 
@@ -1862,7 +1903,8 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 
 :Agent a owl:Class ;
     rdfs:label "Agent" ;
-    rdfs:subClassOf :D3FENDCatalogThing .
+    rdfs:subClassOf :D3FENDCatalogThing,
+        :D3FENDCore .
 
 :AgglomerativeClustering a owl:Class,
         owl:NamedIndividual ;
@@ -2600,14 +2642,14 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
     rdfs:label "Binary Large Object" ;
     skos:altLabel "BLOB",
         "Blob" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Binary_large_object> ;
     :definition "A binary large object (BLOB) is a collection of binary data stored as a single entity. Blobs are typically images, audio or other multimedia objects, though sometimes binary executable code is stored as a blob." ;
     :todo "sometimes a record, but not always.  always Binary Data (but we don't have Data and Binary Data tax).  Also do we need to distinguish between information and data?  Don't think so.  IBO that is encoded as binary is Binary Data.  The notion of \"object\" is distinct as it may be part of file, part of DB, or file (part of file system).  Binary padding would relate, though is padding information if just used to pad (e.g., all zeroes?)" .
 
 :BinarySegment a owl:Class ;
     rdfs:label "Binary Segment" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A binary segment is a partition of binary information within a larger binary object, which arranges a set of binary objects for its purpose.   For example, code, data, heap, and stack segments are segments of the binary information used by a process.  Code and data segments are also found in object files." .
 
 :BiometricAuthentication a :CredentialHardening,
@@ -2624,16 +2666,10 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
         :Reference-TokenlessBiometricTransactionAuthorizationMethodAndSystem,
         :Reference-www.biometric-solutions.com_keystroke-dynamics .
 
-:Blob a owl:Class ;
-    rdfs:label "Blob" ;
-    rdfs:subClassOf :DigitalArtifact ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Binary_large_object> ;
-    :definition "A binary large object (BLOB) is a collection of binary data stored as a single entity. Blobs are typically images, audio or other multimedia objects, though sometimes binary executable code is stored as a blob. They can exist as persistent values inside some databases, or exist at runtime as program variables in some languages. The term is used in NoSQL databases, especially in key-value store databases such as Redis. The term is also used by languages that allow runtime manipulation of Blobs, like JavaScript. (en)" .
-
 :BlockDevice a owl:Class ;
     rdfs:label "Block Device" ;
     skos:altLabel "Block Special File" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :BootSector ],
@@ -2699,7 +2735,7 @@ Sciencedirect. (n.d.). Semi-supervised learning: An overview. [Link](https://www
 :BootLoader a owl:Class ;
     rdfs:label "Boot Loader" ;
     skos:altLabel "Bootloader" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :Software ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Bootloader> ;
     :definition "A bootloader is software that is responsible for booting a computer. When a computer is turned off, its software‍-‌including operating systems, application code, and data‍-‌remains stored on non-volatile memory. When the computer is powered on, it typically does not have an operating system or its loader in random-access memory (RAM). The computer first executes a relatively small program stored in read-only memory (ROM, and later EEPROM, NOR flash) along with some needed data, to initialize RAM (especially on x86 systems) to access the nonvolatile device (usually block device, eg NAND flash) or devices from which the operating system programs and data can be loaded into RAM." .
 
@@ -2879,7 +2915,7 @@ C4.5 algorithm. Wikipedia. [Link](https://en.wikipedia.org/wiki/C4.5_algorithm).
 
 :CallStack a owl:Class ;
     rdfs:label "Call Stack" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :StackFrame ] ;
@@ -3071,7 +3107,7 @@ Google Developers. (n.d.). Clustering Algorithms. [Link](https://developers.goog
 :Certificate a owl:Class ;
     rdfs:label "Certificate" ;
     skos:altLabel "Public Key Certificate" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Identifier ],
@@ -3362,7 +3398,7 @@ Profiling request and response payloads across multiple clients to a single serv
 
 :Clipboard a owl:Class ;
     rdfs:label "Clipboard" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Clipboard_(computing)> ;
     :definition "The clipboard is a buffer that some operating systems provide for short-term storage and transfer within and between application programs. The clipboard is usually temporary and unnamed, and its contents reside in the computer's RAM. The clipboard is sometimes called the paste buffer. Windows, Linux and macOS support a single clipboard transaction. Each cut or copy overwrites the previous contents. Normally, paste operations copy the contents, leaving the contents available in the clipboard for further pasting." .
 
@@ -3390,7 +3426,7 @@ Profiling request and response payloads across multiple clients to a single serv
 
 :CloudServiceSensor a owl:Class ;
     rdfs:label "Cloud Service Sensor" ;
-    rdfs:subClassOf :Sensor,
+    rdfs:subClassOf :CyberSensor,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
             owl:someValuesFrom :CloudServiceAuthentication ],
@@ -3484,8 +3520,8 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 
 :Command a owl:Class ;
     rdfs:label "Command" ;
-    rdfs:subClassOf :DigitalArtifact,
-        :DigitalEvent ;
+    rdfs:subClassOf :DigitalEvent,
+        :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Command_(computing)> ;
     :definition "In computing, a command is a directive to a computer program acting as an interpreter of some kind, in order to perform a specific task. Most commonly a command is either a directive to some kind of command-line interface, such as a shell, or an event in a graphical user interface triggered by the user selecting an option in a menu." .
 
@@ -3890,7 +3926,7 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
 
 :Credential a owl:Class ;
     rdfs:label "Credential" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
             owl:someValuesFrom :UserAccount ] ;
@@ -4046,7 +4082,7 @@ Management servers with enterprise policies for account management provide the a
 
 :CryptographicKey a owl:Class ;
     rdfs:label "Cryptographic Key" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Public-key_cryptography> ;
     :definition "In cryptography, a key is a piece of information (a parameter) that determines the functional output of a cryptographic algorithm. For encryption algorithms, a key specifies the transformation of plaintext into ciphertext, and vice versa for decryption algorithms. Keys also specify transformations in other cryptographic algorithms, such as digital signature schemes and message authentication codes." .
 
@@ -8944,6 +8980,10 @@ Management servers with enterprise policies for account management provide the a
     rdfs:subClassOf :CWE-657 ;
     :cwe-id "CWE-1395" .
 
+:CyberSensor a owl:Class ;
+    rdfs:label "Cyber Sensor" ;
+    rdfs:subClassOf :Sensor .
+
 :CycleGAN a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "CycleGAN" ;
@@ -8957,6 +8997,9 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
     rdfs:label "D3FEND Catalog Thing" ;
     skos:altLabel "D3FEND Vendor Registry Thing" ;
     rdfs:subClassOf :D3FENDThing .
+
+:D3FENDCore a owl:Class ;
+    rdfs:label "D3FEND Core" .
 
 :D3FENDThing a owl:Class ;
     rdfs:label "D3FEND Thing" ;
@@ -8990,7 +9033,7 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 
 :Database a owl:Class ;
     rdfs:label "Database" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Database> ;
     :definition "A database is an organized collection of data, generally stored and accessed electronically from a computer system. Where databases are more complex they are often developed using formal design and modeling techniques." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Database> .
@@ -9299,7 +9342,7 @@ scikit-learn. (n.d.). Decision Trees. [Link](https://scikit-learn.org/stable/mod
         "Decoy Object",
         "Lure",
         "Trap" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DigitalArtifact ] ;
@@ -9534,7 +9577,8 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
         owl:NamedIndividual,
         :Technique ;
     rdfs:label "Defensive Technique" ;
-    rdfs:subClassOf :CapabilityFeature,
+    rdfs:subClassOf :Action,
+        :CapabilityFeature,
         :D3FENDThing,
         :Technique,
         [ a owl:Restriction ;
@@ -9643,7 +9687,7 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
 
 :Dependency a owl:Class ;
     rdfs:label "Dependency" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :dependent ;
             owl:someValuesFrom :D3FENDThing ],
@@ -9724,6 +9768,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 :DigitalArtifact a owl:Class ;
     rdfs:label "Digital Artifact" ;
     rdfs:subClassOf :Artifact,
+        :D3FENDCore,
         :DigitalObject ;
     :definition "An information-bearing artifact (object) that is, or is encoded to be used with, a digital computer system. This concept is broad to include the literal instances of an artifact, or an implicit summarization of changes to or properties of other artifacts." ;
     :display-baseurl "/dao/artifact/" ;
@@ -9744,6 +9789,14 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:seeAlso "https://schema.ocsf.io/objects/fingerprint" ;
     :todo "Create relationship 'identifies some data' once data ontology implemented" .
 
+:DigitalInformation a owl:Class ;
+    rdfs:label "Digital Information" ;
+    rdfs:subClassOf :DigitalArtifact .
+
+:DigitalInformationBearer a owl:Class ;
+    rdfs:label "Digital Information Bearer" ;
+    rdfs:subClassOf :DigitalArtifact .
+
 :DigitalObject a owl:Class ;
     rdfs:label "Digital Object" ;
     rdfs:subClassOf :D3FENDThing ;
@@ -9753,7 +9806,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalSystem a owl:Class ;
     rdfs:label "Digital System" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         :System ;
     :definition "A digital system is a group of interacting or interrelated digital artifacts that act according to a set of rules to form a unified whole. A digital system, surrounded and influenced by its environment, is described by its boundaries, structure and purpose and expressed in its functioning. Systems are the subjects of study of systems theory." ;
     rdfs:seeAlso <http://dbpedia.org/resource/System> .
@@ -9769,7 +9822,7 @@ O'Reilly Media. (n.d.). Chapter 7. Machine Learning and Security: Protecting Sys
 
 :Directory a owl:Class ;
     rdfs:label "Directory" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :File ] ;
@@ -9839,7 +9892,7 @@ Wikipedia. (n.d.). Multivariate statistics. [Link](https://en.wikipedia.org/wiki
 :DisplayServer a owl:Class ;
     rdfs:label "Display Server" ;
     skos:altLabel "Window Server" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Display_server> ;
     :definition "A display server or window server is a program whose primary task is to coordinate the input and output of its clients to and from the rest of the operating system, the hardware, and each other. The display server communicates with its clients over the display server protocol, a communications protocol, which can be network-transparent or simply network-capable. The display server is a key component in any graphical user interface, specifically the windowing system." .
 
@@ -9923,8 +9976,8 @@ For example, a DNS policy can be created for blocking DNS queries for FQDNs that
 
 :DNSLookup a owl:Class ;
     rdfs:label "DNS Lookup" ;
-    rdfs:subClassOf :DigitalArtifact,
-        :DigitalEvent ;
+    rdfs:subClassOf :DigitalEvent,
+        :DigitalInformationBearer ;
     :definition "A Domain Name System (DNS) lookup is a record returned from a DNS resolver after querying a DNS name server.  Typically considered an A or AAAA record, where a domain name is resolved to an IPv4 or IPv6 address, respectively." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/dns_query",
         <http://dbpedia.org/resource/Domain_Name_System>,
@@ -10033,7 +10086,7 @@ This technique does not check for content hosted at the domain.
 :DomainRegistration a owl:Class ;
     rdfs:label "Domain Registration" ;
     skos:altLabel "Domain Name Registration Data" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformation,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DomainName ] ;
@@ -10236,7 +10289,7 @@ Email files may propagate through many storage systems across the an organizatio
 :Enclave a owl:Class ;
     rdfs:label "Enclave" ;
     skos:altLabel "Network Enclave" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :LocalAreaNetwork ] ;
@@ -10288,7 +10341,7 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
 
 :EndpointSensor a owl:Class ;
     rdfs:label "Endpoint Sensor" ;
-    rdfs:subClassOf :Sensor ;
+    rdfs:subClassOf :CyberSensor ;
     :definition "A sensor application installed on a endpoint (platform) to collect information on platform components." ;
     rdfs:seeAlso "d3f:Platform" .
 
@@ -10899,7 +10952,7 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
     skos:altLabel "File Part" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A file section is one of the portions of a file in which the file is regarded as divided and where together the file sections constitute the whole file." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/05876035-n> .
 
@@ -10917,7 +10970,7 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
 
 :FileSystem a owl:Class ;
     rdfs:label "File System" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Directory ],
@@ -10935,7 +10988,7 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
 
 :FileSystemLink a owl:Class ;
     rdfs:label "File System Link" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Hard_link> ;
     :definition "A file system link associates a name with a file on a file system.  Most generally, this may be a direct reference (a hard link) or an indirect one (a soft link)." .
 
@@ -11471,7 +11524,7 @@ Administrators collect information on hardware devices such as peripherals, NICs
 
 :HardwareDevice a owl:Class ;
     rdfs:label "Hardware Device" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         :PhysicalArtifact ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_hardware> ;
     :definition "Hardware devices are the physical artifacts that constitute a network or computer system. Hardware devices are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, hard disk drive (HDD), graphic cards, sound cards, memory (RAM), motherboard, and so on, all of which are tangible physical objects. By contrast, software is instructions that can be stored and run by hardware. Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system." ;
@@ -11480,7 +11533,7 @@ Administrators collect information on hardware devices such as peripherals, NICs
 :HardwareDriver a owl:Class ;
     rdfs:label "Hardware Driver" ;
     skos:altLabel "Device Driver" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :drives ;
             owl:someValuesFrom :HardwareDevice ] ;
@@ -11732,7 +11785,7 @@ Decision Trees for Classification: ID3 Algorithm Explained. Towards Data Science
 :Identifier a owl:Class ;
     rdfs:label "Identifier" ;
     skos:altLabel "ID" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Identifier> ;
     :definition "An identifier is a name that identifies (that is, labels the identity of) either a unique object or a unique class of objects, where the \"object\" or class may be an idea, physical [countable] object (or class thereof), or physical [noncountable] substance (or class thereof). The abbreviation ID often refers to identity, identification (the process of identifying), or an identifier (that is, an instance of identification). An identifier may be a word, number, letter, symbol, or any combination of those." .
 
@@ -12198,7 +12251,7 @@ If an attacker manages to stop the processes used to log an attack without setti
 
 :InterprocessCommunication a owl:Class ;
     rdfs:label "Interprocess Communication" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Inter-process_communication> ;
     :definition "In computer science, inter-process communication or inter-process communication (IPC) refers specifically to the mechanisms an operating system provides to allow processes it manages to share data. Typically, applications can use IPC categorized as clients and servers, where the client requests data and the server responds to client requests. Many applications are both clients and servers, as commonly seen in distributed computing. Methods for achieving IPC are divided into categories which vary based on software requirements, such as performance and modularity requirements, and system circumstances, such as network bandwidth and latency." .
 
@@ -12302,7 +12355,7 @@ Beginner's Guide to Semi-Supervised Learning. Jashish Blog.  [Link](http://jashi
 :IntrusionDetectionSystem a owl:Class ;
     rdfs:label "Intrusion Detection System" ;
     skos:altLabel "IDS" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Intrusion_detection_system> ;
     :definition "An intrusion detection system (IDS) is a device or software application that monitors a network or systems for malicious activity or policy violations. Any intrusion activity or violation is typically reported either to an administrator or collected centrally using a security information and event management (SIEM) system. A SIEM system combines outputs from multiple sources and uses alarm filtering techniques to distinguish malicious activity from false alarms." .
 
@@ -12458,7 +12511,7 @@ Potential for false positives from anomalies that are not associated with malici
 
 :JobSchedule a owl:Class ;
     rdfs:label "Job Schedule" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformation,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ScheduledJob ],
@@ -12731,7 +12784,7 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
 
 :KernelProcessTable a owl:Class ;
     rdfs:label "Kernel Process Table" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <https://encyclopedia2.thefreedictionary.com/process+table> ;
     :definition "A data structure in the kernel which is a table containing all of the information that must be saved when the CPU switches from running one process to another in a multitasking system. It allows the operating system to track all the process's execution status, and contains the For every process managed by the kernel, there is a process control block (PCB) in the process table." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Process_(computing)>,
@@ -12880,7 +12933,7 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
 
 :Link a owl:Class ;
     rdfs:label "Link" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:seeAlso "https://dbpedia.org/resource/Link" .
 
 :Linux_Exit a owl:Class ;
@@ -13192,7 +13245,8 @@ Newer system call.""" .
 :Log a owl:Class ;
     rdfs:label "Log" ;
     skos:altLabel "Chronology" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :D3FENDCore,
+        :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/06515215-n> ;
     :definition "A record of events in the order of their occurrence." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Chronology> .
@@ -13483,7 +13537,7 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
 
 :MemoryAddress a owl:Class ;
     rdfs:label "Memory Address" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformation,
         [ a owl:Restriction ;
             owl:onProperty :addresses ;
             owl:someValuesFrom :MemoryWord ] ;
@@ -13537,7 +13591,7 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
 
 :MemoryExtent a owl:Class ;
     rdfs:label "Memory Extent" ;
-    rdfs:subClassOf :DigitalArtifact .
+    rdfs:subClassOf :DigitalInformation .
 
 :MemoryFreeFunction a owl:Class ;
     rdfs:label "Memory Free Function" ;
@@ -13679,7 +13733,7 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
 
 :Metadata a owl:Class ;
     rdfs:label "Metadata" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Metadata> ;
     :definition "Metadata is \"data [information] that provides information about other data\". Three distinct types of metadata exist: structural metadata, descriptive metadata, and administrative metadata. Structural metadata is data about the containers of data. For instance a \"book\" contains data, and data about the book is metadata about that container of data. Descriptive metadata uses individual instances of application data or the data content." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/metadata" .
@@ -13899,7 +13953,7 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
 :Network a owl:Class ;
     rdfs:label "Network" ;
     skos:altLabel "Computer Network" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A network is a group of computers that use a set of common communication protocols over digital interconnections for the purpose of sharing resources located on or provided by the network nodes. The interconnections between nodes are formed from a broad spectrum of telecommunication network technologies, based on physically wired, optical, and wireless radio-frequency methods that may be arranged in a variety of network topologies." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03826490-n> .
 
@@ -13933,7 +13987,7 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
 
 :NetworkFlow a owl:Class ;
     rdfs:label "Network Flow" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformation,
         [ a owl:Restriction ;
             owl:onProperty :summarizes ;
             owl:someValuesFrom :NetworkTraffic ] ;
@@ -13988,7 +14042,7 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
 
 :NetworkNode a owl:Class ;
     rdfs:label "Network Node" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :runs ;
             owl:someValuesFrom :OperatingSystem ] ;
@@ -14071,7 +14125,7 @@ Administrators collect information on network nodes in their architecture using 
 
 :NetworkSensor a owl:Class ;
     rdfs:label "Network Sensor" ;
-    rdfs:subClassOf :Sensor .
+    rdfs:subClassOf :CyberSensor .
 
 :NetworkService a owl:Class ;
     rdfs:label "Network Service" ;
@@ -14099,7 +14153,7 @@ Administrators collect information on network nodes in their architecture using 
 :NetworkTraffic a owl:Class ;
     rdfs:label "Network Traffic" ;
     skos:altLabel "Data Traffic" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DomainName ],
@@ -14241,6 +14295,14 @@ Hosts/users within a computer network are analyzed to identify communities of ho
     :kb-article """## References
 Newcastle University. (n.d.). Parametric Hypothesis Tests. [Link](https://www.ncl.ac.uk/webtemplate/ask-assets/external/maths-resources/psychology/non-parametric-hypothesis-tests.html)""" .
 
+:Non-PersonEntity a owl:Class ;
+    rdfs:label "Non-Person Entity" ;
+    rdfs:subClassOf :Agent ;
+    rdfs:isDefinedBy "CNSSI 4009 aka \"Committee on National Security Systems (CNSS) Glossary\" (March 2, 2002)" ;
+    :definition "An entity related to information technology with a digital identity that acts in cyberspace, but is not a human actor. This can include organizations, hardware objects (physical entities/devices), software objects (virtual/logical entities), and information artifacts." ;
+    rdfs:seeAlso "NIST 800-63" ;
+    :synonym "NPE" .
+
 :NonlinearRegression a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Nonlinear Regression" ;
@@ -14316,11 +14378,15 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
 
 :OffensiveTechnique a owl:Class ;
     rdfs:label "Offensive Technique" ;
-    rdfs:subClassOf :ATTACKThing,
+    rdfs:subClassOf :Action,
+        :ATTACKThing,
         :Technique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :OffensiveTactic ] ;
+            owl:someValuesFrom :OffensiveTactic ],
+        [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :Access ] ;
     rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
     :display-baseurl "/offensive-technique/attack/" .
 
@@ -14391,7 +14457,7 @@ Additionally, after the code file is printed, it could be recovered from the sys
 
 :OperatingSystem a owl:Class ;
     rdfs:label "Operating System" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Kernel ],
@@ -14577,7 +14643,7 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :Organization a owl:Class ;
     rdfs:label "Organization" ;
-    rdfs:subClassOf :Agent,
+    rdfs:subClassOf :Non-PersonEntity,
         [ a owl:Restriction ;
             owl:onProperty :has-member ;
             owl:someValuesFrom :Person ] .
@@ -14919,7 +14985,7 @@ The OWL languages are characterized by formal semantics. They are built upon the
 
 :PageTable a owl:Class ;
     rdfs:label "Page Table" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :PhysicalAddress ],
@@ -14968,7 +15034,7 @@ Newcastle University. (n.d.). Parametric Hypothesis Tests. [Link](https://www.nc
     rdfs:label "Partition" ;
     skos:altLabel "Disk Partition",
         "Disk Slice" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Disk_partitioning> ;
     :definition "A partition is a region on secondary storage device created so that the region can be managed by itself; separate from any other regions (partitions) on that secondary storage device. Creating partitions is typically the first step of preparing a newly installed storage device, before any file system is created. The device stores the information about the partitions' locations and sizes in an area known as the partition table that the operating system reads before any other part of the disk. Each partition then appears to the operating system as a distinct \"logical\" storage device that uses part of the actual device. System administrators use a program called a partition editor to create, resize, delete, and manipulate the partitions. Partitioning allows the use of different filesystems to be installed for different kinds of files. Separating user data from system data can prevent the system partition from becoming full and rendering the system unusable. Partitioning can also make backing up easier. [Definition adapted as generalization from definition of disk partitioning and distinct from in-memory partitions.]" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Memory_management_(operating_systems)>,
@@ -14976,7 +15042,7 @@ Newcastle University. (n.d.). Parametric Hypothesis Tests. [Link](https://www.nc
 
 :PartitionTable a owl:Class ;
     rdfs:label "Partition Table" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :addresses ;
             owl:someValuesFrom :Partition ] ;
@@ -15241,7 +15307,7 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
 
 :PhysicalLocation a owl:Class ;
     rdfs:label "Physical Location" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Location_(geography)> ;
     :definition "The terms location  [here, a physical location] and place in geography are used to identify a point or an area on the Earth's surface or elsewhere. The term location generally implies a higher degree of certainty than place, which often indicates an entity with an ambiguous boundary, relying more on human or social attributes of place identity and sense of place than on geometry. The distinction between space and place is considered a central concern of geography, and has been addressed by scholars such as Yi-Fu Tuan and John Agnew." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/location" .
@@ -15277,7 +15343,7 @@ Esri. (n.d.). How Pix2Pix Works. [Link](https://developers.arcgis.com/python/gui
 :Platform a owl:Class ;
     rdfs:label "Platform" ;
     skos:altLabel "Computer Platform" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Firmware ],
@@ -15343,7 +15409,7 @@ Wikipedia. (n.d.). Point-biserial correlation coefficient. [Link](https://en.wik
 
 :Pointer a owl:Class ;
     rdfs:label "Pointer" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Pointer_(computer_programming)> ;
     :definition "In computer science, a pointer is a programming language object, whose value refers to (or \"points to\") another value stored elsewhere in the computer memory using its memory address. A pointer references a location in memory, and obtaining the value stored at that location is known as dereferencing the pointer. As an analogy, a page number in a book's index could be considered a pointer to the corresponding page; dereferencing such a pointer would be done by flipping to the page with the given page number." .
 
@@ -15530,7 +15596,7 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
 
 :Process a owl:Class ;
     rdfs:label "Process" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ProcessImage ],
@@ -15674,7 +15740,7 @@ False negatives can occur via alteration of the verification logic or source of 
 
 :ProcessImage a owl:Class ;
     rdfs:label "Process Image" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ProcessSegment ] ;
@@ -16011,7 +16077,7 @@ Processes that are started in a subsystem might not be fully terminated if they 
 
 :ProcessTree a owl:Class ;
     rdfs:label "Process Tree" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Process ] ;
@@ -16267,7 +16333,7 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 
 :Record a owl:Class ;
     rdfs:label "Record" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Record_(computer_science)> ;
     :definition "In computer science, a record (also called struct or compound data) is a basic data structure. A record is a collection of fields, possibly of different data types, typically in fixed number and sequence . The fields of a record may also be called members, particularly in object-oriented programming. Fields may also be called elements, though these risk confusion with the elements of a collection. A tuple may or may not be considered a record, and vice versa, depending on conventions and the specific programming language." .
 
@@ -16486,7 +16552,7 @@ Wikipedia contributors. (2021, August 23). Residual neural network. In Wikipedia
 
 :Resource a owl:Class ;
     rdfs:label "Resource" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/System_resource> ;
     :definition "In computing, a system resource, or simply resource, is any physical or virtual component of limited availability within a computer system. Every device connected to a computer system is a resource. Every internal system component is a resource. Virtual system resources include files (concretely file handles), network connections (concretely network sockets), and memory areas. Managing resources is referred to as resource management, and includes both preventing resource leaks (releasing a resource when a process has finished using it) and dealing with resource contention (when multiple processes wish to access a limited resource)." .
 
@@ -17138,8 +17204,10 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
 
 :Sensor a owl:Class ;
     rdfs:label "Sensor" ;
-    rdfs:subClassOf :D3FENDThing,
-        :DigitalArtifact .
+    rdfs:subClassOf :D3FENDCore,
+        :DigitalInformationBearer ;
+    :definition "In the broadest definition, a sensor is a device, module, machine, or subsystem that detects events or changes in its environment and sends the information to other electronics, frequently a computer processor." ;
+    rdfs:seeAlso "https://en.wikipedia.org/wiki/Sensor" .
 
 :SeqGAN a owl:Class,
         owl:NamedIndividual ;
@@ -17237,7 +17305,7 @@ The organization collects and models architectural information about the service
 
 :Session a owl:Class ;
     rdfs:label "Session" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Session_(computer_science)> ;
     :definition "In computer science, in particular networking, a session is a semi-permanent interactive information interchange, also known as a dialogue, a conversation or a meeting, between two or more communicating devices, or between a computer and user (see Login session). A session is set up or established at a certain point in time, and then torn down at some later point. An established communication session may involve more than one message in each direction. A session is typically, but not always, stateful, meaning that at least one of the communicating parts needs to save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/session" .
@@ -17286,7 +17354,7 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
 
 :ShadowStack a owl:Class ;
     rdfs:label "Shadow Stack" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :copy-of ;
             owl:someValuesFrom :CallStack ] ;
@@ -17397,7 +17465,7 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
 
 :Software a owl:Class ;
     rdfs:label "Software" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformation,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ExecutableFile ],
@@ -17479,7 +17547,7 @@ Application-layer discovery:
 
 :SoftwarePackage a owl:Class ;
     rdfs:label "Software Package" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/package" .
 
 :SoftwarePackagingTool a owl:Class ;
@@ -17586,7 +17654,7 @@ Towards Data Science. (n.d.). Spectral Clustering. [Link](https://towardsdatasci
 
 :StackComponent a owl:Class ;
     rdfs:label "Stack Component" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A stack component is any component of a call stack used for stack-based memory allocation in a running process.  Examples include saved instruction pointers, stack frames, and stack frame canaries." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Call_stack> .
 
@@ -17747,7 +17815,7 @@ Wolfram MathWorld. (n.d.). Statistics. [Link](https://mathworld.wolfram.com/Stat
 
 :Storage a owl:Class ;
     rdfs:label "Storage" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :FileSystem ] ;
@@ -17958,8 +18026,8 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
 
 :SystemCall a owl:Class ;
     rdfs:label "System Call" ;
-    rdfs:subClassOf :DigitalArtifact,
-        :DigitalEvent,
+    rdfs:subClassOf :DigitalEvent,
+        :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
             owl:someValuesFrom :Subroutine ] ;
@@ -18067,10 +18135,7 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
     rdfs:subClassOf :PlatformHardening,
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
-            owl:someValuesFrom :SystemConfigurationDatabase ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricts ;
-            owl:hasValue :M1028 ] ;
+            owl:someValuesFrom :SystemConfigurationDatabase ] ;
     :d3fend-id "D3-SCP" ;
     :definition "Restricting system configuration modifications to a specific user or group of users." ;
     :kb-reference :Reference-HowToChangeRegistryValuesOrPermissionsFromACommandLineOrAScript ;
@@ -23558,7 +23623,7 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
 
 :Thread a owl:Class ;
     rdfs:label "Thread" ;
-    rdfs:subClassOf :DigitalArtifact .
+    rdfs:subClassOf :DigitalInformationBearer .
 
 :ThreadStartFunction a owl:Class ;
     rdfs:label "Thread Start Function" ;
@@ -23626,6 +23691,10 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
 :TrajectoryPrediction a owl:Class ;
     rdfs:label "Trajectory Prediction" ;
     rdfs:subClassOf :Forecasting .
+
+:TransducerSensor a owl:Class ;
+    rdfs:label "Transducer Sensor" ;
+    rdfs:subClassOf :Sensor .
 
 :TransferAgentAuthentication a :MessageHardening,
         owl:Class,
@@ -23707,7 +23776,7 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :TrustStore a owl:Class ;
     rdfs:label "Trust Store" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "Stores public information necessary to determine if another party can be trusted." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Public_key_certificate>,
         <https://www.educative.io/edpresso/keystore-vs-truststore> ;
@@ -23853,7 +23922,7 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 
 :User a owl:Class ;
     rdfs:label "User" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :has-account ;
             owl:someValuesFrom :UserAccount ],
@@ -23867,7 +23936,7 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 
 :UserAccount a owl:Class ;
     rdfs:label "User Account" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_(computing)#User_account> ;
     :definition "A user account allows a user to authenticate to a system and potentially to receive authorization to access resources provided by or connected to that system; however, authentication does not imply authorization. To log into an account, a user is typically required to authenticate oneself with a password or other credentials for the purposes of accounting, security, logging, and resource management." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/user",
@@ -23887,8 +23956,8 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 
 :UserAction a owl:Class ;
     rdfs:label "User Action" ;
-    rdfs:subClassOf :DigitalArtifact,
-        :DigitalEvent ;
+    rdfs:subClassOf :DigitalEvent,
+        :DigitalInformationBearer ;
     :definition "An action performed by a user. Executing commands, granting permissions, and accessing resources are examples of user actions." .
 
 :UserApplication a owl:Class ;
@@ -23899,7 +23968,7 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 
 :UserBehavior a owl:Class ;
     rdfs:label "User Behavior" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :UserAction ] ;
@@ -24000,7 +24069,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
 :UserInterface a owl:Class ;
     rdfs:label "User Interface" ;
     skos:altLabel "UI" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_interface> ;
     :definition "The user interface (UI), in the industrial design field of human-machine interaction, is the space where interactions between humans and machines occur. The goal of this interaction is to allow effective operation and control of the machine from the human end, whilst the machine simultaneously feeds back information that aids the operators' decision-making process. Examples of this broad concept of user interfaces include the interactive aspects of computer operating systems, hand tools, heavy machinery operator controls, and process controls. The design considerations applicable when creating user interfaces are related to or involve such disciplines as ergonomics and psychology." .
 
@@ -24059,7 +24128,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:label "User to User Message" ;
     skos:altLabel "Personal Message",
         "Private Message" ;
-    rdfs:subClassOf :DigitalArtifact,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :has-recipient ;
             owl:someValuesFrom :UserAccount ],
@@ -24155,7 +24224,7 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
     rdfs:label "Volume" ;
     skos:altLabel "Drive Volume",
         "Logical Drive" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "In the context of computer operating systems, a volume or logical drive is a single accessible storage area with a single file system, typically (though not necessarily) resident on a single partition of a hard disk. Although a volume might be different from a physical disk drive, it can still be accessed with an operating system's logical interface. However, a volume differs from a partition." ;
     :todo "Can't create new class \"Volume\" and merge this into that new class, as it always resolves in  Web Protege to this entry.  Have to do as merge of external file into Protege, or find another method." .
 
@@ -24188,7 +24257,8 @@ It is a combination of VPN hardware and software technologies that provides VPN 
 
 :Weakness a owl:Class ;
     rdfs:label "Weakness" ;
-    rdfs:subClassOf :D3FENDThing ;
+    rdfs:subClassOf :D3FENDCore,
+        :D3FENDThing ;
     :comment "A type of behavior that has the potential for allowing an attacker to violate the intended security policy, if the behavior is made accessible to the attacker. For example, an unbounded strcpy() call is a weakness, since it might be subject to a buffer overflow if an attacker can provide an input buffer that is larger than the output buffer. (CWE)",
         "Logic present in hardware or software which enables an attacker to violate the intended security policy." ;
     :definition "A weakness is a condition in a software, firmware, hardware, or service component that, under certain circumstances, could contribute to the introduction of vulnerabilities." .
