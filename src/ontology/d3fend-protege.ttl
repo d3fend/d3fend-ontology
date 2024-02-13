@@ -1073,6 +1073,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00350758-v" ;
     :definition "The agent or technique x continues a previous action on entity y. Usually occurs after suspension on y." .
 
+:resumes a owl:ObjectProperty ;
+    rdfs:label "resumes" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy "http://wordnet-rdf.princeton.edu/id/00350758-v" ;
+    :definition "The agent or technique x continues a previous action on entity y. Usually occurs after suspension on y." .
+
 :runs a owl:ObjectProperty ;
     rdfs:label "runs" ;
     rdfs:subPropertyOf :associated-with,
@@ -1260,6 +1266,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :d3fend-annotation ;
     :definition "x d3fend-private-annotation: The d3fend object x has the internal comment or tracking property y.  Not for use external to the MITRE development team." .
 
+dcterms:description a owl:AnnotationProperty .
+
+dcterms:license a owl:AnnotationProperty .
+
+dcterms:title a owl:AnnotationProperty .
+
 :definition a owl:AnnotationProperty ;
     rdfs:label "definition" ;
     rdfs:subPropertyOf :d3fend-annotation ;
@@ -1354,6 +1366,8 @@ rdfs:seeAlso a owl:AnnotationProperty .
         owl:versionInfo ;
     :definition "x release-date y: The object x has the release-date y." ;
     :todo "remove and place info in versionInfo on ontology annotations header" .
+
+skos:altLabel a owl:AnnotationProperty .
 
 :synonym a owl:AnnotationProperty ;
     rdfs:label "synonym" ;
@@ -1675,6 +1689,13 @@ rdfs:seeAlso a owl:AnnotationProperty .
     :d3fend-id "D3-AM" ;
     :definition "Access modeling identifies and records the access permissions granted to administrators, users, groups, and systems." ;
     :kb-reference :Reference-RFC7642SystemForCrossDomainIdentityManagementDefinitionsOverviewConceptsAndRequirements .
+
+:AccessProcess a owl:Class ;
+    rdfs:label "Access Process" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Process ] .
 
 :AccessToken a owl:Class ;
     rdfs:label "Access Token" ;
@@ -11322,6 +11343,14 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "A system call that gets the system time.  For POSIX.1 systems, time() invokes a call to get the system time." ;
     rdfs:seeAlso <https://man7.org/linux/man-pages/man2/time.2.html> .
 
+:GetThreadContext a owl:Class ;
+    rdfs:label "Get Thread Context" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :Thread ] ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadcontext" .
+
 :GlobalUserAccount a owl:Class ;
     rdfs:label "Global User Account" ;
     rdfs:subClassOf :DomainUserAccount ;
@@ -13070,17 +13099,59 @@ Newer system call.""" .
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/pause.2.html" ;
     :definition "Causes the calling thread to sleep until a signal is delivered that either terminates the thread or causes the invocation of a signal-catching function." .
 
+:LinuxPtraceArgumentPTRACE_DETACH a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_DETACH" ;
+    rdfs:subClassOf :OSAPIResumeProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Restart the stopped tracee as for PTRACE_CONT, but first detach from it." .
+
 :LinuxPtraceArgumentPTRACE_TRACEME a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_TRACEME" ;
     rdfs:subClassOf :OSAPITraceProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Indicates that the process is to be traced by its parent." .
 
+:LinuxPtraceArgumentPTRACEATTACH a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_ATTACH" ;
+    rdfs:subClassOf :OSAPIAccessProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Attach to the process specified in pid, making it a tracee of the calling process." .
+
+:LinuxPtraceArgumentPTRACECONT a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_CONT" ;
+    rdfs:subClassOf :OSAPIResumeProcess ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Restart the stopped tracee process." .
+
+:LinuxPtraceArgumentPTRACEGETREGS a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_GETREGS" ;
+    rdfs:subClassOf :OSAPISaveRegisters ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Copy the tracee's general-purpose or floating-point registers, respectively, to the address data in the tracer." .
+
 :LinuxPtraceArgumentPTRACEINTERRUPT a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_INTERRUPT" ;
     rdfs:subClassOf :OSAPISuspendProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Stops a tracee." .
+
+:LinuxPtraceArgumentPTRACEPEEKTEXT a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_PEEKTEXT" ;
+    rdfs:subClassOf :OSAPIReadMemory ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Read a word at the address addr in the tracee's memory, returning the word as the result of the ptrace() call." .
+
+:LinuxPtraceArgumentPTRACEPOKETEXT a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_POKETEXT" ;
+    rdfs:subClassOf :OSAPIWriteMemory ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Copy the word data to the address addr in the tracee's memory." .
+
+:LinuxPtraceArgumentPTRACESETREGS a owl:Class ;
+    rdfs:label "Linux Ptrace Argument PTRACE_SETREGS" ;
+    rdfs:subClassOf :OSAPISetRegisters ;
+    rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
+    :definition "Modify the tracee's general-purpose or floating-point registers, respectively, from the address data in the tracer." .
 
 :LinuxRead a owl:Class ;
     rdfs:label "Linux Read" ;
@@ -14676,6 +14747,13 @@ Operating System Monitoring Techniques have varied implementations including bui
         :Reference-OrganizationalManagementInSAPERPHCM,
         :Reference-UnifiedArchitectureFrameworkUAF .
 
+:OSAPIAccessProcess a owl:Class ;
+    rdfs:label "OS API Access Process" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :AccessProcess ] .
+
 :OSAPIAllocateMemory a owl:Class ;
     rdfs:label "OS API Allocate Memory" ;
     rdfs:subClassOf :OSAPIFunction,
@@ -14759,6 +14837,13 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :GetSystemTime ] .
 
+:OSAPIGetThreadContext a owl:Class ;
+    rdfs:label "OS API Get Thread Context" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :GetThreadContext ] .
+
 :OSAPIMoveFile a owl:Class ;
     rdfs:label "OS API Move File" ;
     rdfs:subClassOf :OSAPIFunction,
@@ -14783,6 +14868,48 @@ Operating System Monitoring Techniques have varied implementations including bui
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :ReadFile ] .
+
+:OSAPIReadMemory a owl:Class ;
+    rdfs:label "OS API Read Memory" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :ReadMemory ] .
+
+:OSAPIResumeProcess a owl:Class ;
+    rdfs:label "OS API Resume Process" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :ResumeProcess ] .
+
+:OSAPIResumeThread a owl:Class ;
+    rdfs:label "OS API Resume Thread" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :ResumeThread ] .
+
+:OSAPISaveRegisters a owl:Class ;
+    rdfs:label "OS API Save Registers" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :SaveRegister ] .
+
+:OSAPISetRegisters a owl:Class ;
+    rdfs:label "OS API Set Registers" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :SetRegisters ] .
+
+:OSAPISetThreadContext a owl:Class ;
+    rdfs:label "OS API Set Thread Context" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :SetThreadContext ] .
 
 :OSAPISuspendProcess a owl:Class ;
     rdfs:label "OS API Suspend Process" ;
@@ -14818,6 +14945,13 @@ Operating System Monitoring Techniques have varied implementations including bui
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteFile ] .
+
+:OSAPIWriteMemory a owl:Class ;
+    rdfs:label "OS API Write Memory" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WriteMemory ] .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
@@ -16319,6 +16453,13 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     :definition "A program that needs to access data from a file stored in a file system uses the read system call. The file is identified by a file descriptor that is normally obtained from a previous call to open. This system call reads in data in bytes, the number of which is specified by the caller, from the file and stores then into a buffer supplied by the calling process." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Read_(system_call)> .
 
+:ReadMemory a owl:Class ;
+    rdfs:label "Read Memory" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :MemoryBlock ] .
+
 :Reconnaissance a owl:Class ;
     rdfs:label "Reconnaissance" ;
     rdfs:subClassOf :OffensiveTactic ;
@@ -16730,6 +16871,21 @@ This technique analyzes a user's resource accesses by comparing the user's recen
     :definition "Restoring a user account's access to resources." ;
     :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
 
+:ResumeProcess a owl:Class ;
+    rdfs:label "Resume Process" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :resumes ;
+            owl:someValuesFrom :Process ] .
+
+:ResumeThread a owl:Class ;
+    rdfs:label "Resume Thread" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :resumes ;
+            owl:someValuesFrom :Thread ] ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-resumethread" .
+
 :ReverseProxyServer a owl:Class ;
     rdfs:label "Reverse Proxy Server" ;
     rdfs:subClassOf :ProxyServer ;
@@ -16891,6 +17047,13 @@ State-action-reward-state-action. Wikipedia.  [Link](https://en.wikipedia.org/wi
         :StackComponent ;
     :definition "A saved instruction pointer points to the instruction that generated an exception (trap or fault)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Exception_handling> .
+
+:SaveRegister a owl:Class ;
+    rdfs:label "Save Registers" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :copies ;
+            owl:someValuesFrom :ProcessorRegister ] .
 
 :ScheduledJob a owl:Class ;
     rdfs:label "Scheduled Job" ;
@@ -17344,6 +17507,13 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-System,Method,AndComputerProgramProductForDetectingAndAssessingSecurityRisksInANetwork_ExabeamInc>,
         :Reference-MethodAndApparatusForNetworkFraudDetectionAndRemediationThroughAnalytics_IdaptiveLLC .
 
+:SetRegisters a owl:Class ;
+    rdfs:label "Set Registers" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessorRegister ] .
+
 :SetSystemConfigValue a owl:Class ;
     rdfs:label "Set System Config Value" ;
     rdfs:subClassOf :SystemConfigSystemCall,
@@ -17351,6 +17521,14 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
             owl:onProperty :modifies ;
             owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
     rdfs:seeAlso "https://docs.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetvalueexa" .
+
+:SetThreadContext a owl:Class ;
+    rdfs:label "Set Thread Context" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Thread ] ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadcontext" .
 
 :ShadowStack a owl:Class ;
     rdfs:label "Shadow Stack" ;
@@ -24447,11 +24625,21 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         :OSAPIPrivateFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
+:WindowsNtFlushInstructionCache a owl:Class ;
+    rdfs:label "Windows NTFlushInstructionCache" ;
+    rdfs:subClassOf :OSAPIPrivateFunction,
+        :OSAPIWriteMemory .
+
 :WindowsNtFreeVirtualMemory a owl:Class ;
     rdfs:label "Windows NtFreeVirtualMemory" ;
     rdfs:subClassOf :OSAPIFreeMemory,
         :OSAPIPrivateFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNTGetThreadContext a owl:Class ;
+    rdfs:label "Windows NtGetThreadContext" ;
+    rdfs:subClassOf :OSAPIGetThreadContext,
+        :OSAPIPrivateFunction .
 
 :WindowsNtOpenFile a owl:Class ;
     rdfs:label "Windows NtOpenFile" ;
@@ -24465,6 +24653,13 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         :OSAPITraceProcess ;
     :definition "Opens a handle to process obj and sets the access rights to this object." ;
     rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-ntopenprocess" .
+
+:WindowsNtProtectVirtualMemory a owl:Class ;
+    rdfs:label "Windows NtProtectVirtualMemory" ;
+    rdfs:subClassOf :OSAPIAllocateMemory,
+        :OSAPIPrivateFunction,
+        :OSAPIWriteMemory ;
+    rdfs:seeAlso "https://www.delphibasics.info/home/delphibasicssnippets/nativewriteprocessmemoryapireplacement" .
 
 :WindowsNtQuerySystemTime a owl:Class ;
     rdfs:label "Windows NtQuerySystemTime" ;
@@ -24486,12 +24681,22 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "Reads specified block from file into multiple buffers. Each buffer must have one page length." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
+:WindowsNtResumeThread a owl:Class ;
+    rdfs:label "Windows NtResumeThread" ;
+    rdfs:subClassOf :OSAPIPrivateFunction,
+        :OSAPIResumeThread .
+
 :WindowsNtSetInformationFileArgumentFileDispositionInformation a owl:Class ;
     rdfs:label "Windows NtSetInformationFile Argument FileDispositionInformation" ;
     rdfs:subClassOf :OSAPIDeleteFile,
         :OSAPIPrivateFunction ;
     :definition "Request to delete the file when it is closed or cancel a previously requested deletion." ;
     rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/nf-ntifs-ntsetinformationfile" .
+
+:WindowsNtSetThreadContext a owl:Class ;
+    rdfs:label "Windows NtSetThreadContext" ;
+    rdfs:subClassOf :OSAPIPrivateFunction,
+        :OSAPISetThreadContext .
 
 :WindowsNtSuspendProcess a owl:Class ;
     rdfs:label "Windows NtSuspendProcess" ;
@@ -24522,6 +24727,11 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         :OSAPIWriteFile ;
     :definition "Writes specified block of file with data from memory pages." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
+
+:WindowsNtWriteVirtualMemory a owl:Class ;
+    rdfs:label "Windows NtWriteVirtualMemory" ;
+    rdfs:subClassOf :OSAPIPrivateFunction,
+        :OSAPIWriteMemory .
 
 :WindowsRegistry a owl:Class ;
     rdfs:label "Windows Registry" ;
@@ -24597,6 +24807,13 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:someValuesFrom :File ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Write_(system_call)> ;
     :definition "The write is one of the most basic routines provided by a Unix-like operating system kernel. It writes data from a buffer declared by the user to a given device, such as a file. This is the primary way to output data from a program by directly using a system call. The destination is identified by a numeric code. The data to be written, for instance a piece of text, is defined by a pointer and a size, given in number of bytes. write thus takes three arguments." .
+
+:WriteMemory a owl:Class ;
+    rdfs:label "Write Memory" ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :MemoryBlock ] .
 
 :ZeroClientComputer a owl:Class ;
     rdfs:label "Zero Client Computer" ;
