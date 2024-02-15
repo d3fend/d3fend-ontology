@@ -184,6 +184,22 @@ def add_to_ttl(tech, graph):
         key = "missing_neither"
     return key
 
+def update_definition(graph, tech):
+    tech = tech["data"]
+    attack_id = next((ref.get("external_id") for ref in tech["external_references"] if ref.get("source_name") == "mitre-attack"), None)
+    attack_uri = URIRef(_XMLNS + attack_id)
+    new = 0
+
+    if (None, None, Literal(attack_id)) in graph:
+        
+        def_property = graph.value(attack_uri, d3fend['definition'])
+        # Check if tech already has definition
+        if def_property is None:
+            new = 1
+            # Add definition
+            graph.add((attack_uri, d3fend['definition'], Literal(tech["description"].split('\n')[0])))
+    return new
+
 def update_and_add(graph, data):
     # If tech is missing, add it to d3fend-protege.updates.ttl
     # Else, handle if technique has recently become deprecated, revoked, or has an updated label
@@ -216,6 +232,7 @@ def update_and_add(graph, data):
                 graph.remove((attack_uri, RDFS.label, current_label))
                 graph.add((attack_uri, RDFS.label, Literal(tech["label"])))
                 counters["label_change"] += 1
+        update_definition(graph, tech)
     
     return counters
 
