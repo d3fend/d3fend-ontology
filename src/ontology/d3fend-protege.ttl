@@ -750,7 +750,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "may-be-tactically-associated-with" ;
     rdfs:subPropertyOf :may-be-associated-with ;
     rdfs:domain :DefensiveTechnique ;
-    rdfs:range :OffensiveTechnique ;
+    rdfs:range :ATTACKOffensiveTechnique ;
     :comment "Most/all of these properties are (will be) realized via inference over chain property path axioms and atomic assertions. Promote this to regular comment once definitions no longer in comments." ;
     :definition "x may-be-tactically-associated-with y: the defensive technique x may be a tactic that counters offensive technique y." ;
     :todo "Needs name change... With the right name change to better capture definition can keep this definition" .
@@ -1210,7 +1210,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :attack-id a owl:AnnotationProperty ;
     rdfs:label "attack-id" ;
     rdfs:subPropertyOf :attack-kb-annotation ;
-    rdfs:domain :OffensiveTechnique ;
+    rdfs:domain :ATTACKOffensiveTechnique ;
     rdfs:range xsd:string ;
     :definition "x attack-id y: The offensive technique x has the att&ck unique id of y." ;
     :todo "Drop as annotation and merge any as attack-technique-id data property. Reason: The unique id of a technique may be needed even for OWL 2 DL reasoning as it is the surrogate identity key (and the primary key) for all ATT&CK techniques." .
@@ -1218,7 +1218,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :attack-kb-annotation a owl:AnnotationProperty ;
     rdfs:label "attack-kb-annotation" ;
     rdfs:subPropertyOf :d3fend-annotation ;
-    rdfs:domain :OffensiveTechnique ;
+    rdfs:domain :ATTACKOffensiveTechnique ;
     :definition "x attack-kb-annotation y: The offensive technique x has the kb annotation of y." .
 
 :comment a owl:AnnotationProperty ;
@@ -2345,6 +2345,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
 :ATTACKMitigation a owl:Class ;
     rdfs:label "ATTACK Mitigation" ;
     rdfs:subClassOf :ATTACKThing,
+        :Mitigation,
         [ a owl:Restriction ;
             owl:onProperty :d3fend-comment ;
             owl:someValuesFrom xsd:string ],
@@ -2352,8 +2353,34 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
             owl:onProperty :semantic-relation ;
             owl:someValuesFrom :DefensiveTechnique ] .
 
+:ATTACKOffensiveTactic a owl:Class ;
+    rdfs:label "ATTACK Offensive Tactic" ;
+    rdfs:subClassOf :ATTACKThing,
+        :OffensiveTactic,
+        [ a owl:Restriction ;
+            owl:onProperty :enabled-by ;
+            owl:someValuesFrom :ATTACKOffensiveTechnique ] ;
+    rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
+    :definition "Per ATT&CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique." .
+
+:ATTACKOffensiveTechnique a owl:Class ;
+    rdfs:label "ATTACK Offensive Technique" ;
+    rdfs:subClassOf :Action,
+        :ATTACKThing,
+        :OffensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :ATTACKOffensiveTactic ],
+        [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :Access ] ;
+    rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
+    :display-baseurl "/offensive-technique/attack/" .
+
 :ATTACKThing a owl:Class ;
     rdfs:label "ATTACK Thing" ;
+    rdfs:subClassOf :Matrices,
+        owl:Thing ;
     :definition "ATTACK things are concepts defined in the ATT&CK Framework." .
 
 :AudioInputDevice a owl:Class ;
@@ -3519,16 +3546,16 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Collaborative_software> ;
     :definition "Collaborative software or groupware is application software designed to help people working on a common task to attain their goals. One of the earliest definitions of groupware is \"intentional group processes plus software to support them\". Collaborative software is a broad concept that overlaps considerably with computer-supported cooperative work (CSCW). According to Carstensen and Schmidt (1999) groupware is part of CSCW. The authors claim that CSCW, and thereby groupware, addresses \"how collaborative activities and their coordination can be supported by means of computer systems.\"" .
 
-:Collection a :OffensiveTactic,
+:Collection a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Collection" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 9 .
 
 :CollectionTechnique a owl:Class ;
     rdfs:label "Collection Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Collection ] .
@@ -3546,16 +3573,16 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Command_(computing)> ;
     :definition "In computing, a command is a directive to a computer program acting as an interpreter of some kind, in order to perform a specific task. Most commonly a command is either a directive to some kind of command-line interface, such as a shell, or an event in a graphical user interface triggered by the user selecting an option in a menu." .
 
-:CommandAndControl a :OffensiveTactic,
+:CommandAndControl a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Command And Control" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 10 .
 
 :CommandAndControlTechnique a owl:Class ;
     rdfs:label "Command and Control Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :CommandAndControl ] .
@@ -3955,16 +3982,16 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
     :definition "A credential is a physical/tangible object, a piece of knowledge, or a facet of a person's physical being that enables an individual access to a given physical facility or computer-based information system. Typically, credentials can be something a person knows (such as a number or PIN), something they have (such as an access badge), something they are (such as a biometric feature), something they do (measurable behavioral patterns) or some combination of these items. This is known as multi-factor authentication. The typical credential is an access card or key-fob, and newer software can also turn users' smartphones into access devices." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Access_control> .
 
-:CredentialAccess a :OffensiveTactic,
+:CredentialAccess a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Credential Access" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 6 .
 
 :CredentialAccessTechnique a owl:Class ;
     rdfs:label "Credential Access Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :Credential ],
@@ -9571,23 +9598,23 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
     :definition "Default accounts are those that are built-into an OS, such as the Guest or Administrator accounts on Windows systems or default factory/provider set accounts on other types of systems, software, or devices." ;
     rdfs:seeAlso <https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/local-accounts> .
 
-:DefenseEvasion a :OffensiveTactic,
+:DefenseEvasion a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Defense Evasion" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 5 .
 
 :DefenseEvasionTechnique a owl:Class ;
     rdfs:label "Defense Evasion Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :DefenseEvasion ] .
 
 :DefensiveTactic a owl:Class ;
     rdfs:label "Defensive Tactic" ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :Tactic,
         [ a owl:Restriction ;
             owl:onProperty :enabled-by ;
             owl:someValuesFrom :DefensiveTechnique ] ;
@@ -9632,7 +9659,7 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
             owl:someValuesFrom xsd:integer ],
         [ a owl:Restriction ;
             owl:onProperty :counters ;
-            owl:someValuesFrom :OffensiveTechnique ],
+            owl:someValuesFrom :ATTACKOffensiveTechnique ],
         [ a owl:Restriction ;
             owl:onProperty :rating ;
             owl:allValuesFrom [ a rdfs:Datatype ;
@@ -9856,16 +9883,16 @@ O'Reilly Media. (n.d.). Chapter 7. Machine Learning and Security: Protecting Sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Directory_service> ;
     :definition "In computing, directory service or name service maps the names of network resources to their respective network addresses. It is a shared information infrastructure for locating, managing, administering and organizing everyday items and network resources, which can include volumes, folders, files, printers, users, groups, devices, telephone numbers and other objects. A directory service is a critical component of a network operating system. A directory server or name server is a server which provides such a service. Each resource on the network is considered an object by the directory server. Information about a particular resource is stored as a collection of attributes associated with that resource or object." .
 
-:Discovery a :OffensiveTactic,
+:Discovery a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Discovery" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 7 .
 
 :DiscoveryTechnique a owl:Class ;
     rdfs:label "Discovery Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Discovery ] .
@@ -10617,11 +10644,11 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     :definition "An executable script is written in a scripting language and interpreted at run time. This is in contrast with an executable binary, which contains machine code instructions for a physical CPU or byte code for a virtual machine." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Executable> .
 
-:Execution a :OffensiveTactic,
+:Execution a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Execution" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 2 .
 
 :ExecutionIsolation a :DefensiveTechnique,
@@ -10638,21 +10665,21 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 
 :ExecutionTechnique a owl:Class ;
     rdfs:label "Execution Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Execution ] .
 
-:Exfiltration a :OffensiveTactic,
+:Exfiltration a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Exfiltration" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 11 .
 
 :ExfiltrationTechnique a owl:Class ;
     rdfs:label "Exfiltration Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Exfiltration ] .
@@ -11918,16 +11945,16 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
 
 Zhang, Q., Wang, H., Lu, H., Won, D., & Yoon, S. W. (2018). Medical Image Synthesis with Generative Adversarial Networks for Tissue Recognition. 2018 IEEE International Conference on Healthcare Informatics (ICHI), 199-207. doi: 10.1109/ICHI.2018.00030. [Link](https://ieeexplore.ieee.org/document/8419363)""" .
 
-:Impact a :OffensiveTactic,
+:Impact a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Impact" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 12 .
 
 :ImpactTechnique a owl:Class ;
     rdfs:label "Impact Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Impact ] .
@@ -12101,16 +12128,16 @@ Wikipedia. (n.d.). Statistical inference. [Link](https://en.wikipedia.org/wiki/S
             owl:someValuesFrom xsd:anyURI ] ;
     rdfs:isDefinedBy "BFO, Cyc equiv, SUMO equiv, [Ontology Works] equiv" .
 
-:InitialAccess a :OffensiveTactic,
+:InitialAccess a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Initial Access" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 1 .
 
 :InitialAccessTechnique a owl:Class ;
     rdfs:label "Initial Access Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :InitialAccess ] .
@@ -12856,16 +12883,16 @@ Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wik
     rdfs:subClassOf :D3FENDThing ;
     :todo "Review for inclusion in d3fend.owl" .
 
-:LateralMovement a :OffensiveTactic,
+:LateralMovement a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Lateral Movement" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 8 .
 
 :LateralMovementTechnique a owl:Class ;
     rdfs:label "Lateral Movement Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :LateralMovement ] .
@@ -13547,6 +13574,9 @@ Initial planning of access model and continuous monitoring of the available user
     rdfs:subClassOf :Subroutine ;
     :definition "Computes mathematical expressions." .
 
+:Matrices a owl:Class ;
+    rdfs:subClassOf :TTPClassifier .
+
 :Maximum-marginLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Maximum-margin Learning" ;
@@ -13822,6 +13852,9 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
             owl:onProperty :may-contain ;
             owl:someValuesFrom :ExecutableScript ] ;
     rdfs:isDefinedBy "http://dbpedia.org/resource/HTML_Application" .
+
+:Mitigation a owl:Class ;
+    rdfs:subClassOf :TTPClassifier .
 
 :MobilePhone a owl:Class ;
     rdfs:label "Mobile Phone" ;
@@ -14439,27 +14472,11 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
     :todo "Fix IRI to fix 'i' in \"File\" substring of IRI" .
 
 :OffensiveTactic a owl:Class ;
-    rdfs:label "Offensive Tactic" ;
-    rdfs:subClassOf :ATTACKThing,
-        [ a owl:Restriction ;
-            owl:onProperty :enabled-by ;
-            owl:someValuesFrom :OffensiveTechnique ] ;
-    rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
-    :definition "Per ATT&CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique." .
+    rdfs:subClassOf :Tactic .
 
 :OffensiveTechnique a owl:Class ;
     rdfs:label "Offensive Technique" ;
-    rdfs:subClassOf :Action,
-        :ATTACKThing,
-        :Technique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :OffensiveTactic ],
-        [ a owl:Restriction ;
-            owl:onProperty :initiates ;
-            owl:someValuesFrom :Access ] ;
-    rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
-    :display-baseurl "/offensive-technique/attack/" .
+    rdfs:subClassOf :Technique .
 
 :OfficeApplication a owl:Class ;
     rdfs:label "Office Application" ;
@@ -15361,16 +15378,16 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     :definition "Firmware that is installed on peripheral hub device such as a USB or Firewire hub." ;
     rdfs:seeAlso <http://dbpedia.org/resource/USB_hub> .
 
-:Persistence a :OffensiveTactic,
+:Persistence a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Persistence" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 3 .
 
 :PersistenceTechnique a owl:Class ;
     rdfs:label "Persistence Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Persistence ] .
@@ -15703,16 +15720,16 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
     :definition "A privileged account is a user account that has more privileges than ordinary users. Privileged accounts might, for example, be able to install or remove software, upgrade the operating system, or modify system or application configurations. They might also have access to files that are not normally accessible to standard users. Typical examples are root and administrator accounts. But there also service accounts, system accounts, etc. Privileged accounts are especially powerful, and should be monitored especially closely." ;
     rdfs:seeAlso <https://www.cyberark.com/resources/blog/7-types-of-privileged-accounts-service-accounts-and-more> .
 
-:PrivilegeEscalation a :OffensiveTactic,
+:PrivilegeEscalation a :ATTACKOffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Privilege Escalation" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 4 .
 
 :PrivilegeEscalationTechnique a owl:Class ;
     rdfs:label "Privilege Escalation Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :PrivilegeEscalation ] .
@@ -15727,7 +15744,7 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
 1. Probabilistic logic. (2023, June 5). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Probabilistic_logic)""" .
 
 :Procedure a owl:Class ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :TTPClassifier,
         [ a owl:Restriction ;
             owl:onProperty :implements ;
             owl:someValuesFrom :Technique ],
@@ -16469,12 +16486,12 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 
 :Reconnaissance a owl:Class ;
     rdfs:label "Reconnaissance" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order -1 .
 
 :ReconnaissanceTechnique a owl:Class ;
     rdfs:label "Reconnaissance Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :Reconnaissance ] .
@@ -16739,12 +16756,12 @@ This technique analyzes a user's resource accesses by comparing the user's recen
 
 :ResourceDevelopment a owl:Class ;
     rdfs:label "Resource Development" ;
-    rdfs:subClassOf :OffensiveTactic ;
+    rdfs:subClassOf :ATTACKOffensiveTactic ;
     :display-order 0 .
 
 :ResourceDevelopmentTechnique a owl:Class ;
     rdfs:label "Resource Development Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKOffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :ResourceDevelopment ] .
@@ -23740,13 +23757,16 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:isDefinedBy <http://dbpedia.org/resource/Tablet_computer> ;
     :definition "A tablet computer, commonly shortened to tablet, is a mobile device, typically with a mobile operating system and touchscreen display processing circuitry, and a rechargeable battery in a single, thin and flat package. Tablets, being computers, do what other personal computers do, but lack some input/output (I/O) abilities that others have. Modern tablets largely resemble modern smartphones, the only differences being that tablets are relatively larger than smartphones, with screens 7 inches (18 cm) or larger, measured diagonally, and may not support access to a cellular network." .
 
+:Tactic a owl:Class ;
+    rdfs:subClassOf :TTPClassifier .
+
 :TargetAudience a owl:Class ;
     rdfs:label "Target Audience" ;
     rdfs:subClassOf :D3FENDUseCaseThing .
 
 :Technique a owl:Class ;
     rdfs:label "Technique" ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :TTPClassifier,
         [ a owl:Restriction ;
             owl:onProperty :implemented-by ;
             owl:someValuesFrom :Procedure ] .
@@ -23992,6 +24012,9 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:seeAlso <http://dbpedia.org/resource/Public_key_certificate>,
         <https://www.educative.io/edpresso/keystore-vs-truststore> ;
     :todo "Not sure in practice we need this abstraction... what is the trust store that is not a certificate trust store?  Or was it to distinguish between standard CA PKI truststores and other non-SSL schemes?" .
+
+:TTPClassifier a owl:Class ;
+    rdfs:subClassOf owl:Thing .
 
 :UncertaintySampling a owl:Class,
         owl:NamedIndividual ;
