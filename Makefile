@@ -79,8 +79,11 @@ db-sync-all: db-delete-local db-load-local db-delete-prod db-load-prod ## sync l
 
 clean: ## cleans all build artifacts
 	rm -rf build/
+	$(MAKE) -C extensions/atrm clean
+	$(MAKE) -C extensions/tmfk clean
 	rm -rf dist/
 	rm -f reports/*
+
 	$(END)
 
 install-system-deps:
@@ -147,10 +150,10 @@ reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-fu
 		--fail-on ERROR > reports/bogus-direct-subclassing-of-tactic-technique-report.txt
 	$(END)
 
-reports/missing-attack-id-report.txt:	build/d3fend-full.owl
+reports/missing-technique-id-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile src/queries/missing-attack-id-profile.txt \
-		--fail-on none > reports/missing-attack-id-report.txt
+		--profile src/queries/missing-technique-id-profile.txt \
+		--fail-on none > reports/missing-technique-id-report.txt
 	$(END)
 
 reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
@@ -294,6 +297,7 @@ build/d3fend-public-cco.owl: build/d3fend-public.owl
 
 build/d3fend-public.ttl: build/d3fend-public.owl
 	./bin/robot convert --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" --input build/d3fend-public.owl --output build/d3fend-public.ttl
+	$(END)
 
 build/d3fend-inferred-relationships.csv:
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/def-to-off-with-prop-asserts-all.rq build/d3fend-inferred-relationships.csv
@@ -307,7 +311,41 @@ build/sp800-53r5-control-to-d3fend-mapping.ttl: build/d3fend-public.owl
 	pipenv run python extensions/nist/create_nist_mappings.py
 	$(END)
 
-build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl ## build D3FEND Extensions
+extensions/atrm/build/atrm-ontology.ttl:
+	echo Building ATRM
+	$(MAKE) -C extensions/atrm all
+	$(END)
+
+extensions/tmfk/build/tmfk-ontology.ttl:
+	echo Building TMFK
+	$(MAKE) -C extensions/tmfk all
+	$(END)
+
+build/d3fend-public-ms-matrices.ttl: build/d3fend-public.owl extensions/atrm/build/atrm-ontology.ttl extensions/tmfk/build/tmfk-ontology.ttl
+	echo Merging MS matrices with D3FEND
+	./bin/robot merge \
+		--include-annotations true --collapse-import-closure false \
+		--input build/d3fend-public.owl \
+		--add-prefix "atrm: http://sec-kg.org/ontologies/atrm#" \
+		--add-prefix "tmfk: http://sec-kg.org/ontologies/tmfk#" \
+		--input extensions/atrm/build/atrm-ontology.ttl \
+		--input extensions/tmfk/build/tmfk-ontology.ttl \
+		--output build/d3fend-public-ms-premerged.ttl
+
+	./bin/robot query --input build/d3fend-public-ms-premerged.ttl \
+		--query src/queries/restrictions-as-objectproperties.rq build/d3fend-public-ms-matrices-res-as-prop.ttl
+
+	./bin/robot merge \
+		--include-annotations true --collapse-import-closure false \
+		--input build/d3fend-public-ms-premerged.ttl \
+		--add-prefix "atrm: http://sec-kg.org/ontologies/atrm#" \
+		--add-prefix "tmfk: http://sec-kg.org/ontologies/tmfk#" \
+		--input build/d3fend-public-ms-matrices-res-as-prop.ttl \
+		--output build/d3fend-public-ms-matrices.ttl
+	pipenv run ttlfmt build/d3fend-public-ms-matrices.ttl
+	$(END)
+
+build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl build/d3fend-public-ms-matrices.ttl ## build D3FEND Extensions
 	cat build/d3fend-public.ttl > build/d3fend-public-with-controls.ttl
 	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl

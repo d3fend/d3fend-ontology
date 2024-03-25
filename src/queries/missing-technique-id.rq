@@ -1,0 +1,17 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX tmfk: <http://sec-kg.org/ontologies/tmfk#>
+PREFIX atrm: <http://sec-kg.org/ontologies/atrm#>
+
+SELECT DISTINCT ?entity ?property ?value
+WHERE {
+      VALUES (?technique ?property) {
+            ( d3f:ATTACKOffensiveTechnique d3f:attack-id )
+            ( atrm:ATRMOffensiveTechnique atrm:atrm-id )
+            ( tmfk:TMFKOffensiveTechnique tmfk:tmfk-id )
+      }
+      ?tactic_technique rdfs:subClassOf ?technique .
+      ?entity rdfs:subClassOf+ ?tactic_technique .
+      FILTER NOT EXISTS { ?entity ?property ?value }
+}
