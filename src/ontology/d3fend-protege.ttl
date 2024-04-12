@@ -12084,6 +12084,11 @@ Identification of potential ROP exploit execution includes:
 * If processor does not support LBR then overhead costs for the analysis can be significant""" ;
     :kb-reference :Reference-IndirectBranchingCalls .
 
+:IndirectSystemCallFunction a owl:Class ;
+    rdfs:label "Indirect System Call Functions" ;
+    rdfs:subClassOf :Subroutine ;
+    :definition "Indirect System calls are made through OS-specific libraries (like glibc in Linux) that provides a higher-level API for the system calls." .
+
 :InferentialStatistics a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Inferential Statistics" ;
@@ -12967,19 +12972,22 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
 
 :Linux_Exit a owl:Class ;
     rdfs:label "Linux _Exit" ;
-    rdfs:subClassOf :OSAPITerminateProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPITerminateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/exit.2.html" ;
     :definition "Terminate the calling process." .
 
 :LinuxClone a owl:Class ;
     rdfs:label "Linux Clone" ;
-    rdfs:subClassOf :OSAPICreateProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone.2.html" ;
     :definition "Creates a child process and provides more precise control over the data shared between the parent and child processes" .
 
 :LinuxClone3 a owl:Class ;
     rdfs:label "Linux Clone3" ;
-    rdfs:subClassOf :OSAPICreateProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone3.2.html" ;
     :definition """Creates a child process and provides more precise control over the data shared between the parent and child processes.
 
@@ -12987,251 +12995,311 @@ Newer system call.""" .
 
 :LinuxClone3ArgumentCLONE_THREAD a owl:Class ;
     rdfs:label "Linux Clone3 Argument CLONE_THREAD" ;
-    rdfs:subClassOf :OSAPICreateThread ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateThread ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone3.2.html" ;
     :definition "A flag parameter to the Clone3 syscall. If set, the child is placed in the same thread group as the calling process." .
 
 :LinuxCloneArgumentCLONE_THREAD a owl:Class ;
     rdfs:label "Linux Clone Argument CLONE_THREAD" ;
-    rdfs:subClassOf :OSAPICreateThread ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateThread ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/clone.2.html" ;
     :definition "A flag parameter to the Clone syscall. If set, the child is placed in the same thread group as the calling process." .
 
 :LinuxConnect a owl:Class ;
     rdfs:label "Linux Connect" ;
-    rdfs:subClassOf :OSAPIConnectSocket ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIConnectSocket ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/connect.2.html" ;
     :definition "Initiate a connection on a socket." .
 
 :LinuxCreat a owl:Class ;
     rdfs:label "Linux Creat" ;
-    rdfs:subClassOf :OSAPICreateFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/creat.2.html" ;
     :definition "Equivalent to calling Linux Open with flags equal to O_CREAT|O_WRONLY|O_TRUNC." .
 
 :LinuxExecve a owl:Class ;
     rdfs:label "Linux Execve" ;
-    rdfs:subClassOf :OSAPIExec ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIExec ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/execve.2.html" ;
     :definition "Executes a program by replacing the calling process with a new program, with newly initialized stack, heap, and (initialized and uninitialized) data segments. The PID stays the same." .
 
 :LinuxExecveat a owl:Class ;
     rdfs:label "Linux Execveat" ;
-    rdfs:subClassOf :OSAPIExec ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIExec ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/execveat.2.html" ;
     :definition "Execute program relative to a directory file descriptor. Behavior is similar to Linux Execve." .
 
 :LinuxFork a owl:Class ;
     rdfs:label "Linux Fork" ;
-    rdfs:subClassOf :OSAPICreateProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/fork.2.html" ;
     :definition "Creates a child process with unique PID but retains parent PID as Parent Process Identifier (PPID)" .
 
+:LinuxglibcAPIFunction a owl:Class ;
+    rdfs:label "Linux glibc API Function" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :Subroutine ] ;
+    rdfs:isDefinedBy "https://dbpedia.org/page/Glibc" ;
+    :definition "The GNU C Library, commonly known as glibc, is the GNU Project's implementation of the C standard library." ;
+    :synonym "GNU C Library" .
+
+:LinuxglibcSystemCalls a owl:Class ;
+    rdfs:label "Linux glibc System Calls" ;
+    rdfs:subClassOf :LinuxglibcAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :SystemCall ] ;
+    rdfs:isDefinedBy "https://www.gnu.org/software/libc/manual/html_node/System-Calls.html" ;
+    :definition "Wrapper functions in glibc that invokes system calls indirectly. Usually defined in `/usr/include/x86_64-linux-gnu/bits/syscall.h`." ;
+    rdfs:seeAlso "https://man7.org/linux/man-pages/man2/syscalls.2.html" .
+
 :LinuxKillArgumentSIGKILL a owl:Class ;
     rdfs:label "Linux Kill Argument SIGKILL" ;
-    rdfs:subClassOf :OSAPITerminateProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPITerminateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/kill.2.html" ;
     :definition "Send SIGKILL signal to a process." .
 
 :LinuxMmap a owl:Class ;
     rdfs:label "Linux Mmap" ;
-    rdfs:subClassOf :OSAPIAllocateMemory ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIAllocateMemory ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/mmap.2.html" ;
     :definition "Map files or devices into memory." .
 
 :LinuxMmap2 a owl:Class ;
     rdfs:label "Linux Mmap2" ;
-    rdfs:subClassOf :OSAPIAllocateMemory ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIAllocateMemory ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/mmap2.2.html" ;
     :definition "Map files or devices into memory." .
 
 :LinuxMunmap a owl:Class ;
     rdfs:label "Linux Munmap" ;
-    rdfs:subClassOf :OSAPIFreeMemory ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIFreeMemory ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/munmap.2.html" ;
     :definition "Unmap files or devices from memory." .
 
 :LinuxOpenArgumentO_CREAT a owl:Class ;
     rdfs:label "Linux Open Argument O_CREAT" ;
-    rdfs:subClassOf :OSAPICreateFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/open.2.html" ;
     :definition "Create a regular file." .
 
 :LinuxOpenArgumentO_RDONLY-O_WRONLY-O_RDWR a owl:Class ;
     rdfs:label "Linux Open Argument O_RDONLY, O_WRONLY, O_RDWR" ;
-    rdfs:subClassOf :OSAPIOpenFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIOpenFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/open.2.html" ;
     :definition "Opens a file specified by pathname." .
 
 :LinuxOpenAt2ArgumentO_CREAT a owl:Class ;
     rdfs:label "Linux OpenAt2 Argument O_CREAT" ;
-    rdfs:subClassOf :OSAPICreateFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat2.2.html" ;
     :definition "Create a regular file. Extension of Linux Openat." .
 
 :LinuxOpenAt2ArgumentO_RDONLY-O_WRONLY-O_RDWR a owl:Class ;
     rdfs:label "Linux OpenAt2 Argument O_RDONLY, O_WRONLY, O_RDWR" ;
-    rdfs:subClassOf :OSAPIOpenFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIOpenFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat2.2.html" ;
     :definition "Extension of Linux Openat." .
 
 :LinuxOpenAtArgumentO_CREAT a owl:Class ;
     rdfs:label "Linux OpenAt Argument O_CREAT" ;
-    rdfs:subClassOf :OSAPICreateFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat.2.html" ;
     :definition "Create a regular file. Same functionality as Linux Open but slight differences in parameter." .
 
 :LinuxOpenAtArgumentO_RDONLY-O_WRONLY-O_RDWR a owl:Class ;
     rdfs:label "Linux OpenAt Argument O_RDONLY, O_WRONLY, O_RDWR" ;
-    rdfs:subClassOf :OSAPIOpenFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIOpenFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/openat.2.html" ;
     :definition "Same functionality as Linux Open but slight differences in parameter." .
 
 :LinuxPauseProcess a owl:Class ;
     rdfs:label "Linux Pause Process" ;
-    rdfs:subClassOf :OSAPISuspendProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPISuspendProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/pause.2.html" ;
     :definition "Causes the calling process to sleep until a signal is delivered that either terminates the process or causes the invocation of a signal-catching function." .
 
 :LinuxPauseThread a owl:Class ;
     rdfs:label "Linux Pause Thread" ;
-    rdfs:subClassOf :OSAPISuspendThread ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPISuspendThread ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/pause.2.html" ;
     :definition "Causes the calling thread to sleep until a signal is delivered that either terminates the thread or causes the invocation of a signal-catching function." .
 
 :LinuxPtraceArgumentPTRACE_DETACH a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_DETACH" ;
-    rdfs:subClassOf :OSAPIResumeProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIResumeProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Restart the stopped tracee as for PTRACE_CONT, but first detach from it." .
 
 :LinuxPtraceArgumentPTRACE_TRACEME a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_TRACEME" ;
-    rdfs:subClassOf :OSAPITraceProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPITraceProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Indicates that the process is to be traced by its parent." .
 
 :LinuxPtraceArgumentPTRACEATTACH a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_ATTACH" ;
-    rdfs:subClassOf :OSAPIAccessProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIAccessProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Attach to the process specified in pid, making it a tracee of the calling process." .
 
 :LinuxPtraceArgumentPTRACECONT a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_CONT" ;
-    rdfs:subClassOf :OSAPIResumeProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIResumeProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Restart the stopped tracee process." .
 
 :LinuxPtraceArgumentPTRACEGETREGS a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_GETREGS" ;
-    rdfs:subClassOf :OSAPISaveRegisters ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPISaveRegisters ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Copy the tracee's general-purpose or floating-point registers, respectively, to the address data in the tracer." .
 
 :LinuxPtraceArgumentPTRACEINTERRUPT a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_INTERRUPT" ;
-    rdfs:subClassOf :OSAPISuspendProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPISuspendProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Stops a tracee." .
 
 :LinuxPtraceArgumentPTRACEPEEKTEXT a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_PEEKTEXT" ;
-    rdfs:subClassOf :OSAPIReadMemory ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIReadMemory ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Read a word at the address addr in the tracee's memory, returning the word as the result of the ptrace() call." .
 
 :LinuxPtraceArgumentPTRACEPOKETEXT a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_POKETEXT" ;
-    rdfs:subClassOf :OSAPIWriteMemory ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIWriteMemory ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Copy the word data to the address addr in the tracee's memory." .
 
 :LinuxPtraceArgumentPTRACESETREGS a owl:Class ;
     rdfs:label "Linux Ptrace Argument PTRACE_SETREGS" ;
-    rdfs:subClassOf :OSAPISetRegisters ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPISetRegisters ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/ptrace.2.html" ;
     :definition "Modify the tracee's general-purpose or floating-point registers, respectively, from the address data in the tracer." .
 
 :LinuxRead a owl:Class ;
     rdfs:label "Linux Read" ;
-    rdfs:subClassOf :OSAPIReadFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIReadFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/read.2.html" ;
     :definition "Read from a file descriptor." .
 
 :LinuxReadv a owl:Class ;
     rdfs:label "Linux Readv" ;
-    rdfs:subClassOf :OSAPIReadFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIReadFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/readv.2.html" ;
     :definition "Read data into multiple buffers." .
 
 :LinuxRename a owl:Class ;
     rdfs:label "Linux Rename" ;
-    rdfs:subClassOf :OSAPIMoveFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIMoveFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/rename.2.html" ;
     :definition "Change the name or location of a file" .
 
 :LinuxRenameat a owl:Class ;
     rdfs:label "Linux Renameat" ;
-    rdfs:subClassOf :OSAPIMoveFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/renameat.2.html" ;
     :definition "Change the name or location of a file. Different parameter handling than Linux Rename." .
 
 :LinuxRenameat2 a owl:Class ;
     rdfs:label "Linux Renameat2" ;
-    rdfs:subClassOf :OSAPIMoveFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/renameat2.2.html" ;
     :definition "Change the name or location of a file. Additional flags argument." .
 
 :LinuxSocket a owl:Class ;
     rdfs:label "Linux Socket" ;
-    rdfs:subClassOf :OSAPICreateSocket ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateSocket ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/socket.2.html" ;
     :definition "Create an endpoint for communication." .
 
 :LinuxSocketcallArgumentSYS_CONNECT a owl:Class ;
     rdfs:label "Linux Socketcall Argument SYS_CONNECT" ;
-    rdfs:subClassOf :OSAPIConnectSocket ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIConnectSocket ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/socketcall.2.html" .
 
 :LinuxSocketcallArgumentSYS_SOCKET a owl:Class ;
     rdfs:label "Linux Socketcall Argument SYS_SOCKET" ;
-    rdfs:subClassOf :OSAPICreateSocket ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateSocket ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/socketcall.2.html" .
 
 :LinuxTime a owl:Class ;
     rdfs:label "Linux Time" ;
-    rdfs:subClassOf :OSAPIGetSystemTime ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIGetSystemTime ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/time.2.html" ;
     :definition "Get time in seconds." .
 
 :LinuxUnlink a owl:Class ;
     rdfs:label "Linux Unlink" ;
-    rdfs:subClassOf :OSAPIDeleteFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIDeleteFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/unlink.2.html" ;
     :definition "Delete a name and possibly the file it refers to." .
 
 :LinuxUnlinkat a owl:Class ;
     rdfs:label "Linux Unlinkat" ;
-    rdfs:subClassOf :OSAPIDeleteFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIDeleteFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/unlinkat.2.html" ;
     :definition "Delete a name and possibly the file it refers to. Different parameter handling than Linux Unlink" .
 
 :LinuxVfork a owl:Class ;
     rdfs:label "Linux Vfork" ;
-    rdfs:subClassOf :OSAPICreateProcess ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPICreateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/vfork.2.html" ;
     :definition "Create child process that temp suspends parent process until it terminates" .
 
 :LinuxWrite a owl:Class ;
     rdfs:label "Linux Write" ;
-    rdfs:subClassOf :OSAPIWriteFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIWriteFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/write.2.html" ;
     :definition "Write to a file descriptor." .
 
 :LinuxWritev a owl:Class ;
     rdfs:label "Linux Writev" ;
-    rdfs:subClassOf :OSAPIWriteFile ;
+    rdfs:subClassOf :LinuxglibcSystemCalls,
+        :OSAPIWriteFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/writev.2.html" ;
     :definition "Write data into multiple buffers." .
 
@@ -14749,77 +14817,77 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :OSAPIAccessProcess a owl:Class ;
     rdfs:label "OS API Access Process" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :AccessProcess ] .
 
 :OSAPIAllocateMemory a owl:Class ;
     rdfs:label "OS API Allocate Memory" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :AllocateMemory ] .
 
 :OSAPIConnectSocket a owl:Class ;
     rdfs:label "OS API Connect Socket" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :ConnectSocket ] .
 
 :OSAPICopyToken a owl:Class ;
     rdfs:label "OS API Copy Token" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CopyToken ] .
 
 :OSAPICreateFile a owl:Class ;
     rdfs:label "OS API Create File" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateFile ] .
 
 :OSAPICreateProcess a owl:Class ;
     rdfs:label "OS API Create Process" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ] .
 
 :OSAPICreateSocket a owl:Class ;
     rdfs:label "OS API Create Socket" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateSocket ] .
 
 :OSAPICreateThread a owl:Class ;
     rdfs:label "OS API Create Thread" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateThread ] .
 
 :OSAPIDeleteFile a owl:Class ;
     rdfs:label "OS API Delete File" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :DeleteFile ] .
 
 :OSAPIExec a owl:Class ;
     rdfs:label "OS API Exec" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :Exec ] .
 
 :OSAPIFreeMemory a owl:Class ;
     rdfs:label "OS API Free Memory" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :FreeMemory ] .
@@ -14833,126 +14901,127 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :OSAPIGetSystemTime a owl:Class ;
     rdfs:label "OS API Get System Time" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :GetSystemTime ] .
 
 :OSAPIGetThreadContext a owl:Class ;
     rdfs:label "OS API Get Thread Context" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :GetThreadContext ] .
 
 :OSAPIMoveFile a owl:Class ;
     rdfs:label "OS API Move File" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :MoveFile ] .
 
 :OSAPIOpenFile a owl:Class ;
     rdfs:label "OS API Open File" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :OpenFile ] .
 
 :OSAPIReadFile a owl:Class ;
     rdfs:label "OS API Read File" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :ReadFile ] .
 
 :OSAPIReadMemory a owl:Class ;
     rdfs:label "OS API Read Memory" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :ReadMemory ] .
 
 :OSAPIResumeProcess a owl:Class ;
     rdfs:label "OS API Resume Process" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :ResumeProcess ] .
 
 :OSAPIResumeThread a owl:Class ;
     rdfs:label "OS API Resume Thread" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :ResumeThread ] .
 
 :OSAPISaveRegisters a owl:Class ;
     rdfs:label "OS API Save Registers" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :SaveRegister ] .
 
 :OSAPISetRegisters a owl:Class ;
     rdfs:label "OS API Set Registers" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :SetRegisters ] .
 
 :OSAPISetThreadContext a owl:Class ;
     rdfs:label "OS API Set Thread Context" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :SetThreadContext ] .
 
 :OSAPISuspendProcess a owl:Class ;
     rdfs:label "OS API Suspend Process" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :SuspendProcess ] .
 
 :OSAPISuspendThread a owl:Class ;
     rdfs:label "OS API Suspend Thread" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :SuspendThread ] .
 
 :OSAPITerminateProcess a owl:Class ;
     rdfs:label "OS API Terminate Process" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :TerminateProcess ] .
 
 :OSAPITraceProcess a owl:Class ;
     rdfs:label "OS API Trace Process" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :TraceProcess ] .
 
 :OSAPITraceThread a owl:Class ;
     rdfs:label "OS API Trace Thread" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :TraceThread ] .
 
 :OSAPIWriteFile a owl:Class ;
     rdfs:label "OS API Write File" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteFile ] .
 
 :OSAPIWriteMemory a owl:Class ;
     rdfs:label "OS API Write Memory" ;
-    rdfs:subClassOf :OSAPIFunction,
+    rdfs:subClassOf :IndirectSystemCallFunction,
+        :OSAPIWriteMemory,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteMemory ] .
@@ -18215,7 +18284,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
             owl:someValuesFrom :Subroutine ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/System_call> ;
     :definition "A system call is the programmatic way in which a computer program requests a service from the kernel of the operating system it is executed on. This may include hardware-related services (for example, accessing a hard disk drive), creation and execution of new processes, and communication with integral kernel services such as process scheduling. System calls provide an essential interface between a process and the operating system." ;
-    :synonym "API Monitoring" .
+    :synonym "syscall" .
 
 :SystemCallAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -24585,50 +24654,105 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 :WindowOpenFile a owl:Class ;
     rdfs:label "Windows OpenFile" ;
     rdfs:subClassOf :OSAPICreateFile,
-        :OSAPIOpenFile ;
+        :OSAPIOpenFile,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtOpenFile ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-openfile" ;
     :definition "Creates, opens, reopens, or deletes a file." .
 
 :WindowsCreateFileA a owl:Class ;
     rdfs:label "Windows CreateFileA" ;
     rdfs:subClassOf :OSAPICreateFile,
-        :OSAPIOpenFile ;
+        :OSAPIOpenFile,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateMailslotFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateNamedPipeFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreatePagingFile ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea" ;
     :definition "Creates or opens a file or I/O device. The most commonly used I/O devices are as follows: file, file stream, directory, physical disk, volume, console buffer, tape drive, communications resource, mailslot, and pipe. The function returns a handle that can be used to access the file or device for various types of I/O depending on the file or device and the flags and attributes specified." .
 
 :WindowsCreateProcessA a owl:Class ;
     rdfs:label "Windows CreateProcessA" ;
-    rdfs:subClassOf :OSAPICreateProcess ;
+    rdfs:subClassOf :OSAPICreateProcess,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateProcessEx ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa" ;
     :definition "Creates a new process and its primary thread. The new process runs in the security context of the calling process." .
 
+:WindowsCreateRemoteThread a owl:Class ;
+    rdfs:label "Windows CreateRemoteThread" ;
+    rdfs:subClassOf :OSAPICreateThread,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateThreadEx ] ;
+    rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread" .
+
 :WindowsCreateThread a owl:Class ;
     rdfs:label "Windows CreateThread" ;
-    rdfs:subClassOf :OSAPICreateThread ;
+    rdfs:subClassOf :OSAPICreateThread,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateThread ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtCreateThreadEx ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread" ;
     :definition "Creates a thread to execute within the virtual address space of the calling process." .
 
 :WindowsDeleteFile a owl:Class ;
     rdfs:label "Windows DeleteFile" ;
-    rdfs:subClassOf :OSAPIDeleteFile ;
+    rdfs:subClassOf :OSAPIDeleteFile,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtDeleteFile ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-deletefile" ;
     :definition "Deletes an existing file." .
 
 :WindowsDuplicateToken a owl:Class ;
     rdfs:label "Windows DuplicateToken" ;
-    rdfs:subClassOf :OSAPICopyToken ;
+    rdfs:subClassOf :OSAPICopyToken,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtDuplicateToken ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-duplicatetoken" ;
     :definition "The DuplicateToken function creates a new access token that duplicates one already in existence." .
 
 :WindowsGetThreadContext a owl:Class ;
     rdfs:label "Windows GetThreadContext" ;
-    rdfs:subClassOf :OSAPIGetThreadContext ;
+    rdfs:subClassOf :OSAPIGetThreadContext,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNTGetThreadContext ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadcontext" ;
     :definition "Retrieves the context of the specified thread." .
 
 :WindowsNativeAPIFunction a owl:Class ;
     rdfs:label "Windows Native API Function" ;
-    rdfs:subClassOf :OSAPIFunction ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :SystemCall ] ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Windows_Native_API",
         "https://en.wikipedia.org/wiki/Windows_Native_API" ;
     :definition "The Windows Native API is a lightweight application programming interface (API) used by Windows NT and user mode applications." ;
@@ -24636,181 +24760,231 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :WindowsNtAllocateVirtualMemory a owl:Class ;
     rdfs:label "Windows NtAllocateVirtualMemory" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIAllocateMemory,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtAllocateVirtualMemoryEx a owl:Class ;
     rdfs:label "Windows NtAllocateVirtualMemoryEx" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPIAllocateMemory,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtCreateFile a owl:Class ;
     rdfs:label "Windows NtCreateFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICreateFile,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtCreateMailslotFile a owl:Class ;
     rdfs:label "Windows NtCreateMailslotFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICreateFile,
+        :WindowsNativeAPIFunction ;
     :definition "Creates a special File Object called Mailslot." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtCreateNamedPipeFile a owl:Class ;
     rdfs:label "Windows NtCreateNamedPipeFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICreateFile,
+        :WindowsNativeAPIFunction ;
     :definition "Creates Named Pipe File Object." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtCreatePagingFile a owl:Class ;
     rdfs:label "Windows NtCreatePagingFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICreateFile,
+        :WindowsNativeAPIFunction ;
     :definition "Typically used by Control Panel's \"System\" applet for creating new paged files." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtCreateProcess a owl:Class ;
     rdfs:label "Windows NtCreateProcess" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICreateProcess,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtCreateProcessEx a owl:Class ;
     rdfs:label "Windows NtCreateProcessEx" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPICreateProcess,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtCreateThread a owl:Class ;
     rdfs:label "Windows NtCreateThread" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICreateThread,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtCreateThreadEx a owl:Class ;
     rdfs:label "Windows NtCreateThreadEx" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPICreateThread,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtDeleteFile a owl:Class ;
     rdfs:label "Windows NtDeleteFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIDeleteFile,
+        :WindowsNativeAPIFunction ;
     :definition "Deletes the specified file." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtDuplicateToken a owl:Class ;
     rdfs:label "Windows NtDuplicateToken" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPICopyToken,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtFlushInstructionCache a owl:Class ;
     rdfs:label "Windows NtFlushInstructionCache" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPIWriteMemory,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtFreeVirtualMemory a owl:Class ;
     rdfs:label "Windows NtFreeVirtualMemory" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIFreeMemory,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNTGetThreadContext a owl:Class ;
     rdfs:label "Windows NtGetThreadContext" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPIGetThreadContext,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtOpenFile a owl:Class ;
     rdfs:label "Windows NtOpenFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIOpenFile,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtOpenProcess a owl:Class ;
     rdfs:label "Windows NtOpenProcess" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPITraceProcess,
+        :WindowsNativeAPIFunction ;
     :definition "Opens a handle to process obj and sets the access rights to this object." ;
     rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-ntopenprocess" .
 
 :WindowsNtOpenThread a owl:Class ;
     rdfs:label "Windows NtOpenThread" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPITraceThread,
+        :WindowsNativeAPIFunction ;
     :definition "Opens a handle to a thread object with the access specified." ;
     rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/devnotes/ntopenthread" .
 
 :WindowsNtProtectVirtualMemory a owl:Class ;
     rdfs:label "Windows NtProtectVirtualMemory" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIAllocateMemory,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://www.delphibasics.info/home/delphibasicssnippets/nativewriteprocessmemoryapireplacement" .
 
 :WindowsNtQuerySystemTime a owl:Class ;
     rdfs:label "Windows NtQuerySystemTime" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIGetSystemTime,
+        :WindowsNativeAPIFunction ;
     :definition "Returns current time in Coordinated Universal Time (UTC) 8-bytes format." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtReadFile a owl:Class ;
     rdfs:label "Windows NtReadFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIReadFile,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtReadFileScatter a owl:Class ;
     rdfs:label "Windows NtReadFileScatter" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIReadFile,
+        :WindowsNativeAPIFunction ;
     :definition "Reads specified block from file into multiple buffers. Each buffer must have one page length." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtResumeThread a owl:Class ;
     rdfs:label "Windows NtResumeThread" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPIResumeThread,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtSetInformationFileArgumentFileDispositionInformation a owl:Class ;
     rdfs:label "Windows NtSetInformationFile Argument FileDispositionInformation" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIDeleteFile,
+        :WindowsNativeAPIFunction ;
     :definition "Request to delete the file when it is closed or cancel a previously requested deletion." ;
     rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/nf-ntifs-ntsetinformationfile" .
 
 :WindowsNtSetThreadContext a owl:Class ;
     rdfs:label "Windows NtSetThreadContext" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPISetThreadContext,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtSuspendProcess a owl:Class ;
     rdfs:label "Windows NtSuspendProcess" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPISuspendProcess,
+        :WindowsNativeAPIFunction .
 
 :WindowsNtSuspendThread a owl:Class ;
     rdfs:label "Windows NtSuspendThread" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPISuspendThread,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtTerminateProcess a owl:Class ;
     rdfs:label "Windows NtTerminateProcess" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPITerminateProcess,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtWriteFile a owl:Class ;
     rdfs:label "Windows NtWriteFile" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIWriteFile,
+        :WindowsNativeAPIFunction ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtWriteFileGather a owl:Class ;
     rdfs:label "Windows NtWriteFileGather" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction ;
+    rdfs:subClassOf :OSAPIWriteFile,
+        :WindowsNativeAPIFunction ;
     :definition "Writes specified block of file with data from memory pages." ;
     rdfs:seeAlso "https://j00ru.vexillium.org/syscalls/nt/64/" .
 
 :WindowsNtWriteVirtualMemory a owl:Class ;
     rdfs:label "Windows NtWriteVirtualMemory" ;
-    rdfs:subClassOf :WindowsNativeAPIFunction .
+    rdfs:subClassOf :OSAPIWriteMemory,
+        :WindowsNativeAPIFunction .
 
 :WindowsOpenProcess a owl:Class ;
     rdfs:label "Windows OpenProcess" ;
-    rdfs:subClassOf :OSAPITraceProcess ;
+    rdfs:subClassOf :OSAPITraceProcess,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtOpenProcess ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess" ;
     :definition "Opens an existing local process object." .
 
 :WindowsOpenThread a owl:Class ;
     rdfs:label "Windows OpenThread" ;
-    rdfs:subClassOf :OSAPITraceThread ;
+    rdfs:subClassOf :OSAPITraceThread,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtOpenThread ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openthread" ;
     :definition "Opens an existing thread object." .
 
 :WindowsQueryPerformanceCounter a owl:Class ;
     rdfs:label "Windows QueryPerformanceCounter" ;
-    rdfs:subClassOf :OSAPIGetSystemTime ;
+    rdfs:subClassOf :OSAPIGetSystemTime,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtQuerySystemTime ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter" ;
     :definition "Retrieves the current value of the performance counter, which is a high resolution (<1us) time stamp that can be used for time-interval measurements." .
 
 :WindowsReadFile a owl:Class ;
     rdfs:label "Windows ReadFile" ;
-    rdfs:subClassOf :OSAPIReadFile ;
+    rdfs:subClassOf :OSAPIReadFile,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtReadFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtReadFileScatter ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile" ;
     :definition "Reads data from the specified file or input/output (I/O) device. Reads occur at the position specified by the file pointer if supported by the device." .
 
@@ -24858,13 +25032,21 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :WindowsResumeThread a owl:Class ;
     rdfs:label "Windows ResumeThread" ;
-    rdfs:subClassOf :OSAPIResumeThread ;
+    rdfs:subClassOf :OSAPIResumeThread,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtResumeThread ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-resumethread" ;
     :definition "Decrements a thread's suspend count. When the suspend count is decremented to zero, the execution of the thread is resumed." .
 
 :WindowsSetThreadContext a owl:Class ;
     rdfs:label "Windows SetThreadContext" ;
-    rdfs:subClassOf :OSAPISetThreadContext ;
+    rdfs:subClassOf :OSAPISetThreadContext,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtSetThreadContext ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadcontext" ;
     :definition "Sets the context for the specified thread." .
 
@@ -24878,43 +25060,96 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :WindowsSuspendThread a owl:Class ;
     rdfs:label "Windows SuspendThread" ;
-    rdfs:subClassOf :OSAPISuspendThread ;
+    rdfs:subClassOf :OSAPISuspendThread,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtSuspendThread ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread" ;
     :definition "Suspends the specified thread." .
 
 :WindowsTerminateProcess a owl:Class ;
     rdfs:label "Windows TerminateProcess" ;
-    rdfs:subClassOf :OSAPITerminateProcess ;
+    rdfs:subClassOf :OSAPITerminateProcess,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtTerminateProcess ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess" ;
     :definition "Terminates the specified process and all of its threads." .
 
 :WindowsVirtualAllocEx a owl:Class ;
     rdfs:label "Windows VirtualAllocEx" ;
-    rdfs:subClassOf :OSAPIAllocateMemory ;
+    rdfs:subClassOf :OSAPIAllocateMemory,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtAllocateVirtualMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtProtectVirtualMemory ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex" ;
     :definition "Reserves, commits, or changes the state of a region of memory within the virtual address space of a specified process. The function initializes the memory it allocates to zero." .
 
 :WindowsVirtualFree a owl:Class ;
     rdfs:label "Windows VirtualFree" ;
-    rdfs:subClassOf :OSAPIFreeMemory ;
+    rdfs:subClassOf :OSAPIFreeMemory,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtFreeVirtualMemory ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree" ;
     :definition "Releases, decommits, or releases and decommits a region of pages within the virtual address space of the calling process." .
 
 :WindowsVirtualProtectEx a owl:Class ;
     rdfs:label "Windows VirtualProtectEx" ;
-    rdfs:subClassOf :OSAPIAllocateMemory ;
+    rdfs:subClassOf :OSAPIAllocateMemory,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtAllocateVirtualMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtProtectVirtualMemory ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex" ;
     :definition "Changes the protection on a region of committed pages in the virtual address space of a specified process." .
 
+:WindowsWin32APIFunction a owl:Class ;
+    rdfs:label "Windows Win32 API Function" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNativeAPIFunction ] ;
+    :definition "The Windows API, informally WinAPI, is Microsoft's core set of application programming interfaces (APIs) available in the Microsoft Windows operating systems." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Windows_API",
+        "https://learn.microsoft.com/en-us/windows/win32/api/" .
+
 :WindowsWriteFile a owl:Class ;
     rdfs:label "Windows WriteFile" ;
-    rdfs:subClassOf :OSAPIWriteFile ;
+    rdfs:subClassOf :OSAPIWriteFile,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtWriteFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtWriteFileGather ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile" ;
     :definition "Writes data to the specified file or input/output (I/O) device." .
 
 :WindowsWriteProcessMemory a owl:Class ;
     rdfs:label "Windows WriteProcessMemory" ;
-    rdfs:subClassOf :OSAPIWriteMemory ;
+    rdfs:subClassOf :OSAPIWriteMemory,
+        :WindowsWin32APIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtFlushInstructionCache ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtProtectVirtualMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :WindowsNtWriteVirtualMemory ] ;
     rdfs:isDefinedBy "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory" ;
     :definition "Writes data to an area of memory in a specified process. The entire area to be written to must be accessible or the operation fails." .
 
