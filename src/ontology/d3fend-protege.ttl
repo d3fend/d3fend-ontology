@@ -15025,6 +15025,13 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :TraceProcess ] .
 
+:OSAPITraceThread a owl:Class ;
+    rdfs:label "OS API Trace Thread" ;
+    rdfs:subClassOf :OSAPIFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :TraceThread ] .
+
 :OSAPIWriteFile a owl:Class ;
     rdfs:label "OS API Write File" ;
     rdfs:subClassOf :OSAPIFunction,
@@ -16454,7 +16461,7 @@ Q-learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Q-learning).""" .
     rdfs:label "Query By Committee" ;
     rdfs:subClassOf :ActiveLearning ;
     :d3fend-id "D3A-QBC" ;
-    :definition "Query by Committee (QBC) takes inspiration from ensemble methods. Instead of just one classifier, it takes into account the decision of a committee 𝐶=ℎ1,…,ℎc of classifiers ℎ𝑖. Each classifier has the same target classes, but a different underlying model or a different view on the data." ;
+    :definition "Query by Committee (QBC) takes inspiration from ensemble methods. Instead of just one classifier, it takes into account the decision of a committee C=ℎ1,…,ℎc of classifiers ℎi. Each classifier has the same target classes, but a different underlying model or a different view on the data." ;
     :kb-article """## References
 Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
 
@@ -18579,6 +18586,28 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :OperatingSystemFile ] ;
     :definition "Software services provided as part of the operating system, typically accessed through system calls." ;
     rdfs:seeAlso <https://www.os-book.com/OS9/slide-dir/PPT-dir/ch2.ppt> .
+
+:SystemShutdownReboot a :DefensiveTechnique,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "System Shutdown/Reboot" ;
+    rdfs:subClassOf :ProcessEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :terminates ;
+            owl:someValuesFrom :Process ] ;
+    :d3fend-id "D3-SYSSR" ;
+    :definition "Initiating a system's shutdown or reboot sequence to terminate all running processes." ;
+    :kb-article """## How It Works
+
+System Shutdown / Reboot can either be initiated in the physical presence of the device using the power functions or remotely using the provided user interface or an installed EDR agent (with the available function). This process may allow for the removal of specific types of malware, such as fileless malware, and can also prevent further damage, for example, if the system is part of a botnet.
+
+## Considerations
+
+- If the attacker has achieved persistence techniques, this technique may not be effective
+- Compromised systems may not respond to remote commands to shutdown or reboot, requiring physical intervention.
+- Shutting down a system will usually result in the memory losing its state which can be useful in forensic activities so this should be considered when deciding to shutdown.
+- Shutting down or rebooting systems may disrupt access to computer resources for legitimate users.""" ;
+    :kb-reference :Reference-NearMemoryInMemoryDetectionofFilelessMalware .
 
 :SystemSoftware a owl:Class ;
     rdfs:label "System Software" ;
@@ -23952,6 +23981,10 @@ Attestation of the secure boot occurs when a verifying entity requests a Quote w
     rdfs:seeAlso <https://dbpedia.org/resource/Ptrace>,
         <https://linux.die.net/man/2/ptrace> .
 
+:TraceThread a owl:Class ;
+    rdfs:label "Trace Thread" ;
+    rdfs:subClassOf :SystemCall .
+
 :TrajectoryPrediction a owl:Class ;
     rdfs:label "Trajectory Prediction" ;
     rdfs:subClassOf :Forecasting .
@@ -24739,6 +24772,13 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         :OSAPITraceProcess ;
     :definition "Opens a handle to process obj and sets the access rights to this object." ;
     rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddk/nf-ntddk-ntopenprocess" .
+
+:WindowsNtOpenThread a owl:Class ;
+    rdfs:label "Windows NtOpenThread" ;
+    rdfs:subClassOf :OSAPIPrivateFunction,
+        :OSAPITraceThread ;
+    :definition "Opens a handle to a thread object with the access specified." ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows/win32/devnotes/ntopenthread" .
 
 :WindowsNtProtectVirtualMemory a owl:Class ;
     rdfs:label "Windows NtProtectVirtualMemory" ;
@@ -27739,6 +27779,15 @@ Some examples of data inputs:
     :has-link "https://github.com/Neo23x0/munin"^^xsd:anyURI ;
     :kb-author "Florian Roth" ;
     :kb-reference-title "Online Hash Checker for Virustotal and Other Services" .
+
+:Reference-NearMemoryInMemoryDetectionofFilelessMalware a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Near-Memory & In-Memory Detection of Fileless Malware" ;
+    :has-link "https://web.inf.ufpr.br/mazalves/wp-content/uploads/sites/13/2021/03/memsys2020.pdf" ;
+    :kb-abstract "Fileless malware are recent threats to computer systems that load directly into memory, and whose aim is to prevent anti-viruses (AVs) from successfully matching byte patterns against suspicious files written on disk. Their detection requires that software-based AVs continuously scan memory, which is expensive due to repeated locks and polls. However, research advances introduced near-memory and in-memory processing, which allow memory controllers to trigger basic computations without moving data to the CPU. In this paper, we address AVs performance overhead by moving them to the hardware, i.e., we propose instrumenting processors’ memory controller or smart memories (near- and in-memory malware detection, respectively) to accelerate memory scanning procedures. To do so, we present MINI-ME, the Malware Identification based on Near- and In-Memory Evaluation mechanism, a hardware-based AV accelerator that interrupts the program’s execution if malicious patterns are discovered in their memory. We prototyped MINI-ME in a simulator and tested it with a set of 21 thousand in-the-wild malware samples, which resulted in multiple signatures matching with less than 1% of performance overhead and rates of 100% detection, and zero false-positives and false-negatives." ;
+    :kb-author "Marcus Botacin, André Grégio, Marco Antonio Zanata Alves" ;
+    :kb-reference-of :SystemShutdownReboot ;
+    :kb-reference-title "Near-Memory & In-Memory Detection of Fileless Malware" .
 
 :Reference-Network-BasedBufferOverflowDetectionByExploitCodeAnalysis_InformationSecurityResearchCentre a :AcademicPaperReference,
         owl:NamedIndividual ;
