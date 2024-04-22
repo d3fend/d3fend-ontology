@@ -2119,7 +2119,7 @@ In a more general sense, ASP includes all applications of answer sets to knowled
             owl:someValuesFrom :ApplicationConfiguration ] ;
     :definition "A file containing Information used to configure the parameters and initial settings for an application.. A plist file is an example of this type of file for macOS.  Usually text-based." .
 
-:ApplicationConfigurationHardening a :ApplicationHardening,
+:ApplicationConfigurationHardening a :ApplicationConfigurationHardening,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Application Configuration Hardening" ;
@@ -2297,7 +2297,7 @@ ANN Classification. [Link](http://uc-r.github.io/ann_classification).""" .
     :synonym "Asset Discovery",
         "Asset Inventorying" .
 
-:AssetVulnerabilityEnumeration a :AssetInventory,
+:AssetVulnerabilityEnumeration a :AssetVulnerabilityEnumeration,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Asset Vulnerability Enumeration" ;
@@ -2342,9 +2342,9 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
     :definition "Asymmetric keys are public and private keys, paired such that asymmetric (public-key) cryptography algorithms can be implemented using them. Public-key cryptography, or asymmetric cryptography, is any cryptographic system that uses pairs of keys: public keys that may be disseminated widely paired with private keys which are known only to the owner. There are two functions that can be achieved: using a public key to authenticate that a message originated with a holder of the paired private key; or encrypting a message with a public key to ensure that only the holder of the paired private key can decrypt it." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Public-key_cryptography> .
 
-:ATTACKMitigation a owl:Class ;
-    rdfs:label "ATTACK Mitigation" ;
-    rdfs:subClassOf :ATTACKThing,
+:ATTACKEnterpriseMitigation a owl:Class ;
+    rdfs:label "ATTACK Enterprise Mitigation" ;
+    rdfs:subClassOf :ATTACKEnterpriseThing,
         [ a owl:Restriction ;
             owl:onProperty :d3fend-comment ;
             owl:someValuesFrom xsd:string ],
@@ -2352,8 +2352,25 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
             owl:onProperty :semantic-relation ;
             owl:someValuesFrom :DefensiveTechnique ] .
 
+:ATTACKEnterpriseTactic a owl:Class ;
+    rdfs:label "ATTACK Enterprise Tactic" ;
+    rdfs:subClassOf :ATTACKEnterpriseThing .
+
+:ATTACKEnterpriseTechnique a owl:Class ;
+    rdfs:label "ATTACK Enterprise Technique" ;
+    rdfs:subClassOf :ATTACKEnterpriseThing .
+
+:ATTACKEnterpriseThing a owl:Class ;
+    rdfs:label "ATTACK Enterprise Thing" ;
+    rdfs:subClassOf :ATTACKThing .
+
+:ATTACKMergedThing a owl:Class ;
+    rdfs:label "ATTACK Merged Thing" ;
+    rdfs:subClassOf :ATTACKThing .
+
 :ATTACKThing a owl:Class ;
     rdfs:label "ATTACK Thing" ;
+    rdfs:subClassOf :ExternalThreatModelThing ;
     :definition "ATTACK things are concepts defined in the ATT&CK Framework." .
 
 :AudioInputDevice a owl:Class ;
@@ -3054,7 +3071,8 @@ DHHS, National Health Security Review 2010- 2014, Terms, Jan 17""" ;
     :capec-id "CAPEC-553" .
 
 :CAPECThing a owl:Class ;
-    rdfs:label "CAPEC Thing" .
+    rdfs:label "CAPEC Thing" ;
+    rdfs:subClassOf :ExternalThreatModelThing .
 
 :CART a owl:Class,
         owl:NamedIndividual ;
@@ -3519,19 +3537,13 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Collaborative_software> ;
     :definition "Collaborative software or groupware is application software designed to help people working on a common task to attain their goals. One of the earliest definitions of groupware is \"intentional group processes plus software to support them\". Collaborative software is a broad concept that overlaps considerably with computer-supported cooperative work (CSCW). According to Carstensen and Schmidt (1999) groupware is part of CSCW. The authors claim that CSCW, and thereby groupware, addresses \"how collaborative activities and their coordination can be supported by means of computer systems.\"" .
 
-:Collection a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Collection" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 9 .
-
 :CollectionTechnique a owl:Class ;
     rdfs:label "Collection Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Collection ] .
+            owl:someValuesFrom :TA0009 ] .
 
 :CollectorAgent a owl:Class ;
     rdfs:label "Network Agent" ;
@@ -3546,19 +3558,13 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Command_(computing)> ;
     :definition "In computing, a command is a directive to a computer program acting as an interpreter of some kind, in order to perform a specific task. Most commonly a command is either a directive to some kind of command-line interface, such as a shell, or an event in a graphical user interface triggered by the user selecting an option in a menu." .
 
-:CommandAndControl a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Command And Control" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 10 .
-
 :CommandAndControlTechnique a owl:Class ;
     rdfs:label "Command and Control Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :CommandAndControl ] .
+            owl:someValuesFrom :TA0011 ] .
 
 :CommandHistoryLog a owl:Class ;
     rdfs:label "Command History Log" ;
@@ -3639,7 +3645,7 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Configuration_file> ;
     :definition "A file containing Information used to configure the parameters and initial settings for some computer programs. They are used for user applications, server processes and operating system settings." .
 
-:ConfigurationInventory a :AssetInventory,
+:ConfigurationInventory a :ConfigurationInventory,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Configuration Inventory" ;
@@ -3743,7 +3749,7 @@ Another approach passively inspects network traffic with application protocol an
 Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.""" ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/image" .
 
-:ContainerImageAnalysis a :AssetVulnerabilityEnumeration,
+:ContainerImageAnalysis a :ContainerImageAnalysis,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Container Image Analysis" ;
@@ -3955,22 +3961,16 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
     :definition "A credential is a physical/tangible object, a piece of knowledge, or a facet of a person's physical being that enables an individual access to a given physical facility or computer-based information system. Typically, credentials can be something a person knows (such as a number or PIN), something they have (such as an access badge), something they are (such as a biometric feature), something they do (measurable behavioral patterns) or some combination of these items. This is known as multi-factor authentication. The typical credential is an access card or key-fob, and newer software can also turn users' smartphones into access devices." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Access_control> .
 
-:CredentialAccess a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Credential Access" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 6 .
-
 :CredentialAccessTechnique a owl:Class ;
     rdfs:label "Credential Access Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :Credential ],
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :CredentialAccess ],
+            owl:someValuesFrom :TA0006 ],
         [ a owl:Restriction ;
             owl:onProperty :may-access ;
             owl:someValuesFrom :PasswordFile ],
@@ -9121,7 +9121,7 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     :synonym "Data Flow Mapping",
         "Information Exchange Mapping" .
 
-:DataInventory a :AssetInventory,
+:DataInventory a :DataInventory,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Data Inventory" ;
@@ -9169,7 +9169,7 @@ Datalog generally uses a bottom-up rather than top-down evaluation model. This d
 Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehensive Guide with Implementations in Python. [Link](https://www.analyticsvidhya.com/blog/2020/09/how-dbscan-clustering-works/#:~:text=DBSCAN%20is%20a%20density%2Dbased,points%20into%20a%20single%20cluster.)""" ;
     :todo "Do we need HBDSCAN and OPTICS as well in density based clustering ?" .
 
-:DeadCodeElimination a :ApplicationHardening,
+:DeadCodeElimination a :DeadCodeElimination,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Dead Code Elimination" ;
@@ -9571,19 +9571,13 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
     :definition "Default accounts are those that are built-into an OS, such as the Guest or Administrator accounts on Windows systems or default factory/provider set accounts on other types of systems, software, or devices." ;
     rdfs:seeAlso <https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/local-accounts> .
 
-:DefenseEvasion a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Defense Evasion" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 5 .
-
 :DefenseEvasionTechnique a owl:Class ;
     rdfs:label "Defense Evasion Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :DefenseEvasion ] .
+            owl:someValuesFrom :TA0005 ] .
 
 :DefensiveTactic a owl:Class ;
     rdfs:label "Defensive Tactic" ;
@@ -9856,19 +9850,13 @@ O'Reilly Media. (n.d.). Chapter 7. Machine Learning and Security: Protecting Sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Directory_service> ;
     :definition "In computing, directory service or name service maps the names of network resources to their respective network addresses. It is a shared information infrastructure for locating, managing, administering and organizing everyday items and network resources, which can include volumes, folders, files, printers, users, groups, devices, telephone numbers and other objects. A directory service is a critical component of a network operating system. A directory server or name server is a server which provides such a service. Each resource on the network is considered an object by the directory server. Information about a particular resource is stored as a collection of attributes associated with that resource or object." .
 
-:Discovery a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Discovery" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 7 .
-
 :DiscoveryTechnique a owl:Class ;
     rdfs:label "Discovery Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Discovery ] .
+            owl:someValuesFrom :TA0007 ] .
 
 :DiscriminantAnalysis a owl:Class,
         owl:NamedIndividual ;
@@ -10457,7 +10445,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :definition "An exception handler is a code segment that processes an exception." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Exception_handling> .
 
-:ExceptionHandlerPointerValidation a :ApplicationHardening,
+:ExceptionHandlerPointerValidation a :ExceptionHandlerPointerValidation,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Exception Handler Pointer Validation" ;
@@ -10617,13 +10605,6 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     :definition "An executable script is written in a scripting language and interpreted at run time. This is in contrast with an executable binary, which contains machine code instructions for a physical CPU or byte code for a virtual machine." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Executable> .
 
-:Execution a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Execution" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 2 .
-
 :ExecutionIsolation a :DefensiveTechnique,
         owl:Class,
         owl:NamedIndividual ;
@@ -10638,24 +10619,19 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 
 :ExecutionTechnique a owl:Class ;
     rdfs:label "Execution Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Execution ] .
-
-:Exfiltration a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Exfiltration" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 11 .
+            owl:someValuesFrom :TA0002 ] .
 
 :ExfiltrationTechnique a owl:Class ;
     rdfs:label "Exfiltration Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Exfiltration ] .
+            owl:someValuesFrom :TA0010 ] .
 
 :Expectation-maximizationClustering a owl:Class,
         owl:NamedIndividual ;
@@ -10707,6 +10683,9 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
         :TechniqueReference ;
     :pref-label "External Knowledge Base" ;
     :todo "Consider working  on alias or new preferred name... meh on \"Knowledge Content Entity\",  not sure \"External\" is helpful in conveying core concept; examples would be DBPedia, ATT&CK, CAPEC, CVE, ..., we included CAR; maybe even STIG or are they better as Guidance?" .
+
+:ExternalThreatModelThing a owl:Class ;
+    rdfs:label "External Threat Model Thing" .
 
 :FastSymbolicLink a owl:Class ;
     rdfs:label "Fast Symbolic Link" ;
@@ -11357,6 +11336,10 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "A type of user account in Microsoft Windows (NT) that has a domain-wide scope.defines that user's access to a logical group of network objects (computers, users, devices) that share the same Active Directory databases; that is, a user's access to the domain." ;
     rdfs:seeAlso <https://networkencyclopedia.com/global-user-account> .
 
+:Goal a owl:Class ;
+    rdfs:label "Goal" ;
+    rdfs:subClassOf :D3FENDCore .
+
 :GoodmanAndKruskalsGamma a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Goodman and Kruskal's Gamma" ;
@@ -11522,7 +11505,7 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
         :Reference-VirtualizedProcessIsolation_AdvancedMicroDevicesInc ;
     :synonym "Virtualization" .
 
-:HardwareComponentInventory a :AssetInventory,
+:HardwareComponentInventory a :HardwareComponentInventory,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Hardware Component Inventory" ;
@@ -11767,6 +11750,50 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
     rdfs:isDefinedBy <http://dbpedia.org/resource/Hostname> ;
     :definition "In computer networking, a hostname (archaically nodename) is a label that is assigned to a device connected to a computer network and that is used to identify the device in various forms of electronic communication, such as the World Wide Web. Hostnames may be simple names consisting of a single word or phrase, or they may be structured." .
 
+:HostReboot a :HostReboot,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Host Reboot" ;
+    rdfs:subClassOf :HostShutdown,
+        [ a owl:Restriction ;
+            owl:onProperty :terminates ;
+            owl:someValuesFrom :Process ] ;
+    :d3fend-id "D3-HR" ;
+    :definition "Initiating a host's reboot sequence to terminate all running processes." ;
+    :kb-article """## How It Works
+
+Host reboot can either be initiated in the physical presence of the device using the power functions or remotely using the provided user interface or an installed EDR agent (with the available function). This process may allow for the removal of specific types of malware, such as fileless malware, and can also prevent further damage, for example, if the system is part of a botnet.
+
+## Considerations
+
+- If the attacker has achieved persistence techniques, this technique may not be effective
+- Compromised systems may not respond to remote commands to shutdown or reboot, requiring physical intervention.
+- Shutting down a system will usually result in the memory losing its state which can be useful in forensic activities so this should be considered when deciding to shutdown.
+- Shutting down or rebooting systems may disrupt access to computer resources for legitimate users.""" ;
+    :kb-reference :Reference-NearMemoryInMemoryDetectionofFilelessMalware .
+
+:HostShutdown a :HostShutdown,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Host Shutdown" ;
+    rdfs:subClassOf :ProcessEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :terminates ;
+            owl:someValuesFrom :Process ] ;
+    :d3fend-id "D3-HS" ;
+    :definition "Initiating a host's shutdown sequence to terminate all running processes." ;
+    :kb-article """## How It Works
+
+Host shutdown can either be initiated in the physical presence of the device using the power functions or remotely using the provided user interface or an installed EDR agent (with the available function). This process may allow for the removal of specific types of malware, such as fileless malware, and can also prevent further damage, for example, if the system is part of a botnet.
+
+## Considerations
+
+- If the attacker has achieved persistence techniques, this technique may not be effective
+- Compromised systems may not respond to remote commands to shutdown or reboot, requiring physical intervention.
+- Shutting down a system will usually result in the memory losing its state which can be useful in forensic activities so this should be considered when deciding to shutdown.
+- Shutting down systems may disrupt access to computer resources for legitimate users.""" ;
+    :kb-reference :Reference-NearMemoryInMemoryDetectionofFilelessMalware .
+
 :HTMLFile a owl:Class ;
     rdfs:label "HTML File" ;
     skos:altLabel "HTML File" ;
@@ -11918,19 +11945,13 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
 
 Zhang, Q., Wang, H., Lu, H., Won, D., & Yoon, S. W. (2018). Medical Image Synthesis with Generative Adversarial Networks for Tissue Recognition. 2018 IEEE International Conference on Healthcare Informatics (ICHI), 199-207. doi: 10.1109/ICHI.2018.00030. [Link](https://ieeexplore.ieee.org/document/8419363)""" .
 
-:Impact a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Impact" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 12 .
-
 :ImpactTechnique a owl:Class ;
     rdfs:label "Impact Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Impact ] .
+            owl:someValuesFrom :TA0040 ] .
 
 :ImpersonateUser a :ImpersonateUser,
         owl:Class,
@@ -12101,19 +12122,13 @@ Wikipedia. (n.d.). Statistical inference. [Link](https://en.wikipedia.org/wiki/S
             owl:someValuesFrom xsd:anyURI ] ;
     rdfs:isDefinedBy "BFO, Cyc equiv, SUMO equiv, [Ontology Works] equiv" .
 
-:InitialAccess a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Initial Access" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 1 .
-
 :InitialAccessTechnique a owl:Class ;
     rdfs:label "Initial Access Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :InitialAccess ] .
+            owl:someValuesFrom :TA0001 ] .
 
 :InitScript a owl:Class ;
     rdfs:label "Init Script" ;
@@ -12856,19 +12871,13 @@ Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wik
     rdfs:subClassOf :D3FENDThing ;
     :todo "Review for inclusion in d3fend.owl" .
 
-:LateralMovement a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Lateral Movement" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 8 .
-
 :LateralMovementTechnique a owl:Class ;
     rdfs:label "Lateral Movement Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :LateralMovement ] .
+            owl:someValuesFrom :TA0008 ] .
 
 :LegacySystem a owl:Class ;
     rdfs:label "Legacy System" ;
@@ -14120,7 +14129,7 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     rdfs:isDefinedBy <http://dbpedia.org/resource/Node_(networking)> ;
     :definition "In telecommunications networks, a node (Latin nodus, 'knot') is either a redistribution point or a communication endpoint. The definition of a node depends on the network and protocol layer referred to. A physical network node is an electronic device that is attached to a network, and is capable of creating, receiving, or transmitting information over a communications channel. A passive distribution point such as a distribution frame or patch panel is consequently not a node." .
 
-:NetworkNodeInventory a :AssetInventory,
+:NetworkNodeInventory a :NetworkNodeInventory,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Network Node Inventory" ;
@@ -14440,17 +14449,17 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
 
 :OffensiveTactic a owl:Class ;
     rdfs:label "Offensive Tactic" ;
-    rdfs:subClassOf :ATTACKThing,
+    rdfs:subClassOf :Goal,
         [ a owl:Restriction ;
             owl:onProperty :enabled-by ;
             owl:someValuesFrom :OffensiveTechnique ] ;
     rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
-    :definition "Per ATT&CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique." .
+    :definition "Per ATT&CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique." ;
+    :synonym "Tactical Objective" .
 
 :OffensiveTechnique a owl:Class ;
     rdfs:label "Offensive Technique" ;
     rdfs:subClassOf :Action,
-        :ATTACKThing,
         :Technique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
@@ -15197,8 +15206,7 @@ Newcastle University. (n.d.). Parametric Hypothesis Tests. [Link](https://www.nc
     rdfs:label "Passive Certificate Analysis" ;
     rdfs:subClassOf :CertificateAnalysis ;
     :d3fend-id "D3-PCA" ;
-    :definition "Collecting host certificates from network traffic or other passive sources like a certificate transparency log and analyzing them for unauthorized activity.",
-        "Passively collecting certificates and analyzing them." ;
+    :definition "Collecting host certificates from network traffic or other passive sources like a certificate transparency log and analyzing them for unauthorized activity." ;
     :kb-article """## How it works
 Certificates are analyzed outside of a TLS server connection using third-party secure update logs, domain name analysis and analytics.
 
@@ -15361,19 +15369,13 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     :definition "Firmware that is installed on peripheral hub device such as a USB or Firewire hub." ;
     rdfs:seeAlso <http://dbpedia.org/resource/USB_hub> .
 
-:Persistence a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Persistence" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 3 .
-
 :PersistenceTechnique a owl:Class ;
     rdfs:label "Persistence Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Persistence ] .
+            owl:someValuesFrom :TA0003 ] .
 
 :Person a owl:Class ;
     rdfs:label "Person" ;
@@ -15554,9 +15556,9 @@ Wikipedia. (n.d.). Point-biserial correlation coefficient. [Link](https://en.wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Pointer_(computer_programming)> ;
     :definition "In computer science, a pointer is a programming language object, whose value refers to (or \"points to\") another value stored elsewhere in the computer memory using its memory address. A pointer references a location in memory, and obtaining the value stored at that location is known as dereferencing the pointer. As an analogy, a page number in a book's index could be considered a pointer to the corresponding page; dereferencing such a pointer would be done by flipping to the page with the given page number." .
 
-:PointerAuthentication a :ApplicationHardening,
-        owl:Class,
-        owl:NamedIndividual ;
+:PointerAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :PointerAuthentication ;
     rdfs:label "Pointer Authentication" ;
     rdfs:subClassOf :ApplicationHardening,
         [ a owl:Restriction ;
@@ -15703,19 +15705,13 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
     :definition "A privileged account is a user account that has more privileges than ordinary users. Privileged accounts might, for example, be able to install or remove software, upgrade the operating system, or modify system or application configurations. They might also have access to files that are not normally accessible to standard users. Typical examples are root and administrator accounts. But there also service accounts, system accounts, etc. Privileged accounts are especially powerful, and should be monitored especially closely." ;
     rdfs:seeAlso <https://www.cyberark.com/resources/blog/7-types-of-privileged-accounts-service-accounts-and-more> .
 
-:PrivilegeEscalation a :OffensiveTactic,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Privilege Escalation" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 4 .
-
 :PrivilegeEscalationTechnique a owl:Class ;
     rdfs:label "Privilege Escalation Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :PrivilegeEscalation ] .
+            owl:someValuesFrom :TA0004 ] .
 
 :ProbabilisticLogic a owl:Class,
         owl:NamedIndividual ;
@@ -15955,9 +15951,9 @@ For example, Microsoft Word may block execution of any subprocess that is not in
     :definition "Process segments are distinct partitions of the memory space of a running process.  Heap, data, code, and stack segments are examples of process segments." ;
     :synonym "Process Memory" .
 
-:ProcessSegmentExecutionPrevention a :ApplicationHardening,
-        owl:Class,
-        owl:NamedIndividual ;
+:ProcessSegmentExecutionPrevention a owl:Class,
+        owl:NamedIndividual,
+        :ProcessSegmentExecutionPrevention ;
     rdfs:label "Process Segment Execution Prevention" ;
     rdfs:subClassOf :ApplicationHardening,
         [ a owl:Restriction ;
@@ -16467,17 +16463,13 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
             owl:onProperty :reads ;
             owl:someValuesFrom :MemoryBlock ] .
 
-:Reconnaissance a owl:Class ;
-    rdfs:label "Reconnaissance" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order -1 .
-
 :ReconnaissanceTechnique a owl:Class ;
     rdfs:label "Reconnaissance Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Reconnaissance ] .
+            owl:someValuesFrom :TA0043 ] .
 
 :Record a owl:Class ;
     rdfs:label "Record" ;
@@ -16737,17 +16729,13 @@ This technique analyzes a user's resource accesses by comparing the user's recen
         :Reference-ModelingUserAccessToComputerResources_DaedalusGroupLLC,
         :Reference-SystemAndMethodThereofForIdentifyingAndRespondingToSecurityIncidentsBasedOnPreemptiveForensics_PaloAltoNetworksInc .
 
-:ResourceDevelopment a owl:Class ;
-    rdfs:label "Resource Development" ;
-    rdfs:subClassOf :OffensiveTactic ;
-    :display-order 0 .
-
 :ResourceDevelopmentTechnique a owl:Class ;
     rdfs:label "Resource Development Technique" ;
-    rdfs:subClassOf :OffensiveTechnique,
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :ResourceDevelopment ] .
+            owl:someValuesFrom :TA0042 ] .
 
 :ResourceFork a owl:Class ;
     rdfs:label "Resource Fork" ;
@@ -17157,9 +17145,9 @@ List of known unauthorized script files or regular expression patterns must be k
     rdfs:isDefinedBy <http://dbpedia.org/resource/Security_token> ;
     :definition "Security tokens are peripheral devices used to prove one's identity electronically (as in the case of a customer trying to access their bank account). The token is used in addition to or in place of a password to prove that the customer is who they claim to be. The token acts like an electronic key to access something." .
 
-:SegmentAddressOffsetRandomization a :ApplicationHardening,
-        owl:Class,
-        owl:NamedIndividual ;
+:SegmentAddressOffsetRandomization a owl:Class,
+        owl:NamedIndividual,
+        :SegmentAddressOffsetRandomization ;
     rdfs:label "Segment Address Offset Randomization" ;
     rdfs:subClassOf :ApplicationHardening,
         [ a owl:Restriction ;
@@ -17675,9 +17663,9 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     rdfs:subClassOf :ServiceApplication ;
     :definition "Software that coordinates the deployment process of software to systems, typically remotely." .
 
-:SoftwareInventory a :AssetInventory,
-        owl:Class,
-        owl:NamedIndividual ;
+:SoftwareInventory a owl:Class,
+        owl:NamedIndividual,
+        :SoftwareInventory ;
     rdfs:label "Software Inventory" ;
     rdfs:subClassOf :AssetInventory,
         [ a owl:Restriction ;
@@ -17806,6 +17794,10 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Source Code" .
 
+:SPARTAThing a owl:Class ;
+    rdfs:label "SPARTA Thing" ;
+    rdfs:subClassOf :ExternalThreatModelThing .
+
 :SpearmansRankCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Spearman's Rank Correlation Coefficient" ;
@@ -17865,9 +17857,9 @@ Towards Data Science. (n.d.). Spectral Clustering. [Link](https://towardsdatasci
     rdfs:isDefinedBy <http://dbpedia.org/resource/Stack_buffer_overflow#Stack_canaries> ;
     :definition "Stack canaries, named for their analogy to a canary in a coal mine, are used to detect a stack buffer overflow before execution of malicious code can occur. This method works by placing a small integer, the value of which is randomly chosen at program start, in memory just before the stack return pointer. Most buffer overflows overwrite memory from lower to higher memory addresses, so in order to overwrite the return pointer (and thus take control of the process) the canary value must also be overwritten. This value is checked to make sure it has not changed before a routine uses the return pointer on the stack. This technique can greatly increase the difficulty of exploiting a stack buffer overflow because it forces the attacker to gain control of the instruction pointer by some non-traditional means such as corrupting other important variables on the stack." .
 
-:StackFrameCanaryValidation a :ApplicationHardening,
-        owl:Class,
-        owl:NamedIndividual ;
+:StackFrameCanaryValidation a owl:Class,
+        owl:NamedIndividual,
+        :StackFrameCanaryValidation ;
     rdfs:label "Stack Frame Canary Validation" ;
     rdfs:subClassOf :ApplicationHardening,
         [ a owl:Restriction ;
@@ -18500,28 +18492,6 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :OperatingSystemFile ] ;
     :definition "Software services provided as part of the operating system, typically accessed through system calls." ;
     rdfs:seeAlso <https://www.os-book.com/OS9/slide-dir/PPT-dir/ch2.ppt> .
-
-:SystemShutdownReboot a :DefensiveTechnique,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "System Shutdown/Reboot" ;
-    rdfs:subClassOf :ProcessEviction,
-        [ a owl:Restriction ;
-            owl:onProperty :terminates ;
-            owl:someValuesFrom :Process ] ;
-    :d3fend-id "D3-SYSSR" ;
-    :definition "Initiating a system's shutdown or reboot sequence to terminate all running processes." ;
-    :kb-article """## How It Works
-
-System Shutdown / Reboot can either be initiated in the physical presence of the device using the power functions or remotely using the provided user interface or an installed EDR agent (with the available function). This process may allow for the removal of specific types of malware, such as fileless malware, and can also prevent further damage, for example, if the system is part of a botnet.
-
-## Considerations
-
-- If the attacker has achieved persistence techniques, this technique may not be effective
-- Compromised systems may not respond to remote commands to shutdown or reboot, requiring physical intervention.
-- Shutting down a system will usually result in the memory losing its state which can be useful in forensic activities so this should be considered when deciding to shutdown.
-- Shutting down or rebooting systems may disrupt access to computer resources for legitimate users.""" ;
-    :kb-reference :Reference-NearMemoryInMemoryDetectionofFilelessMalware .
 
 :SystemSoftware a owl:Class ;
     rdfs:label "System Software" ;
@@ -19593,7 +19563,7 @@ System Shutdown / Reboot can either be initiated in the physical presence of the
     rdfs:subClassOf :PrivilegeEscalationTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :PrivilegeEscalation ],
+            owl:someValuesFrom :TA0004 ],
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :StackFrame ],
@@ -22329,7 +22299,7 @@ System Shutdown / Reboot can either be initiated in the physical presence of the
     rdfs:subClassOf :T1553,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :DefenseEvasion ] ;
+            owl:someValuesFrom :TA0005 ] ;
     :attack-id "T1553.002" .
 
 :T1553.003 a owl:Class ;
@@ -23733,6 +23703,114 @@ System Shutdown / Reboot can either be initiated in the physical presence of the
     :kb-article """## References
 Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding)""" .
 
+:TA0001 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Initial Access" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 1 .
+
+:TA0002 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Execution" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 2 .
+
+:TA0003 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Persistence" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 3 .
+
+:TA0004 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Privilege Escalation" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 4 .
+
+:TA0005 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Defense Evasion" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 5 .
+
+:TA0006 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Credential Access" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 6 .
+
+:TA0007 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Discovery" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 7 .
+
+:TA0008 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Lateral Movement" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 8 .
+
+:TA0009 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Collection" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 9 .
+
+:TA0010 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Exfiltration" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 11 .
+
+:TA0011 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Command And Control" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 10 .
+
+:TA0040 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Impact" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 12 .
+
+:TA0042 a owl:Class ;
+    rdfs:label "Resource Development" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order 0 .
+
+:TA0043 a owl:Class ;
+    rdfs:label "Reconnaissance" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :display-order -1 .
+
 :TabletComputer a owl:Class ;
     rdfs:label "Tablet Computer" ;
     skos:altLabel "Tablet" ;
@@ -24917,10 +24995,6 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         owl:NamedIndividual ;
     rdfs:isDefinedBy "https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow" .
 
-:GNUGCCStackGuard a owl:NamedIndividual,
-        :StackFrameCanaryValidation ;
-    rdfs:label "GNU GCC StackGuard" .
-
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-ApproachesForSecuringAnInternetEndpointUsingFine-grainedOperatingSystemVirtualization_Bromium,Inc.> a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Approaches for securing an internet endpoint using fine-grained operating system virtualization - Bromium, Inc." ;
@@ -25116,12 +25190,12 @@ order to constitute a complete standard. For a complete definition of all requir
         owl:NamedIndividual ;
     rdfs:label "Lua Script File" .
 
-:M1013 a :ATTACKMitigation,
+:M1013 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Application Developer Guidance" ;
     :d3fend-comment "A future release of D3FEND will define a taxonomy of Source Code Hardening Techniques." .
 
-:M1015 a :ATTACKMitigation,
+:M1015 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Active Directory Configuration" ;
     :d3fend-comment "M1015 scope is broad, touches on an wide variety of techniques in D3FEND." ;
@@ -25129,35 +25203,35 @@ order to constitute a complete standard. For a complete definition of all requir
         :DomainTrustPolicy,
         :UserAccountPermissions .
 
-:M1016 a :ATTACKMitigation,
+:M1016 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Vulnerability Scanning" ;
     :d3fend-comment "Future D3FEND releases will model the scanning and inventory domains." .
 
-:M1017 a :ATTACKMitigation,
+:M1017 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "User Training" ;
     :d3fend-comment "Modeling user training is  outside the scope of D3FEND." .
 
-:M1018 a :ATTACKMitigation,
+:M1018 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "User Account Management" ;
     :related :LocalFilePermissions,
         :MandatoryAccessControl,
         :SystemConfigurationPermissions .
 
-:M1019 a :ATTACKMitigation,
+:M1019 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Threat Intelligence Program" ;
     :d3fend-comment "Establishing and running a Threat Intelligence Program is outside the scope of D3FEND." .
 
-:M1020 a :ATTACKMitigation,
+:M1020 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "SSL/TLS Inspection" ;
     :d3fend-comment "D3FEND models this as an infrastructure dependency to support D3-NTA." ;
     :related :NetworkTrafficAnalysis .
 
-:M1021 a :ATTACKMitigation,
+:M1021 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Restrict Web-Based Content" ;
     :d3fend-comment "M1021 scope is broad, touches on an wide variety of techniques in d3fend." ;
@@ -25169,17 +25243,17 @@ order to constitute a complete standard. For a complete definition of all requir
         :OutboundTrafficFiltering,
         :URLAnalysis .
 
-:M1022 a :ATTACKMitigation,
+:M1022 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Restrict File and Directory Permissions" ;
     :related :LocalFilePermissions .
 
-:M1024 a :ATTACKMitigation,
+:M1024 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Restrict Registry Permission" ;
     :related :SystemConfigurationPermissions .
 
-:M1025 a :ATTACKMitigation,
+:M1025 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Privileged Process Integrity" ;
     :related :BootloaderAuthentication,
@@ -25187,30 +25261,30 @@ order to constitute a complete standard. For a complete definition of all requir
         :MandatoryAccessControl,
         :ProcessSegmentExecutionPrevention .
 
-:M1026 a :ATTACKMitigation,
+:M1026 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Privileged Account Management" ;
     :related :DomainAccountMonitoring,
         :LocalAccountMonitoring,
         :StrongPasswordPolicy .
 
-:M1027 a :ATTACKMitigation,
+:M1027 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Password Policies" ;
     :related :One-timePassword,
         :StrongPasswordPolicy .
 
-:M1028 a :ATTACKMitigation,
+:M1028 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Operating System Configuration" ;
     :related :PlatformHardening .
 
-:M1029 a :ATTACKMitigation,
+:M1029 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Remote Data Storage" ;
     :d3fend-comment "IT disaster recovery plans are outside the current scope of D3FEND." .
 
-:M1030 a :ATTACKMitigation,
+:M1030 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Network Segmentation" ;
     :related :BroadcastDomainIsolation,
@@ -25218,35 +25292,35 @@ order to constitute a complete standard. For a complete definition of all requir
         :InboundSessionVolumeAnalysis,
         :InboundTrafficFiltering .
 
-:M1031 a :ATTACKMitigation,
+:M1031 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Network Intrusion Prevention" ;
     :related :InboundTrafficFiltering,
         :NetworkTrafficAnalysis,
         :OutboundTrafficFiltering .
 
-:M1032 a :ATTACKMitigation,
+:M1032 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Multi-factor Authentication" ;
     :related :Multi-factorAuthentication .
 
-:M1033 a :ATTACKMitigation,
+:M1033 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Limit Software Installation" ;
     :related :ExecutableAllowlisting,
         :ExecutableDenylisting .
 
-:M1034 a :ATTACKMitigation,
+:M1034 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Limit Hardware Installation" ;
     :related :IOPortRestriction .
 
-:M1035 a :ATTACKMitigation,
+:M1035 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Limit Access to Resource Over Network" ;
     :related :NetworkIsolation .
 
-:M1036 a :ATTACKMitigation,
+:M1036 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Account Use Policies" ;
     :d3fend-comment "D3-AZET may be related (is potentially related though not called out in ATT&CK definition.)" ;
@@ -25254,12 +25328,12 @@ order to constitute a complete standard. For a complete definition of all requir
         :AuthenticationCacheInvalidation,
         :AuthenticationEventThresholding .
 
-:M1037 a :ATTACKMitigation,
+:M1037 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Filter Network Traffic" ;
     :related :NetworkIsolation .
 
-:M1038 a :ATTACKMitigation,
+:M1038 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Execution Prevention" ;
     :related :DriverLoadIntegrityChecking,
@@ -25267,13 +25341,13 @@ order to constitute a complete standard. For a complete definition of all requir
         :ExecutableDenylisting,
         :ProcessSegmentExecutionPrevention .
 
-:M1039 a :ATTACKMitigation,
+:M1039 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Environment Variable Permissions" ;
     :related :ApplicationConfigurationHardening,
         :SystemFileAnalysis .
 
-:M1040 a :ATTACKMitigation,
+:M1040 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Behavior Prevention on Endpoint" ;
     :related :AuthenticationEventThresholding,
@@ -25285,7 +25359,7 @@ order to constitute a complete standard. For a complete definition of all requir
         :UserGeolocationLogonPatternAnalysis,
         :WebSessionActivityAnalysis .
 
-:M1041 a :ATTACKMitigation,
+:M1041 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Encrypt Sensitive Information" ;
     :related :DiskEncryption,
@@ -25293,38 +25367,38 @@ order to constitute a complete standard. For a complete definition of all requir
         :FileEncryption,
         :MessageEncryption .
 
-:M1042 a :ATTACKMitigation,
+:M1042 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Disable or Remove Feature or Program" ;
     :related :ApplicationConfigurationHardening,
         :ExecutableDenylisting,
         :MandatoryAccessControl .
 
-:M1043 a :ATTACKMitigation,
+:M1043 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Credential Access Protection" ;
     :related :Hardware-basedProcessIsolation .
 
-:M1044 a :ATTACKMitigation,
+:M1044 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Restrict Library Loading" ;
     :d3fend-comment "D3-SCF is one possible way to filter library loading." ;
     :related :SystemCallFiltering .
 
-:M1045 a :ATTACKMitigation,
+:M1045 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Code Signing" ;
     :related :DriverLoadIntegrityChecking,
         :ExecutableAllowlisting,
         :ServiceBinaryVerification .
 
-:M1046 a :ATTACKMitigation,
+:M1046 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Boot Integrity" ;
     :related :BootloaderAuthentication,
         :TPMBootIntegrity .
 
-:M1047 a :ATTACKMitigation,
+:M1047 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Audit" ;
     :d3fend-comment "M1047 scope is broad, touches on an wide variety of techniques in d3fend." ;
@@ -25332,7 +25406,7 @@ order to constitute a complete standard. For a complete definition of all requir
         :LocalAccountMonitoring,
         :SystemFileAnalysis .
 
-:M1048 a :ATTACKMitigation,
+:M1048 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Application Isolation and Sandboxing" ;
     :d3fend-comment "\"Sandboxing\" is often used to describe a detection environment which includes some forms of analysis (see D3-DA.)\"  Many forms of isolation (e.g., quarantining) are more static in nature and simply limit software's access to system resources." ;
@@ -25341,7 +25415,7 @@ order to constitute a complete standard. For a complete definition of all requir
         :MandatoryAccessControl,
         :SystemCallFiltering .
 
-:M1049 a :ATTACKMitigation,
+:M1049 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Antivirus/Antimalware" ;
     :d3fend-comment "Process Analysis and subclasses." ;
@@ -25349,7 +25423,7 @@ order to constitute a complete standard. For a complete definition of all requir
         :FileHashing,
         :ProcessAnalysis .
 
-:M1050 a :ATTACKMitigation,
+:M1050 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Exploit Protection" ;
     :related :ApplicationHardening,
@@ -25357,32 +25431,32 @@ order to constitute a complete standard. For a complete definition of all requir
         :InboundTrafficFiltering,
         :ShadowStackComparisons .
 
-:M1051 a :ATTACKMitigation,
+:M1051 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Update Software" ;
     :related :SoftwareUpdate .
 
-:M1052 a :ATTACKMitigation,
+:M1052 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "User Account Control" ;
     :related :MandatoryAccessControl .
 
-:M1053 a :ATTACKMitigation,
+:M1053 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Data Backup" ;
     :d3fend-comment "Comprehensive IT disaster recovery plans are outside the current scope of D3FEND." .
 
-:M1054 a :ATTACKMitigation,
+:M1054 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Software Configuration" ;
     :related :ApplicationConfigurationHardening,
         :CertificatePinning .
 
-:M1055 a :ATTACKMitigation,
+:M1055 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Do Not Mitigate" .
 
-:M1056 a :ATTACKMitigation,
+:M1056 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "Pre-compromise" ;
     :related :DecoyEnvironment,
@@ -25395,10 +25469,6 @@ order to constitute a complete standard. For a complete definition of all requir
 :MarketingMaterial a owl:NamedIndividual,
         :ReferenceType ;
     rdfs:label "Marketing Material" .
-
-:MicrosoftVCCLCompilerToolBufferSecurityCheck a owl:NamedIndividual,
-        :StackFrameCanaryValidation ;
-    rdfs:label "Microsoft VCCLCompilerTool BufferSecurityCheck" .
 
 :MicrosoftWordDOCBFile a :DocumentFile,
         owl:NamedIndividual ;
@@ -27700,7 +27770,7 @@ Some examples of data inputs:
     :has-link "https://web.inf.ufpr.br/mazalves/wp-content/uploads/sites/13/2021/03/memsys2020.pdf" ;
     :kb-abstract "Fileless malware are recent threats to computer systems that load directly into memory, and whose aim is to prevent anti-viruses (AVs) from successfully matching byte patterns against suspicious files written on disk. Their detection requires that software-based AVs continuously scan memory, which is expensive due to repeated locks and polls. However, research advances introduced near-memory and in-memory processing, which allow memory controllers to trigger basic computations without moving data to the CPU. In this paper, we address AVs performance overhead by moving them to the hardware, i.e., we propose instrumenting processors’ memory controller or smart memories (near- and in-memory malware detection, respectively) to accelerate memory scanning procedures. To do so, we present MINI-ME, the Malware Identification based on Near- and In-Memory Evaluation mechanism, a hardware-based AV accelerator that interrupts the program’s execution if malicious patterns are discovered in their memory. We prototyped MINI-ME in a simulator and tested it with a set of 21 thousand in-the-wild malware samples, which resulted in multiple signatures matching with less than 1% of performance overhead and rates of 100% detection, and zero false-positives and false-negatives." ;
     :kb-author "Marcus Botacin, André Grégio, Marco Antonio Zanata Alves" ;
-    :kb-reference-of :SystemShutdownReboot ;
+    :kb-reference-of :HostShutdown ;
     :kb-reference-title "Near-Memory & In-Memory Detection of Fileless Malware" .
 
 :Reference-Network-BasedBufferOverflowDetectionByExploitCodeAnalysis_InformationSecurityResearchCentre a :AcademicPaperReference,
