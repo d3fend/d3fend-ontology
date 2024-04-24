@@ -118,6 +118,10 @@ update-attack:
 	bash src/util/update_attack.sh
 	$(END)
 
+update-puns:
+	bash src/util/update_puns.sh
+	$(END)
+
 # See also how to configure one's own checks and labels for checks for report:
 #   http://robot.obolibrary.org/report#labels
 #   http://robot.obolibrary.org/report_queries/
