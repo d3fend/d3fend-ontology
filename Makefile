@@ -47,6 +47,15 @@ DB_REST_PATH_BD := "/bigdata/namespace/d3fend/sparql"
 DB_REST_PATH_BD_INF := "/bigdata/namespace/d3fend_inf/sparql"
 DB_REST_PATH_TEST := "/bigdata/namespace/d3fend-test/sparql"
 
+RD_DB_LOCAL := "http://127.0.0.1:12110"
+RD_DB_PROD := "http://PRODUCTIONSERVER.local:9899"
+RD_DB_REST_PATH := "/datastores/d3fend/content"
+RD_DB_REST_PATH_INF := "/blazegraph/namespace/d3fend_inf/sparql"
+RD_DB_REST_PATH_BD := "/bigdata/namespace/d3fend/sparql"
+RD_DB_REST_PATH_BD_INF := "/bigdata/namespace/d3fend_inf/sparql"
+RD_DB_REST_PATH_TEST := "/bigdata/namespace/d3fend-test/sparql"
+
+
 db-delete-local:
 	@curl -s -o /dev/null -w "deleted ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n"  ${DB_LOCAL}${DB_REST_PATH} --data-urlencode "update=DROP ALL;"
 	@curl -s -o /dev/null -w "deleted ${DB_LOCAL}${DB_REST_PATH_INF} %{http_code}\n" ${DB_LOCAL}${DB_REST_PATH_INF} --data-urlencode "update=DROP ALL;"
@@ -74,6 +83,11 @@ db-load-prod-restore:
 
 # run make-onto again at end to rebuild the csv with latest data
 db-sync-all: db-delete-local db-load-local db-delete-prod db-load-prod ## sync local and prod dbs with current ontology
+
+rd_db-load-local:
+	@curl -i -X PATCH "admin:admin@localhost:12110/datastores/d3fend/content?operation=add-content-update-prefixes" -H "Content-Type:" -T dist/public/d3fend.ttl
+	#@curl -s -o /dev/null -w "loaded ${RD_DB_LOCAL}${RD_DB_REST_PATH} %{http_code}\n" -H 'Content-Type:'  -X PATCH -T dist/public/d3fend.ttl ${RD_DB_LOCAL}${RD_DB_REST_PATH}
+	#@curl -s -o /dev/null -w "loaded ${RD_DB_LOCAL}${RD_DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${RD_DB_LOCAL}${RD_DB_REST_PATH_INF}
 
 
 
@@ -116,6 +130,10 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh
+	$(END)
+
+update-puns:
+	bash src/util/update_puns.sh
 	$(END)
 
 # See also how to configure one's own checks and labels for checks for report:
