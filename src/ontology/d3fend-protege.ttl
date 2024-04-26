@@ -1922,51 +1922,6 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
     :definition "Administrative network traffic is network traffic related to the remote administration or control of hosts or devices through a standard remote administrative protocol.  Remote shells, terminals, RDP, and VNC are examples of these protocols, which are typically only used by administrators." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Remote_administration> .
 
-:AdvancedSignatureAnalysis a :NetworkTrafficAnalysis,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Advanced Signature Analysis" ;
-    rdfs:subClassOf :NetworkTrafficAnalysis,
-        [ a owl:Restriction ;
-            owl:onProperty :analyzes ;
-            owl:someValuesFrom :NetworkTraffic ] ;
-    :d3fend-id "D3-ASA" ;
-    :definition "Detection based on a general programming purpose language or a domain-specific language on raw network traffic" ;
-    :kb-article """## How it works
-
-Network advanced-level signature analysis goes beyond simple pattern matching. It leverages scripting languages to analyze raw network traffic, allowing for complex logic and deep inspection. This enables
-
-* In-depth traffic dissection: Scripts can access and analyze packet payloads, header details, and contextual information, offering a richer understanding of network activity.
-* Stateful analysis: Scripts can track connection history and context, detecting anomalies based on behavioral patterns.
-* Custom logic implementation: Scripts allow for complex decision-making processes, enabling detection of sophisticated threats providing flexibility beyond predefined signatures.
-
-While powerful, this technique hinges on two key factors:
-
-* Script development expertise: Creating effective scripts requires knowledge of the scripting language, network protocols, and threat analysis.
-* Performance optimization: Complex scripts can impose computational overhead, requiring careful design and optimization to avoid impacting network performance.
-
-## Considerations
-
-### False Negatives
-
-High level signature Analysis is not immune to false negatives. Here are some potential pitfalls:
-
-* Limited script coverage: Even well-written scripts cannot cover every possible attack vector, leaving room for new or sophisticated threats to slip through.
-* Script vulnerabilities: Bugs or errors in the script can lead to missed detections or misinterpretations.
-* Evolving attack techniques: Similar to basic signatures, attackers can adapt their tactics to bypass custom scripts, necessitating continuous script updates.
-* Complexity trade-off: While offering deep inspection, overly complex scripts may be slow or resource-intensive, impacting real-time detection.
-* Zero-day threats: By definition, unknown attacks lack corresponding scripts, creating a blind spot for this technique
-
-### False Positives
-
-Network high-level signature analysis is susceptible to generating false positives. These occur when the signature analysis triggers an alert for benign traffic. Common causes include:
-
-* Overly complex logic: Scripts might have unintended side effects or misinterpret legitimate traffic due to their intricate logic, leading to false alarms.
-* Incorrect data extraction: Extracting the wrong data or misinterpreting its meaning can trigger false alarms.
-* Incomplete testing: Thorough testing of scripts with diverse traffic scenarios is crucial to minimize false positives.
-
-""" .
-
 :Agent a owl:Class ;
     rdfs:label "Agent" ;
     rdfs:subClassOf :D3FENDCatalogThing,
@@ -2607,47 +2562,6 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
     rdfs:subClassOf :ImageScannerInputDevice ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Barcode_reader> ;
     :definition "A barcode reader (or barcode scanner) is an optical scanner that can read printed barcodes, decode the data contained in the barcode and send the data to a computer. Like a flatbed scanner, it consists of a light source, a lens and a light sensor translating for optical impulses into electrical signals. Additionally, nearly all barcode readers contain decoder circuitry that can analyze the barcode's image data provided by the sensor and sending the barcode's content to the scanner's output port." .
-
-:BasicSignatureAnalysis a :NetworkTrafficAnalysis,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Basic Signature Analysis" ;
-    rdfs:subClassOf :NetworkTrafficAnalysis,
-        [ a owl:Restriction ;
-            owl:onProperty :analyzes ;
-            owl:someValuesFrom :NetworkTraffic ] ;
-    :d3fend-id "D3-BSA" ;
-    :definition "Detection based on low level, stateless, event pattern language on raw network traffic" ;
-    :kb-article """## How it works
-
-Network basic-level signature analysis relies on predefined patterns, or signatures, to identify malicious network activity. These signatures typically match against specific byte sequences, packet header information, or protocol anomalies indicative of known threats.
-
-The process works as follows:
-
-* Packet Capture: Network traffic is captured on an interface or port, resulting in a stream of raw packets.
-* Preprocessing: The captured packets are preprocessed, cleaning and normalizing the data for efficient analysis.
-* Signature Matching: Each packet is compared against a database of signatures using dedicated engines optimized for fast pattern matching.
-
-## Considerations
-
-### False Negatives
-
-Network basic-level signature analysis is susceptible to generating false negatives. These occur when malicious activity evades detection due to limitations in the signature-based approach. Here are some common causes:
-
-* Evolving threats: Attackers frequently modify their tactics, rendering existing signatures ineffective against new variants.
-* Obfuscation: Attackers may disguise malicious content using encryption, encoding, or other techniques to bypass signature detection.
-* Limited visibility: Signatures rely on specific patterns. If crucial information is encrypted or hidden, the signature might miss the threat.
-* Zero-day attacks: By definition, new and unknown attacks lack corresponding signatures, allowing them to pass undetected.
-
-### False Positives
-
-Network basic-lavel signature analysis is susceptible to generating false positives. These occur when the signature analysis triggers an alert for benign traffic. Common causes include:
-
-* Overly broad signatures: Rules designed to be too general might match harmless activities, generating false alarms.
-* Network misconfigurations: Improperly configured devices or legitimate network activity can mimic malicious patterns, triggering false positives.
-* Data errors: Corrupted or incomplete network data can lead to misinterpretations and false alerts.
-
-""" .
 
 :BayesianEstimation a owl:Class,
         owl:NamedIndividual ;
@@ -14399,6 +14313,49 @@ Hosts/users within a computer network are analyzed to identify communities of ho
         "Firewall Mapping",
         "IPS Policy Mapping",
         "Web Security Gateway Policy Mapping" .
+
+:NetworkTrafficSignatureAnalysis a :NetworkTrafficAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Traffic Signature Analysis" ;
+    rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :d3fend-id "D3-NTSA" ;
+    :definition "Analyzing network traffic and compares it to known signatures" ;
+    :kb-article """## How it works
+
+Network signature analysis relies on predefined patterns, or signatures, to identify malicious network activity. These signatures typically match against specific byte sequences, packet header information, or protocol anomalies indicative of known threats.
+
+The process works as follows:
+
+* Packet Capture: Network traffic is captured on an interface or port, resulting in a stream of raw packets.
+* Preprocessing: The captured packets are preprocessed, cleaning and normalizing the data for efficient analysis.
+* Signature Matching: Each packet is compared against a database of signatures using dedicated engines.
+
+## Considerations
+
+### False Negatives
+
+Network signature analysis is susceptible to generating false negatives. These occur when malicious activity evades detection due to limitations in the signature-based approach. Here are some common causes:
+
+* Evolving threats: Attackers frequently modify their tactics, rendering existing signatures ineffective against new variants.
+* Obfuscation: Attackers may disguise malicious content using encryption, encoding, or other techniques to bypass signature detection.
+* Limited visibility: Signatures rely on specific patterns. If crucial information is encrypted or hidden, the signature might miss the threat.
+* Zero-day attacks: By definition, new and unknown attacks lack corresponding signatures, allowing them to pass undetected.
+
+### False Positives
+
+Network signature analysis is susceptible to generating false positives. These occur when the signature analysis triggers an alert for benign traffic. Common causes include:
+
+* Overly broad signatures: Rules designed to be too general might match harmless activities, generating false alarms.
+* Network misconfigurations: Improperly configured devices or legitimate network activity can mimic malicious patterns, triggering false positives.
+* Data errors: Corrupted or incomplete network data can lead to misinterpretations and false alerts.
+
+""",
+        """## References
+Signature-based. (2024, April 22). In _Wikipedia_  [Link](https://en.wikipedia.org/wiki/Intrusion_detection_system#Signature-based)""" .
 
 :NetworkVulnerabilityAssessment a :NetworkMapping,
         owl:Class,
