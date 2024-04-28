@@ -1,0 +1,74 @@
+@prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+@prefix d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+@prefix cco: <http://www.ontologyrepository.com/CommonCoreOntologies/> .
+@prefix obo: <http://purl/obolibrary.org/obo/> . # Note that obo is prefix for BFO in MergedAllCoreOntology
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://d3fend.mitre.org/ontologies/d3fend-cco.owl#> rdf:type owl:Ontology ;
+     owl:imports <../d3fend-protege.ttl#> ;
+     owl:imports <https://raw.githubusercontent.com/CommonCoreOntology/CommonCoreOntologies/master/cco-merged/MergedAllCoreOntology-v1.5-2024-02-14.ttl> .
+
+
+#
+# Class Mappings
+#
+d3f:DigitalInformation rdfs:subClassOf cco:InformationContentEntity .
+
+d3f:DigitalInformationBearer rdfs:subClassOf cco:InformationBearingArtifact .
+
+# Note: The obo: prefix doesn't resolve in the ROBOT merge, so full IRI specified.
+# d3f:DigitalArtifact rdfs:subClassOf obo:BFO_0000002 . # obo:BFO_0000002 aka "continuant"
+d3f:DigitalArtifact rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000002> .
+
+  # Note: d3f:DigitalArtifact cannot be a subclass of bfo:BFO_0000040
+  # aka "material entity" nor bfo:BFO_00000030 "object" as it is
+  # parent to both d3f:DigitalIinformation a subclass of "information
+  # content entity" (information itself) which is "generically
+  # dependent continuant" in BFO and d3f:DigitalInformationBearer a
+  # subclass of "information bearing artifact" which is "independent
+  # continuant" in BFO.
+
+d3f:Action rdfs:subClassOf cco:Act .
+
+# Note: The obo: prefix doesn't resolve in the ROBOT merge, so full IRI specified...
+# d3f:Weakness rdfs:subClassOf obo:BFO_0000016 .        # obo:BFO_0000016 aka "disposition"
+d3f:Weakness rdfs:subClassOf <http://purl.obolibrary.org/obo/BFO_0000016> .
+
+d3f:Agent owl:equivalentClass cco:Agent . # Tentative, see note below.
+
+  # Note: The cco:Agent definition states that a cco:Agent is "A
+  # Material Entity that is capable of performing Planned Acts.". That
+  # may overspecify D3FEND sense of d3f:Agent, which might be a
+  # reactive agent (any arbitrary system that can perform an
+  # act/actuate, which may not have the intention suggested by the CCO
+  # definition in cco:AgentOntology.
+
+  # While at present cco:IntentionalAct (aka "Planned Act") only
+  # states the agent is following a Directive Information Content
+  # Entity (DICE).  The instructions within Software components could
+  # be interpreted as DICE, but an algorithm being DICE is not
+  # generally also a type of "Intentional Act"/"Planned Act";
+  # definitely not in Belief-Desire-Intention (BDI) sense highly
+  # associated with agent-based model of thinking.)
+
+
+#
+# Property Mappings
+#
+
+# General Note: The obo: prefix doesn't resolve in the ROBOT merge, so
+# full IRI specified where BFO concepts referenced.
+
+# Note: The bo:contains property means something different than
+# d3f:contains; it is spatial containment between material and
+# immaterial entities
+
+d3f:contains rdfs:subPropertyOf <http://purl.obolibrary.org/obo/BFO_0000051> .     # obo:BFO_0000051 aka "has part"
+d3f:contained-by rdfs:subPropertyOf <http://purl.obolibrary.org/obo/BFO_0000050> . # obo:BFO_0000050 aka "part of"
