@@ -3,17 +3,17 @@
 ## After running the user must manually compare & replace d3fend-protege.updates.ttl
 ##
 
-ATTACK_VERSION="13.1" # Current Attack Version 
-
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
+
+ATTACK_VERSION=$1
 
 enterprise_attack="data/enterprise-attack-${ATTACK_VERSION}.json"
 if [ ! -f "$enterprise_attack" ]; then
     echo -e "${GREEN}No enterprise attack file found"
     echo -e "${GREEN}Running make download-attack \n"
     make download-attack ATTACK_VERSION="${ATTACK_VERSION}"
-else 
+else
     echo -e "${GREEN}Using ${enterprise_attack} for attack data \n"
 fi
 
