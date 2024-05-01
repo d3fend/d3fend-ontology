@@ -1708,7 +1708,7 @@ skos:altLabel a owl:AnnotationProperty .
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Account Locking" ;
-    rdfs:subClassOf :CredentialEviction,
+    rdfs:subClassOf :EvictAccess,
         [ a owl:Restriction ;
             owl:onProperty :disables ;
             owl:someValuesFrom :UserAccount ] ;
@@ -2406,7 +2406,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Authentication Cache Invalidation" ;
-    rdfs:subClassOf :CredentialEviction,
+    rdfs:subClassOf :EvictAccess,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Credential ] ;
@@ -4016,18 +4016,6 @@ Effective implementation requires identifying any location that could end up con
     :kb-reference :Reference-AllLoginsSinceLastBoot_MITRE,
         :Reference-SystemsAndMethodsForDetectingCredentialTheft_SymantecCorp .
 
-:CredentialEviction a :CredentialEviction,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Credential Eviction" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :Evict ] ;
-    :d3fend-id "D3-CE" ;
-    :definition "Credential Eviction techniques disable or remove compromised credentials from a computer network." ;
-    :enables :Evict .
-
 :CredentialHardening a :CredentialHardening,
         owl:Class,
         owl:NamedIndividual ;
@@ -4050,7 +4038,7 @@ Effective implementation requires identifying any location that could end up con
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Credential Revoking" ;
-    rdfs:subClassOf :CredentialEviction,
+    rdfs:subClassOf :EvictAccess,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Credential ] ;
@@ -10420,9 +10408,33 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :display-order 4 ;
     :display-priority 0 .
 
+:EvictAccess a :EvictAccess,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Evict Access" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
+    :d3fend-id "D3-EA" ;
+    :definition "Evict Access techniques disable or remove an entity's access to resources." ;
+    :enables :Evict .
+
 :EvictionLatency a owl:Class ;
     rdfs:label "Eviction Latency" ;
     rdfs:subClassOf :Latency .
+
+:EvictObject a :EvictObject,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Evict Object" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
+    :d3fend-id "D3-EO" ;
+    :definition "Terminate or remove an object from a host machine. This is the broadest class for object eviction." ;
+    :enables :Evict .
 
 :ExactMatching a owl:Class,
         owl:NamedIndividual ;
@@ -10842,17 +10854,6 @@ Asymmetric encryption is typically accomplished using public and private key cer
 - Secure transfer of private keys between multiple devices.""" ;
     :kb-reference :Reference-MethodForFileEncryption .
 
-:FileEviction a :FileEviction,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "File Eviction" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :Evict ] ;
-    :d3fend-id "D3-FEV" ;
-    :definition "File eviction techniques evict files from system storage." .
-
 :FileHash a owl:Class ;
     rdfs:label "File Hash" ;
     rdfs:subClassOf :DigitalFingerprint,
@@ -10923,7 +10924,7 @@ Files can change constantly due to the non-static nature of a computer system. F
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "File Removal" ;
-    rdfs:subClassOf :FileEviction,
+    rdfs:subClassOf :EvictObject,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :File ],
@@ -11777,7 +11778,7 @@ Host reboot can either be initiated in the physical presence of the device using
         owl:NamedIndividual,
         :ProcessTermination ;
     rdfs:label "Host Shutdown" ;
-    rdfs:subClassOf :ProcessEviction,
+    rdfs:subClassOf :EvictObject,
         [ a owl:Restriction ;
             owl:onProperty :terminates ;
             owl:someValuesFrom :Process ] ;
@@ -12773,6 +12774,16 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
         :TicketGrantingTicket ;
     :definition "A ticket granting ticket issued by a Kerberos system; that is, a ticket that grants a user domain admin access." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Ticket_Granting_Ticket> .
+
+:KerberosTicketGrantingTicketAccount a owl:Class ;
+    rdfs:label "Kerberos Ticket Granting Ticket Account" ;
+    rdfs:subClassOf :ServiceAccount,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :KerberosTicketGrantingTicket ] ;
+    :definition "KRBTGT is an account used by Key Distribution Center (KDC) service to issue Ticket Granting Tickets (TGTs) as part of the Kerberos authentication protocol." ;
+    rdfs:seeAlso "https://blog.quest.com/what-is-krbtgt-and-why-should-you-change-the-password/" ;
+    :synonym "krbtgt" .
 
 :Kernel a owl:Class ;
     rdfs:label "Kernel" ;
@@ -15906,18 +15917,6 @@ False negatives can occur via alteration of the verification logic or source of 
     :definition "An environment variable is a dynamic-named value that can affect the way running processes will behave on a computer. They are part of the environment in which a process runs." ;
     :todo "Did \"Environment Variable\" have an conflict with prior version of ATT&CK technique names or were there other env var classes that are no longer in d3fend?" .
 
-:ProcessEviction a owl:Class,
-        owl:NamedIndividual,
-        :ProcessEviction ;
-    rdfs:label "Process Eviction" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :Evict ] ;
-    :d3fend-id "D3-PE" ;
-    :definition "Process eviction techniques terminate or remove running process." ;
-    :enables :Evict .
-
 :ProcessImage a owl:Class ;
     rdfs:label "Process Image" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -16135,7 +16134,7 @@ Some attributes of interest are:
         owl:NamedIndividual,
         :ProcessSuspension ;
     rdfs:label "Process Suspension" ;
-    rdfs:subClassOf :ProcessEviction,
+    rdfs:subClassOf :EvictObject,
         [ a owl:Restriction ;
             owl:onProperty :suspends ;
             owl:someValuesFrom :Process ] ;
@@ -16155,7 +16154,7 @@ In Windows, the `PsSuspend` command line utility from the SysInternals Suite pro
         owl:NamedIndividual,
         :ProcessTermination ;
     rdfs:label "Process Termination" ;
-    rdfs:subClassOf :ProcessEviction,
+    rdfs:subClassOf :EvictObject,
         [ a owl:Restriction ;
             owl:onProperty :terminates ;
             owl:someValuesFrom :Process ] ;
@@ -16591,7 +16590,7 @@ Reinforcement learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Reinfor
         owl:NamedIndividual,
         :ReissueCredential ;
     rdfs:label "Reissue Credential" ;
-    rdfs:subClassOf :RestoreObject,
+    rdfs:subClassOf :RestoreAccess,
         [ a owl:Restriction ;
             owl:onProperty :restores ;
             owl:someValuesFrom :Credential ] ;
@@ -16713,6 +16712,30 @@ Analysis algorithms look for patterns in the network traffic captured from the s
     :definition "A removable media device is a hardware device used for computer storage and that is designed to be inserted and removed from the system.  It is distinct from other removable media in that all the hardware required to read the data are built into the device.  So USB flash drives and external hard drives are removable media devices, whereas tapes and disks are not, as they require additional hardware to perform read/write operations." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Removable_media> .
 
+:RemoveRegistryKey a owl:Class,
+        owl:NamedIndividual,
+        :RemoveRegistryKey ;
+    rdfs:label "Remove Registry Key" ;
+    rdfs:subClassOf :EvictObject,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
+    :d3fend-id "D3-RRK" ;
+    :definition "Delete a registry key." ;
+    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
+
+:RemoveUserAccount a owl:Class,
+        owl:NamedIndividual,
+        :RemoveUserAccount ;
+    rdfs:label "Remove User Account" ;
+    rdfs:subClassOf :EvictAccess,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :UserAccount ] ;
+    :d3fend-id "D3-RUA" ;
+    :definition "Delete a user account from a host machine." ;
+    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
+
 :ResamplingEnsemble a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Resampling Ensemble" ;
@@ -16723,6 +16746,20 @@ Analysis algorithms look for patterns in the network traffic captured from the s
 Ensemble learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Ensemble_learning).
 
 Torgo, L. (2014). A resampling ensemble algorithm for improved accuracy. *Neurocomputing*, 134, 55-66.  [Link](https://www.sciencedirect.com/science/article/pii/S0925231214007644#:~:text=A%20resampling%20ensemble%20algorithm%20is,and%20undersampling%20are%20empirically%20analyzed).""" .
+
+:ResetKRBTGTAccount a owl:Class,
+        owl:NamedIndividual,
+        :ResetKRBTGTAccount ;
+    rdfs:label "Reset KRBTGT Account" ;
+    rdfs:subClassOf :RestoreObject,
+        [ a owl:Restriction ;
+            owl:onProperty :restores ;
+            owl:someValuesFrom :KerberosTicketGrantingTicketAccount ] ;
+    :d3fend-id "D3-RKRBA" ;
+    :definition "Resetting the Kerberos Ticket Granting Ticket Service Account passsword for the domain." ;
+    :kb-article "CISA recommends organizations affected by the SolarWinds compromise to reset the krbtgt account password. Note that krbtgt must be reset twice." ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> ;
+    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/forest-recovery-guide/ad-forest-recovery-reset-the-krbtgt-password" .
 
 :ResidualNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
@@ -17440,6 +17477,12 @@ Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Advers
 :Service a owl:Class ;
     rdfs:label "Service" ;
     rdfs:subClassOf :CapabilityImplementation .
+
+:ServiceAccount a owl:Class ;
+    rdfs:label "Service Account" ;
+    rdfs:subClassOf :DigitalInformationBearer ;
+    :definition "A service account is a type of account used by an application or service to interact with the operating system." ;
+    :synonym "System Account" .
 
 :ServiceApplication a owl:Class ;
     rdfs:label "Service Application" ;
@@ -24125,6 +24168,15 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :kb-article """## References
 Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
 
+:UnenrollSuspiciousMFATokens a owl:Class,
+        owl:NamedIndividual,
+        :UnenrollSuspiciousMFATokens ;
+    rdfs:label "Unenroll Suspicious MFA Tokens" ;
+    rdfs:subClassOf :CredentialRevoking ;
+    :d3fend-id "D3-USMT" ;
+    :definition "After auditing MFA tokens configured in an environment, unenroll any tokens that cannot be accounted for or are suspicious" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> .
+
 :UnitTestExecutionTool a owl:Class ;
     rdfs:label "Unit Test Execution Tool" ;
     rdfs:subClassOf :TestExecutionTool ;
@@ -25299,7 +25351,9 @@ In order to convince the potential attacker that the deception environment is th
     rdfs:label "Reference - Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise - CISA" ;
     :has-link "https://www.cisa.gov/news-events/analysis-reports/ar21-134a"^^xsd:anyURI ;
     :kb-organization "CISA" ;
-    :kb-reference-of :CredentialRotation ;
+    :kb-reference-of :CredentialRotation,
+        :ResetKRBTGTAccount,
+        :UnenrollSuspiciousMFATokens ;
     :kb-reference-title "Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise" .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IsolationOfApplicationsWithinAVirtualMachine_Bromium,Inc.> a owl:NamedIndividual,
@@ -26738,6 +26792,8 @@ This requires filesystem data to determine whether files have been created.""" ;
     :kb-author "Cybersecurity and Infrastructure Security Agency" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Cybersecurity and Infrastructure Security Agency" ;
+    :kb-reference-of :RemoveRegistryKey,
+        :RemoveUserAccount ;
     :kb-reference-title "Cybersecurity Incident & Vulnerability Response Playbooks" .
 
 :Reference-CyberVaccineAndPredictiveMalwareDefensiveMethodsAndSystems a owl:NamedIndividual,
