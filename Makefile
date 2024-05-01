@@ -5,6 +5,8 @@ SHELL=/bin/bash
 D3FEND_VERSION :=0.15.0
 D3FEND_RELEASE_DATE :="2024-04-26T00:00:00.000Z"
 
+ATTACK_VERSION := 15.0
+
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
@@ -129,7 +131,7 @@ download-attack:
 	$(END)
 
 update-attack:
-	bash src/util/update_attack.sh
+	bash src/util/update_attack.sh $(ATTACK_VERSION)
 	$(END)
 
 update-puns:
