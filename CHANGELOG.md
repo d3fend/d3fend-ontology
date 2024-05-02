@@ -11,7 +11,7 @@
  - Added System Shutdown/Reboot Technique. (#202)
  - Create initial abstraction of new D3FEND Core model. (#212)
  - Fix typo in URL. (#201)
- - Impove update_attack to handle definitions. (#209)
+ - Improve update_attack to handle definitions. (#209)
  - Update artifact for Organization Mapping. (#103)
  - Fixed URIs ending with hash signs cause Protege problems. (#221)
  - Add CWE taxonomy from children of pillars down to support D3FEND / CWE mapping queries. (#184)
