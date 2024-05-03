@@ -1142,6 +1142,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00354493-v> ;
     :synonym "aborts" .
 
+:unloads a owl:ObjectProperty ;
+    rdfs:label "unloads" ;
+    rdfs:subPropertyOf :evicts ;
+    :definition "x unloads y: The technique or artifact performs the action of unloading some artifact (applications, kernel modules, or hardware drivers, etc.) from a computer's memory." .
+
 :unmounts a owl:ObjectProperty ;
     rdfs:label "unmounts" ;
     rdfs:subPropertyOf :associated-with ;
@@ -13019,6 +13024,12 @@ Newer system call.""" .
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/creat.2.html" ;
     :definition "Equivalent to calling Linux Open with flags equal to O_CREAT|O_WRONLY|O_TRUNC." .
 
+:LinuxDeleteModule a owl:Class ;
+    rdfs:label "Linux Delete Module" ;
+    rdfs:subClassOf :OSAPIUnloadModule ;
+    rdfs:isDefinedBy <https://man7.org/linux/man-pages/man2/delete_module.2.html> ;
+    :definition "Attempts to remove the unused loadable module entry identified by name. If the module has an exit function, then that function is executed before unloading the module." .
+
 :LinuxExecve a owl:Class ;
     rdfs:label "Linux Execve" ;
     rdfs:subClassOf :OSAPIExec ;
@@ -13036,6 +13047,12 @@ Newer system call.""" .
     rdfs:subClassOf :OSAPICreateProcess ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/fork.2.html" ;
     :definition "Creates a child process with unique PID but retains parent PID as Parent Process Identifier (PPID)" .
+
+:LinuxInitModule a owl:Class ;
+    rdfs:label "Linux Init Module" ;
+    rdfs:subClassOf :OSAPILoadModule ;
+    rdfs:isDefinedBy <https://man7.org/linux/man-pages/man2/init_module.2.html> ;
+    :definition "Loads an ELF image into kernel space, performs any necessary symbol relocations, initializes module parameters to values provided by the caller, and then runs the module's init function." .
 
 :LinuxKillArgumentSIGKILL a owl:Class ;
     rdfs:label "Linux Kill Argument SIGKILL" ;
@@ -13244,6 +13261,16 @@ Newer system call.""" .
     rdfs:subClassOf :OSAPIWriteFile ;
     rdfs:isDefinedBy "https://man7.org/linux/man-pages/man2/writev.2.html" ;
     :definition "Write data into multiple buffers." .
+
+:LoadModule a owl:Class ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :HardwareDriver ],
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :KernelModule ] ;
+    :definition "A system call that loads a driver or extension into the kernel." .
 
 :LocalAccountMonitoring a :LocalAccountMonitoring,
         owl:Class,
@@ -14895,6 +14922,13 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :GetThreadContext ] .
 
+:OSAPILoadModule a owl:Class ;
+    rdfs:label "OS API Load Module" ;
+    rdfs:subClassOf :OSAPISystemFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :LoadModule ] .
+
 :OSAPIMoveFile a owl:Class ;
     rdfs:label "OS API Move File" ;
     rdfs:subClassOf :OSAPISystemFunction,
@@ -14998,6 +15032,13 @@ Operating System Monitoring Techniques have varied implementations including bui
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :TraceThread ] .
+
+:OSAPIUnloadModule a owl:Class ;
+    rdfs:label "OS API Unload Module" ;
+    rdfs:subClassOf :OSAPISystemFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :UnloadModule ] .
 
 :OSAPIWriteFile a owl:Class ;
     rdfs:label "OS API Write File" ;
@@ -25697,6 +25738,16 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
     rdfs:label "Unix Link" ;
     rdfs:subClassOf :FileSystemLink ;
     :definition "A Unix link is a file link in a Unix file system." .
+
+:UnloadModule a owl:Class ;
+    rdfs:subClassOf :SystemCall,
+        [ a owl:Restriction ;
+            owl:onProperty :unloads ;
+            owl:someValuesFrom :HardwareDriver ],
+        [ a owl:Restriction ;
+            owl:onProperty :unloads ;
+            owl:someValuesFrom :KernelModule ] ;
+    :definition "A system call that unloads a driver or extension from the kernel." .
 
 :UnlockAccount a owl:Class,
         owl:NamedIndividual,
