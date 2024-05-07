@@ -1708,7 +1708,7 @@ skos:altLabel a owl:AnnotationProperty .
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Account Locking" ;
-    rdfs:subClassOf :EvictAccess,
+    rdfs:subClassOf :CredentialEviction,
         [ a owl:Restriction ;
             owl:onProperty :disables ;
             owl:someValuesFrom :UserAccount ] ;
@@ -2406,7 +2406,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Authentication Cache Invalidation" ;
-    rdfs:subClassOf :EvictAccess,
+    rdfs:subClassOf :CredentialEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Credential ] ;
@@ -2700,6 +2700,19 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
     :definition "Using biological measures in order to authenticate a user." ;
     :kb-reference :Reference-TokenlessBiometricTransactionAuthorizationMethodAndSystem,
         :Reference-www.biometric-solutions.com_keystroke-dynamics .
+
+:BlackHole a :BlackHole,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Black Hole" ;
+    rdfs:subClassOf :EvictFromNetwork,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :d3fend-id "D3-BH" ;
+    :definition "A black hole refers to a place in the network where incoming or outgoing traffic is sillently dropped without informing the source that the data did not reach its intended recipient." ;
+    :kb-reference :Reference-RemotelyTriggeredBlackHoleFiltering-Cisco ;
+    :synonym "Silent Drops" .
 
 :BlockDevice a owl:Class ;
     rdfs:label "Block Device" ;
@@ -4016,6 +4029,15 @@ Effective implementation requires identifying any location that could end up con
     :kb-reference :Reference-AllLoginsSinceLastBoot_MITRE,
         :Reference-SystemsAndMethodsForDetectingCredentialTheft_SymantecCorp .
 
+:CredentialEviction a :CredentialEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Credential Eviction" ;
+    rdfs:subClassOf :EvictAccess ;
+    :d3fend-id "D3-CE" ;
+    :definition "Credential Eviction techniques disable or remove compromised credentials from a computer network." ;
+    :kb-reference :Reference-AccountMonitoring_ForescoutTechnologies .
+
 :CredentialHardening a :CredentialHardening,
         owl:Class,
         owl:NamedIndividual ;
@@ -4038,7 +4060,7 @@ Effective implementation requires identifying any location that could end up con
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Credential Revoking" ;
-    rdfs:subClassOf :EvictAccess,
+    rdfs:subClassOf :CredentialEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Credential ] ;
@@ -10420,6 +10442,15 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :definition "Evict Access techniques disable or remove an entity's access to resources." ;
     :enables :Evict .
 
+:EvictFromNetwork a :EvictFromNetwork,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Evict From Network" ;
+    rdfs:subClassOf :DefensiveTechnique ;
+    :d3fend-id "D3-EFN" ;
+    :definition "Removing digital artifacts from a network." ;
+    :enables :Evict .
+
 :EvictionLatency a owl:Class ;
     rdfs:label "Eviction Latency" ;
     rdfs:subClassOf :Latency .
@@ -10854,6 +10885,15 @@ Asymmetric encryption is typically accomplished using public and private key cer
 - Secure transfer of private keys between multiple devices.""" ;
     :kb-reference :Reference-MethodForFileEncryption .
 
+:FileEviction a :FileEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Eviction" ;
+    rdfs:subClassOf :EvictObject ;
+    :d3fend-id "D3-FEV" ;
+    :definition "File eviction techniques evict files from system storage." ;
+    :kb-reference :Reference-HowDoesAntivirusQuarantineWork-SafetyDetectives .
+
 :FileHash a owl:Class ;
     rdfs:label "File Hash" ;
     rdfs:subClassOf :DigitalFingerprint,
@@ -10924,7 +10964,7 @@ Files can change constantly due to the non-static nature of a computer system. F
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "File Removal" ;
-    rdfs:subClassOf :EvictObject,
+    rdfs:subClassOf :FileEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :File ],
@@ -11171,6 +11211,23 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
     rdfs:subClassOf :SecondaryStorage ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Flash_memory" ;
     :definition "Flash memory is an electronic non-volatile computer memory storage medium that can be electrically erased and reprogrammed." .
+
+:FlushDNSCache a :FlushDNSCache,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Flush DNS Cache" ;
+    rdfs:subClassOf :EvictFromNetwork,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :DNSRecord ] ;
+    :d3fend-id "D3-FDC" ;
+    :definition "Flushing DNS to clear any IP addresses or other DNS records from the cache." ;
+    :kb-article """# How it works
+
+Flushing the DNS Cache will clear the IP addresses of websites you have visited recently. This can help remediate DNS Cache Poisoning attacks, which is a type of cyber attack where corrupted DNS data is inserted into the cache, causing redirects to malicious websites.
+
+On windows, the DNS cache can be wiped by issuing the command `ipconfig /flushdns`.""" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> .
 
 :Forecasting a owl:Class ;
     rdfs:label "Forecasting" ;
@@ -11778,7 +11835,7 @@ Host reboot can either be initiated in the physical presence of the device using
         owl:NamedIndividual,
         :ProcessTermination ;
     rdfs:label "Host Shutdown" ;
-    rdfs:subClassOf :EvictObject,
+    rdfs:subClassOf :ProcessEviction,
         [ a owl:Restriction ;
             owl:onProperty :terminates ;
             owl:someValuesFrom :Process ] ;
@@ -15917,6 +15974,15 @@ False negatives can occur via alteration of the verification logic or source of 
     :definition "An environment variable is a dynamic-named value that can affect the way running processes will behave on a computer. They are part of the environment in which a process runs." ;
     :todo "Did \"Environment Variable\" have an conflict with prior version of ATT&CK technique names or were there other env var classes that are no longer in d3fend?" .
 
+:ProcessEviction a owl:Class,
+        owl:NamedIndividual,
+        :ProcessEviction ;
+    rdfs:label "Process Eviction" ;
+    rdfs:subClassOf :EvictObject ;
+    :d3fend-id "D3-PE" ;
+    :definition "Process eviction techniques terminate or remove running process." ;
+    :kb-reference :Reference-MalwareDetectionUsingLocalComputationalModels_CrowdstrikeInc .
+
 :ProcessImage a owl:Class ;
     rdfs:label "Process Image" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -16134,7 +16200,7 @@ Some attributes of interest are:
         owl:NamedIndividual,
         :ProcessSuspension ;
     rdfs:label "Process Suspension" ;
-    rdfs:subClassOf :EvictObject,
+    rdfs:subClassOf :ProcessEviction,
         [ a owl:Restriction ;
             owl:onProperty :suspends ;
             owl:someValuesFrom :Process ] ;
@@ -16154,7 +16220,7 @@ In Windows, the `PsSuspend` command line utility from the SysInternals Suite pro
         owl:NamedIndividual,
         :ProcessTermination ;
     rdfs:label "Process Termination" ;
-    rdfs:subClassOf :EvictObject,
+    rdfs:subClassOf :ProcessEviction,
         [ a owl:Restriction ;
             owl:onProperty :terminates ;
             owl:someValuesFrom :Process ] ;
@@ -26907,6 +26973,7 @@ In order to convince the potential attacker that the deception environment is th
     :has-link "https://www.cisa.gov/news-events/analysis-reports/ar21-134a"^^xsd:anyURI ;
     :kb-organization "CISA" ;
     :kb-reference-of :CredentialRotation,
+        :FlushDNSCache,
         :ResetKRBTGTAccount,
         :UnenrollSuspiciousMFATokens ;
     :kb-reference-title "Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise" .
@@ -30079,6 +30146,14 @@ This identifier is present three times during the RPC request phase. Any sensor 
     :kb-reference-of :RPCTrafficAnalysis ;
     :kb-reference-title "CAR-2015-04-002: Remotely Scheduled Tasks via Schtasks" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-RemotelyTriggeredBlackHoleFiltering-Cisco a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Remotely Triggered Black Hole FIltering - Cisco" ;
+    :has-link "https://www.cisco.com/c/dam/en_us/about/security/intelligence/blackhole.pdf" ;
+    :kb-organization "Cisco" ;
+    :kb-reference-of :BlackHole ;
+    :kb-reference-title "Remotely Triggered Black Hole Filtering - Destination Based and Source Based" .
 
 :Reference-RemoteRegistry_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
