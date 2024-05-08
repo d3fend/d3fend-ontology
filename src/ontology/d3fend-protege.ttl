@@ -1660,6 +1660,18 @@ skos:altLabel a owl:AnnotationProperty .
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> ;
     :definition "A list of permissions attached to an object." .
 
+:AccessEviction a :AccessEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Access Eviction" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
+    :d3fend-id "D3-AE" ;
+    :definition "Access Eviction techniques disable or remove an entity's access to resources." ;
+    :enables :Evict .
+
 :AccessMediator a owl:Class ;
     rdfs:label "Access Mediator" ;
     rdfs:subClassOf :D3FENDCore,
@@ -2701,15 +2713,15 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
     :kb-reference :Reference-TokenlessBiometricTransactionAuthorizationMethodAndSystem,
         :Reference-www.biometric-solutions.com_keystroke-dynamics .
 
-:BlackHole a :BlackHole,
+:BlackHoleRoute a :BlackHoleRoute,
         owl:Class,
         owl:NamedIndividual ;
-    rdfs:label "Black Hole" ;
-    rdfs:subClassOf :EvictFromNetwork,
+    rdfs:label "Black Hole Route" ;
+    rdfs:subClassOf :NetworkEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :NetworkTraffic ] ;
-    :d3fend-id "D3-BH" ;
+    :d3fend-id "D3-BHR" ;
     :definition "A black hole refers to a place in the network where incoming or outgoing traffic is sillently dropped without informing the source that the data did not reach its intended recipient." ;
     :kb-reference :Reference-RemotelyTriggeredBlackHoleFiltering-Cisco ;
     :synonym "Silent Drops" .
@@ -4033,7 +4045,7 @@ Effective implementation requires identifying any location that could end up con
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Credential Eviction" ;
-    rdfs:subClassOf :EvictAccess ;
+    rdfs:subClassOf :AccessEviction ;
     :d3fend-id "D3-CE" ;
     :definition "Credential Eviction techniques disable or remove compromised credentials from a computer network." ;
     :kb-reference :Reference-AccountMonitoring_ForescoutTechnologies .
@@ -9679,6 +9691,30 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
             owl:someValuesFrom :File ] ;
     :definition "Remove a file from a machine." .
 
+:DeleteRegistryKey a :DeleteRegistryKey,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Delete Registry Key" ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
+    :d3fend-id "D3-DRK" ;
+    :definition "Delete a registry key." ;
+    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
+
+:DeleteUserAccount a :DeleteUserAccount,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Delete User Account" ;
+    rdfs:subClassOf :AccessEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :UserAccount ] ;
+    :d3fend-id "D3-DUA" ;
+    :definition "Delete a user account from a host machine." ;
+    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
+
 :Density-basedClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Density-based Clustering" ;
@@ -10251,7 +10287,7 @@ This technique is distinct from d3f:EmailDeletion because it prevents an email f
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Email Removal" ;
-    rdfs:subClassOf :FileRemoval,
+    rdfs:subClassOf :FileEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Email ],
@@ -10430,42 +10466,9 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :display-order 4 ;
     :display-priority 0 .
 
-:EvictAccess a :EvictAccess,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Evict Access" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :Evict ] ;
-    :d3fend-id "D3-EA" ;
-    :definition "Evict Access techniques disable or remove an entity's access to resources." ;
-    :enables :Evict .
-
-:EvictFromNetwork a :EvictFromNetwork,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Evict From Network" ;
-    rdfs:subClassOf :DefensiveTechnique ;
-    :d3fend-id "D3-EFN" ;
-    :definition "Removing digital artifacts from a network." ;
-    :enables :Evict .
-
 :EvictionLatency a owl:Class ;
     rdfs:label "Eviction Latency" ;
     rdfs:subClassOf :Latency .
-
-:EvictObject a :EvictObject,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Evict Object" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :Evict ] ;
-    :d3fend-id "D3-EO" ;
-    :definition "Terminate or remove an object from a host machine. This is the broadest class for object eviction." ;
-    :enables :Evict .
 
 :ExactMatching a owl:Class,
         owl:NamedIndividual ;
@@ -10889,9 +10892,26 @@ Asymmetric encryption is typically accomplished using public and private key cer
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "File Eviction" ;
-    rdfs:subClassOf :EvictObject ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :FileServer ] ;
     :d3fend-id "D3-FEV" ;
-    :definition "File eviction techniques evict files from system storage." ;
+    :definition "File eviction techniques delete files from system storage." ;
+    :kb-article """## How it works
+
+Adversaries may place files or programs into a computer's file system to perform malicious actions. As part of the eviction process, these files and programs should be removed to prevent further compromise or reinfection. Examples of malicious types of files are malware which is directly harmful and content files with the intent to deceive users (e.g., phishing.)
+
+On Windows systems, antivirus (AV) software should be used to safely and permanently remove malicious files. AV software may first quarantine a suspected malicious file, which is the process of moving a file from its original location to a new location and makes changes so that it cannot be executed. Users can then verify that the file is not benign and then permanently delete it.
+
+## Considerations
+
+When it is determined that a file should be removed for security purposes, the organization--or systems implementing an organization's policies--may determine that the file should not simply be deleted from the enterprise's mission systems, but be quarantined to a secure system by an approved mechanism, so as to allow follow-up investigation by security staff.
+
+On Windows systems, deleting a file in File Explorer does not permanently delete a file - it sends it to the Recycle Bin instead. The Recycle Bin must be emptied, or alternative steps must be performed to remove files completely. Even then, in some cases the data may persist in disk, so data shredder tools may be needed to completely wipe a file. Thus, AV tools are recommended.""" ;
     :kb-reference :Reference-HowDoesAntivirusQuarantineWork-SafetyDetectives .
 
 :FileHash a owl:Class ;
@@ -10959,33 +10979,6 @@ Files can change constantly due to the non-static nature of a computer system. F
             owl:onProperty :invokes ;
             owl:someValuesFrom :OpenFile ] ;
     :definition "Has an input of a file path, and opens a file handle for reading or writing." .
-
-:FileRemoval a :FileRemoval,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "File Removal" ;
-    rdfs:subClassOf :FileEviction,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :File ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-access ;
-            owl:someValuesFrom :FileServer ] ;
-    :d3fend-id "D3-FR" ;
-    :definition "The file removal technique deletes malicious artifacts or programs from a computer system." ;
-    :kb-article """## How it works
-
-Adversaries may place files or programs into a computer's file system to perform malicious actions. As part of the eviction process, these files and programs should be removed to prevent further compromise or reinfection. Examples of malicious types of files are malware which is directly harmful and content files with the intent to deceive users (e.g., phishing.)
-
-On Windows systems, antivirus (AV) software should be used to safely and permanently remove malicious files. AV software may first quarantine a suspected malicious file, which is the process of moving a file from its original location to a new location and makes changes so that it cannot be executed. Users can then verify that the file is not benign and then permanently delete it.
-
-## Considerations
-
-When it is determined that a file should be removed for security purposes, the organization--or systems implementing an organization's policies--may determine that the file should not simply be deleted from the enterprise's mission systems, but be quarantined to a secure system by an approved mechanism, so as to allow follow-up investigation by security staff.
-
-On Windows systems, deleting a file in File Explorer does not permanently delete a file - it sends it to the Recycle Bin instead. The Recycle Bin must be emptied, or alternative steps must be performed to remove files completely. Even then, in some cases the data may persist in disk, so data shredder tools may be needed to completely wipe a file. Thus, AV tools are recommended.""" ;
-    :kb-reference :Reference-HowDoesAntivirusQuarantineWork-SafetyDetectives ;
-    :synonym "File Deletion" .
 
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
@@ -11216,7 +11209,7 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Flush DNS Cache" ;
-    rdfs:subClassOf :EvictFromNetwork,
+    rdfs:subClassOf :NetworkEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :DNSRecord ] ;
@@ -14121,6 +14114,15 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
             owl:someValuesFrom :Directory ] ;
     :definition "A directory resource made available from one host to other hosts on a computer network." .
 
+:NetworkEviction a :NetworkEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Eviction" ;
+    rdfs:subClassOf :DefensiveTechnique ;
+    :d3fend-id "D3-NE" ;
+    :definition "Removing digital artifacts from a network." ;
+    :enables :Evict .
+
 :NetworkFileResource a owl:Class ;
     rdfs:label "Network File Resource" ;
     rdfs:subClassOf :NetworkFileShareResource,
@@ -14548,6 +14550,18 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
     rdfs:subClassOf :PatternMatching ;
     :d3fend-id "D3A-NPM" ;
     :definition "Numeric pattern matching uses a pattern specification and sees if the numeric value matches that pattern--simple forms include exact matching and range matching." .
+
+:ObjectEviction a :ObjectEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Object Eviction" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
+    :d3fend-id "D3-OE" ;
+    :definition "Terminate or remove an object from a host machine. This is the broadest class for object eviction." ;
+    :enables :Evict .
 
 :ObjectFile a owl:Class ;
     rdfs:label "Object File" ;
@@ -15978,7 +15992,7 @@ False negatives can occur via alteration of the verification logic or source of 
         owl:NamedIndividual,
         :ProcessEviction ;
     rdfs:label "Process Eviction" ;
-    rdfs:subClassOf :EvictObject ;
+    rdfs:subClassOf :ObjectEviction ;
     :d3fend-id "D3-PE" ;
     :definition "Process eviction techniques terminate or remove running process." ;
     :kb-reference :Reference-MalwareDetectionUsingLocalComputationalModels_CrowdstrikeInc .
@@ -16778,30 +16792,6 @@ Analysis algorithms look for patterns in the network traffic captured from the s
     :definition "A removable media device is a hardware device used for computer storage and that is designed to be inserted and removed from the system.  It is distinct from other removable media in that all the hardware required to read the data are built into the device.  So USB flash drives and external hard drives are removable media devices, whereas tapes and disks are not, as they require additional hardware to perform read/write operations." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Removable_media> .
 
-:RemoveRegistryKey a owl:Class,
-        owl:NamedIndividual,
-        :RemoveRegistryKey ;
-    rdfs:label "Remove Registry Key" ;
-    rdfs:subClassOf :EvictObject,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :WindowsRegistryKey ] ;
-    :d3fend-id "D3-RRK" ;
-    :definition "Delete a registry key." ;
-    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
-
-:RemoveUserAccount a owl:Class,
-        owl:NamedIndividual,
-        :RemoveUserAccount ;
-    rdfs:label "Remove User Account" ;
-    rdfs:subClassOf :EvictAccess,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :UserAccount ] ;
-    :d3fend-id "D3-RUA" ;
-    :definition "Delete a user account from a host machine." ;
-    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
-
 :ResamplingEnsemble a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Resampling Ensemble" ;
@@ -16812,20 +16802,6 @@ Analysis algorithms look for patterns in the network traffic captured from the s
 Ensemble learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Ensemble_learning).
 
 Torgo, L. (2014). A resampling ensemble algorithm for improved accuracy. *Neurocomputing*, 134, 55-66.  [Link](https://www.sciencedirect.com/science/article/pii/S0925231214007644#:~:text=A%20resampling%20ensemble%20algorithm%20is,and%20undersampling%20are%20empirically%20analyzed).""" .
-
-:ResetKRBTGTAccount a owl:Class,
-        owl:NamedIndividual,
-        :ResetKRBTGTAccount ;
-    rdfs:label "Reset KRBTGT Account" ;
-    rdfs:subClassOf :RestoreObject,
-        [ a owl:Restriction ;
-            owl:onProperty :restores ;
-            owl:someValuesFrom :KerberosTicketGrantingTicketAccount ] ;
-    :d3fend-id "D3-RKRBA" ;
-    :definition "Resetting the Kerberos Ticket Granting Ticket Service Account passsword for the domain." ;
-    :kb-article "CISA recommends organizations affected by the SolarWinds compromise to reset the krbtgt account password. Note that krbtgt must be reset twice." ;
-    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> ;
-    rdfs:seeAlso "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/forest-recovery-guide/ad-forest-recovery-reset-the-krbtgt-password" .
 
 :ResidualNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
@@ -17546,7 +17522,7 @@ Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Advers
 
 :ServiceAccount a owl:Class ;
     rdfs:label "Service Account" ;
-    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:subClassOf :UserAccount ;
     :definition "A service account is a type of account used by an application or service to interact with the operating system." ;
     :synonym "System Account" .
 
@@ -26974,7 +26950,6 @@ In order to convince the potential attacker that the deception environment is th
     :kb-organization "CISA" ;
     :kb-reference-of :CredentialRotation,
         :FlushDNSCache,
-        :ResetKRBTGTAccount,
         :UnenrollSuspiciousMFATokens ;
     :kb-reference-title "Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise" .
 
@@ -28414,8 +28389,8 @@ This requires filesystem data to determine whether files have been created.""" ;
     :kb-author "Cybersecurity and Infrastructure Security Agency" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Cybersecurity and Infrastructure Security Agency" ;
-    :kb-reference-of :RemoveRegistryKey,
-        :RemoveUserAccount ;
+    :kb-reference-of :DeleteRegistryKey,
+        :DeleteUserAccount ;
     :kb-reference-title "Cybersecurity Incident & Vulnerability Response Playbooks" .
 
 :Reference-CyberVaccineAndPredictiveMalwareDefensiveMethodsAndSystems a owl:NamedIndividual,
@@ -29147,7 +29122,6 @@ The user interaction and the code process executed during the user session are m
     :has-link "https://www.safetydetectives.com/blog/how-does-antivirus-quarantine-work/"^^xsd:anyURI ;
     :kb-abstract "Your antivirus has just finished a regular scan and it’s asking whether you want to quarantine the virus it’s found. You click ‘yes’ without putting much thought into what’s actually happening. But what does quarantining actually mean, what does it do and is it safe for your computer? It’s important to understand the details so that you know what’s happening when you send infected files into quarantine." ;
     :kb-author "Katarina Glamoslija" ;
-    :kb-reference-of :FileRemoval ;
     :kb-reference-title "How Does Antivirus Quarantine Work?" .
 
 :Reference-HowToChangeRegistryValuesOrPermissionsFromACommandLineOrAScript a :InternetArticleReference,
@@ -30152,7 +30126,7 @@ This identifier is present three times during the RPC request phase. Any sensor 
     rdfs:label "Reference - Remotely Triggered Black Hole FIltering - Cisco" ;
     :has-link "https://www.cisco.com/c/dam/en_us/about/security/intelligence/blackhole.pdf" ;
     :kb-organization "Cisco" ;
-    :kb-reference-of :BlackHole ;
+    :kb-reference-of :BlackHoleRoute ;
     :kb-reference-title "Remotely Triggered Black Hole Filtering - Destination Based and Source Based" .
 
 :Reference-RemoteRegistry_MITRE a :ExternalKnowledgeBase,
