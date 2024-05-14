@@ -7,6 +7,8 @@ D3FEND_RELEASE_DATE :="2024-04-26T00:00:00.000Z"
 
 ATTACK_VERSION := 15.0
 
+ATLAS_VERSION := 4.5.2
+
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
@@ -132,6 +134,16 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	$(END)
+
+download-atlas:
+	mkdir -p data
+	echo "Version: $(ATLAS_VERSION)"
+	cd data; wget https://github.com/mitre-atlas/atlas-navigator-data/raw/3323ec5e88f4838d7c3e787dae8e1cbc5ffcbb0b/dist/stix-atlas.json
+	$(END)
+
+update-atlas:
+	bash src/util/update_atlas.sh $(ATLAS_VERSION)
 	$(END)
 
 update-puns:
