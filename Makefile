@@ -405,6 +405,7 @@ help: ##print out this message
 
 format: ## Format ttl to canonical, stable format for effective diffing (accomplished before any commits)
 	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
+	pipenv run ttlfmt src/ontology/initiatives/d3fend-ot-only.ttl
 
 # requires https://pre-commit.com/#install
 pre-commit-install:
