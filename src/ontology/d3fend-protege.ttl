@@ -1826,7 +1826,7 @@ Another means of establishing network connectivity is by means of sendingn traff
         [ a owl:Restriction ;
             owl:onProperty :may-query ;
             owl:someValuesFrom :CollectorAgent ] ;
-    owl:disjointWith :PassivePhysicalLinkMapping ;
+    owl:disjointWith :DirectPhysicalLinkMapping ;
     :d3fend-id "D3-APLM" ;
     :definition "Active physical link mapping sends and receives network traffic as a means to map the physical layer." ;
     :kb-reference :Reference-IdentificationOfTracerouteNodesAndAssociatedDevices,
@@ -3163,9 +3163,25 @@ Google Developers. (n.d.). Clustering Algorithms. [Link](https://developers.goog
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Certificate-based Authentication" ;
-    rdfs:subClassOf :CredentialHardening ;
+    rdfs:subClassOf :CredentialHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :Certificate ] ;
     :d3fend-id "D3-CBAN" ;
-    :definition "Requiring a digital certificate in order to authenticate a user." .
+    :definition "Requiring a digital certificate in order to authenticate a user." ;
+    :kb-article """## How it works
+
+Certificate-based authentication is a security mechanism that uses digital certificates to verify the identity of a user, device, or server before granting access to a network or system. This method relies on a pair of cryptographic keys: a public key and a private key.
+
+## Considerations
+
+* Private Key Protection: Ensure that private keys are securely stored and protected against unauthorize access.
+* Certificate Revocation: Implement a robust process for revoking certificates if tehya re compromised or no longer needed.
+* Man-in-the Middle Attacks: Use mutual authentication to mitigate the risk of these attacks.""" ;
+    :kb-reference :Reference-FederalPublicKeyInfrastructure101 .
 
 :CertificateAnalysis a :CertificateAnalysis,
         owl:Class,
@@ -9850,6 +9866,26 @@ O'Reilly Media. (n.d.). Chapter 7. Machine Learning and Security: Protecting Sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Directory_service> ;
     :definition "In computing, directory service or name service maps the names of network resources to their respective network addresses. It is a shared information infrastructure for locating, managing, administering and organizing everyday items and network resources, which can include volumes, folders, files, printers, users, groups, devices, telephone numbers and other objects. A directory service is a critical component of a network operating system. A directory server or name server is a server which provides such a service. Each resource on the network is considered an object by the directory server. Information about a particular resource is stored as a collection of attributes associated with that resource or object." .
 
+:DirectPhysicalLinkMapping a :DirectPhysicalLinkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Direct Physical Link Mapping" ;
+    rdfs:subClassOf :PhysicalLinkMapping ;
+    :d3fend-id "D3-DPLM" ;
+    :definition "Direct physical link mapping creates a physical link map by direct observation and recording of the physical network links." ;
+    :kb-article """## How it works
+
+Direct Physical Link Mapping involves a manual process where a network engineer or administrator physically observes and documents the physical connections within the network infrastructure.
+
+## Considerations
+
+* Constructing and maintaining physical topologies for extensive networks can be challenging and time-consuming using manual methods. Therefore, where feasible, automated methods like active physical link mapping should be considered as a partial or complete solution for physical link mapping processes.
+
+* In scenarios where active physical link mapping is not an option, physical inspection of networks is necessary to accomplish physical link mapping. This is due to the lack of reliable techniques to accurately map physical links solely through passive network traffic monitoring.""" ;
+    :kb-reference :Reference-NetworkMapping ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Transmission_medium> ;
+    :synonym "Manual Physical Link Mapping" .
+
 :DiscoveryTechnique a owl:Class ;
     rdfs:label "Discovery Technique" ;
     rdfs:subClassOf :ATTACKEnterpriseTechnique,
@@ -14146,7 +14182,8 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
             owl:someValuesFrom :Model ] ;
     :d3fend-id "D3-NM" ;
     :definition "Network mapping encompasses the techniques to identify and model the physical layer, network layer, and data exchange layers of the organization's network and their physical location, and determine allowed pathways through that network." ;
-    :display-order 3 .
+    :display-order 3 ;
+    rdfs:seeAlso "<https://en.wikipedia.org/wiki/Network_topology>" .
 
 :NetworkNode a owl:Class ;
     rdfs:label "Network Node" ;
@@ -15333,15 +15370,6 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     :kb-reference :Reference-TenablePassiveNetworkMonitoring ;
     :synonym "Passive Logical Layer Mapping" .
 
-:PassivePhysicalLinkMapping a owl:Class,
-        owl:NamedIndividual,
-        :PassivePhysicalLinkMapping ;
-    rdfs:label "Passive Physical Link Mapping" ;
-    rdfs:subClassOf :PhysicalLinkMapping ;
-    :d3fend-id "D3-PPLM" ;
-    :definition "Passive physical link mapping only listens to network traffic as a means to map the physical layer." ;
-    :synonym "Passive Physical Layer Mapping" .
-
 :Password a owl:Class ;
     rdfs:label "Password" ;
     skos:altLabel "Passcode" ;
@@ -15530,6 +15558,7 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     :d3fend-id "D3-PLM" ;
     :definition "Physical link mapping identifies and models the link connectivity of the network devices within a physical network." ;
     :kb-reference :Reference-LibreNMSDocsNetworkMapExtension ;
+    rdfs:seeAlso "<https://en.wikipedia.org/wiki/Network_topology#Links>" ;
     :synonym "Layer 1 Mapping" .
 
 :PhysicalLocation a owl:Class ;
@@ -16970,35 +16999,6 @@ This technique analyzes a user's resource accesses by comparing the user's recen
     rdfs:subClassOf :ProxyServer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Reverse_proxy> ;
     :definition "In computer networks, a reverse proxy is a type of proxy server that retrieves resources on behalf of a client from one or more servers. These resources are then returned to the client, appearing as if they originated from the proxy server itself. Unlike a forward proxy, which is an intermediary for its associated clients to contact any server, a reverse proxy is an intermediary for its associated servers to be contacted by any client. In other words, a proxy acts on behalf of the client(s), while a reverse proxy acts on behalf of the server(s); a reverse proxy is usually an internal-facing proxy used as a 'front-end' to control and protect access to a server on a private network." .
-
-:ReverseResolutionDomainDenylisting a owl:Class,
-        owl:NamedIndividual,
-        :ReverseResolutionDomainDenylisting ;
-    rdfs:label "Reverse Resolution Domain Denylisting" ;
-    rdfs:subClassOf :DNSDenylisting,
-        [ a owl:Restriction ;
-            owl:onProperty :blocks ;
-            owl:someValuesFrom :InboundInternetDNSResponseTraffic ] ;
-    :d3fend-id "D3-RRDD" ;
-    :definition "Blocking a reverse DNS lookup's answer's domain name value." ;
-    :kb-article """## How it works
-
-In reverse resolution requests, the client sends to a nameserver (such as a DNS server) a query of an IP address, to get a response of the associated domain name(s). This technique drops reverse lookup responses where a domain name matches an entry in the blacklist, either verbatim or as a wildcard subdomain of a higher-level domain on the list. Such domain names might be unwanted because Forward Domain Name Resolution requests to such a blacklisted domain might return an unwanted IP address.
-
-This technique is useful because relying solely on Forward Resolution Domain Blacklisting will miss instances where the domain in question is forward-resolved in a manner that is not inspected via a subsequent technique (as is likely the case if that resolution is performed with DoH (DNS over HTTPS) or DoT (DNS over TLS)). Additionally, note that responses to forward lookups of that domain are *not* necessarily equal to the original IP in the reverse lookup request, and that future lookups of a string based on this domain may even employ a less-common name resolution protocol, such as NBNS.
-
-The DNS response can either be blocked by dropping the network traffic with an inline device, or by modifying the value of the response sent by the DNS server.  To prevent client applications from hanging on a request, it is common practice to replace malicious values, either with names like "localhost." or the address of a honeypot maintained by the network administrators.
-
-## Considerations
-
-* This technique does not prevent the client from contacting the blacklisted domain or any IP addresses that it might resolve to, only from learning about this domain name via a nameserver lookup.
-* DNS response traffic can be transmitted over many different protocols, which presents a challenge to implementing methods to extract all DNS answer domain name value(s).
-  * DNS has historically used UDP port 53, with TCP port 53 instead used for responses over 512 bytes or after a lack of response over UDP.
-  * Usage of new protocols to provide confidentiality for DNS traffic, such as DoH (DNS over HTTPS) and DoT (DNS over TLS), complicates collection of the IP address(es) in DNS responses. These protocols have often been enabled in browser settings transparently after a browser update, with DNS requests proxied over one of these cryptographic protocols through a specified host.
-* This technique must be deployed between the application that receives the response and the server which sent the response.
-  * DNS responses sent in an encrypted manner, such as using DoH or DoT, will require interception of the TLS connections in order to determine the domain name(s) in the response.
-* Replacing the response is not effective in the case that the nameserver uses a technique to provide integrity of its responses, such as DNSSEC for DNS responses.""" ;
-    :synonym "Reverse Resolution Domain Blacklisting" .
 
 :ReverseResolutionIPDenylisting a owl:Class,
         owl:NamedIndividual,
@@ -27534,7 +27534,6 @@ Outlier data values which deviate from behavioral profile by more than a predete
     :kb-abstract "An apparatus is disclosed for to provide content to and query a reverse domain name system (DNS) server without depending on the kindness of domain name system registrars, registrants. DNS replies are observed by firewalls or filters, analyzed, and transmitted to a reverse domain name system server. An embodiment of the present invention can be within a DNS server or SMTP server." ;
     :kb-author "Dean Danko" ;
     :kb-mitre-analysis "This patent includes the description of a method of blocking email traffic from untrusted domains by analyzing the TCP/IP source IP addresses and blocking traffic for IPs whose reverse lookup response FQDN matches a denylist." ;
-    :kb-reference-of :ReverseResolutionDomainDenylisting ;
     :kb-reference-title "Apparatus for to provide content to and query a reverse domain name system server" .
 
 :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc a owl:NamedIndividual,
@@ -28722,6 +28721,14 @@ In one embodiment, a response policy zone (RPZ) application generates an RPZ tha
         "No author organizations provided for reference, add one?",
         "No authors provided for reference" .
 
+:Reference-FederalPublicKeyInfrastructure101 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Federal Public Key Infrastructrure 101" ;
+    :has-link "https://www.idmanagement.gov/university/fpki/"^^xsd:anyURI ;
+    :kb-author "Identity, Credential, and Access Management Subcommittee (ICAMSC)" ;
+    :kb-reference-of :Certificate-basedAuthentication ;
+    :kb-reference-title "Federal Public Key Infrastructure 101" .
+
 :Reference-File-modifyingMalwareDetection_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - File-modifying malware detection - Crowdstrike Inc" ;
@@ -29669,6 +29676,13 @@ architecture using the Snort NIDS.""" ;
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
+:Reference-NetworkMapping a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Network Mapping" ;
+    :has-link "https://en.wikipedia.org/wiki/Network_mapping"^^xsd:anyURI ;
+    :kb-author "https://en.wikipedia.org/" ;
+    :kb-reference-title "Network Mapping" .
+
 :Reference-NIST-RMF-Quick-Start-Guide-Assess-Step-FAQ a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - NIST RMF Quick Start Guide - Assess Step - Frequently Asked Questions (FAQ)" ;
@@ -30105,15 +30119,6 @@ All of these behaviors call into the Windows API, which uses the NamedPipe WINRE
     :kb-author "Christopher Dixon, Thomas Pinckney" ;
     :kb-reference-of :FileHashReputationAnalysis ;
     :kb-reference-title "Reputation of an entity associated with a content item" .
-
-:Reference-ReverseDNSBlocking_BarracudaNetworks a owl:NamedIndividual,
-        :UserManualReference ;
-    rdfs:label "Reference - Reverse DNS Blocking - Barracuda Networks" ;
-    :has-link "https://campus.barracuda.com/product/emailsecuritygateway/doc/39819732/reverse-dns-blocking/"^^xsd:anyURI ;
-    :kb-author "campus.barracuda.com" ;
-    :kb-mitre-analysis "Inbound corporate traffic SMTP traffic on port 25 can be routed through Barracuda Email Security Gateway before reaching the corporate mail server, acting as a traffic filter based on reverse DNS lookups and a denylist for blocking domains." ;
-    :kb-reference-of :ReverseResolutionDomainDenylisting ;
-    :kb-reference-title "Reverse DNS Blocking" .
 
 :Reference-RevokingaPreviouslyIssuedVerifiableCredential-Microsoft a owl:NamedIndividual,
         :SpecificationReference ;
@@ -30919,8 +30924,8 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :has-link "https://www.tenable.com/sites/default/files/solution-briefs/SB-Passive-Network-Monitoring.pdf"^^xsd:anyURI ;
     :kb-abstract "Tenable Nessus® Network Monitor (NNM), a passive monitoring sensor, continuously discovers active assets on the network and assesses them for vulnerabilities. NNM is based on patented network discovery and vulnerability analysis technology that continuously monitors and profiles non-intrusively. It monitors IPv4, IPv6 and mixed network traffic at the packet layer to determine topology, services and vulnerabilities." ;
     :kb-organization "Tenable" ;
-    :kb-reference-of :PassiveLogicalLinkMapping,
-        :PassivePhysicalLinkMapping ;
+    :kb-reference-of :DirectPhysicalLinkMapping,
+        :PassiveLogicalLinkMapping ;
     :kb-reference-title "Tenable Passive Network Monitoring" .
 
 :Reference-Testing_Metrics_for_Password_Creation_Policies_by_Attacking_Large_Sets_of_Revealed_Passwords a :AcademicPaperReference,
