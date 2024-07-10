@@ -1826,7 +1826,7 @@ Another means of establishing network connectivity is by means of sendingn traff
         [ a owl:Restriction ;
             owl:onProperty :may-query ;
             owl:someValuesFrom :CollectorAgent ] ;
-    owl:disjointWith :PassivePhysicalLinkMapping ;
+    owl:disjointWith :DirectPhysicalLinkMapping ;
     :d3fend-id "D3-APLM" ;
     :definition "Active physical link mapping sends and receives network traffic as a means to map the physical layer." ;
     :kb-reference :Reference-IdentificationOfTracerouteNodesAndAssociatedDevices,
@@ -3163,9 +3163,25 @@ Google Developers. (n.d.). Clustering Algorithms. [Link](https://developers.goog
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Certificate-based Authentication" ;
-    rdfs:subClassOf :CredentialHardening ;
+    rdfs:subClassOf :CredentialHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :Certificate ] ;
     :d3fend-id "D3-CBAN" ;
-    :definition "Requiring a digital certificate in order to authenticate a user." .
+    :definition "Requiring a digital certificate in order to authenticate a user." ;
+    :kb-article """## How it works
+
+Certificate-based authentication is a security mechanism that uses digital certificates to verify the identity of a user, device, or server before granting access to a network or system. This method relies on a pair of cryptographic keys: a public key and a private key.
+
+## Considerations
+
+* Private Key Protection: Ensure that private keys are securely stored and protected against unauthorize access.
+* Certificate Revocation: Implement a robust process for revoking certificates if tehya re compromised or no longer needed.
+* Man-in-the Middle Attacks: Use mutual authentication to mitigate the risk of these attacks.""" ;
+    :kb-reference :Reference-FederalPublicKeyInfrastructure101 .
 
 :CertificateAnalysis a :CertificateAnalysis,
         owl:Class,
@@ -9850,6 +9866,26 @@ O'Reilly Media. (n.d.). Chapter 7. Machine Learning and Security: Protecting Sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Directory_service> ;
     :definition "In computing, directory service or name service maps the names of network resources to their respective network addresses. It is a shared information infrastructure for locating, managing, administering and organizing everyday items and network resources, which can include volumes, folders, files, printers, users, groups, devices, telephone numbers and other objects. A directory service is a critical component of a network operating system. A directory server or name server is a server which provides such a service. Each resource on the network is considered an object by the directory server. Information about a particular resource is stored as a collection of attributes associated with that resource or object." .
 
+:DirectPhysicalLinkMapping a :DirectPhysicalLinkMapping,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Direct Physical Link Mapping" ;
+    rdfs:subClassOf :PhysicalLinkMapping ;
+    :d3fend-id "D3-DPLM" ;
+    :definition "Direct physical link mapping creates a physical link map by direct observation and recording of the physical network links." ;
+    :kb-article """## How it works
+
+Direct Physical Link Mapping involves a manual process where a network engineer or administrator physically observes and documents the physical connections within the network infrastructure.
+
+## Considerations
+
+* Constructing and maintaining physical topologies for extensive networks can be challenging and time-consuming using manual methods. Therefore, where feasible, automated methods like active physical link mapping should be considered as a partial or complete solution for physical link mapping processes.
+
+* In scenarios where active physical link mapping is not an option, physical inspection of networks is necessary to accomplish physical link mapping. This is due to the lack of reliable techniques to accurately map physical links solely through passive network traffic monitoring.""" ;
+    :kb-reference :Reference-NetworkMapping ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Transmission_medium> ;
+    :synonym "Manual Physical Link Mapping" .
+
 :DiscoveryTechnique a owl:Class ;
     rdfs:label "Discovery Technique" ;
     rdfs:subClassOf :ATTACKEnterpriseTechnique,
@@ -14146,7 +14182,8 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
             owl:someValuesFrom :Model ] ;
     :d3fend-id "D3-NM" ;
     :definition "Network mapping encompasses the techniques to identify and model the physical layer, network layer, and data exchange layers of the organization's network and their physical location, and determine allowed pathways through that network." ;
-    :display-order 3 .
+    :display-order 3 ;
+    rdfs:seeAlso "<https://en.wikipedia.org/wiki/Network_topology>" .
 
 :NetworkNode a owl:Class ;
     rdfs:label "Network Node" ;
@@ -15333,15 +15370,6 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     :kb-reference :Reference-TenablePassiveNetworkMonitoring ;
     :synonym "Passive Logical Layer Mapping" .
 
-:PassivePhysicalLinkMapping a owl:Class,
-        owl:NamedIndividual,
-        :PassivePhysicalLinkMapping ;
-    rdfs:label "Passive Physical Link Mapping" ;
-    rdfs:subClassOf :PhysicalLinkMapping ;
-    :d3fend-id "D3-PPLM" ;
-    :definition "Passive physical link mapping only listens to network traffic as a means to map the physical layer." ;
-    :synonym "Passive Physical Layer Mapping" .
-
 :Password a owl:Class ;
     rdfs:label "Password" ;
     skos:altLabel "Passcode" ;
@@ -15530,6 +15558,7 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     :d3fend-id "D3-PLM" ;
     :definition "Physical link mapping identifies and models the link connectivity of the network devices within a physical network." ;
     :kb-reference :Reference-LibreNMSDocsNetworkMapExtension ;
+    rdfs:seeAlso "<https://en.wikipedia.org/wiki/Network_topology#Links>" ;
     :synonym "Layer 1 Mapping" .
 
 :PhysicalLocation a owl:Class ;
@@ -28722,6 +28751,14 @@ In one embodiment, a response policy zone (RPZ) application generates an RPZ tha
         "No author organizations provided for reference, add one?",
         "No authors provided for reference" .
 
+:Reference-FederalPublicKeyInfrastructure101 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Federal Public Key Infrastructrure 101" ;
+    :has-link "https://www.idmanagement.gov/university/fpki/"^^xsd:anyURI ;
+    :kb-author "Identity, Credential, and Access Management Subcommittee (ICAMSC)" ;
+    :kb-reference-of :Certificate-basedAuthentication ;
+    :kb-reference-title "Federal Public Key Infrastructure 101" .
+
 :Reference-File-modifyingMalwareDetection_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - File-modifying malware detection - Crowdstrike Inc" ;
@@ -29668,6 +29705,13 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-title "Network firewall with proxy" ;
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
+
+:Reference-NetworkMapping a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Network Mapping" ;
+    :has-link "https://en.wikipedia.org/wiki/Network_mapping"^^xsd:anyURI ;
+    :kb-author "https://en.wikipedia.org/" ;
+    :kb-reference-title "Network Mapping" .
 
 :Reference-NIST-RMF-Quick-Start-Guide-Assess-Step-FAQ a :InternetArticleReference,
         owl:NamedIndividual ;
@@ -30919,8 +30963,8 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :has-link "https://www.tenable.com/sites/default/files/solution-briefs/SB-Passive-Network-Monitoring.pdf"^^xsd:anyURI ;
     :kb-abstract "Tenable Nessus® Network Monitor (NNM), a passive monitoring sensor, continuously discovers active assets on the network and assesses them for vulnerabilities. NNM is based on patented network discovery and vulnerability analysis technology that continuously monitors and profiles non-intrusively. It monitors IPv4, IPv6 and mixed network traffic at the packet layer to determine topology, services and vulnerabilities." ;
     :kb-organization "Tenable" ;
-    :kb-reference-of :PassiveLogicalLinkMapping,
-        :PassivePhysicalLinkMapping ;
+    :kb-reference-of :DirectPhysicalLinkMapping,
+        :PassiveLogicalLinkMapping ;
     :kb-reference-title "Tenable Passive Network Monitoring" .
 
 :Reference-Testing_Metrics_for_Password_Creation_Policies_by_Attacking_Large_Sets_of_Revealed_Passwords a :AcademicPaperReference,
