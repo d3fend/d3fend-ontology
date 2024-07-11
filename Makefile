@@ -338,7 +338,7 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
-build: build/ontology # build the D3FEND Ontology and Extensions
+build: build/ontology build/d3fend.csv # build the D3FEND Ontology and Extensions
 	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
 	$(END)
 
