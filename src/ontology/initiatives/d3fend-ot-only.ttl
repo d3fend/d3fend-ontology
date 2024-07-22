@@ -1,0 +1,521 @@
+@prefix : <http://d3fend.mitre.org/ontologies/d3fend-ot-initiative.owl#> .
+@prefix d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+: a owl:Ontology ;
+    owl:imports <http://d3fend.mitre.org/ontologies/d3fend.owl> .
+
+### Object Properties
+ 
+d3f:contains a owl:ObjectProperty .
+
+d3f:may-contain a owl:ObjectProperty .
+
+### Annotation Properties
+
+dcterms:description a owl:AnnotationProperty .
+
+dcterms:license a owl:AnnotationProperty .
+
+dcterms:title a owl:AnnotationProperty .
+
+:definition a owl:AnnotationProperty .
+
+### Classes
+
+:Actuator a owl:Class ;
+    rdfs:label "Actuator" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "A device for moving or controlling a mechanism or system. It is operated by a source of energy, typically electric current, hydraulic fluid pressure, or pneumatic pressure, and converts that energy into motion. An actuator is the mechanism by which a control system acts upon an environment. The control system can be simple (a fixed mechanical or electronic system), software-based (e.g., a printer driver, robot control system), or a human or other agent." .
+
+:AD-Converter a owl:Class ;
+    rdfs:label "AD-Converter" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "An Analog-to-Digital Converter (A/D Converter or ADC) is a device that converts analog signals, which are continuous and can vary over a range of values, into digital signals that can be processed by digital systems. This conversion involves sampling the analog signal at discrete intervals and quantizing the signal into a digital representation. " .
+
+:Analog-IO a owl:Class ;
+    rdfs:label "Analog IO" ;
+    rdfs:subClassOf :IO-Module,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :AD-Converter ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Power ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Resistor ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Terminal ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contain ;
+            owl:someValuesFrom :LED ] ;
+    :definition "The components in an automation system that handle analog signals, which are continuous and can vary over a range of values, such as voltage or current. These signals are typically interfaced with digital systems through analog I/O modules." .
+
+:AnnunciatorPanel a owl:Class ;
+    rdfs:label "Annunciator Panel" ;
+    rdfs:subClassOf d3f:UserInterface,
+                    :ElectronicDevice ;
+    :definition "An annunciator panel is a device used in industrial and process control systems to display the status of various system functions and alarms. It consists of multiple indicators or lights that represent different points of the monitored system. When an abnormal condition occurs, the corresponding indicator on the panel lights up, often accompanied by an audible alarm, alerting operators to the specific issue. " .
+
+:Antenna a owl:Class ;
+    rdfs:label "Antenna" ;
+    rdfs:subClassOf :CommunicationInterface ;
+    :definition "A device Converts electrical signals into electromagnetic waves and electromagnetic waves into electrical signals." .
+
+:Backplane a owl:Class ;
+    rdfs:label "Backplane" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "A backplane is a group of electrical connectors in parallel with each other, so that each pin of each connector is linked to the same relative pin of all the other connectors, forming a computer bus. It is used as a backbone to connect several printed circuit boards together to make up a complete computer system." .
+
+:Cabling a owl:Class ;
+    rdfs:label "Cabling" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "The physical wiring and connections used to link various components within a control system. " .
+
+:CapacitorBankSwitch a owl:Class ;
+    rdfs:label "Capacitor Bank Switch" ;
+    rdfs:subClassOf :IED ;
+    :definition "A device used to control the connection and disconnection of capacitor banks to an electrical power system" .
+
+:CircuitBreaker a owl:Class ;
+    rdfs:label "Circuit Breaker" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "An electrical safety device designed to protect an electrical circuit from damage caused by overcurrent, short circuits, or other electrical faults." .
+
+:Clock a owl:Class ;
+    rdfs:label "Clock" ;
+    rdfs:subClassOf d3f:DigitalInformationBearer ;
+    :definition "A crucial component in a computer that generates a consistent and precise series of electrical pulses. These pulses are used to synchronize the operations of the computer's various components, ensuring that tasks are executed in a coordinated and timely manner." .
+
+:CommunicationInterface a owl:Class ;
+    rdfs:label "Communication Interface" ;
+    rdfs:subClassOf d3f:DigitalInformationBearer,
+                    :ElectronicDevice ;
+    :definition "Wherever two or more logical, physical, or both system elements or software system elements meet and act on or communicate with each other." .
+
+:CommunicationModule a owl:Class ;
+    rdfs:label "Communication Module" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "A communication module is the part of a system that creates a bridge to another system by encoding the message into the physical medium of the network. " .
+
+:Controller a owl:Class ;
+    rdfs:label "Controller" ;
+    rdfs:subClassOf d3f:EmbeddedComputer,
+        :PhysicalControlSystem,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :PowerSupply ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom d3f:Network ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Cabling ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom d3f:Processor ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contain ;
+            owl:someValuesFrom :Backplane ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contain ;
+            owl:someValuesFrom :CommunicationModule ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contain ;
+            owl:someValuesFrom :HMI ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contain ;
+            owl:someValuesFrom :IO-Module ] ;
+    :definition "A device or program that operates automatically to regulate a controlled variable." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/controller#:~:text=Definitions%3A,activity%20to%20meet%20established%20objectives." .
+
+:CurrentTransformer a owl:Class ;
+    rdfs:label "Current Transformer" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "An electrical device used to measure alternating current (AC) by producing a reduced current proportional to the current in its primary circuit." .
+
+:DCS a owl:Class ;
+    rdfs:label "Distributed Control System" ;
+    rdfs:subClassOf :PhysicalControlSystem,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Controller ] ;
+    :definition "A DCS refers to control achieved by intelligence that is distributed about the process to be controlled, rather than by a centrally located single unit." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/dcs" .
+
+:DigitalProtectiveRelay a owl:Class ;
+    rdfs:label "Digital Protective Relay" ;
+    rdfs:subClassOf :ProtectiveRelay ;
+    :definition "An advanced type of protective relay used in electrical power systems to detect faults and abnormal conditions and to initiate appropriate protective actions, such as tripping circuit breakers." .
+
+:Discrete-IO a owl:Class ;
+    rdfs:label "Discreate IO" ;
+    rdfs:subClassOf :IO-Module ;
+    :definition "Discrete digital I/O refers to the interface used in industrial automation and control systems to handle binary signals. These signals represent two states, typically ON/OFF or 0/1. Digital inputs (DI) receive signals from field devices like sensors or switches, indicating their status (e.g., whether a button is pressed or not). Digital outputs (DO) send signals to actuators or other devices to control their states (e.g., turning a motor on or off)." .
+
+:Display a owl:Class ;
+    rdfs:label "Display" ;
+    rdfs:subClassOf d3f:UserInterface ;
+    :definition "Refers to a device or interface used to visually present data, measurements, or statuses. Displays can range from simple numeric or alphanumeric readouts to complex graphical interfaces (HMIs) that show detailed process information, trends, and alarms." .
+
+:ElectricalActuator a owl:Class ;
+    rdfs:label "Electrical Actuator" ;
+    rdfs:subClassOf :Actuator,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :CircuitBreaker ] ;
+    :definition "A device that converts electrical energy into mechanical motion. It's used to control or move mechanisms or systems, typically by using an electric motor to generate rotary or linear motion." .
+
+:ElectromechanicProtectiveRelay a owl:Class ;
+    rdfs:label "Electromechanic Protective Relay" ;
+    rdfs:subClassOf :ProtectiveRelay ;
+    :definition "A type of protective relay used in electrical power systems to detect abnormal conditions such as overcurrent, overvoltage, underfrequency, and other faults, and to initiate appropriate protective actions like tripping circuit breakers." .
+
+:ElectronicDevice a owl:Class ;
+    rdfs:label "Electronic Device" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "A piece of equipment that operates based on the principles of electronics, which involve the control and manipulation of electric currents and voltages to perform specific functions. " .
+
+:EngineeringSoftware a owl:Class ;
+    rdfs:label "Engineering Software" ;
+    rdfs:subClassOf d3f:Application ;
+    :definition "Engineering software focuses on designing, simulating, and managing control systems, instrumentation, and automation processes. " .
+
+:ExternalPower a owl:Class ;
+    rdfs:label "External Power" ;
+    rdfs:subClassOf :PowerSource ;
+    :definition "The electrical energy supplied to a device or system from an external source" .
+
+:FinalElement a owl:Class ;
+    rdfs:label "Final Element" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "Safety device that implements the physical action necessary to achieve or maintain a safe state" .
+
+:GraphicalDisplay a owl:Class ;
+    rdfs:label "Graphical Display" ;
+    rdfs:subClassOf :Display ;
+    :definition "Graphic display software is essential for visualizing data, monitoring processes, and interacting with control systems. These tools typically provide Human-Machine Interface (HMI) and Supervisory Control and Data Acquisition (SCADA) functionalities." .
+
+:HardwareHMI a owl:Class ;
+    rdfs:label "Hardware Human Machine Interface" ;
+    rdfs:subClassOf :HMI,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :AnnunciatorPanel ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Display ] ;
+    :definition "Physical device that provides a user interface for operators to interact with machines, systems, or processes." .
+
+:HMI a owl:Class ;
+    rdfs:label "Human Machine Interface" ;
+    rdfs:subClassOf d3f:UserInterface,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom d3f:License ] ;
+    :definition "Device that provides a user interface for operators to interact with machines, systems, or processes." .
+
+:HydraulicActuator a owl:Class ;
+    rdfs:label "Hydraulic Actuator" ;
+    rdfs:subClassOf :Actuator ;
+    :definition "Mechanical device that converts hydraulic energy (fluid pressure) into mechanical motion." .
+
+:IED a owl:Class ;
+    rdfs:label "Intelligent Electronic Device" ;
+    rdfs:subClassOf :PLC ;
+    :definition "An IED is a device incorporating one or more processors with the capability to receive or send data/control from or to an external source (e.g., electronic multifunction meters, digital relays, controllers)." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/ied" .
+
+:IO-Module a owl:Class ;
+    rdfs:label "IO Module" ;
+    rdfs:subClassOf d3f:PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom d3f:InputDevice ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom d3f:OutputDevice ] ;
+    :definition "An I/O module is used to communicate with a computer as well as the data involved in the communications." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/i_o" .
+
+:Isolator a owl:Class ;
+    rdfs:label "Isolator" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "An electrical device used to ensure that a circuit or equipment is completely de-energized for maintenance or safety purposes." .
+
+:LED a owl:Class ;
+    rdfs:label "LED" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "An LED (Light Emitting Diode) is a semiconductor device that emits light when an electric current passes through it. " .
+
+d3f:License a owl:Class ;
+    :definition "ensuring proper usage, functionality, and legal compliance of the software and hardware components used in industrial automation and control systems. " .
+
+:LPIT a owl:Class ;
+    rdfs:label "Low-Power Instrument Transformer" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "A type of instrument transformer designed to measure electrical parameters such as current and voltage in power systems, but with significantly lower power consumption compared to traditional instrument transformers." .
+
+:ManualActuator a owl:Class ;
+    rdfs:label "Manual Actuator" ;
+    rdfs:subClassOf :Actuator ;
+    :definition "A mechanical device used to manually control the position or movement of a valve, damper, or other mechanical systems." .
+
+:Memory a owl:Class ;
+    rdfs:label "Memory" ;
+    rdfs:subClassOf d3f:DigitalInformationBearer ;
+    :definition "A Component that store data and instructions that the central processing unit (CPU) can access quickly." .
+
+:MergingUnit a owl:Class ;
+    rdfs:label "Merging Unit" ;
+    rdfs:subClassOf :ElectronicDevice,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contains ;
+            owl:someValuesFrom :LPIT ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contains ;
+            owl:someValuesFrom :CurrentTransformer ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contains ;
+            owl:someValuesFrom :VoltageTransformer ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom d3f:Processor ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Clock ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :CommunicationInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Memory ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :PowerSource ] ;
+    :definition "a physical unit that perform a time coherent combination of voltage and/or current data coming from secondary converters, that can be from different types of transducer, and publishing them in Sampled Values format." .
+
+:Multiplexor a owl:Class ;
+    rdfs:label "Multiplexor" ;
+    rdfs:subClassOf :IO-Module ;
+    :definition "A multiplexer, often abbreviated as MUX, is a digital switch that selects one input signal from multiple inputs and forwards it to a single output line. It operates based on control signals that determine which input to send to the output. Multiplexers are used in various applications to increase the efficiency of data transmission by allowing multiple signals to share one device or resource, such as a communication line or data bus." .
+
+:OTActuator a owl:Class ;
+    rdfs:label "Actuator" ;
+    rdfs:subClassOf :PhysicalControlSystem,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Actuator ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :FinalElement ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Positioner ] ;
+    :definition "A Device that converts a signal’s energy into mechanical motion." .
+
+:OTSensor a owl:Class ;
+    rdfs:label "OT Sensor" ;
+    rdfs:subClassOf d3f:Sensor,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :SensingElement ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Transmitter ] ;
+    :definition "A device that senses a process variable through the medium of a sensor and has an output whose steady-state value varies only as a predetermined function of the process variable. The sensor may or may not be integral with the transmitter." .
+
+:PhysicalControlSystem a owl:Class ;
+    rdfs:label "Physical Control System" ;
+    rdfs:subClassOf d3f:System ;
+    :definition "A system designed to manage, command, direct, or regulate the behavior of other devices or systems using physical components and mechanisms." .
+
+:PhysicalMeasurementSensor a owl:Class ;
+    rdfs:label "Physical Measurement Sensor" ;
+    rdfs:subClassOf d3f:Sensor ;
+    :definition "A device that measures a physical quantity (like temperature) and converts it into a signal which can be read by an observer or by an instrument." .
+
+:PLC a owl:Class ;
+    rdfs:label "Programmable Logic Controller" ;
+    rdfs:subClassOf :Controller ;
+    :definition "A PLC solid-state control system that has a user-programmable memory for storing instructions for the purpose of implementing specific functions such as I/O control, logic, timing, counting, three mode (PID) control, communication, arithmetic, and data and file processing." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/plc " .
+
+:PneumaticActuator a owl:Class ;
+    rdfs:label "Pneumatic Actuator" ;
+    rdfs:subClassOf :Actuator ;
+    :definition "A mechanical device that converts energy from compressed air into mechanical motion. " .
+
+:Positioner a owl:Class ;
+    rdfs:label "Positioner" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "A device used in control systems to precisely adjust the position of an actuator, such as a valve, damper, or other mechanical components, to a desired setpoint. " .
+
+:Power a owl:Class ;
+    rdfs:label "Power" ;
+    rdfs:subClassOf d3f:DigitalInformationBearer ;
+    :definition "" .
+
+:PowerSource a owl:Class ;
+    rdfs:label "Power Source" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "A device or system that provides energy to electrical or electronic devices, enabling them to operate. " .
+
+:PowerSupply a owl:Class ;
+    rdfs:label "Power Supply" ;
+    rdfs:subClassOf :PowerSource ;
+    :definition "An electronic device that provides electrical power to an electrical load. " .
+
+:ProtectiveRelay a owl:Class ;
+    rdfs:label "Protective Relay" ;
+    rdfs:subClassOf :IED ;
+    :definition "An electrical device designed to detect faults or abnormal conditions in electrical circuits and initiate appropriate corrective actions, such as isolating the affected section of the circuit to prevent damage to equipment, ensure safety, and maintain system stability. " .
+
+:PulseInput a owl:Class ;
+    rdfs:label "Pulse Input" ;
+    rdfs:subClassOf :IO-Module ;
+    :definition "A pulse input refers to a type of digital input used in industrial and control systems to count or measure the frequency, period, or count of pulses. These pulses are typically generated by devices such as flow meters, rotary encoders, or pulse generators, which output a series of electrical signals corresponding to the measurement of a physical parameter. Pulse inputs are used in various applications including counting, timing, and monitoring the speed or position of rotating equipment." .
+
+:Receiver a owl:Class ;
+    rdfs:label "Receiver" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "An electronic device that receives incoming signals from a particular source and converts them into a readable form." .
+
+
+:RecloserController a owl:Class ;
+    rdfs:label "Recloser Controller" ;
+    rdfs:subClassOf :IED ;
+    :definition "An electronic device used to manage and control the operation of an automatic circuit recloser in electrical distribution systems." .
+
+:RelayInput a owl:Class ;
+    rdfs:label "Relay Input" ;
+    rdfs:subClassOf :IO-Module ;
+    :definition "A relay input refers to the signal or control input provided to a relay to activate its switching mechanism. When a sufficient electrical signal (voltage or current) is applied to the relay's input terminals, it energizes the relay's coil, causing the switch within the relay to change its state. " .
+
+:Resistor a owl:Class ;
+    rdfs:label "Resistor" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "A resistor is a passive electrical component that opposes the flow of electric current, resulting in a drop in voltage. The primary function of a resistor is to limit current, divide voltages, and dissipate power within electronic circuits. Resistors are characterized by their resistance value, measured in ohms (Ω), which determines how much they resist the current. They are fundamental components in various electronic devices and systems, used to control and stabilize the electrical performance." .
+
+d3f:RFReceiver a owl:Class ;
+    rdfs:subClassOf :Receiver .
+
+d3f:RFTransceiver a owl:Class ;
+    rdfs:subClassOf :Transceiver .
+
+d3f:RFTransmitter a owl:Class ;
+    rdfs:subClassOf :Transmitter .
+
+:RTU a owl:Class ;
+    rdfs:label "Remote Terminal Unit" ;
+    rdfs:subClassOf :PLC ;
+    :definition "A RTU is a computer with radio interfacing used in remote situations where communications via wire is unavailable. Usually used to communicate with remote field equipment. PLCs with radio communication capabilities are also used in place of RTUs." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/rtu" .
+
+:SensingElement a owl:Class ;
+    rdfs:label "Sensing Element" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "A device or component that detects and responds to changes in physical, chemical, or biological conditions and converts this information into a readable signal or data. " .
+
+d3f:Sensor a owl:Class ;
+    rdfs:subClassOf d3f:PhysicalArtifact .
+
+:SIS a owl:Class ;
+    rdfs:label "Safety Instrumented System" ;
+    rdfs:subClassOf :Controller ;
+    :definition "A SIS is a system that is composed of sensors, logic solvers, and final control elements whose purpose is to take the process to a safe state when predetermined conditions are violated. Other terms commonly used include emergency shutdown system (ESS), safety shutdown system (SSD), and safety interlock system (SIS)." ;
+    rdfs:seeAlso "https://csrc.nist.gov/glossary/term/sis" .
+
+:SoftwareHMI a owl:Class ;
+    rdfs:label "Software Human Machine Interface" ;
+    rdfs:subClassOf :HMI,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :EngineeringSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :GraphicalDisplay ] ;
+    :definition "A user interface or dashboard that allows humans to interact with machines, systems, or devices through software applications." .
+
+:SwitchgearControlUnit a owl:Class ;
+    rdfs:label "Switchgear Control Unit" ;
+    rdfs:subClassOf :ElectronicDevice,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :CircuitBreaker ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Isolator ] ;
+    :definition "A specialized device or system used to monitor, control, and protect electrical switchgear, which includes circuit breakers, disconnect switches, fuses, and other equipment used to manage and distribute electrical power." .
+
+:Terminal a owl:Class ;
+    rdfs:label "Terminal" ;
+    rdfs:subClassOf d3f:PhysicalArtifact ;
+    :definition "erminals refer to the connection points where wires or cables are attached to facilitate the transmission of electrical signals within a system. These terminals are used for connecting sensors, transmitters, and other instrumentation devices to the control systems, ensuring proper communication and signal flow throughout the system. Terminals provide secure and reliable connections, which are critical for maintaining the integrity of signal transmission in industrial automation and control systems." .
+
+:ThermoCouple a owl:Class ;
+    rdfs:label "ThermoCouple" ;
+    rdfs:subClassOf d3f:TransducerSensor ;
+    :definition "A thermocouple is a sensor used to measure temperature. It consists of two different types of metal wires joined at one end, called the junction. When the junction experiences a temperature change, it generates a voltage that can be interpreted to measure temperature." .
+
+:Transceiver a owl:Class ;
+    rdfs:label "Transceiver" ;
+    rdfs:subClassOf :ElectronicDevice,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Receiver ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :Transmitter ] ;
+    :definition "A device that has both a transmitter and a receiver which are combined and share common circuitry or a single housing. It can transmit and receive signals to and from other devices." .
+
+:Transmitter a owl:Class ;
+    rdfs:label "Transmitter" ;
+    rdfs:subClassOf :ElectronicDevice,
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :MergingUnit ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :SwitchgearControlUnit ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :AD-Converter ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:may-contains ;
+            owl:someValuesFrom :CommunicationInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty d3f:contains ;
+            owl:someValuesFrom :PowerSource ] ;
+    :definition "An electronic device that uses radio waves to send data in the form of signals or electromagnetic waves." .
+
+:VFD a owl:Class ;
+    rdfs:label "Virtual Frequency Drive" ;
+    rdfs:subClassOf :Controller ;
+    :definition "A VFD is a type of motor controller that drives an electric motor by varying the frequency and voltage supplied to the electric motor. Other names for a VFD are variable speed drive, adjustable speed drive, adjustable frequency drive, AC drive, microdrive, and inverter." .
+
+:VoltageRegulator a owl:Class ;
+    rdfs:label "Voltage Regulator" ;
+    rdfs:subClassOf :IED ;
+    :definition "An electronic device or circuit designed to maintain a constant output voltage level regardless of changes in the input voltage or load conditions." .
+
+:VoltageTransformer a owl:Class ;
+    rdfs:label "Voltage Transformer" ;
+    rdfs:subClassOf :ElectronicDevice ;
+    :definition "A type of instrument transformer designed to step down high voltage levels to lower, standardized levels that can be safely measured and monitored by metering and protection devices." .
+
+:WiredTransmitter a owl:Class ;
+    rdfs:label "Wired Transmitter" ;
+    rdfs:subClassOf :Transmitter ;
+    :definition "An electronic device used to convert a physical parameter (such as temperature, pressure, flow, or level) into an electrical signal that can be transmitted over a wired connection to a control system, data acquisition system, or monitoring device.  " .
+
+:WirelessTransmitter a owl:Class ;
+    rdfs:label "Wireless Transmitter" ;
+    rdfs:subClassOf :Transmitter ;
+    :definition "An electronic device that uses radio waves to send data in the form of signals or electromagnetic waves." .
+
+### Serialized using the ttlser deterministic serializer v1.2.1
