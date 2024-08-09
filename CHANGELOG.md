@@ -1,5 +1,15 @@
 # D3FEND Change Log
 
+## Version - 0.16.0 - 2024-07-10
+ - Replace rdfs:seeAlso and rdfs:isDefinedBy anyURIs with standard IRIs. (#263)
+ - Removed hidden Reverse Resolution Domain Denylisting class. (#252)
+ - Direct Physical Link Mapping Technique added, deleted hidden Passive Physical Link Mapping class. (#251)
+ - Complete Certificate-based Authentication technique. (#250)
+ - Update to ATT&CK 15. (#239)
+ - Fix typo in definition of OSAPISystemFunction. (#235)
+ - GetRunningProcesses enumerates Process. (#231)
+ - Add "unloads" property. (#230)
+
 ## Version - 0.15.0 - 2024-04-26
 
  - Fix d3fend-id on Reissue Credential. (#234)
