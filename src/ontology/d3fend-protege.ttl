@@ -1660,18 +1660,6 @@ skos:altLabel a owl:AnnotationProperty .
     rdfs:isDefinedBy <http://dbpedia.org/resource/Access-control_list> ;
     :definition "A list of permissions attached to an object." .
 
-:AccessEviction a :AccessEviction,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Access Eviction" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :Evict ] ;
-    :d3fend-id "D3-AE" ;
-    :definition "Access Eviction techniques disable or remove an entity's access to resources." ;
-    :enables :Evict .
-
 :AccessMediator a owl:Class ;
     rdfs:label "Access Mediator" ;
     rdfs:subClassOf :D3FENDCore,
@@ -4032,7 +4020,10 @@ Effective implementation requires identifying any location that could end up con
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Credential Eviction" ;
-    rdfs:subClassOf :AccessEviction ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
     :d3fend-id "D3-CE" ;
     :definition "Credential Eviction techniques disable or remove compromised credentials from a computer network." ;
     :kb-reference :Reference-AccountMonitoring_ForescoutTechnologies .
@@ -9678,30 +9669,6 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
             owl:someValuesFrom :File ] ;
     :definition "Remove a file from a machine." .
 
-:DeleteRegistryKey a :DeleteRegistryKey,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Delete Registry Key" ;
-    rdfs:subClassOf :ObjectEviction,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :WindowsRegistryKey ] ;
-    :d3fend-id "D3-DRK" ;
-    :definition "Delete a registry key." ;
-    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
-
-:DeleteUserAccount a :DeleteUserAccount,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Delete User Account" ;
-    rdfs:subClassOf :AccessEviction,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :UserAccount ] ;
-    :d3fend-id "D3-DUA" ;
-    :definition "Delete a user account from a host machine." ;
-    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
-
 :Density-basedClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Density-based Clustering" ;
@@ -9982,6 +9949,24 @@ OpenReview. (n.d.). Unsupervised Clustering using Pseudo Ensemble Models. [Link]
     :kb-reference :Reference-DNSWhitelist-DNSWL-EmailAuthenticationMethodExtension ;
     :synonym "DNS Whitelisting" .
 
+:DNSCacheEviction a :DNSCacheEviction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "DNS Cache Eviction" ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :DNSRecord ] ;
+    :d3fend-id "D3-DNSCE" ;
+    :definition "Flushing DNS to clear any IP addresses or other DNS records from the cache." ;
+    :kb-article """# How it works
+
+Flushing the DNS Cache will clear the IP addresses of websites you have visited recently. This can help remediate DNS Cache Poisoning attacks, which is a type of cyber attack where corrupted DNS data is inserted into the cache, causing redirects to malicious websites.
+
+On windows, the DNS cache can be wiped by issuing the command `ipconfig /flushdns`.""" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> ;
+    :synonym "Flush DNS Cache" .
+
 :DNSDenylisting a :DNSDenylisting,
         owl:Class,
         owl:NamedIndividual ;
@@ -10131,6 +10116,35 @@ This technique does not check for content hosted at the domain.
     :definition "A domain registration, or domain name registration data, is the relevant registration data from Internet resources such as domain names, IP addresses, and autonomous system numbers. Registration data is typically retrieved by means of either the Registration Data Access Protocol (RDAP) or its predecessor, the WHOIS protocol." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Domain_registration>,
         <http://dbpedia.org/resource/WHOIS> .
+
+:DomainRegistrationTakedown a :DomainRegistrationTakedown,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Domain Registration Takedown" ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :DomainRegistration ] ;
+    :d3fend-id "D3-DRT" ;
+    :definition "The process of performing a takedown of the attacker's domain registration infrastructure." ;
+    :kb-article """## How it works
+
+Most nameserver hosts and domain name registrars comply with internationally recognised standards and supply their services based on terms and conditions that provide users and organisations protection from abuse and trademark infringement. Performing a WHOIS query on the attacker's domain will provide a contact that can be notified in the case of abuse. Formal takedown processes should be initiated to suspend or disable the normal function of the domain name.
+
+## Considerations
+
+- Takedown notifications should clearly demonstrate (with evidence) that the nameserver or registrars Terms and Conditions have been breached.
+- Takedown processes are notoriously slow and sometimes unsuccessful.
+- Many government organisations will have takedown processes that should also be followed. They may use this for intelligence to assist other organisations suffering an attack.
+- Top level domain registrars will have takedown processes that can be followed, as an escalation path, when the nameserver host and/or registrar have not responded or complied timeously or inline with the TLD expectations.
+
+## Examples of Domain Registration Abuse
+
+Attackers will create infrastructure from which to carry out their operations and this may include registering domain names to be used in the various attacks. Known misuse cases include:
+
+- Registering domain names that are similar to the victim's. This is known as typosquatting or URL hijacking. Legitimate looking mails or URLs could be sent using this domain in phishing campaigns.
+- Registring domain names that are used in C2 beacons.""" ;
+    :kb-reference :Reference-UnderstandingtheDomainRegistrationBehaviorofSpammers .
 
 :DomainTrustPolicy a :DomainTrustPolicy,
         owl:Class,
@@ -11191,23 +11205,6 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
     rdfs:subClassOf :SecondaryStorage ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Flash_memory" ;
     :definition "Flash memory is an electronic non-volatile computer memory storage medium that can be electrically erased and reprogrammed." .
-
-:FlushDNSCache a :FlushDNSCache,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Flush DNS Cache" ;
-    rdfs:subClassOf :ObjectEviction,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :DNSRecord ] ;
-    :d3fend-id "D3-FDC" ;
-    :definition "Flushing DNS to clear any IP addresses or other DNS records from the cache." ;
-    :kb-article """# How it works
-
-Flushing the DNS Cache will clear the IP addresses of websites you have visited recently. This can help remediate DNS Cache Poisoning attacks, which is a type of cyber attack where corrupted DNS data is inserted into the cache, causing redirects to malicious websites.
-
-On windows, the DNS cache can be wiped by issuing the command `ipconfig /flushdns`.""" ;
-    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> .
 
 :Forecasting a owl:Class ;
     rdfs:label "Forecasting" ;
@@ -13867,6 +13864,15 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     :definition "Metadata is \"data [information] that provides information about other data\". Three distinct types of metadata exist: structural metadata, descriptive metadata, and administrative metadata. Structural metadata is data about the containers of data. For instance a \"book\" contains data, and data about the book is metadata about that container of data. Descriptive metadata uses individual instances of application data or the data content." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/metadata" .
 
+:MFATokenDisenrollment a :MFATokenDisenrollment,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "MFA Token Disenrollment" ;
+    rdfs:subClassOf :CredentialRevoking ;
+    :d3fend-id "D3-MTD" ;
+    :definition "After auditing MFA tokens configured in an environment, unenroll any tokens that cannot be accounted for or are suspicious" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> .
+
 :Microcode a owl:Class ;
     rdfs:label "Microcode" ;
     rdfs:subClassOf :Firmware ;
@@ -15970,7 +15976,10 @@ False negatives can occur via alteration of the verification logic or source of 
         owl:NamedIndividual,
         :ProcessEviction ;
     rdfs:label "Process Eviction" ;
-    rdfs:subClassOf :ObjectEviction ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Evict ] ;
     :d3fend-id "D3-PE" ;
     :definition "Process eviction techniques terminate or remove running process." ;
     :kb-reference :Reference-MalwareDetectionUsingLocalComputationalModels_CrowdstrikeInc .
@@ -16616,6 +16625,18 @@ A regular expression (shortened as regex or regexp) is a sequence of characters 
 2. String-searching algorithm. (2023, April 8). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/String-searching_algorithm).""" ;
     :synonym "Regex",
         "Regexp" .
+
+:RegistryKeyDeletion a owl:Class,
+        owl:NamedIndividual,
+        :RegistryKeyDeletion ;
+    rdfs:label "Registry Key Deletion" ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
+    :d3fend-id "D3-RKD" ;
+    :definition "Delete a registry key." ;
+    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
 
 :RegressionAnalysis a owl:Class,
         owl:NamedIndividual ;
@@ -17612,7 +17633,7 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
         owl:NamedIndividual,
         :SessionTermination ;
     rdfs:label "Session Termination" ;
-    rdfs:subClassOf :AccessEviction,
+    rdfs:subClassOf :ProcessEviction,
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Session ] ;
@@ -25494,35 +25515,6 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:isDefinedBy <http://dbpedia.org/resource/Tablet_computer> ;
     :definition "A tablet computer, commonly shortened to tablet, is a mobile device, typically with a mobile operating system and touchscreen display processing circuitry, and a rechargeable battery in a single, thin and flat package. Tablets, being computers, do what other personal computers do, but lack some input/output (I/O) abilities that others have. Modern tablets largely resemble modern smartphones, the only differences being that tablets are relatively larger than smartphones, with screens 7 inches (18 cm) or larger, measured diagonally, and may not support access to a cellular network." .
 
-:TakedownDomainRegistration a owl:Class,
-        owl:NamedIndividual,
-        :TakedownDomainRegistration ;
-    rdfs:label "Takedown Domain Registration" ;
-    rdfs:subClassOf :ObjectEviction,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :DomainRegistration ] ;
-    :d3fend-id "D3-TDR" ;
-    :definition "The process of performing a takedown of the attacker's domain registration infrastructure." ;
-    :kb-article """## How it works
-
-Most nameserver hosts and domain name registrars comply with internationally recognised standards and supply their services based on terms and conditions that provide users and organisations protection from abuse and trademark infringement. Performing a WHOIS query on the attacker's domain will provide a contact that can be notified in the case of abuse. Formal takedown processes should be initiated to suspend or disable the normal function of the domain name.
-
-## Considerations
-
-- Takedown notifications should clearly demonstrate (with evidence) that the nameserver or registrars Terms and Conditions have been breached.
-- Takedown processes are notoriously slow and sometimes unsuccessful.
-- Many government organisations will have takedown processes that should also be followed. They may use this for intelligence to assist other organisations suffering an attack.
-- Top level domain registrars will have takedown processes that can be followed, as an escalation path, when the nameserver host and/or registrar have not responded or complied timeously or inline with the TLD expectations.
-
-## Examples of Domain Registration Abuse
-
-Attackers will create infrastructure from which to carry out their operations and this may include registering domain names to be used in the various attacks. Known misuse cases include:
-
-- Registering domain names that are similar to the victim's. This is known as typosquatting or URL hijacking. Legitimate looking mails or URLs could be sent using this domain in phishing campaigns.
-- Registring domain names that are used in C2 beacons.""" ;
-    :kb-reference :Reference-UnderstandingtheDomainRegistrationBehaviorofSpammers .
-
 :TargetAudience a owl:Class ;
     rdfs:label "Target Audience" ;
     rdfs:subClassOf :D3FENDUseCaseThing .
@@ -25785,15 +25777,6 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :kb-article """## References
 Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
 
-:UnenrollSuspiciousMFATokens a owl:Class,
-        owl:NamedIndividual,
-        :UnenrollSuspiciousMFATokens ;
-    rdfs:label "Unenroll Suspicious MFA Tokens" ;
-    rdfs:subClassOf :CredentialRevoking ;
-    :d3fend-id "D3-USMT" ;
-    :definition "After auditing MFA tokens configured in an environment, unenroll any tokens that cannot be accounted for or are suspicious" ;
-    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA> .
-
 :UnitTestExecutionTool a owl:Class ;
     rdfs:label "Unit Test Execution Tool" ;
     rdfs:subClassOf :TestExecutionTool ;
@@ -25944,6 +25927,18 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     :definition "A user account allows a user to authenticate to a system and potentially to receive authorization to access resources provided by or connected to that system; however, authentication does not imply authorization. To log into an account, a user is typically required to authenticate oneself with a password or other credentials for the purposes of accounting, security, logging, and resource management." ;
     rdfs:seeAlso "https://schema.ocsf.io/objects/user",
         <http://dbpedia.org/resource/User_account> .
+
+:UserAccountDeletion a owl:Class,
+        owl:NamedIndividual,
+        :UserAccountDeletion ;
+    rdfs:label "User Account Deletion" ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :UserAccount ] ;
+    :d3fend-id "D3-UAD" ;
+    :definition "Delete a user account from a host machine." ;
+    :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
 
 :UserAccountPermissions a owl:Class,
         owl:NamedIndividual,
@@ -26969,8 +26964,8 @@ In order to convince the potential attacker that the deception environment is th
     :has-link "https://www.cisa.gov/news-events/analysis-reports/ar21-134a"^^xsd:anyURI ;
     :kb-organization "CISA" ;
     :kb-reference-of :CredentialRotation,
-        :FlushDNSCache,
-        :UnenrollSuspiciousMFATokens ;
+        :DNSCacheEviction,
+        :MFATokenDisenrollment ;
     :kb-reference-title "Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise" .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IsolationOfApplicationsWithinAVirtualMachine_Bromium,Inc.> a owl:NamedIndividual,
@@ -28409,8 +28404,8 @@ This requires filesystem data to determine whether files have been created.""" ;
     :kb-author "Cybersecurity and Infrastructure Security Agency" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Cybersecurity and Infrastructure Security Agency" ;
-    :kb-reference-of :DeleteRegistryKey,
-        :DeleteUserAccount ;
+    :kb-reference-of :RegistryKeyDeletion,
+        :UserAccountDeletion ;
     :kb-reference-title "Cybersecurity Incident & Vulnerability Response Playbooks" .
 
 :Reference-CyberVaccineAndPredictiveMalwareDefensiveMethodsAndSystems a owl:NamedIndividual,
@@ -31103,7 +31098,7 @@ This specification defines the Trusted Platform Module (TPM) a device that enabl
     :has-link "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=bf4d34a6f9d0168bb07433e84c1567bbe1ba8188" ;
     :kb-abstract "Spammers register a tremendous number of domains to evade blacklisting and takedown efforts. Current techniques to detect such domains rely on crawling spam URLs or monitoring lookup traffic. Such detection techniques are only effective after the spammers have already launched their campaigns, and thus these countermeasures may only come into play after the spammer has already reaped significant benefits from the dissemination of large volumes of spam. In this paper we examine the registration process of such domains, with a particular eye towards features that might indicate that a given domain likely has a malicious purpose at registration time, before it is ever used for an attack. Our assessment includes exploring the characteristics of registrars, domain life cycles, registration bursts, and naming patterns. By investigating zone changes from the .com TLD over a 5-month period, we discover that spammers employ bulk registration, that they often re-use domains previously registered by others, and that they tend to register and host their domains over a small set of registrars. Our findings suggest steps that registries or registrars could use to frustrate the efforts of miscreants to acquire domains in bulk, ultimately reducing their agility for mounting large-scale attacks." ;
     :kb-author "Hao S, Thomas M, Paxson V, Feamster N, Kreibich C, Grier C, Hollenbeck S" ;
-    :kb-reference-of :TakedownDomainRegistration ;
+    :kb-reference-of :DomainRegistrationTakedown ;
     :kb-reference-title "Understanding the Domain Registration Behavior of Spammers" .
 
 :Reference-UnifiedArchitectureFrameworkUAF a owl:NamedIndividual,
