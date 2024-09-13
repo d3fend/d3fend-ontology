@@ -343,6 +343,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :reads ;
     :definition "definition \"x enumerates y: The subject x takes the action of reading from a digital source y to acquire data and create a list of its contents." .
 
+:erases a owl:ObjectProperty ;
+    rdfs:label "erases" ;
+    rdfs:subPropertyOf :associated-with ;
+    :description "x erases y: A technique x removes recorded data from storage device y creating space for new data." .
+
 :evaluated-by a owl:ObjectProperty ;
     rdfs:label "evaluated-by" ;
     rdfs:subPropertyOf :associated-with ;
@@ -9875,6 +9880,51 @@ Wikipedia. (n.d.). Multivariate statistics. [Link](https://en.wikipedia.org/wiki
     :definition "Encrypting a hard disk partition to prevent cleartext access to a file system." ;
     :kb-reference :Reference-LUKS1On-DiskFormatSpecificationVersion1.2.3 .
 
+:DiskErasure a :DiskErasure,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Disk Erasure" ;
+    rdfs:subClassOf :DiskFormatting,
+        [ a owl:Restriction ;
+            owl:onProperty :erases ;
+            owl:someValuesFrom :SecondaryStorage ] ;
+    :d3fend-id "D3-DKE" ;
+    :definition "Disk Erasure is the process of securely deleting all data on a disk to ensure that it cannot be recovered by any means." ;
+    :kb-article """### How it works
+
+Disk Erasure involves overwriting the existing data with random or specific patterns multiple times. Disk erasure is crucial for data sanitization, ensuring that sensitive information is completely removed from storage devices before they are repurposed, disposed of, or transferred to another party.""" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-Remembranceofdatapassed:Astudyofdisksanitizationpractices> .
+
+:DiskFormatting a :DiskFormatting,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Disk Formatting" ;
+    rdfs:subClassOf :ObjectEviction,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SecondaryStorage ] ;
+    :d3fend-id "D3-DKF" ;
+    :definition "Disk Formatting is the process of preparing a data storage device, such as a hard drive, solid-state drive, or USB flash drive, for initial use." ;
+    :kb-article """### How it works
+
+This process involves setting up an empty file system on the disk, which includes creating a directory structure and initializing metadata structures. In cybersecurity, disk formatting can be used to remove all existing data on a disk, making it a clean slate for new data storage or to prevent unauthorized access to previously stored data.""" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-Remembranceofdatapassed:Astudyofdisksanitizationpractices> .
+
+:DiskPartitioning a :DiskPartitioning,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Disk Partitioning" ;
+    rdfs:subClassOf :DiskFormatting,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :PartitionTable ] ;
+    :d3fend-id "D3-DKP" ;
+    :definition "Disk Partitioning is the process of dividing a disk into multiple distinct sections, known as partitions." ;
+    :kb-article """### How it works
+
+Each partition can be managed separately and can have its own file system. Disk partitioning can be used to segregate sensitive data from less critical data, improve system performance, and enhance data management and recovery processes. It can also help in isolating different operating systems or environments on the same physical disk.""" ;
+    :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-Remembranceofdatapassed:Astudyofdisksanitizationpractices> .
+
 :DisplayAdapter a owl:Class ;
     rdfs:label "Display Adapter" ;
     skos:altLabel "Display Card",
@@ -15305,7 +15355,10 @@ Newcastle University. (n.d.). Parametric Hypothesis Tests. [Link](https://www.nc
     rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :addresses ;
-            owl:someValuesFrom :Partition ] ;
+            owl:someValuesFrom :Partition ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :BootRecord ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Partition_table> ;
     :definition "A partition is a fixed-size subset of a storage device which is treated as a unit by the operating system. A partition table is a table maintained on the storage device by the operating system describing the partitions on that device. The terms partition table and partition map are most commonly associated with the MBR partition table of a Master Boot Record (MBR) in IBM PC compatibles, but it may be used generically to refer to other \"formats\" that divide a disk drive into partitions, such as: GUID Partition Table (GPT), Apple partition map (APM), or BSD disklabel." .
 
@@ -17252,7 +17305,10 @@ List of known unauthorized script files or regular expression patterns must be k
 :SecondaryStorage a owl:Class ;
     rdfs:label "Secondary Storage" ;
     rdfs:subClassOf :HardwareDevice,
-        :Storage ;
+        :Storage,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :FileSystem ] ;
     rdfs:isDefinedBy "https://whatis.techtarget.com/definition/memory" ;
     :definition "Secondary memory (storage, hard disk) is the computer component holding information that does not need to be accessed quickly and that needs to be retained long-term." ;
     rdfs:seeAlso "https://en.wikipedia.org/wiki/Computer_data_storage#Secondary_storage" .
@@ -26979,6 +27035,16 @@ In order to convince the potential attacker that the deception environment is th
     :kb-reference-of :Hardware-basedProcessIsolation ;
     :kb-reference-title "Isolation of applications within a virtual machine" ;
     :todo "MITRE Analysis was not found" .
+
+<http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-Remembranceofdatapassed:Astudyofdisksanitizationpractices> a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Remembrance of data passed: A study of disk sanitization practices" ;
+    :has-link "https://www.researchgate.net/profile/Simson-Garfinkel/publication/3437324_Remembrance_of_data_passed_A_study_of_disk_sanitization_practices/links/550de6d40cf2128741677d9f/Remembrance-of-data-passed-A-study-of-disk-sanitization-practices.pdf" ;
+    :kb-author "Simson L Garfinkel, Abhi Shelat" ;
+    :kb-reference-of :DiskErasure,
+        :DiskFormatting,
+        :DiskPartitioning ;
+    :kb-reference-title "Remembrance of Data Passed: A Study of Disk Sanitization Practices" .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-SupplyChainCyber-deception_Cymmetria,Inc.> a owl:NamedIndividual,
         :PatentReference ;
