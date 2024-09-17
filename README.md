@@ -76,6 +76,11 @@ in the dist/ folder running
 docker-compose up d3fend-ontology
 ```
 
+### SSL Certificates in Docker
+
+If you have custom SSL certificates needed to fetch packages and dependencies from the internet, make a directory `.local` in this project root and place your certificates in `.local/` as `.pem` or `.crt`.  The docker build will install the certificates if it finds them there.
+
+
 ## NOTICE
 
 Use of the MITRE D3FEND™ Knowledge Graph and website is subject to the Terms of Use. Use of the MITRE D3FEND website is subject to the MITRE D3FEND Privacy Policy. MITRE D3FEND is funded by the National Security Agency (NSA) Cybersecurity Directorate and managed by the National Security Engineering Center (NSEC), which is operated by The MITRE Corporation. MITRE D3FEND; and the MITRE D3FEND logo are trademarks of The MITRE Corporation. MITRE ATT&CK® and ATT&CK® are registered trademarks of The MITRE Corporation. MITRE ATT&CK content is subject to the MITRE ATT&CK terms of use.
