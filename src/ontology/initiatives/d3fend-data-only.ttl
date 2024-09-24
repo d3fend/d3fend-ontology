@@ -1,130 +1,265 @@
 @prefix : <http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#> .
 @prefix d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#> .
 
-: a owl:Ontology ;
-    owl:imports <http://d3fend.mitre.org/ontologies/d3fend.owl> .
+<http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#> rdf:type owl:Ontology ;
+                                                                  owl:imports <http://d3fend.mitre.org/ontologies/d3fend.owl> .
 
-### Classes
+#################################################################
+#    Classes
+#################################################################
 
-:BitmapImage a owl:Class ;
-    rdfs:subClassOf :DigitalImage .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#BitmapImage
+:BitmapImage rdf:type owl:Class ;
+             rdfs:subClassOf :DigitalImage .
 
-:BitmapImageFile a owl:Class ;
-    rdfs:subClassOf :ImageFile,
-        [ a owl:Restriction ;
-            owl:onProperty d3f:contains ;
-            owl:someValuesFrom :BitmapImage ] .
 
-:CodecApplication a owl:Class ;
-    rdfs:subClassOf d3f:UserApplication .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#BitmapImageFile
+:BitmapImageFile rdf:type owl:Class ;
+                 rdfs:subClassOf :ImageFile ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty d3f:contains ;
+                                   owl:someValuesFrom :BitmapImage
+                                 ] .
 
-:CodecLibrary a owl:Class ;
-    rdfs:subClassOf d3f:SoftwareLibrary .
 
-:ContentConversion a owl:Class ;
-    rdfs:subClassOf :ContentTransformation .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#Character
+:Character rdf:type owl:Class ;
+           rdfs:subClassOf :UnstructuredDigitalInformationContent ;
+           d3f:definition "Characters represent a single textual symbol." ;
+           rdfs:isDefinedBy "https://dbpedia.org/page/Character_(computing)" ;
+           rdfs:label "Character" .
 
-:ContentExcision a owl:Class ;
-    rdfs:subClassOf :ContentTransformation .
 
-:ContentFiltering a owl:Class ;
-    rdfs:subClassOf d3f:DefensiveTechnique .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#CodecApplication
+:CodecApplication rdf:type owl:Class ;
+                  rdfs:subClassOf d3f:UserApplication .
 
-:ContentSubtitution a owl:Class ;
-    rdfs:subClassOf :ContentTransformation .
 
-:ContentTransformation a owl:Class ;
-    rdfs:subClassOf :ContentFiltering .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#CodecLibrary
+:CodecLibrary rdf:type owl:Class ;
+              rdfs:subClassOf d3f:SoftwareLibrary .
 
-:ContentVerification a owl:Class ;
-    rdfs:subClassOf :ContentFiltering .
 
-:DecoderApplication a owl:Class ;
-    rdfs:subClassOf :CodecApplication .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ContentConversion
+:ContentConversion rdf:type owl:Class ;
+                   rdfs:subClassOf :ContentTransformation ;
+                   d3f:definition "Format conversion Is mechanical transformation from one format to another which may be normalization or specifically flattening. May incur no information loss. It, in and of itself, does not target specific date or information, but it might be applied to specific information/data." ;
+                   rdfs:label "Content Conversion" .
 
-:DigitalAudio a owl:Class ;
-    rdfs:subClassOf :DigitalMedia .
 
-:DigitalAudioVisualMedia a owl:Class ;
-    rdfs:subClassOf :DigitalMultimedia .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ContentExcision
+:ContentExcision rdf:type owl:Class ;
+                 rdfs:subClassOf :ContentTransformation ;
+                 d3f:definition "Removing digital information contents" ;
+                 rdfs:label "Content Excision" .
 
-:DigitalDocument a owl:Class ;
-    rdfs:subClassOf :DigitalMedia .
 
-:DigitalImage a owl:Class ;
-    rdfs:subClassOf :DigitalMedia .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ContentFiltering
+:ContentFiltering rdf:type owl:Class ;
+                  rdfs:subClassOf d3f:DefensiveTechnique ;
+                  rdfs:label "Content Filtering" .
 
-:DigitalMedia a owl:Class ;
-    rdfs:subClassOf :StructuredDigitalInformation .
 
-:DigitalMultimedia a owl:Class ;
-    rdfs:subClassOf :DigitalMedia .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ContentSubtitution
+:ContentSubtitution rdf:type owl:Class ;
+                    rdfs:subClassOf :ContentTransformation ;
+                    d3f:definition "Modifies specific digital content information by replacing it with something else." ;
+                    rdfs:label "Content Substitution" .
 
-:DigitalText a owl:Class ;
-    rdfs:subClassOf :DigitalMedia,
-        [ a owl:Restriction ;
-            owl:onProperty d3f:contains ;
-            owl:someValuesFrom :String ] .
 
-:DigitalVideo a owl:Class ;
-    rdfs:subClassOf :DigitalMedia .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ContentTransformation
+:ContentTransformation rdf:type owl:Class ;
+                       rdfs:subClassOf :ContentFiltering ;
+                       d3f:definition "Transforming a file or its parts, to another form, based on a defined policy." ;
+                       d3f:kb-article "Transformation will modify so that original data is unrecoverable and original data is replaced (with information having strictly less information/precision.)." ;
+                       rdfs:label "Content Transformation" .
 
-:EncoderApplication a owl:Class ;
-    rdfs:subClassOf :CodecApplication .
 
-:ImageFile a owl:Class ;
-    rdfs:subClassOf d3f:File .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ContentVerification
+:ContentVerification rdf:type owl:Class ;
+                     rdfs:subClassOf :ContentFiltering .
 
-:MultimediaFile a owl:Class ;
-    rdfs:label "Multimedia File" ;
-    rdfs:subClassOf d3f:File .
 
-:NetworkAudioStreamingResource a owl:Class ;
-    rdfs:subClassOf :NetworkMediaStreamingResource .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DecoderApplication
+:DecoderApplication rdf:type owl:Class ;
+                    rdfs:subClassOf :CodecApplication .
 
-:NetworkAudioVisualStreamingResource a owl:Class ;
-    rdfs:subClassOf :NetworkMultimediaStreamingResource .
 
-:NetworkMediaStreamingResource a owl:Class ;
-    rdfs:subClassOf d3f:NetworkResource .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalAudio
+:DigitalAudio rdf:type owl:Class ;
+              rdfs:subClassOf :DigitalMedia ;
+              d3f:definition "Digital audio is a representation of sound recorded in, or converted into, digital form." ;
+              rdfs:isDefinedBy "https://dbpedia.org/page/Digital_audio" ;
+              rdfs:label "Digital Audio" .
 
-:NetworkMultimediaStreamingResource a owl:Class ;
-    rdfs:subClassOf :NetworkMediaStreamingResource .
 
-:NetworkVideoStreamingResource a owl:Class ;
-    rdfs:subClassOf :NetworkMediaStreamingResource .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalAudioVisualMedia
+:DigitalAudioVisualMedia rdf:type owl:Class ;
+                         rdfs:subClassOf :DigitalMultimedia ;
+                         d3f:definition "Audiovisual (AV) is electronic media possessing both a sound and a visual component." ;
+                         rdfs:isDefinedBy "https://dbpedia.org/page/Audiovisual" ;
+                         rdfs:label "Digital Audio Visual Media" .
 
-:String a owl:Class ;
-    rdfs:subClassOf :UnstructuredDigitalInformation .
 
-:StructuredDigitalInformation a owl:Class ;
-    rdfs:subClassOf d3f:DigitalInformation .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalDocument
+:DigitalDocument rdf:type owl:Class ;
+                 rdfs:subClassOf :DigitalMedia ;
+                 d3f:definition "An digital document is any electronic media content (other than computer programs or system files) that is intended to be used in either an electronic form or as printed output." ;
+                 rdfs:isDefinedBy "https://dbpedia.org/page/Electronic_document" ;
+                 rdfs:label "Digital Document" .
 
-:TerminalService a owl:Class ;
-    rdfs:subClassOf d3f:NetworkService .
 
-:UnstructuredDigitalInformation a owl:Class ;
-    rdfs:subClassOf d3f:DigitalInformation .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalImage
+:DigitalImage rdf:type owl:Class ;
+              rdfs:subClassOf :DigitalMedia ;
+              d3f:definition "A digital image is a pixel-based visual representation stored in formats like JPEG or PNG, used for various digital applications." ;
+              rdfs:isDefinedBy "https://dbpedia.org/page/Digital_image" ;
+              rdfs:label "Digital Image" .
 
-:VectorImage a owl:Class ;
-    rdfs:subClassOf :DigitalImage .
 
-:VectorImageFile a owl:Class ;
-    rdfs:subClassOf :ImageFile,
-        [ a owl:Restriction ;
-            owl:onProperty d3f:contains ;
-            owl:someValuesFrom :VectorImage ] .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalMedia
+:DigitalMedia rdf:type owl:Class ;
+              rdfs:subClassOf :StructuredDigitalInformationContent ;
+              d3f:definition "Digital media refers to any communication media that operate in conjunction with various encoded machine-readable data formats." ;
+              rdfs:isDefinedBy "https://dbpedia.org/page/Digital_media" ;
+              rdfs:label "Digital Media" .
 
-### Annotations
 
-d3f:DigitalInformation d3f:synonym "Data" .
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalMultimedia
+:DigitalMultimedia rdf:type owl:Class ;
+                   rdfs:subClassOf :DigitalMedia ;
+                   d3f:definition "Digital Multimedia refers to content that combines text, audio, images, animations, and video in a digital format for interactive applications" ;
+                   rdfs:isDefinedBy "https://dbpedia.org/page/Multimedia" ;
+                   rdfs:label "Digital Multimedia" .
 
-d3f:OfficeApplicationFile rdfs:subClassOf [ a owl:Restriction ;
-            owl:onProperty d3f:may-contain ;
-            owl:someValuesFrom :ImageFile ] .
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalText
+:DigitalText rdf:type owl:Class ;
+             rdfs:subClassOf :DigitalMedia ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty d3f:contains ;
+                               owl:someValuesFrom :String
+                             ] ;
+             d3f:definition "Digital text is written content encoded in a digital format, allowing for storage, retrieval, and manipulation by electronic devices." ;
+             rdfs:label "Digital Text" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#DigitalVideo
+:DigitalVideo rdf:type owl:Class ;
+              rdfs:subClassOf :DigitalMedia ;
+              d3f:definition "Digital video is an electronic representation of moving visual images (video) in the form of encoded digital data." ;
+              rdfs:isDefinedBy "https://dbpedia.org/page/Digital_video" ;
+              rdfs:label "Digital Video" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#EncoderApplication
+:EncoderApplication rdf:type owl:Class ;
+                    rdfs:subClassOf :CodecApplication .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#ImageFile
+:ImageFile rdf:type owl:Class ;
+           rdfs:subClassOf d3f:File .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#Integer
+:Integer rdf:type owl:Class ;
+         rdfs:subClassOf :UnstructuredDigitalInformationContent ;
+         d3f:definition "Integers represents some range of mathematical integers." ;
+         rdfs:isDefinedBy "https://dbpedia.org/page/Integer_(computer_science)" ;
+         rdfs:label "Integer" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#MultimediaFile
+:MultimediaFile rdf:type owl:Class ;
+                rdfs:subClassOf d3f:File ;
+                rdfs:label "Multimedia File" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#NetworkAudioStreamingResource
+:NetworkAudioStreamingResource rdf:type owl:Class ;
+                               rdfs:subClassOf :NetworkMediaStreamingResource .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#NetworkAudioVisualStreamingResource
+:NetworkAudioVisualStreamingResource rdf:type owl:Class ;
+                                     rdfs:subClassOf :NetworkMultimediaStreamingResource .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#NetworkMediaStreamingResource
+:NetworkMediaStreamingResource rdf:type owl:Class ;
+                               rdfs:subClassOf d3f:NetworkResource .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#NetworkMultimediaStreamingResource
+:NetworkMultimediaStreamingResource rdf:type owl:Class ;
+                                    rdfs:subClassOf :NetworkMediaStreamingResource .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#NetworkVideoStreamingResource
+:NetworkVideoStreamingResource rdf:type owl:Class ;
+                               rdfs:subClassOf :NetworkMediaStreamingResource .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#String
+:String rdf:type owl:Class ;
+        rdfs:subClassOf :UnstructuredDigitalInformationContent ;
+        d3f:definition "A string is a sequence of characters." ;
+        rdfs:isDefinedBy "https://dbpedia.org/page/String_(computer_science)" ;
+        rdfs:label "String" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#StructuredDigitalInformationContent
+:StructuredDigitalInformationContent rdf:type owl:Class ;
+                                     rdfs:subClassOf d3f:DigitalInformation ;
+                                     d3f:definition "Structured Digital Information Content refers to user data to be consumed by the user that is organized in a predefined format, making it easily searchable and analyzable. This type of content typically follows a specific schema or model, allowing for efficient data processing and retrieval." ;
+                                     rdfs:label "Structured Digital Information Content" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#TerminalService
+:TerminalService rdf:type owl:Class ;
+                 rdfs:subClassOf d3f:NetworkService .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#UnstructuredDigitalInformationContent
+:UnstructuredDigitalInformationContent rdf:type owl:Class ;
+                                       rdfs:subClassOf d3f:DigitalInformation ;
+                                       d3f:definition "Unstructured Digital Information Content refers to user data meant to be consumed by the user that lacks a predefined format or organization, making it more challenging to process and analyze using traditional methods. This type of content is typically free-form and does not follow a specific schema." ;
+                                       rdfs:label "Unstructured Digital Information Content" .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#VectorImage
+:VectorImage rdf:type owl:Class ;
+             rdfs:subClassOf :DigitalImage .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend-data-initiative.owl#VectorImageFile
+:VectorImageFile rdf:type owl:Class ;
+                 rdfs:subClassOf :ImageFile ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty d3f:contains ;
+                                   owl:someValuesFrom :VectorImage
+                                 ] .
+
+
+###  http://d3fend.mitre.org/ontologies/d3fend.owl#OfficeApplicationFile
+d3f:OfficeApplicationFile rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                            owl:onProperty d3f:may-contain ;
+                                            owl:someValuesFrom :ImageFile
+                                          ] .
+
+
+#################################################################
+#    Annotations
+#################################################################
 
 d3f:ServiceApplicationProcess d3f:todo "what should we make the relationship between a service and resource." .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+
+###  Generated by the OWL API (version 4.5.25.2023-02-15T19:15:49Z) https://github.com/owlcs/owlapi
