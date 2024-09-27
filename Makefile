@@ -393,7 +393,7 @@ dist: distdir
 	$(END)
 
 #all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
-all: build extensions dist test  ## build all, check for unallowed content, and test load files
+all: build extensions test dist ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version
