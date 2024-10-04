@@ -14346,7 +14346,7 @@ Administrators collect information on network nodes in their architecture using 
 
 :NetworkPackets a owl:Class ;
     rdfs:label "Network Packet" ;
-    rdfs:subClassOf :NetworkTraffic ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_packet> ;
     :definition "A network packet is a formatted unit of data carried by a packet-switched network. Computer communications links that do not support packets, such as traditional point-to-point telecommunications links, simply transmit data as a bit stream. When data is formatted into packets, packet switching is possible and the bandwidth of the communication medium can be better shared among users than with circuit switching." .
 
@@ -14395,10 +14395,10 @@ Administrators collect information on network nodes in their architecture using 
 
 :NetworkSession a owl:Class ;
     rdfs:label "Network Session" ;
-    rdfs:subClassOf :NetworkTraffic,
+    rdfs:subClassOf :Session,
         [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkPackets ] ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :definition "A network session is a temporary and interactive information interchange between two or more devices communicating over a network. A session is established at a certain point in time, and then 'torn down' - brought to an end - at some later point. An established communication session may involve more than one message in each direction. A session is typically stateful, meaning that at least one of the communicating parties needs to hold current state information and save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses. Network sessions may be established and implemented as part of protocols and services at the application, session, or transport layers of the OSI model." ;
     rdfs:seeAlso <http://dbpedia.org/resource/OSI_model>,
         <http://dbpedia.org/resource/Session_(computer_science)>,
@@ -14414,6 +14414,9 @@ Administrators collect information on network nodes in their architecture using 
     rdfs:label "Network Traffic" ;
     skos:altLabel "Data Traffic" ;
     rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :NetworkPackets ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DomainName ],
@@ -16835,8 +16838,7 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 
 :RemoteCommand a owl:Class ;
     rdfs:label "Remote Command" ;
-    rdfs:subClassOf :Command,
-        :NetworkSession ;
+    rdfs:subClassOf :Command ;
     :definition "A remote command is a command sent from one computer to another to be executed on the remote computer.  One example of this, is through a command-line interface (CLI) like using Invoke-Command from PowerShell or a command sent through an ssh session. This class generalizes to all means of sending a command through an established protocol to control capabilities on a remote computer." .
 
 :RemoteDatabaseQuery a owl:Class ;
@@ -16860,7 +16862,7 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 
 :RemoteSession a owl:Class ;
     rdfs:label "Remote Session" ;
-    rdfs:subClassOf :LoginSession ;
+    rdfs:subClassOf :NetworkSession ;
     :definition "A remote login session is a login session where a client has logged in from their local host machine to a server via a network." .
 
 :RemoteTerminalSession a owl:Class ;
@@ -27057,8 +27059,7 @@ In order to convince the potential attacker that the deception environment is th
     :has-link "https://www.cisa.gov/news-events/analysis-reports/ar21-134a"^^xsd:anyURI ;
     :kb-organization "CISA" ;
     :kb-reference-of :CredentialRotation,
-        :DNSCacheEviction,
-        :MFATokenRevocation ;
+        :DNSCacheEviction ;
     :kb-reference-title "Eviction Guidance for Networks Affected by the SolarWinds and Active Directory/M365 Compromise" .
 
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IsolationOfApplicationsWithinAVirtualMachine_Bromium,Inc.> a owl:NamedIndividual,
@@ -28506,8 +28507,7 @@ This requires filesystem data to determine whether files have been created.""" ;
     :kb-author "Cybersecurity and Infrastructure Security Agency" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Cybersecurity and Infrastructure Security Agency" ;
-    :kb-reference-of :RegistryKeyDeletion,
-        :UserAccountDeletion ;
+    :kb-reference-of :RegistryKeyDeletion ;
     :kb-reference-title "Cybersecurity Incident & Vulnerability Response Playbooks" .
 
 :Reference-CyberVaccineAndPredictiveMalwareDefensiveMethodsAndSystems a owl:NamedIndividual,
