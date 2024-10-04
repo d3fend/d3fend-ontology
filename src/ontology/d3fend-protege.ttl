@@ -15091,6 +15091,17 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteMemory ] .
 
+:OTCommand a owl:Class ;
+    rdfs:label "OT Command" ;
+    rdfs:subClassOf :RemoteCommand .
+
+:OTNetworkTraffic a owl:Class ;
+    rdfs:label "OT Network Traffic" ;
+    rdfs:subClassOf :RemoteCommandNetworkTraffic,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OTCommand ] .
+
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
     rdfs:subClassOf :DNSNetworkTraffic,
@@ -16420,11 +16431,21 @@ Compound propositions are formed by connecting propositions by logical connectiv
     rdfs:label "Proprietary License" ;
     rdfs:subClassOf :License .
 
+:ProtocolCommandAnomalyDetection a owl:Class ;
+    rdfs:label "Protocol Command Anomaly Detection" ;
+    rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :RemoteCommandNetworkTraffic ] .
+
 :ProtocolMetadataAnomalyDetection a owl:Class,
         owl:NamedIndividual,
         :ProtocolMetadataAnomalyDetection ;
     rdfs:label "Protocol Metadata Anomaly Detection" ;
     rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :NetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
             owl:someValuesFrom :NetworkTraffic ] ;
@@ -16713,6 +16734,13 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
     rdfs:subClassOf :Command,
         :NetworkSession ;
     :definition "A remote command is a command sent from one computer to another to be executed on the remote computer.  One example of this, is through a command-line interface (CLI) like using Invoke-Command from PowerShell or a command sent through an ssh session. This class generalizes to all means of sending a command through an established protocol to control capabilities on a remote computer." .
+
+:RemoteCommandNetworkTraffic a owl:Class ;
+    rdfs:label "Remote Command Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :RemoteCommand ] .
 
 :RemoteDatabaseQuery a owl:Class ;
     rdfs:label "Remote Database Query" ;
