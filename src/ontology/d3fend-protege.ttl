@@ -385,13 +385,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/02569242-v> ;
     :definition "x executes y: The subject x takes the action of carrying out (executing) y, which is a single software module, function, or instruction." .
 
-:expected-latency a owl:ObjectProperty ;
-    rdfs:label "expected-latency" ;
-    rdfs:subPropertyOf :latency ;
-    rdfs:range [ a owl:Restriction ;
-            owl:onProperty :latency ;
-            owl:someValuesFrom :Latency ] .
-
 :extends a owl:ObjectProperty ;
     rdfs:label "extends" ;
     rdfs:subPropertyOf :modifies ;
@@ -623,17 +616,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "kb-reference-of" ;
     skos:altLabel "kb-is-example-of" ;
     rdfs:subPropertyOf :d3fend-kb-object-property ;
-    rdfs:domain :Reference ;
-    rdfs:range :Technique ;
+    rdfs:range :CyberTechnique ;
     :definition "x kb-is-example-of y: The reference x is an example of technique y." .
-
-:latency a owl:ObjectProperty ;
-    rdfs:label "latency" ;
-    rdfs:subPropertyOf :d3fend-catalog-object-property ;
-    rdfs:range [ a owl:Restriction ;
-            owl:onProperty :latency ;
-            owl:someValuesFrom :Latency ] ;
-    :todo "Consider if want to keep this as is or distinguish with property name variation rather than type at end of property.  Could do both.  If just one, drop analytic in enumeration of value options and just have 'real-time', 'non-real-time', etc.  Do we need to distinguish between the individuals is real-time-eviction different from real-time-analytic?" .
 
 :license a owl:ObjectProperty ;
     rdfs:label "license" ;
@@ -1509,7 +1493,6 @@ skos:altLabel a owl:AnnotationProperty .
 :kb-reference-title a owl:DatatypeProperty ;
     rdfs:label "kb-reference-title" ;
     rdfs:subPropertyOf :d3fend-kb-data-property ;
-    rdfs:domain :Reference ;
     rdfs:range xsd:string ;
     :definition "x kb-reference-title y: The d3fend knowledge base reference x has the reference title string y." .
 
@@ -1638,7 +1621,7 @@ skos:altLabel a owl:AnnotationProperty .
 
 :Access a owl:Class ;
     rdfs:label "Access" ;
-    rdfs:subClassOf :Action,
+    rdfs:subClassOf :DigitalEvent,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :Resource ],
@@ -1745,7 +1728,7 @@ Management servers with enterprise policies for account management provide the a
 
 :Action a owl:Class ;
     rdfs:label "Action" ;
-    rdfs:subClassOf :D3FENDCore,
+    rdfs:subClassOf :Event,
         [ a owl:Restriction ;
             owl:onProperty :has-agent ;
             owl:someValuesFrom :Agent ] .
@@ -1838,15 +1821,6 @@ Another means of establishing network connectivity is by means of sendingn traff
         :Reference-UsingSpanningTreeProtocolSTPToEnhanceLayer2NetworkTopologyMaps ;
     :synonym "Active Physical Layer Mapping" .
 
-:Activity a owl:Class ;
-    rdfs:label "Activity" ;
-    rdfs:subClassOf :D3FENDThing ;
-    :definition "An activity is a specific behavior representing a set of actions that may be accomplished by an agent." ;
-    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00408356-n>,
-        <https://en.wikipedia.org/wiki/Business_Process_Model_and_Notation>,
-        <https://en.wikipedia.org/wiki/IDEF0>,
-        <https://enterpriseintegrationlab.github.io/icity/Activity/doc/index-en.html> .
-
 :ActivityDependency a owl:Class ;
     rdfs:label "Activity Dependency" ;
     rdfs:subClassOf :Dependency ;
@@ -1932,8 +1906,14 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 
 :Agent a owl:Class ;
     rdfs:label "Agent" ;
-    rdfs:subClassOf :D3FENDCatalogThing,
-        :D3FENDCore .
+    rdfs:subClassOf :D3FENDCore .
+
+:AgentGroup a owl:Class ;
+    rdfs:label "Agent Group" ;
+    rdfs:subClassOf :Group,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Agent ] .
 
 :AgglomerativeClustering a owl:Class,
         owl:NamedIndividual ;
@@ -2047,15 +2027,11 @@ Agglomerative clustering starts with each data point as its own cluster. The alg
 
 :AnalyticalPurpose a owl:Class ;
     rdfs:label "Analytical Purpose" ;
-    rdfs:subClassOf :D3FENDThing .
-
-:AnalyticLatency a owl:Class ;
-    rdfs:label "Analytic Latency" ;
-    rdfs:subClassOf :Latency .
+    rdfs:subClassOf :Goal .
 
 :AnalyticTechnique a owl:Class ;
     rdfs:label "Analytic Technique" ;
-    rdfs:subClassOf :D3FENDThing ;
+    rdfs:subClassOf :Technique ;
     rdfs:isDefinedBy <https://dictionary.cambridge.org/us/dictionary/english/analytics> ;
     :definition "A process in which a computer examines information using mathematical methods in order to find useful patterns." .
 
@@ -2251,7 +2227,7 @@ Wikipedia. (n.d.). Autoregressive-moving-average model. [Link](https://en.wikipe
 
 :Artifact a owl:Class ;
     rdfs:label "Artifact" ;
-    rdfs:subClassOf :D3FENDThing ;
+    rdfs:subClassOf :D3FENDCore ;
     :definition "A man-made object taken as a whole.",
         <http://www.ontologyrepository.com/CommonCoreOntologies/Artifact> ;
     rdfs:seeAlso <http://d3fend.mitre.org/ontologies/d3fend.owl>,
@@ -2977,7 +2953,7 @@ Wikipedia. (n.d.). Canopy clustering algorithm. [Link](https://en.wikipedia.org/
 
 :Capability a owl:Class ;
     rdfs:label "Capability" ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :ExternalThing,
         [ a owl:Restriction ;
             owl:onProperty :assessed-by ;
             owl:someValuesFrom :CapabilityAssessment ],
@@ -3056,11 +3032,11 @@ DHHS, National Health Security Review 2010- 2014, Terms, Jan 17""" ;
     rdfs:label "Capability Implementation" ;
     rdfs:subClassOf :D3FENDCatalogThing,
         [ a owl:Restriction ;
-            owl:onProperty :features ;
-            owl:someValuesFrom :AdministrativeFeature ],
+            owl:onProperty :assessed-by ;
+            owl:someValuesFrom :CapabilityAssessment ],
         [ a owl:Restriction ;
-            owl:onProperty :latency ;
-            owl:someValuesFrom :D3FENDCatalogThing ],
+            owl:onProperty :features ;
+            owl:someValuesFrom :CapabilityFeature ],
         [ a owl:Restriction ;
             owl:onProperty :operating-system ;
             owl:someValuesFrom xsd:string ],
@@ -3088,12 +3064,6 @@ DHHS, National Health Security Review 2010- 2014, Terms, Jan 17""" ;
     :definition "The CART algorithm is a type of classification algorithm that is required to build a decision tree on the basis of Gini’s impurity index." ;
     :kb-article """## References
 Classification and Regression Tree (CART) Algorithm. Analytics Steps. [Link](https://www.analyticssteps.com/blogs/classification-and-regression-tree-cart-algorithm).""" .
-
-:Catalog a owl:Class ;
-    rdfs:label "Catalog" ;
-    rdfs:subClassOf :InformationContentEntity ;
-    rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/06499734-n> ;
-    :definition "A catalog is a complete list of things; usually arranged systematically." .
 
 :CCIControl a owl:Class ;
     rdfs:label "CCI Control" ;
@@ -3631,11 +3601,6 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:subClassOf :ApplicationConfigurationFile ;
     :definition "A file containing Information used to configure the parameters and initial settings for a compiler." .
 
-:CompositeTechnique a owl:Class ;
-    rdfs:label "Composite Technique" ;
-    rdfs:subClassOf :D3FENDThing ;
-    :definition "A commonly applied series of techniques which induce a greater effect than each individual technique. The techniques are applied in a strict sequence." .
-
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
     rdfs:subClassOf :ComputerPlatform,
@@ -3868,18 +3833,9 @@ This admission controller
             owl:someValuesFrom :ContainerImage ] ;
     :definition "A software layer between d3f:ContainerProcess and d3f:Kernel which often mediates the invocation of d3f:SystemCall" .
 
-:Contribution a owl:Class ;
-    rdfs:subClassOf :D3FENDThing,
-        [ a owl:Restriction ;
-            owl:onProperty :created ;
-            owl:someValuesFrom xsd:dateTime ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-contributor ;
-            owl:someValuesFrom :Agent ] .
-
 :ControlCatalog a owl:Class ;
     rdfs:label "Control Catalog" ;
-    rdfs:subClassOf :Catalog,
+    rdfs:subClassOf :ExternalControlThing,
         [ a owl:Restriction ;
             owl:onProperty :has-member ;
             owl:someValuesFrom :ExternalControl ],
@@ -3889,7 +3845,8 @@ This admission controller
                     owl:unionOf (
                             xsd:integer
                             xsd:string ) ] ] ;
-    :definition "A control catalog is a complete list of protective measures for systems, organizations, or individuals for subject domains (e.g., security and privacy.)" .
+    :definition "A control catalog is a complete list of protective measures for systems, organizations, or individuals for subject domains (e.g., security and privacy.)" ;
+    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/06499734-n> .
 
 :ControlCorrelationIdentifierCatalog a owl:Class ;
     rdfs:label "Control Correlation Identifier Catalog" ;
@@ -9057,6 +9014,13 @@ Management servers with enterprise policies for account management provide the a
     rdfs:label "Cyber Sensor" ;
     rdfs:subClassOf :Sensor .
 
+:CyberTechnique a owl:Class ;
+    rdfs:label "Cyber Technique" ;
+    rdfs:subClassOf :Technique,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Procedure ] .
+
 :CycleGAN a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "CycleGAN" ;
@@ -9069,18 +9033,17 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 :D3FENDCatalogThing a owl:Class ;
     rdfs:label "D3FEND Catalog Thing" ;
     skos:altLabel "D3FEND Vendor Registry Thing" ;
-    rdfs:subClassOf :D3FENDThing .
+    rdfs:subClassOf :D3FENDKBThing .
 
 :D3FENDCore a owl:Class ;
     rdfs:label "D3FEND Core" .
 
-:D3FENDThing a owl:Class ;
-    rdfs:label "D3FEND Thing" ;
-    :definition "D3FEND things are concepts defined in the core D3FEND Framework." .
+:D3FENDKBThing a owl:Class ;
+    rdfs:label "D3FEND KB Thing" .
 
 :D3FENDUseCase a owl:Class ;
     rdfs:label "D3FEND Use Case" ;
-    rdfs:subClassOf :D3FENDUseCaseThing,
+    rdfs:subClassOf :UseCase,
         [ a owl:Restriction ;
             owl:onProperty :has-audience ;
             owl:someValuesFrom :TargetAudience ],
@@ -9093,10 +9056,6 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
         [ a owl:Restriction ;
             owl:onProperty :has-procedure ;
             owl:someValuesFrom :UseCaseProcedure ] .
-
-:D3FENDUseCaseThing a owl:Class ;
-    rdfs:label "D3FEND Use Case Thing" ;
-    rdfs:subClassOf :D3FENDThing .
 
 :DataArtifactServer a owl:Class ;
     rdfs:label "Data Artifact Server" ;
@@ -9631,9 +9590,12 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
             owl:onProperty :enables ;
             owl:someValuesFrom :TA0005 ] .
 
+:DefensiveAction a owl:Class ;
+    rdfs:subClassOf :Action .
+
 :DefensiveTactic a owl:Class ;
     rdfs:label "Defensive Tactic" ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :Goal,
         [ a owl:Restriction ;
             owl:onProperty :enabled-by ;
             owl:someValuesFrom :DefensiveTechnique ] ;
@@ -9644,10 +9606,8 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Defensive Technique" ;
-    rdfs:subClassOf :Action,
-        :CapabilityFeature,
-        :D3FENDThing,
-        :Technique,
+    rdfs:subClassOf :CapabilityFeature,
+        :CyberTechnique,
         [ a owl:Restriction ;
             owl:onProperty :d3fend-id ;
             owl:someValuesFrom xsd:string ],
@@ -9757,10 +9717,10 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
     rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :dependent ;
-            owl:someValuesFrom :D3FENDThing ],
+            owl:someValuesFrom :D3FENDCore ],
         [ a owl:Restriction ;
             owl:onProperty :provider ;
-            owl:someValuesFrom :D3FENDThing ] ;
+            owl:someValuesFrom :D3FENDCore ] ;
     :definition "A dependency is the relationship of relying on or being controlled by someone or something else.  This class reifies dependencies that correspond to the object property depends-on." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/14024833-n>,
         <https://www.cisa.gov/what-are-dependencies> .
@@ -9834,9 +9794,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalArtifact a owl:Class ;
     rdfs:label "Digital Artifact" ;
-    rdfs:subClassOf :Artifact,
-        :D3FENDCore,
-        :DigitalObject ;
+    rdfs:subClassOf :Artifact ;
     :definition "An information-bearing artifact (object) that is, or is encoded to be used with, a digital computer system. This concept is broad to include the literal instances of an artifact, or an implicit summarization of changes to or properties of other artifacts." ;
     :display-baseurl "/dao/artifact/" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Digital_artifactual_value>,
@@ -9846,7 +9804,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalEvent a owl:Class ;
     rdfs:label "Digital Event" ;
-    rdfs:subClassOf :D3FENDThing .
+    rdfs:subClassOf :Event .
 
 :DigitalFingerprint a owl:Class ;
     rdfs:label "Digital Fingerprint" ;
@@ -9863,13 +9821,6 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 :DigitalInformationBearer a owl:Class ;
     rdfs:label "Digital Information Bearer" ;
     rdfs:subClassOf :DigitalArtifact .
-
-:DigitalObject a owl:Class ;
-    rdfs:label "Digital Object" ;
-    rdfs:subClassOf :D3FENDThing ;
-    :definition "A digital object is the top-level class for an object that exists in a digital environment. The digital object may be virtual or physical." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Digital_artifactual_value>,
-        <http://dbpedia.org/resource/Virtual_artifact> .
 
 :DigitalSystem a owl:Class ;
     rdfs:label "Digital System" ;
@@ -10573,6 +10524,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
             owl:someValuesFrom :Subroutine ] ;
     :definition "Takes inputs of strings and evaluations them as expressions." .
 
+:Event a owl:Class ;
+    rdfs:label "Event" ;
+    rdfs:subClassOf :D3FENDCore .
+
 :EventLog a owl:Class ;
     rdfs:label "Event Log" ;
     rdfs:subClassOf :Log ;
@@ -10587,10 +10542,6 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :definition "The eviction tactic is used to remove an adversary from a computer network." ;
     :display-order 4 ;
     :display-priority 0 .
-
-:EvictionLatency a owl:Class ;
-    rdfs:label "Eviction Latency" ;
-    rdfs:subClassOf :Latency .
 
 :ExactMatching a owl:Class,
         owl:NamedIndividual ;
@@ -10834,7 +10785,7 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
 
 :ExternalControl a owl:Class ;
     rdfs:label "External Control" ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :ExternalControlThing,
         [ a owl:Restriction ;
             owl:onProperty :member-of ;
             owl:someValuesFrom :ControlCatalog ],
@@ -10842,15 +10793,22 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
             owl:onProperty :semantic-relation ;
             owl:someValuesFrom :DefensiveTechnique ] .
 
+:ExternalControlThing a owl:Class ;
+    rdfs:label "External Control Thing" ;
+    rdfs:subClassOf :ExternalThing .
+
 :ExternalKnowledgeBase a owl:Class ;
     rdfs:label "External Knowledge Base" ;
-    rdfs:subClassOf :InformationContentEntity,
-        :TechniqueReference ;
+    rdfs:subClassOf :TechniqueReference ;
     :pref-label "External Knowledge Base" ;
     :todo "Consider working  on alias or new preferred name... meh on \"Knowledge Content Entity\",  not sure \"External\" is helpful in conveying core concept; examples would be DBPedia, ATT&CK, CAPEC, CVE, ..., we included CAR; maybe even STIG or are they better as Guidance?" .
 
+:ExternalThing a owl:Class ;
+    rdfs:label "External Thing" .
+
 :ExternalThreatModelThing a owl:Class ;
-    rdfs:label "External Threat Model Thing" .
+    rdfs:label "External Threat Model Thing" ;
+    rdfs:subClassOf :ExternalThing .
 
 :FastSymbolicLink a owl:Class ;
     rdfs:label "Fast Symbolic Link" ;
@@ -11582,6 +11540,9 @@ TechVidvan. (n.d.). Clustering in Machine Learning Tutorial. [Link](https://tech
     :definition "A class of neural networks that specializes in processing data that has a grid-like topology, such as an image." ;
     :kb-article """## References
 Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards Data Science. [Link](https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939)""" .
+
+:Group a owl:Class ;
+    rdfs:subClassOf :D3FENDCore .
 
 :Grouping a owl:Class ;
     rdfs:label "Grouping" ;
@@ -12403,10 +12364,7 @@ If an attacker manages to stop the processes used to log an attack without setti
     :definition "An integration test execution tool automatically performs integration testing.  Integration testing (sometimes called integration and testing, abbreviated I&T) is the phase in software testing in which individual software modules are combined and tested as a group." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Integration_testing> .
 
-:InternetArticle a owl:Class,
-        owl:NamedIndividual,
-        :ReferenceType ;
-    rdfs:label "Internet Article" ;
+:InternetArticle a owl:Class ;
     rdfs:subClassOf :NewsArticle .
 
 :InternetArticleReference a owl:Class ;
@@ -13025,11 +12983,6 @@ Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wik
     rdfs:isDefinedBy <http://dbpedia.org/resource/Laptop> ;
     :definition "A laptop computer (also laptop), is a small, portable personal computer (PC) with a \"clamshell\" form factor, typically having a thin LCD or LED computer screen mounted on the inside of the upper lid of the clamshell and an alphanumeric keyboard on the inside of the lower lid. The clamshell is opened up to use the computer. Laptops are folded shut for transportation, and thus are suitable for mobile use. Its name comes from lap, as it was deemed to be placed on a person's lap when being used. Although originally there was a distinction between laptops and notebooks (the former being bigger and heavier than the latter), as of 2014, there is often no longer any difference. Today, laptops are commonly used in a variety of settings, such as at work, in education, for playing games, web browsing" .
 
-:Latency a owl:Class ;
-    rdfs:label "Latency" ;
-    rdfs:subClassOf :D3FENDThing ;
-    :todo "Review for inclusion in d3fend.owl" .
-
 :LateralMovementTechnique a owl:Class ;
     rdfs:label "Lateral Movement Technique" ;
     rdfs:subClassOf :ATTACKEnterpriseTechnique,
@@ -13130,7 +13083,8 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
 
 :Link a owl:Class ;
     rdfs:label "Link" ;
-    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:subClassOf :D3FENDCore,
+        :DigitalInformationBearer ;
     rdfs:seeAlso <https://dbpedia.org/resource/Link> .
 
 :Linux_Exit a owl:Class ;
@@ -14103,12 +14057,6 @@ Model-free (reinforcement learning). Wikipedia. [Link](https://en.wikipedia.org/
 Wikipedia. (n.d.). Moment (mathematics). [Link](https://en.wikipedia.org/wiki/Moment_(mathematics))""" ;
     :todo "Split out the different moments as leaves under moments instead of having them and moments at the same level" .
 
-:Monitoring a owl:Class ;
-    rdfs:label "Monitoring" ;
-    rdfs:subClassOf :D3FENDThing ;
-    rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/00881724-n> ;
-    :definition "the act of observing something (and sometimes keeping a record of it)" .
-
 :MouseInputDevice a owl:Class ;
     rdfs:label "Mouse Input Device" ;
     skos:altLabel "Computer Mouse" ;
@@ -14684,6 +14632,9 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
     rdfs:seeAlso <http://dbpedia.org/resource/Object_file> ;
     :todo "Fix IRI to fix 'i' in \"File\" substring of IRI" .
 
+:OffensiveAction a owl:Class ;
+    rdfs:subClassOf :Action .
+
 :OffensiveTactic a owl:Class ;
     rdfs:label "Offensive Tactic" ;
     rdfs:subClassOf :Goal,
@@ -14696,8 +14647,7 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
 
 :OffensiveTechnique a owl:Class ;
     rdfs:label "Offensive Technique" ;
-    rdfs:subClassOf :Action,
-        :Technique,
+    rdfs:subClassOf :CyberTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :OffensiveTactic ],
@@ -14966,7 +14916,15 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :OrganizationalActivity a owl:Class ;
     rdfs:label "Organizational Activity" ;
-    rdfs:subClassOf :Activity .
+    rdfs:subClassOf :Plan ;
+    :definition "An activity is a specific behavior representing a set of actions that may be accomplished by an agent." ;
+    rdfs:seeAlso "Mission Critical Function",
+        <http://wordnet-rdf.princeton.edu/id/00408356-n>,
+        <https://en.wikipedia.org/wiki/Business_Process_Model_and_Notation>,
+        <https://en.wikipedia.org/wiki/IDEF0>,
+        <https://enterpriseintegrationlab.github.io/icity/Activity/doc/index-en.html> ;
+    :synonym "Business Process",
+        "Mission Function" .
 
 :OrganizationMapping a :OrganizationMapping,
         owl:Class,
@@ -15533,10 +15491,7 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     :definition "A user repository of account passwords, often accessed via a password manager." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Password_manager> .
 
-:Patent a owl:Class,
-        owl:NamedIndividual,
-        :ReferenceType ;
-    rdfs:label "Patent" ;
+:Patent a owl:Class ;
     rdfs:subClassOf :Document .
 
 :PatentReference a owl:Class ;
@@ -15665,8 +15620,11 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
 
 :PhysicalArtifact a owl:Class ;
     rdfs:label "Physical Artifact" ;
+    skos:altLabel "Physical Object" ;
     rdfs:subClassOf :Artifact,
-        :PhysicalObject .
+        [ a owl:Restriction ;
+            owl:onProperty :has-location ;
+            owl:someValuesFrom :PhysicalLocation ] .
 
 :PhysicalLink a owl:Class ;
     rdfs:label "Physical Link" ;
@@ -15696,17 +15654,10 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
 
 :PhysicalLocation a owl:Class ;
     rdfs:label "Physical Location" ;
-    rdfs:subClassOf :DigitalInformation ;
+    rdfs:subClassOf :D3FENDCore ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Location_(geography)> ;
     :definition "The terms location  [here, a physical location] and place in geography are used to identify a point or an area on the Earth's surface or elsewhere. The term location generally implies a higher degree of certainty than place, which often indicates an entity with an ambiguous boundary, relying more on human or social attributes of place identity and sense of place than on geometry. The distinction between space and place is considered a central concern of geography, and has been addressed by scholars such as Yi-Fu Tuan and John Agnew." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/location> .
-
-:PhysicalObject a owl:Class ;
-    rdfs:label "Physical Object" ;
-    rdfs:subClassOf :D3FENDThing,
-        [ a owl:Restriction ;
-            owl:onProperty :has-location ;
-            owl:someValuesFrom :PhysicalLocation ] .
 
 :Pipe a owl:Class ;
     rdfs:label "Pipe" ;
@@ -15724,6 +15675,10 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     :definition "Pix2Pix is based on condtional GAN architecture and are trained on paired set of images or scenes from two domains to be used for translation." ;
     :kb-article """## References
 Esri. (n.d.). How Pix2Pix Works. [Link](https://developers.arcgis.com/python/guide/how-pix2pix-works/)""" .
+
+:Plan a owl:Class ;
+    rdfs:label "Plan" ;
+    rdfs:subClassOf :D3FENDCore .
 
 :Planning a owl:Class ;
     rdfs:label "Planning" ;
@@ -15952,13 +15907,13 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
 1. Probabilistic logic. (2023, June 5). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Probabilistic_logic)""" .
 
 :Procedure a owl:Class ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :Plan,
         [ a owl:Restriction ;
             owl:onProperty :implements ;
             owl:someValuesFrom :Technique ],
         [ a owl:Restriction ;
             owl:onProperty :start ;
-            owl:someValuesFrom :Step ] .
+            owl:allValuesFrom :Step ] .
 
 :Process a owl:Class ;
     rdfs:label "Process" ;
@@ -16715,14 +16670,6 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     :kb-article """## References
 Wikipedia. (2021, September 7). Recurrent Neural Network. [Link](https://en.wikipedia.org/wiki/Recurrent_neural_network)""" ;
     :todo "Review: Which Definition" .
-
-:Reference a owl:Class ;
-    rdfs:label "Reference" ;
-    rdfs:subClassOf :D3FENDThing .
-
-:ReferenceType a owl:Class ;
-    rdfs:label "Reference Type" ;
-    rdfs:subClassOf :D3FENDThing .
 
 :RegexMatching a owl:Class,
         owl:NamedIndividual ;
@@ -17729,8 +17676,8 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :Session ] ;
+    :d3fend-id "D3-ST" ;
     :definition "Forcefully end all active sessions associated with compromised accounts or devices." ;
-    :has-link "D3-ST" ;
     :kb-article "Defined in NIST 800-53 as AC-12." ;
     :kb-reference :Reference-NIST-Special-Publication-800-53A-Revision-5 .
 
@@ -18009,15 +17956,8 @@ The goal is for homophones to be encoded to the same representation so that they
 ## References
 1. Soundex. (2023, April 19). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Soundex)""" .
 
-:SourceCode a owl:Class,
-        owl:NamedIndividual,
-        :ReferenceType ;
-    rdfs:label "Source Code" ;
-    skos:altLabel "Code" ;
-    rdfs:subClassOf :InformationContentEntity ;
-    rdfs:comment "The source code of a work means the preferred form of the work for making modifications to it, per the Free Software Foundation." ;
-    :definition "Source code is written using a programming language and usually stored as encoded text. This source code is often transformed by a compiler, assembler, or interpreter into machine code to be executed by user programs." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Source_code> .
+:SourceCode a owl:Class ;
+    rdfs:subClassOf :InformationContentEntity .
 
 :SourceCodeAnalyzerTool a owl:Class ;
     rdfs:label "Source Code Analyzer Tool" ;
@@ -18212,7 +18152,7 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
 Wolfram MathWorld. (n.d.). Statistics. [Link](https://mathworld.wolfram.com/Statistics.html)""" .
 
 :Step a owl:Class ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :Plan,
         [ a owl:Restriction ;
             owl:onProperty :end ;
             owl:someValuesFrom :Step ],
@@ -25613,18 +25553,15 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
 
 :TargetAudience a owl:Class ;
     rdfs:label "Target Audience" ;
-    rdfs:subClassOf :D3FENDUseCaseThing .
+    rdfs:subClassOf :AgentGroup .
 
 :Technique a owl:Class ;
     rdfs:label "Technique" ;
-    rdfs:subClassOf :D3FENDThing,
-        [ a owl:Restriction ;
-            owl:onProperty :implemented-by ;
-            owl:someValuesFrom :Procedure ] .
+    rdfs:subClassOf :Plan .
 
 :TechniqueReference a owl:Class ;
     rdfs:label "Technique Reference" ;
-    rdfs:subClassOf :D3FENDThing,
+    rdfs:subClassOf :D3FENDKBThing,
         [ a owl:Restriction ;
             owl:onProperty :has-link ;
             owl:someValuesFrom xsd:anyURI ],
@@ -25994,23 +25931,25 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     :definition "Analyzing the reputation of a URL." ;
     :kb-reference :Reference-Finding_phishing_sites .
 
+:UseCase a owl:Class ;
+    rdfs:label "Use Case" ;
+    rdfs:subClassOf :D3FENDKBThing .
+
 :UseCaseGoal a owl:Class ;
     rdfs:label "Use Case Goal" ;
-    rdfs:subClassOf :D3FENDUseCaseThing .
+    rdfs:subClassOf :Goal .
 
 :UseCasePrerequisite a owl:Class ;
     rdfs:label "Use Case Prerequisite" ;
-    rdfs:subClassOf :D3FENDUseCaseThing .
+    rdfs:subClassOf :Condition .
 
 :UseCaseProcedure a owl:Class ;
     rdfs:label "Use Case Procedure" ;
-    rdfs:subClassOf :D3FENDUseCaseThing,
-        :Procedure .
+    rdfs:subClassOf :Procedure .
 
 :UseCaseStep a owl:Class ;
     rdfs:label "Use Case Step" ;
-    rdfs:subClassOf :D3FENDUseCaseThing,
-        :Step .
+    rdfs:subClassOf :Step .
 
 :User a owl:Class ;
     rdfs:label "User" ;
@@ -26170,10 +26109,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:subClassOf :LocalResource ;
     :definition "A user logon initialization resource contains information used to configure a user's environment when a user logs into a system." .
 
-:UserManual a owl:Class,
-        owl:NamedIndividual,
-        :ReferenceType ;
-    rdfs:label "User Manual" ;
+:UserManual a owl:Class ;
     rdfs:subClassOf :Document .
 
 :UserManualReference a owl:Class ;
@@ -26345,12 +26281,11 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:seeAlso <http://dbpedia.org/resource/Virtual_private_network> .
 
 :Vulnerability a owl:Class ;
-    rdfs:subClassOf :D3FENDThing .
+    rdfs:subClassOf :D3FENDCore .
 
 :Weakness a owl:Class ;
     rdfs:label "Weakness" ;
-    rdfs:subClassOf :D3FENDCore,
-        :D3FENDThing ;
+    rdfs:subClassOf :D3FENDCore ;
     :comment "A type of behavior that has the potential for allowing an attacker to violate the intended security policy, if the behavior is made accessible to the attacker. For example, an unbounded strcpy() call is a weakness, since it might be subject to a buffer overflow if an attacker can provide an input buffer that is larger than the output buffer. (CWE)",
         "Logic present in hardware or software which enables an attacker to violate the intended security policy." ;
     :definition "A weakness is a condition in a software, firmware, hardware, or service component that, under certain circumstances, could contribute to the introduction of vulnerabilities." .
@@ -26959,10 +26894,6 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         owl:NamedIndividual ;
     rdfs:label "Bash Script File" .
 
-:Book a owl:NamedIndividual,
-        :ReferenceType ;
-    rdfs:label "Book" .
-
 :BSDProcess a owl:NamedIndividual,
         :Process ;
     rdfs:label "BSD Process" .
@@ -27077,7 +27008,7 @@ In order to convince the potential attacker that the deception environment is th
 <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-Remembranceofdatapassed:Astudyofdisksanitizationpractices> a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Remembrance of data passed: A study of disk sanitization practices" ;
-    :has-link "https://www.researchgate.net/profile/Simson-Garfinkel/publication/3437324_Remembrance_of_data_passed_A_study_of_disk_sanitization_practices/links/550de6d40cf2128741677d9f/Remembrance-of-data-passed-A-study-of-disk-sanitization-practices.pdf" ;
+    :has-link "https://www.researchgate.net/profile/Simson-Garfinkel/publication/3437324_Remembrance_of_data_passed_A_study_of_disk_sanitization_practices/links/550de6d40cf2128741677d9f/Remembrance-of-data-passed-A-study-of-disk-sanitization-practices.pdf"^^xsd:anyURI ;
     :kb-author "Simson L Garfinkel, Abhi Shelat" ;
     :kb-reference-of :DiskErasure,
         :DiskFormatting,
@@ -27472,9 +27403,7 @@ order to constitute a complete standard. For a complete definition of all requir
         :Process ;
     rdfs:label "macOS Process" .
 
-:MarketingMaterial a owl:NamedIndividual,
-        :ReferenceType ;
-    rdfs:label "Marketing Material" .
+:MFATokenRevocation a owl:NamedIndividual .
 
 :MicrosoftWordDOCBFile a :DocumentFile,
         owl:NamedIndividual ;
@@ -27533,14 +27462,6 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:seeAlso <https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final> ;
     :version 5 .
 
-:non-real-time-analytic a :AnalyticLatency,
-        owl:NamedIndividual ;
-    rdfs:label "non-real-time-analytic" .
-
-:non-real-time-eviction a :EvictionLatency,
-        owl:NamedIndividual ;
-    rdfs:label "non-real-time-eviction" .
-
 :PE32ExecutableFile a :ExecutableBinary,
         owl:NamedIndividual ;
     rdfs:label "PE32 Executable File" .
@@ -27558,14 +27479,6 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:label "Procedure 1 - T1134.001 Access Token Manipulation" ;
     :implements :T1134.001 ;
     :start :step-1 .
-
-:real-time-analytic a :AnalyticLatency,
-        owl:NamedIndividual ;
-    rdfs:label "real-time-analytic" .
-
-:real-time-eviction a :EvictionLatency,
-        owl:NamedIndividual ;
-    rdfs:label "real-time-eviction" .
 
 :Reference-AccessPermissionModification_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
@@ -30256,7 +30169,7 @@ This identifier is present three times during the RPC request phase. Any sensor 
 :Reference-RemotelyTriggeredBlackHoleFiltering-Cisco a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Remotely Triggered Black Hole FIltering - Cisco" ;
-    :has-link "https://www.cisco.com/c/dam/en_us/about/security/intelligence/blackhole.pdf" ;
+    :has-link "https://www.cisco.com/c/dam/en_us/about/security/intelligence/blackhole.pdf"^^xsd:anyURI ;
     :kb-organization "Cisco" ;
     :kb-reference-title "Remotely Triggered Black Hole Filtering - Destination Based and Source Based" .
 
@@ -31203,7 +31116,7 @@ This specification defines the Trusted Platform Module (TPM) a device that enabl
 :Reference-UnderstandingtheDomainRegistrationBehaviorofSpammers a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Understanding the Domain Registration Behavior of Spammers" ;
-    :has-link "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=bf4d34a6f9d0168bb07433e84c1567bbe1ba8188" ;
+    :has-link "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=bf4d34a6f9d0168bb07433e84c1567bbe1ba8188"^^xsd:anyURI ;
     :kb-abstract "Spammers register a tremendous number of domains to evade blacklisting and takedown efforts. Current techniques to detect such domains rely on crawling spam URLs or monitoring lookup traffic. Such detection techniques are only effective after the spammers have already launched their campaigns, and thus these countermeasures may only come into play after the spammer has already reaped significant benefits from the dissemination of large volumes of spam. In this paper we examine the registration process of such domains, with a particular eye towards features that might indicate that a given domain likely has a malicious purpose at registration time, before it is ever used for an attack. Our assessment includes exploring the characteristics of registrars, domain life cycles, registration bursts, and naming patterns. By investigating zone changes from the .com TLD over a 5-month period, we discover that spammers employ bulk registration, that they often re-use domains previously registered by others, and that they tend to register and host their domains over a small set of registrars. Our findings suggest steps that registries or registrars could use to frustrate the efforts of miscreants to acquire domains in bulk, ultimately reducing their agility for mounting large-scale attacks." ;
     :kb-author "Hao S, Thomas M, Paxson V, Feamster N, Kreibich C, Grier C, Hollenbeck S" ;
     :kb-reference-of :DomainRegistrationTakedown ;
@@ -31477,6 +31390,9 @@ With keystroke dynamics the biometric template used to identify an individual is
         owl:NamedIndividual ;
     rdfs:label "Ruby Script File" .
 
+:SecurityArchitects a owl:NamedIndividual,
+        :TargetAudience .
+
 :step-1 a owl:NamedIndividual,
         :Step ;
     rdfs:label "Step 1 - Copy Token" ;
@@ -31488,6 +31404,8 @@ With keystroke dynamics the biometric template used to identify an individual is
     rdfs:label "Step 2 - Impersonate User" ;
     :creates :Authentication ;
     :invokes :ImpersonateUser .
+
+:UserAccountDeletion a owl:NamedIndividual .
 
 :WebSocketURL a owl:NamedIndividual,
         :URL ;
