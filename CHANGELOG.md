@@ -1,6 +1,25 @@
 # D3FEND Change Log
 
+## Version - 0.17.0 - 2024-10-11
+
+ - Promote Link to core and initial major refactor to D3FEND Core. (#248)
+ - Cleanup anonymous individuals and fix network model. (#305)
+ - Update make all order and upgrade CCO with working link.
+ - New Evict and Restore techniques. (#240)
+ - Major clean up on Network Node taxonomy, rename Platform to Computer Platform. (#301)
+ - Add Condition to core. (#298)
+ - Align definition of d3f:T1205 with ATT&CK. (#291)
+ - Add optional custom pki trust config to Dockerfile. (#286)
+ - Add new property, fix missing label, and new system calls. (#244)
+ - Make d3f:Restore a named individual. (#278)
+ - Update dependencies and CI to new github docker setup. (#280)
+ - Fix typo in definition of OSAPISystemFunction. (#235)
+ - Get Running Processes enumerates Process. (#231)
+ - Add "unloads" property. (#230)
+
+
 ## Version - 0.16.0 - 2024-07-10
+
  - Replace rdfs:seeAlso and rdfs:isDefinedBy anyURIs with standard IRIs. (#263)
  - Removed hidden Reverse Resolution Domain Denylisting class. (#252)
  - Direct Physical Link Mapping Technique added, deleted hidden Passive Physical Link Mapping class. (#251)
