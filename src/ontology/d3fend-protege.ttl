@@ -20482,13 +20482,14 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Account Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique ;
     :attack-id "T1087" ;
-    :definition "Adversaries may attempt to get a listing of valid accounts, usernames, or email addresses on a system or within a compromised environment. This information can help adversaries determine which accounts exist, which can aid in follow-on behavior such as brute-forcing, spear-phishing attacks, or account takeovers (e.g., [Valid Accounts](https://attack.mitre.org/techniques/T1078))." .
+    :definition "Adversaries may attempt to get a listing of valid accounts, usernames, or email addresses on a system or within a compromised environment. This information can help adversaries determine which accounts exist, which can aid in follow-on behavior such as brute-forcing, spear-phishing attacks, or account takeovers (e.g., [Valid Accounts](https://attack.mitre.org/techniques/T1078))." ;
+    rdfs:seeAlso :T1136 .
 
 :T1087.001 a owl:Class ;
     rdfs:label "Local Account" ;
-    rdfs:subClassOf :T1136,
+    rdfs:subClassOf :T1087,
         [ a owl:Restriction ;
-            owl:onProperty :creates ;
+            owl:onProperty :enumerates ;
             owl:someValuesFrom :LocalUserAccount ] ;
     :attack-id "T1087.001" ;
     :definition "Adversaries may attempt to get a listing of local system accounts. This information can help adversaries determine which local accounts exist on a system to aid in follow-on behavior." ;
@@ -20496,9 +20497,9 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1087.002 a owl:Class ;
     rdfs:label "Domain Account" ;
-    rdfs:subClassOf :T1136,
+    rdfs:subClassOf :T1087,
         [ a owl:Restriction ;
-            owl:onProperty :creates ;
+            owl:onProperty :enumerates ;
             owl:someValuesFrom :DomainUserAccount ] ;
     :attack-id "T1087.002" ;
     :definition "Adversaries may attempt to get a listing of domain accounts. This information can help adversaries determine which domain accounts exist to aid in follow-on behavior such as targeting specific accounts which possess particular privileges." .
@@ -20511,9 +20512,9 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1087.004 a owl:Class ;
     rdfs:label "Cloud Account" ;
-    rdfs:subClassOf :T1136,
+    rdfs:subClassOf :T1087,
         [ a owl:Restriction ;
-            owl:onProperty :creates ;
+            owl:onProperty :enumerates ;
             owl:someValuesFrom :CloudUserAccount ] ;
     :attack-id "T1087.004" ;
     :definition "Adversaries may attempt to get a listing of cloud accounts. Cloud accounts are those created and configured by an organization for use by users, remote support, services, or for administration of resources within a cloud service provider or SaaS application." .
@@ -21223,7 +21224,6 @@ When system firmware verification fails a set of predefined responses is typical
 :T1136 a owl:Class ;
     rdfs:label "Create Account" ;
     rdfs:subClassOf :PersistenceTechnique,
-        :PrivilegeEscalationTechnique,
         [ a owl:Restriction ;
             owl:onProperty :creates ;
             owl:someValuesFrom :UserAccount ] ;
@@ -21232,19 +21232,28 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1136.001 a owl:Class ;
     rdfs:label "Local Account" ;
-    rdfs:subClassOf :T1136 ;
+    rdfs:subClassOf :T1136,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :LocalUserAccount ] ;
     :attack-id "T1136.001" ;
     :definition "Adversaries may create a local account to maintain access to victim systems. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service. " .
 
 :T1136.002 a owl:Class ;
     rdfs:label "Domain Account" ;
-    rdfs:subClassOf :T1136 ;
+    rdfs:subClassOf :T1136,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :DomainUserAccount ] ;
     :attack-id "T1136.002" ;
     :definition "Adversaries may create a domain account to maintain access to victim systems. Domain accounts are those managed by Active Directory Domain Services where access and permissions are configured across systems and services that are part of that domain. Domain accounts can cover user, administrator, and service accounts. With a sufficient level of access, the <code>net user /add /domain</code> command can be used to create a domain account.(Citation: Savill 1999)" .
 
 :T1136.003 a owl:Class ;
     rdfs:label "Cloud Account" ;
-    rdfs:subClassOf :T1136 ;
+    rdfs:subClassOf :T1136,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :CloudUserAccount ] ;
     :attack-id "T1136.003" ;
     :definition "Adversaries may create a cloud account to maintain access to victim systems. With a sufficient level of access, such accounts may be used to establish secondary credentialed access that does not require persistent remote access tools to be deployed on the system.(Citation: Microsoft O365 Admin Roles)(Citation: Microsoft Support O365 Add Another Admin, October 2019)(Citation: AWS Create IAM User)(Citation: GCP Create Cloud Identity Users)(Citation: Microsoft Azure AD Users)" .
 
