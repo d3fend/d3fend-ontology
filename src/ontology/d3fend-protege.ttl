@@ -2369,10 +2369,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
             owl:onProperty :authenticates ;
             owl:someValuesFrom :UserAccount ] .
 
-:Authentication a owl:Class,
-        owl:NamedIndividual,
-        :UserAction ;
-    rdfs:label "Authentication" ;
+:Authentication a owl:Class ;
     rdfs:subClassOf :UserAction,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
@@ -2382,10 +2379,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
             owl:someValuesFrom :IntranetNetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :originates-from ;
-            owl:someValuesFrom :PhysicalLocation ] ;
-    :definition "A request-response comprising a user credential presentation to a system and a verification response." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Authentication>,
-        <http://wordnet-rdf.princeton.edu/id/00155053-n> .
+            owl:someValuesFrom :PhysicalLocation ] .
 
 :AuthenticationCacheInvalidation a :AuthenticationCacheInvalidation,
         owl:Class,
@@ -2457,7 +2451,7 @@ This technique covers statistical outliers. Though depending on the complexity o
 
 :AuthenticationLog a owl:Class ;
     rdfs:label "Authentication Log" ;
-    rdfs:subClassOf :Log,
+    rdfs:subClassOf :EventLog,
         [ a owl:Restriction ;
             owl:onProperty :records ;
             owl:someValuesFrom :Authentication ] ;
@@ -2512,7 +2506,7 @@ Depending on the complexity of the data considered, outliers may not be obvious 
 
 :AuthorizationLog a owl:Class ;
     rdfs:label "Authorization Log" ;
-    rdfs:subClassOf :Log,
+    rdfs:subClassOf :EventLog,
         [ a owl:Restriction ;
             owl:onProperty :records ;
             owl:someValuesFrom :NetworkResourceAccess ] ;
@@ -9010,6 +9004,10 @@ Management servers with enterprise policies for account management provide the a
     rdfs:subClassOf :CWE-657 ;
     :cwe-id "CWE-1395" .
 
+:CyberAction a owl:Class ;
+    rdfs:label "Cyber Action" ;
+    rdfs:subClassOf :Action .
+
 :CyberSensor a owl:Class ;
     rdfs:label "Cyber Sensor" ;
     rdfs:subClassOf :Sensor .
@@ -9591,7 +9589,8 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
             owl:someValuesFrom :TA0005 ] .
 
 :DefensiveAction a owl:Class ;
-    rdfs:subClassOf :Action .
+    rdfs:label "Defensive Action" ;
+    rdfs:subClassOf :CyberAction .
 
 :DefensiveTactic a owl:Class ;
     rdfs:label "Defensive Tactic" ;
@@ -9805,6 +9804,13 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 :DigitalEvent a owl:Class ;
     rdfs:label "Digital Event" ;
     rdfs:subClassOf :Event .
+
+:DigitalEventRecord a owl:Class ;
+    rdfs:label "Digital Event Record" ;
+    rdfs:subClassOf :Record,
+        [ a owl:Restriction ;
+            owl:onProperty :records ;
+            owl:someValuesFrom :DigitalEvent ] .
 
 :DigitalFingerprint a owl:Class ;
     rdfs:label "Digital Fingerprint" ;
@@ -10530,9 +10536,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 
 :EventLog a owl:Class ;
     rdfs:label "Event Log" ;
-    rdfs:subClassOf :Log ;
+    rdfs:subClassOf :Log,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :DigitalEventRecord ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Log_file#Event_logs> ;
-    :definition "Event logs record events taking place in the execution of a system in order to provide an audit trail that can be used to understand the activity of the system and to diagnose problems. They are essential to understand the activities of complex systems, particularly in the case of applications with little user interaction (such as server applications)." .
+    :definition "Event logs record events taking place in the execution of a system in order to provide an audit trail that can be used to understand the activity of the system and to diagnose problems. They are essential to understand the activities of complex systems, particularly in the case of applications with little user interaction (such as server applications)." ;
+    :synonym "Digital Event Log" .
 
 :Evict a :DefensiveTactic,
         owl:Class,
@@ -14633,7 +14643,8 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
     :todo "Fix IRI to fix 'i' in \"File\" substring of IRI" .
 
 :OffensiveAction a owl:Class ;
-    rdfs:subClassOf :Action .
+    rdfs:label "Offensive Action" ;
+    rdfs:subClassOf :CyberAction .
 
 :OffensiveTactic a owl:Class ;
     rdfs:label "Offensive Tactic" ;
@@ -14909,7 +14920,8 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :Organization a owl:Class ;
     rdfs:label "Organization" ;
-    rdfs:subClassOf :Non-PersonEntity,
+    rdfs:subClassOf :AgentGroup,
+        :Non-PersonEntity,
         [ a owl:Restriction ;
             owl:onProperty :has-member ;
             owl:someValuesFrom :Person ] .
@@ -25998,7 +26010,8 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     rdfs:label "User Action" ;
     rdfs:subClassOf :DigitalEvent,
         :DigitalInformationBearer ;
-    :definition "An action performed by a user. Executing commands, granting permissions, and accessing resources are examples of user actions." .
+    :definition "An action performed by a user. Executing commands, granting permissions, and accessing resources are examples of user actions." ;
+    :todo "Subclasses are incorrect" .
 
 :UserApplication a owl:Class ;
     rdfs:label "User Application" ;
@@ -31402,16 +31415,13 @@ With keystroke dynamics the biometric template used to identify an individual is
 :SecurityArchitects a owl:NamedIndividual,
         :TargetAudience .
 
-:step-1 a owl:NamedIndividual,
-        :Step ;
+:step-1 a owl:NamedIndividual ;
     rdfs:label "Step 1 - Copy Token" ;
     :invokes :CopyToken ;
     :next :step-2 .
 
-:step-2 a owl:NamedIndividual,
-        :Step ;
+:step-2 a owl:NamedIndividual ;
     rdfs:label "Step 2 - Impersonate User" ;
-    :creates :Authentication ;
     :invokes :ImpersonateUser .
 
 :UserAccountDeletion a owl:NamedIndividual .
