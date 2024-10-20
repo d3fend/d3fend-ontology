@@ -2,10 +2,10 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION :=0.16.0
-D3FEND_RELEASE_DATE :="2024-07-10T00:00:00.000Z"
+D3FEND_VERSION :=0.17.0
+D3FEND_RELEASE_DATE :="2024-10-11T00:00:00.000Z"
 
-ATTACK_VERSION := 15.0
+ATTACK_VERSION := 15.1
 
 JENA_VERSION := 4.5.0
 
@@ -393,7 +393,7 @@ dist: distdir
 	$(END)
 
 #all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
-all: build extensions dist test  ## build all, check for unallowed content, and test load files
+all: build extensions test dist ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version
