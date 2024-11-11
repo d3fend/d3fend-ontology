@@ -3750,12 +3750,52 @@ Another approach passively inspects network traffic with application protocol an
     rdfs:subClassOf :SoftwarePackagingTool ;
     :definition "A software build tool that creates a container (e.g., Docker container) for deployment." .
 
+:StorageImage a owl:Class ;
+    rdfs:label "Storage Image" ;
+    rdfs:subClassOf :DigitalInformationBearer, :File;
+    :definition "A storage image is a complete, encapsulated representation of a storage medium or system environment. It contains all the data, files, and configurations necessary to replicate or deploy a specific system state or software setup." .
+
+:SystemStateImage a owl:Class ;
+    rdfs:label "System State Image" ;
+    rdfs:altLabel "System Image" ;
+    rdfs:subClassOf :StorageImage;
+    :definition "In computing, a system image is a serialized copy of the entire state of a computer system stored in some non-volatile form, such as a binary executable file." ;
+    rdfs:isDefinedBy <https://en.wikipedia.org/wiki/System_image> ;
+    rdfs:seeAlso <https://dbpedia.org/resource/System_Image> .
+
+:DiskImage a owl:Class ;
+    rdfs:label "Disk Image" ;
+    rdfs:subClassOf :StorageImage;
+    :definition "A disk image is a snapshot of a storage device's structure and data typically stored in one or more computer files on another storage device." ;
+    rdfs:isDefinedBy <https://en.wikipedia.org/wiki/Disk_image> ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Disk_image> .
+
+:OpticalDiscImage a owl:Class ;
+    rdfs:label "Optical Disc Image" ;
+    rdfs:subClassOf :DiskImage;
+    :definition "An optical disc image (or ISO image, from the ISO 9660 file system used with CD-ROM media) is a disk image that contains everything that would be written to an optical disc, disk sector by disc sector, including the optical disc file system." ;
+    rdfs:isDefinedBy <https://en.wikipedia.org/wiki/Optical_disc_image> ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Optical_disc_image> .
+
+:VMImage a owl:Class ;
+    rdfs:label "Virtual Machine Image" ;
+    skos:altLabel "VM Image" ;
+    rdfs:subClassOf :StorageImage,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SystemStateImage ] ;
+    :definition "A Virtual Machine Image (VMI) is a file that encapsulates the entire state of a virtual machine at a given point in time. This includes the operating system, applications, data, and configurations. VMIs are used to create and replicate virtual machines, ensuring consistency and reliability across different environments." ;
+    rdfs:isDefinedBy <https://www.ituonline.com/tech-definitions/what-is-a-virtual-machine-image/> ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Virtual_machine_image> .
+
 :ContainerImage a owl:Class ;
     rdfs:label "Container Image" ;
-    rdfs:subClassOf :File,
+    rdfs:subClassOf :StorageImage,
         :SoftwarePackage ;
     rdfs:isDefinedBy <https://www.docker.com/resources/what-container> ;
     :definition """A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
+
+:S
 
 Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.""" ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/image> .
@@ -10460,7 +10500,7 @@ This technique can be accomplished in a number of ways:
         owl:NamedIndividual ;
     rdfs:label "Container (ATT&CK DS)" ;
     :definition "A standard unit of virtualized software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another" ;
-    :d3fend-mapping-exactly :ContainerImage .
+    :exactly :ContainerImage .
 
 :DS0033 a :ATTACKEnterpriseDataSource,
         owl:NamedIndividual ;
@@ -16334,7 +16374,7 @@ False negatives can occur via alteration of the verification logic or source of 
 
 :ProcessImage a owl:Class ;
     rdfs:label "Process Image" ;
-    rdfs:subClassOf :DigitalInformationBearer,
+    rdfs:subClassOf :StorageImage,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :ProcessSegment ] ;
