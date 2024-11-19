@@ -1915,6 +1915,20 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
             owl:onProperty :contains ;
             owl:someValuesFrom :Agent ] .
 
+:AgentTrustMapping a owl:Class,
+        owl:NamedIndividual,
+        :TrustMapping ;
+    rdfs:label "Agent Trust Mapping" ;
+    rdfs:subClassOf :TrustMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :Identifier ] ;
+    :d3fend-id "D3-ATM" ;
+    :definition "A mapping of the people, organizations, owners, managers, review teams, and other identities that allows the explicit and implicit trust in a system to be modeled." .
+
 :AgglomerativeClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Agglomerative Clustering" ;
@@ -9205,6 +9219,17 @@ Code can also be deemed unreachable for certain run-time conditions. Different d
     :display-order 3 ;
     :display-priority 0 .
 
+:DecisionProcessTrustMapping a owl:Class,
+        owl:NamedIndividual,
+        :TrustMapping ;
+    rdfs:label "Decision Process Trust Mapping" ;
+    rdfs:subClassOf :TrustMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :AnalyticTechnique ] ;
+    :d3fend-id "D3-DPTM" ;
+    :definition "A mapping of the logic that is followed by Agents or Software, when making binary or level-of-confidence decisions, that allows the explicit and implicit trust in a system to be modeled. Think of this as the logic of a Turing machine (the program itself)." .
+
 :DecisionTree a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Decision Tree" ;
@@ -12232,6 +12257,23 @@ Identification of potential ROP exploit execution includes:
     :definition "Statistical inference is the process of using data analysis to infer properties of an underlying distribution of probability." ;
     :kb-article """## References
 Wikipedia. (n.d.). Statistical inference. [Link](https://en.wikipedia.org/wiki/Statistical_inference)""" .
+
+:InformationSourceTrustMapping a owl:Class,
+        owl:NamedIndividual,
+        :TrustMapping ;
+    rdfs:label "Information Source Trust Mapping" ;
+    rdfs:subClassOf :TrustMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom [ a owl:Class ;
+                    owl:unionOf (
+                            :File
+                            :NetworkTraffic ) ] ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :ControlCatalog ] ;
+    :d3fend-id "D3-ISTM" ;
+    :definition "A mapping of the sources of information (i.e. data that is ingested by software) that allows the explicit and implicit trust in a system to be modeled. Think of this as the source of the tape of a Turing machine (the data that the machine acts on, such as a prior node/software in the system)." .
 
 :InformationContentEntity a owl:Class ;
     rdfs:label "Information Content Entity" ;
@@ -17841,6 +17883,17 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
             owl:someValuesFrom :Process ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Software> ;
     :definition "Computer software, or simply software, is that part of a computer system that consists of encoded information or computer instructions, in contrast to the physical hardware from which the system is built." .
+
+:SoftwareSourceTrustMapping a owl:Class,
+        owl:NamedIndividual,
+        :TrustMapping ;
+    rdfs:label "Software Source Trust Mapping" ;
+    rdfs:subClassOf :TrustMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :maps ;
+            owl:someValuesFrom :Software ] ;
+    :d3fend-id "D3-SSTM" ;
+    :definition "A mapping of the sources of software that allows the explicit and implicit trust in a system to be modeled. Think of this as the place the code for a Turing machine came from (if this is an Agent use Agent Trust Mapping instead)." .
 
 :SoftwareArtifactServer a owl:Class ;
     rdfs:label "Software Artifact Server" ;
@@ -25814,6 +25867,38 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
 Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Central_tendency)""" ;
     :synonym "Truncated mean" .
 
+:TrustMapping a :DefensiveTechnique,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Trust Mapping" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Model ] ;
+    :d3fend-id "D3-TM" ;
+    :definition "Trust mapping encompasses the techniques to identify and model the explicit and implicit aspects of trust that are present in a system. Mappings may include the relationships between agents, decision logic, data/information flow, and sources of hardware/software.." ;
+    :enables :Model .
+
+:TrustMappingRiskAssessment a owl:Class,
+        owl:NamedIndividual,
+        :TrustMapping ;
+    rdfs:label "Trust Mapping Risk Assessment" ;
+    rdfs:subClassOf :TrustMapping,
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :AgentTrustMapping ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :DecisionProcessTrustMapping ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :InformationSourceTrustMapping ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-map ;
+            owl:someValuesFrom :SoftwareSourceTrustMapping ] ;
+    :d3fend-id "D3-TMRA" ;
+    :definition "Trust mapping risk assessment relates all the trust modeled in a system's components to better understand the explicit and implicit trust in a security architecture, and how such trusts allow vulnerabilities to propagate through the system." .
+
 :TrustStore a owl:Class ;
     rdfs:label "Trust Store" ;
     rdfs:subClassOf :DigitalInformationBearer ;
@@ -27643,6 +27728,14 @@ Outlier data values which deviate from behavioral profile by more than a predete
     :kb-reference-of :MandatoryAccessControl ;
     :kb-reference-title "Architecture of transparent network security for application containers" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-ATrustModelForUbiquitousSystemsBasedOnVectorsOfTrustValues a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - A Trust Model for Ubiquitous Systems based on Vectors of Trust Values" ;
+    :has-link "https://ieeexplore.ieee.org/abstract/document/1565900" ;
+    :kb-author: "Hassan Jameel Asghar" ;
+    :kb-reference-of :TrustMapping ;
+    :kb-reference-title "A Trust Model for Ubiquitous Systems based on Vectors of Trust" .
 
 :Reference-AuditUserAccountManagement a :GuidelineReference,
         owl:NamedIndividual ;
@@ -31294,6 +31387,13 @@ Level 2""" ;
     :kb-reference-title """Web Authentication: An API for accessing Public Key Credentials
 Level 2""" .
 
+:Reference-WhatIsATrustMap a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - What Is A Trust Map" ;
+    :has-link "https://stateofsecurity.com/what-is-a-trust-map/" ;
+    :kb-reference-of :TrustMapping ;
+    :kb-reference-title "What Is A Trust Map" .
+
 :Reference-WhatIsNX_XDFeature_RedHat a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - What is NX/XD feature?" ;
@@ -31371,6 +31471,29 @@ With keystroke dynamics the biometric template used to identify an individual is
     :kb-reference-of :InputDeviceAnalysis ;
     :kb-reference-title "Keystroke Dynamics" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-ZeroTrustArchitecture a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-207 - Zero Trust Architecture" ;
+    :has-link "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf" ;
+    :kb-abstract """Zero trust (ZT) is the term for an evolving set of cybersecurity paradigms that move defenses
+from static, network-based perimeters to focus on users, assets, and resources. A zero trust
+architecture (ZTA) uses zero trust principles to plan industrial and enterprise infrastructure and
+workflows. Zero trust assumes there is no implicit trust granted to assets or user accounts based
+solely on their physical or network location (i.e., local area networks versus the internet) or based
+on asset ownership (enterprise or personally owned). Authentication and authorization (both
+subject and device) are discrete functions performed before a session to an enterprise resource is
+established. Zero trust is a response to enterprise network trends that include remote users, bring
+your own device (BYOD), and cloud-based assets that are not located within an enterprise
+owned network boundary. Zero trust focuses on protecting resources (assets, services,
+workflows, network accounts, etc.), not network segments, as the network location is no longer
+seen as the prime component to the security posture of the resource. This document contains an
+abstract definition of zero trust architecture (ZTA) and gives general deployment models and use
+cases where zero trust could improve an enterprise’s overall information technology security
+posture.""" ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :TrustMapping ;
+    :kb-reference-title "Reference - NIST Special Publication 800-207 - Zero Trust Architecture" .
 
 :RegOpenKeyA a :GetSystemConfigValue,
         owl:NamedIndividual .
