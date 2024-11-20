@@ -3768,11 +3768,37 @@ Another approach passively inspects network traffic with application protocol an
 
 :StorageImage a owl:Class ;
     rdfs:label "Storage Image" ;
-    rdfs:subClassOf :DigitalInformationBearer, :File;
+    rdfs:subClassOf :File;
     :definition "A storage image is a complete, encapsulated representation of a storage medium or system environment. It contains all the data, files, and configurations necessary to replicate or deploy a specific system state or software setup." .
 
+:StorageSnapshot a owl:Class ;
+    rdfs:label "Storage Snapshot" ;
+    rdfs:altLabel "Snapshot" ;
+    rdfs:subClassOf :File;
+    :definition "In computer systems, a snapshot is the state of a system at a particular point in time. " ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Snapshot_(computer_storage)> .
+
+:VolumeSnapshot a owl:Class ;
+    rdfs:label "Volume Snapshot" ;
+    rdfs:subClassOf :StorageSnapshot;
+    :definition "A volume snapshot is a point-in-time copy of a storage volume. " ;
+    rdfs:isDefinedBy <https://openebs.io/docs/user-guides/replicated-storage-user-guide/replicated-pv-mayastor/advanced-operations/volume-snapshots> ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Shadow_Copy> .
+
+:DifferentialVolumeSnapshot a owl:Class ;
+    rdfs:label "Differential Volume Snapshot" ;
+    rdfs:subClassOf :VolumeSnapshot;
+    :definition "A differential volume snapshot is a point-in-time capture of the files and directories that were changed since the last full snapshot." ;
+    rdfs:seeAlso <https://aws.amazon.com/compare/the-difference-between-incremental-differential-and-other-backups/> .
+
+:FullVolumeSnapshot a owl:Class ;
+    rdfs:label "Full Volume Snapshot" ;
+    rdfs:subClassOf :VolumeSnapshot;
+    :definition "A full volume snapshot captures the complete contents of a volume at a specific point in time." ;
+    rdfs:seeAlso <https://aws.amazon.com/compare/the-difference-between-incremental-differential-and-other-backups/> .
+
 :SystemStateImage a owl:Class ;
-    rdfs:label "System State Image" ;
+    rdfs:label "System State Image" ; 
     rdfs:altLabel "System Image" ;
     rdfs:subClassOf :StorageImage;
     :definition "In computing, a system image is a serialized copy of the entire state of a computer system stored in some non-volatile form, such as a binary executable file." ;
@@ -10449,7 +10475,7 @@ This technique can be accomplished in a number of ways:
         owl:NamedIndividual ;
     rdfs:label "Snapshot (ATT&CK DS)" ;
     :definition "A point-in-time copy of cloud volumes (files, settings, etc.) that can be created and/or deployed in cloud environments" ;
-    :d3fend-mapping-exactly :VolumeSnapshot .
+    :exactly :VolumeSnapshot .
 
 :DS0021 a :ATTACKEnterpriseDataSource,
         owl:NamedIndividual ;
