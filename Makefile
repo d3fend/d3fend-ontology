@@ -7,6 +7,8 @@ D3FEND_RELEASE_DATE ?="2024-10-11T00:00:00.000Z"
 
 ATTACK_VERSION ?= 16.0
 
+ATLAS_VERSION := 4.6.0
+
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
@@ -132,6 +134,16 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	$(END)
+
+download-atlas:
+	mkdir -p data
+	echo "Version: $(ATLAS_VERSION)"
+	cd data; wget https://github.com/mitre-atlas/atlas-navigator-data/raw/59382645bafa38408f9bf7fd868c4c68bd5eade5/dist/stix-atlas.json
+	$(END)
+
+update-atlas:
+	bash src/util/update_atlas.sh $(ATLAS_VERSION)
 	$(END)
 
 update-puns:
@@ -338,7 +350,7 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
-build: build/ontology build/d3fend.csv # build the D3FEND Ontology and Extensions
+build: build/ontology # build the D3FEND Ontology and Extensions
 	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
 	$(END)
 
