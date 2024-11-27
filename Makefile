@@ -2,14 +2,16 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION :=0.13.0-BETA-1
-D3FEND_RELEASE_DATE :="2023-03-21T00:00:00.000Z"
+D3FEND_VERSION ?=0.17.0
+D3FEND_RELEASE_DATE ?="2024-10-11T00:00:00.000Z"
+
+ATTACK_VERSION ?= 16.0
 
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL := "https://github.com/ontodev/robot/releases/download/v1.9.0/robot.jar"
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.5/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -39,13 +41,22 @@ START = echo "${BLUE}$@ started ${RESET}"
 END = echo "${GREEN}$@ done ${RESET}"
 FAIL = echo "${RED}$@ failed ${RESET}"
 
-DB_LOCAL := "http://127.0.0.1:9899"
-DB_PROD := "http://PRODUCTIONSERVER.local:9899"
-DB_REST_PATH := "/blazegraph/namespace/d3fend/sparql"
-DB_REST_PATH_INF := "/blazegraph/namespace/d3fend_inf/sparql"
-DB_REST_PATH_BD := "/bigdata/namespace/d3fend/sparql"
-DB_REST_PATH_BD_INF := "/bigdata/namespace/d3fend_inf/sparql"
-DB_REST_PATH_TEST := "/bigdata/namespace/d3fend-test/sparql"
+DB_LOCAL ?= "http://127.0.0.1:9899"
+DB_PROD ?= "http://PRODUCTIONSERVER.local:9899"
+DB_REST_PATH ?= "/blazegraph/namespace/d3fend/sparql"
+DB_REST_PATH_INF ?= "/blazegraph/namespace/d3fend_inf/sparql"
+DB_REST_PATH_BD ?= "/bigdata/namespace/d3fend/sparql"
+DB_REST_PATH_BD_INF ?= "/bigdata/namespace/d3fend_inf/sparql"
+DB_REST_PATH_TEST ?= "/bigdata/namespace/d3fend-test/sparql"
+
+RD_DB_LOCAL ?= "http://127.0.0.1:12110"
+RD_DB_PROD ?= "http://PRODUCTIONSERVER.local:9899"
+RD_DB_REST_PATH ?= "/datastores/d3fend/content"
+RD_DB_REST_PATH_INF ?= "/blazegraph/namespace/d3fend_inf/sparql"
+RD_DB_REST_PATH_BD ?= "/bigdata/namespace/d3fend/sparql"
+RD_DB_REST_PATH_BD_INF ?= "/bigdata/namespace/d3fend_inf/sparql"
+RD_DB_REST_PATH_TEST ?= "/bigdata/namespace/d3fend-test/sparql"
+
 
 db-delete-local:
 	@curl -s -o /dev/null -w "deleted ${DB_LOCAL}${DB_REST_PATH} %{http_code}\n"  ${DB_LOCAL}${DB_REST_PATH} --data-urlencode "update=DROP ALL;"
@@ -74,6 +85,11 @@ db-load-prod-restore:
 
 # run make-onto again at end to rebuild the csv with latest data
 db-sync-all: db-delete-local db-load-local db-delete-prod db-load-prod ## sync local and prod dbs with current ontology
+
+rd_db-load-local:
+	@curl -i -X PATCH "admin:admin@localhost:12110/datastores/d3fend/content?operation=add-content-update-prefixes" -H "Content-Type:" -T dist/public/d3fend.ttl
+	#@curl -s -o /dev/null -w "loaded ${RD_DB_LOCAL}${RD_DB_REST_PATH} %{http_code}\n" -H 'Content-Type:'  -X PATCH -T dist/public/d3fend.ttl ${RD_DB_LOCAL}${RD_DB_REST_PATH}
+	#@curl -s -o /dev/null -w "loaded ${RD_DB_LOCAL}${RD_DB_REST_PATH_INF} %{http_code}\n" -H 'Content-Type:application/x-turtle'  -X POST --upload-file dist/public/d3fend.ttl ${RD_DB_LOCAL}${RD_DB_REST_PATH_INF}
 
 
 
@@ -115,7 +131,11 @@ download-attack:
 	$(END)
 
 update-attack:
-	bash src/util/update_attack.sh
+	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	$(END)
+
+update-puns:
+	bash src/util/update_puns.sh
 	$(END)
 
 # See also how to configure one's own checks and labels for checks for report:
@@ -288,6 +308,10 @@ build/d3fend-public-mapped.owl: build/d3fend-public.owl
 	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
 	$(END)
 
+build/d3fend-public-cco.owl: build/d3fend-public.owl
+	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-cco.ttl --input build/d3fend-public.owl --output build/d3fend-public-cco.owl
+	$(END)
+
 build/d3fend-public.ttl: build/d3fend-public.owl
 	./bin/robot convert --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" --input build/d3fend-public.owl --output build/d3fend-public.ttl
 
@@ -311,10 +335,10 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 	./bin/robot convert --input build/d3fend-public-with-controls.ttl --output build/d3fend-public-with-controls.owl
 	$(END)
 
-build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
-build: build/ontology # build the D3FEND Ontology and Extensions
+build: build/ontology build/d3fend.csv # build the D3FEND Ontology and Extensions
 	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
 	$(END)
 
@@ -364,11 +388,12 @@ dist: distdir
 	cp build/d3fend-public-with-controls.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
+	cp build/d3fend-public-cco.owl dist/public/d3fend-cco.owl
 	chmod 644 dist/public/d3fend.ttl dist/public/d3fend.owl
 	$(END)
 
 #all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
-all: build extensions dist test  ## build all, check for unallowed content, and test load files
+all: build extensions test dist ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version

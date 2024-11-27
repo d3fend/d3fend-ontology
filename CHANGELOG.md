@@ -1,9 +1,77 @@
 # D3FEND Change Log
 
+## Version - 0.17.0 - 2024-10-11
+
+ - Promote Link to core and initial major refactor to D3FEND Core. (#248)
+ - Cleanup anonymous individuals and fix network model. (#305)
+ - Update make all order and upgrade CCO with working link.
+ - New Evict and Restore techniques. (#240)
+ - Major clean up on Network Node taxonomy, rename Platform to Computer Platform. (#301)
+ - Add Condition to core. (#298)
+ - Align definition of d3f:T1205 with ATT&CK. (#291)
+ - Add optional custom pki trust config to Dockerfile. (#286)
+ - Add new property, fix missing label, and new system calls. (#244)
+ - Make d3f:Restore a named individual. (#278)
+ - Update dependencies and CI to new github docker setup. (#280)
+ - Fix typo in definition of OSAPISystemFunction. (#235)
+ - Get Running Processes enumerates Process. (#231)
+ - Add "unloads" property. (#230)
+
+
+## Version - 0.16.0 - 2024-07-10
+
+ - Replace rdfs:seeAlso and rdfs:isDefinedBy anyURIs with standard IRIs. (#263)
+ - Removed hidden Reverse Resolution Domain Denylisting class. (#252)
+ - Direct Physical Link Mapping Technique added, deleted hidden Passive Physical Link Mapping class. (#251)
+ - Complete Certificate-based Authentication technique. (#250)
+ - Update to ATT&CK 15. (#239)
+ - Fix typo in definition of OSAPISystemFunction. (#235)
+ - GetRunningProcesses enumerates Process. (#231)
+ - Add "unloads" property. (#230)
+
+## Version - 0.15.0 - 2024-04-26
+
+ - Fix d3fend-id on Reissue Credential. (#234)
+ - Create initial abstraction for additional threat models in addition to ATT&CK. (#233)
+ - Add system call GetRunningProcesses. (#231)
+ - Additional artifacts for more detailed modeling of process injection. (#228) (#217)
+ - Replace some Unicode UTF-8 characters with ASCII look-alikes. (#223)
+ - Add Adding NtOpenThread artifact. (#220)
+ - Added System Shutdown/Reboot Technique. (#202)
+ - Create initial abstraction of new D3FEND Core model. (#212)
+ - Fix typo in URL. (#201)
+ - Improve update_attack to handle definitions. (#209)
+ - Update artifact for Organization Mapping. (#103)
+ - Fixed URIs ending with hash signs cause Protege problems. (#221)
+ - Add CWE taxonomy from children of pillars down to support D3FEND / CWE mapping queries. (#184)
+
+
+## Version - 0.14.0 - 2024-01-26
+
+ - New Container Image Analysis technique. (#37)
+ - Updates refereces to Certificate Pinning and addtional minor bugfixes. (#207)
+ - Added digital artifact for T1542. (#211)
+
+
+## Version - 0.13.0-BETA-1 - 2023-10-30
+
+- New "Restore" tactic and taxonomy of restore techniques. (#173)
+- New Analytic Technique Taxonomy and Analytic Characterization Framework.
+- Integrate full CWE taxonomy. (#189)
+- Added Digital Artifacts for MSHTA Execution.
+- Inferred D3FEND countermeasures for CWEs now visualized and with API. (#184)
+- Link D3FEND classes to OCSF objects. (#178)
+- Refactor csv build and fix double definitions. (#180)
+- New defensive technique: Email Filtering. (#172)
+- Major refactor of ATT&CK updater script. (#188)
+
+
 ## Version - 0.12.0-BETA-2 - 2023-03-21
+
 - Add missing identifier for D3-IAA
 
 ## Version - 0.12.0-BETA-1 - 2023-01-31
+
 - Updated ATT&CK mappings.
 - Added PythonScript subClassOf ExecutableScript. (#101)
 - Added defensive techniques: FileEviction techniques (#92, #93), Identifier Activity Analysis (#95), Data and Data Hardening Techniques. (#75)

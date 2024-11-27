@@ -2,7 +2,7 @@ name: Tests & Build
 
 on:
   push:
-    branches: [ develop, "release/**", "feature/**" ]
+    branches: [ master, develop, "release/**", "feature/**" ]
   pull_request:
     branches: [ develop ]
 
@@ -27,18 +27,30 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
       #    needs: [ test-pre-commit ]
+      #
     steps:
     - uses: actions/checkout@v2
 
+    # - name: Setup docker-compose
+    #   run: pip install docker-compose
+
     - name: Build
       run: |
-        docker-compose build  --pull --force-rm d3fend-ontology
-
-    - name: Test
-      run:  docker-compose run --rm d3fend-ontology make test
-
+        docker compose build  --pull --force-rm d3fend-ontology
+    - name: Test Owl Load
+      run:  docker compose run --rm d3fend-ontology make test-load-owl
+    - name: Test TTL Load
+      run:  docker compose run --rm d3fend-ontology make test-load-ttl
+    - name: Test JSON Load
+      run:  docker compose run --rm d3fend-ontology make test-load-json
+    - name: Test Load Full
+      run:  docker compose run --rm d3fend-ontology make test-load-full
+    - name: Test Jena
+      run:  docker compose run --rm d3fend-ontology make test-jena
+    - name: Test Reasoner
+      run:  docker compose run --rm d3fend-ontology make test-reasoner
     - name: Cleanup
-      run: docker-compose down && docker-compose rm --force
+      run: docker compose down && docker compose rm --force
 
     - uses: actions/upload-artifact@v3
       with:

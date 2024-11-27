@@ -1,5 +1,5 @@
 @prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
-@prefix dc: <http://purl.org/dc/elements/> .
+# @prefix dc: <http://purl.org/dc/elements/> .
 # not necessary:
 @prefix d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -13,12 +13,35 @@
 #does not appear to be necessary:
 @base <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
 
-<http://d3fend.mitre.org/ontologies/d3fend.owll#> rdf:type owl:Ontology ;
-    owl:imports <http://www.w3.org/2002/07/owl> ;
-    owl:imports <https://www.w3.org/2009/08/skos-reference/skos.rdf> ;
-    owl:imports <https://www.dublincore.org/specifications/bibo/bibo/bibo.rdf.xml> ;
-    # dc namespace uri does not actually work...
-    owl:imports <https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.rdf> .
+# No imports required and none specified on d3fend-protege.ttl, so
+# imports here are different territory and depnding on imports can
+# lead to complications.
+
+# The assertions in this assertion about d3fend NamedIndividual tha
+# is an owl:Ontology, with all imports seen below (some commented
+# out, when used in merge creates an ontology that appears to have
+# conflicts; in any event, errors are thrown when read by the OWLAPI
+# as evidenced by Protege's log and resuling behavior.  When the
+# merged ontology from ROBOT (defend-public-merged.ttl) is loaded
+# into Protege, the OWLAPI
+# gets confused in handling the result of the merge (resolving
+# duplicates and/or inconsistent axioms?) and throws errors that
+# result in Error(n) classes being generated (e.g., Error1, Error4,
+# etc.)  The lack of useful debuggin information is a problelm with
+# OWLAPI and has been noted for some imports that repeat, esp. noted
+# in some circular references/imports. [The parsing process is complex
+# and some guessing on clues can be made during loads to avoid
+# multiple passes.]
+
+# In theory though, merging two files for the same ontology---that
+# both reference the same ontology (same NamedIndividual)---is
+# supported by ROBOT.
+
+<http://d3fend.mitre.org/ontologies/d3fend.owl#> rdf:type owl:Ontology ;
+     owl:imports <https://www.w3.org/2009/08/skos-reference/skos.rdf> . # Only fully clean import.  Import with owl import generates 3 errors. By itself, no errors, warns, and Pellet reasoner completes.
+#    owl:imports <http://purl.org/dc/terms> . # Import with owl import generates 3 errors.  By itself, no errors, 14 warns on "illegal redeclaration [can't be annotationproperty and namedindividual", and Pellet reasoner completes
+#    owl:imports <http://www.w3.org/2002/07/owl> . # By itself, three "Entity not properly recognized... owlapi/error#Error1... DataType-colored errors on import, no warns.
+#    owl:imports <https://www.dublincore.org/specifications/bibo/bibo/bibo.rdf.xml> . # Import with owl import generates 9 errors. By itself, two warns on "illegal redeclarations of entities for description and title", and Pellet reasoner completes.  With skos and bibo alone, no errors, but all the the dc/terms warnings about illegal redeclaration [can't be annotationproperty and namedindividual" come through, and Pellet reasonser completes.
 
 
 ################################################################################
@@ -33,51 +56,52 @@
 ######## SKOS Mappings:
 
 ##  d3f:definition
-:definition rdf:type owl:ObjectProperty ;
-    :comment "mapped to skos" ;
-    owl:equivalentProperty skos:definition .
+:definition rdf:type owl:AnnotationProperty ;
+    :comment "maps to skos:definition" ;
+    owl:sameAs skos:definition .
 
 
 ################################################################################
 ######## Dublic Core Mappings:
 
-
+# Cannot make d3f:contributor sameAs/equiv to dcterms:contributor, as
+# dcterms:contributor is just generic Property and not ObjectProperty,
+# might work for AnnotationProperty?
+#
 ##  d3f:contributor
-:contributor rdf:type owl:ObjectProperty ;
-    :comment "mapped to dc" ;
-    owl:equivalentProperty dcterms:contributor .
+# :contributor rdf:type owl:ObjectProperty ;
+#     :comment "mapped to dc" ;
+#     owl:sameAs dcterms:contributor .
 
 
-################################################################################
-######## BIBO Mappings:
+# ################################################################################
+# ######## BIBO Mappings:
 
-##  d3f:cites
+# ##  d3f:cited-by
+:cited-by rdf:type owl:ObjectProperty ;
+    owl:sameAs bibo:citedBy .
+
+# ##  d3f:cites
 :cites rdf:type owl:ObjectProperty ;
-    :comment "mapped to bibo" ;
-    owl:equivalentProperty bibo:cites .
+     :comment "mapped to bibo" ;
+     owl:sameAs bibo:cites ;
+     rdfs:subPropertyOf dcterms:references .
 
-##  d3f:producer
+# ##  d3f:producer
 :producer rdf:type owl:ObjectProperty ;
-    :comment "mapped to bibo" ;
-    owl:equivalentProperty bibo:producer .
+     :comment "mapped to bibo" ;
+     owl:sameAs bibo:producer .
 
-##  d3f:identifier
+# ##  d3f:identifier
 :identifier rdf:type owl:DatatypeProperty ;
     :comment "mapped to bibo" ;
-    owl:equivalentProperty bibo:identifier .
+    owl:sameAs bibo:identifier .
 
-##  d3f:license
+# ##  d3f:license
 :license rdf:type owl:ObjectProperty ;
     rdfs:subPropertyOf bibo:rights .
 
 ##  d3f:contributor
 :contributor rdf:type owl:ObjectProperty ;
-    owl:equivalentProperty bibo:contributor .
-
-##  d3f:cites
-:cites rdf:type owl:ObjectProperty ;
-    rdfs:subPropertyOf bibo:references .
-
-##  d3f:cited-by
-:cited-by rdf:type owl:ObjectProperty ;
-    owl:equivalentProperty bibo:citedBy .
+    :comment "mapped to bibo; also shadows a dublin code property" .
+    owl:sameAs bibo:contributor . ## Isn't handled well by OWLAPI/Robot; and capturing this semantic equivalence is unused, so comment enough; ontologizing not important at this time.
