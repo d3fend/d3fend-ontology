@@ -2075,6 +2075,45 @@ In a more general sense, ASP includes all applications of answer sets to knowled
     rdfs:seeAlso <http://dbpedia.org/resource/Application_software>,
         <http://wordnet-rdf.princeton.edu/id/06582286-n> .
 
+:Application-basedProcessIsolation a :Application-basedProcessIsolation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Application-based Process Isolation" ;
+    rdfs:subClassOf :ExecutionIsolation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :SpawnProcess ] ;
+    :d3fend-id "D3-ABPI" ;
+    :definition "Application code which prevents its own subroutines from accessing intra-process / internal memory space." ;
+    :kb-article """## How it works
+Some applications implement logic to permit or deny a particular subroutine access to other data within the same applicaition process. This is intended to prevent critical application process data from being tampered with.
+
+### Application-based Process Isolation in web browsers.
+
+Isolation in browsers usually is designed with the following architectural mindset:
+* Sandboxes and web resources should not be allowed to access each other because compromise of one should not effect the other.
+* The principle of least-privilege should be followed when browsing.
+The following aspects help make browser-based process isolation possible:
+* Same Origin Policy
+* Separate tabs and iframes use their own DOMs (cross-site document object models always run as a different process)
+* CORS ensures cross-site data is not delivered to a process unless the server allows it
+* Cookie and local data storage is separated by domain/site
+* Separate execution environments (threads)
+
+## Considerations
+- Using isolation in browsers does mitigate and protect by default some types of attacks (e.g. renderer attacks and access to the filesystem) but it depends on correct configuration of CORS, use of valid/appropriate certificates.
+-  Application-based Process Isolation may increase memory footprint.
+-  Application-based Process Isolation may decrease application performance.""" ;
+    :kb-reference :Reference-PrivateApplicationAccessWithBrowserIsolation,
+        :Reference-ProtectingWebApplicationsFromUntrustedEndpointsUsingRemoteBrowserIsolation,
+        :Reference-SiteIsolationDesignDocument ;
+    :synonym "Browser-based Process Isolation",
+        "Remote Browser Isolation",
+        "Sandbox" .
+
 :ApplicationConfiguration a owl:Class ;
     rdfs:label "Application Configuration" ;
     rdfs:subClassOf :ConfigurationResource ;
@@ -3430,7 +3469,7 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:label "Cloud Configuration" ;
     skos:altLabel "Cloud Configuration Information" ;
     rdfs:subClassOf :ConfigurationResource ;
-    :definition "Information used to configure the services, parameters, and initial settings for a virtual server instance running in a cloud service.." .
+    :definition "Information used to configure the services, parameters, and initial settings for a virtual server instance running in a cloud service." .
 
 :CloudInstanceMetadata a owl:Class ;
     rdfs:label "Cloud Instance Metadata" ;
@@ -17639,6 +17678,11 @@ The organization collects and models architectural information about the service
             owl:onProperty :provides ;
             owl:someValuesFrom :Service ] .
 
+:CloudServiceProvider a owl:Class ;
+    rdfs:label "Cloud Service Provider" ;
+    rdfs:subClassOf :ServiceProvider ;
+    :definition "A cloud service provider delivers scalable and distributed computing resources over a network, enabling clients to access infrastructure, platforms, and applications remotely." .
+
 :Session a owl:Class ;
     rdfs:label "Session" ;
     rdfs:subClassOf :DigitalInformationBearer ;
@@ -17985,6 +18029,8 @@ The goal is for homophones to be encoded to the same representation so that they
 :SPARTAThing a owl:Class ;
     rdfs:label "SPARTA Thing" ;
     rdfs:subClassOf :ExternalThreatModelThing .
+
+:SpawnProcess a owl:Class .
 
 :SpearmansRankCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
@@ -21213,7 +21259,8 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1134" ;
     :definition "Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token." .
 
-:T1134.001 a owl:Class ;
+:T1134.001 a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Token Impersonation/Theft" ;
     rdfs:subClassOf :T1134,
         [ a owl:Restriction ;
@@ -29432,6 +29479,19 @@ This patent describes ensuring that a driver associated with the agent is initia
     :kb-reference-of :DriverLoadIntegrityChecking ;
     :kb-reference-title "Integrity assurance through early loading in the boot phase" .
 
+:Reference-IntroducingFirefoxNewSiteIsolationArchitecture a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Introducing Firefox's new Site Isolation Architecture" ;
+    :has-link "https://hacks.mozilla.org/2021/05/introducing-firefox-new-site-isolation-security-architecture/" ;
+    :kb-abstract "" ;
+    :kb-author "Anny Gakhokidze" ;
+    :kb-mitre-analysis "" ;
+    :kb-organization "Mozilla Foundation" ;
+    :kb-reference-of :Application-basedProcessIsolation ;
+    :kb-reference-title "Site Isolation Design Document" ;
+    :release-date "May 18, 2021" ;
+    :todo "MITRE Analysis was not found" .
+
 :Reference-Intrusion_and_misuse_deterrence_system_employing_a_virtual_network a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Intrusion and misuse deterrence system employing a virtual network" ;
@@ -30087,6 +30147,13 @@ Powershell can be used to hide monitored command line execution such as:
     :kb-author "Teddy David Thomas" ;
     :kb-reference-title "Privacy and security systems and methods of use" .
 
+:Reference-PrivateApplicationAccessWithBrowserIsolation a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Private application access with browser isolation" ;
+    :has-link "https://patents.google.com/patent/US20210250333A1" ;
+    :kb-reference-of :Application-basedProcessIsolation ;
+    :kb-reference-title "Private application access with browser isolation" .
+
 :Reference-PrivateVirtualLocalAreaNetworkIsolation_CiscoTechnologyInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Private virtual local area network isolation - Cisco Technology Inc" ;
@@ -30144,6 +30211,13 @@ Powershell can be used to hide monitored command line execution such as:
     :kb-organization "Juniper Networks Inc." ;
     :kb-reference-of :InboundSessionVolumeAnalysis ;
     :kb-reference-title "Protecting against distributed network flood attacks" .
+
+:Reference-ProtectingWebApplicationsFromUntrustedEndpointsUsingRemoteBrowserIsolation a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Protecting web applications from untrusted endpoints using remote browser isolation" ;
+    :has-link "https://patents.google.com/patent/US11477248B2/" ;
+    :kb-reference-of :Application-basedProcessIsolation ;
+    :kb-reference-title "Protecting web applications from untrusted endpoints using remote browser isolation" .
 
 :Reference-PsSuspend a owl:NamedIndividual,
         :SpecificationReference ;
@@ -30595,6 +30669,17 @@ Logon events are Windows Event Code 4624 for Windows Vista and above, 518 for pr
     :kb-organization "Palo Alto Networks Inc" ;
     :kb-reference-of :DNSTrafficAnalysis ;
     :kb-reference-title "Sinkholing bad network domains by registering the bad network domains on the internet" .
+
+:Reference-SiteIsolationDesignDocument a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Site Isolation Design Document" ;
+    :has-link "https://www.chromium.org/developers/design-documents/site-isolation/" ;
+    :kb-abstract "" ;
+    :kb-mitre-analysis "" ;
+    :kb-organization "The Chromium Projects" ;
+    :kb-reference-of :Application-basedProcessIsolation ;
+    :kb-reference-title "Site Isolation Design Document" ;
+    :todo "MITRE Analysis was not found" .
 
 :Reference-SMBCopyAndExecution_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
