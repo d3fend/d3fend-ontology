@@ -138,13 +138,13 @@
 :caused-by a owl:ObjectProperty ;
     rdfs:label "caused-by" ;
     rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :causes ;
     rdfs:isDefinedBy <https://www.commoncoreontologies.org/ont00001819> ;
     :definition "x caused-by y: The event or action x occurs as a consequence of event or action y." .
 
 :causes a owl:ObjectProperty ;
     rdfs:label "causes" ;
     rdfs:subPropertyOf :associated-with ;
-    owl:inverseOf :caused-by ;
     rdfs:isDefinedBy <https://www.commoncoreontologies.org/ont00001803> ;
     :definition "x causes y: The event or action x brings about event or action y as a consequence." .
 
@@ -494,6 +494,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :has-participant a owl:ObjectProperty ;
     rdfs:label "has-participant" ;
     rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :participates-in ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000057> ;
     :definition "x has-participant y: The event x involves an object y as a participant, indicating that y plays some role in the event, whether actively, passively, or otherwise." .
 
@@ -951,7 +952,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :participates-in a owl:ObjectProperty ;
     rdfs:label "participates-in" ;
     rdfs:subPropertyOf :associated-with ;
-    owl:inverseOf :has-participant ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000056> ;
     :definition "x participates-in y: The object x takes part in the event y, signifying that x contributes to or is affected by the event’s occurrence in some way." .
 
@@ -2199,11 +2199,6 @@ Hardening an application's configuration involves analyzing not only the applica
     :kb-reference :Reference-RedHatEnterpriseLinux8SecurityTechnicalImplementationGuide,
         :Reference-Windows10STIG .
 
-:ApplicationCreationEvent a owl:Class ;
-    rdfs:label "Application Creation Event" ;
-    rdfs:subClassOf :ApplicationEvent ;
-    :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
-
 :ApplicationDeletionEvent a owl:Class ;
     rdfs:label "Application Deletion Event" ;
     rdfs:subClassOf :ApplicationEvent ;
@@ -2243,6 +2238,11 @@ Hardening an application's configuration involves analyzing not only the applica
 
 Exploits may, for example, rely on knowledge of addresses in a process's memory, they may alter memory contents, and they may cause a program to use instructions in a way that they were not intended.  By, for example, including code that dynamically changes the memory address of data or code on each run, introducing logic to validating the memory contents before certain potentially dangerous flows are executed, or monitoring a program for unusual sequence of instructions, this makes it harder for an attacker to craft a working exploit.""" ;
     :synonym "Process Hardening" .
+
+:ApplicationInstallationEvent a owl:Class ;
+    rdfs:label "Application Installation Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
 
 :ApplicationInstaller a owl:Class ;
     rdfs:label "Application Installer" ;
@@ -9964,12 +9964,10 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     :display-order 1 ;
     :display-priority 0 .
 
-:DetectionEvent a owl:Class ;
+:DetectionEvent a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Detection Event" ;
-    rdfs:subClassOf :SecurityEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :caused-by ;
-            owl:someValuesFrom :OffensiveTechnique ] ;
+    rdfs:subClassOf :SecurityEvent ;
     :definition "An event capturing the identification of a potential security issue, such as unauthorized access attempts, policy violations, or anomalous activities. Detection events form the foundation of cybersecurity monitoring and response." ;
     rdfs:seeAlso <https://schema.ocsf.io/1.3.0/categories/findings> ;
     :related :Detect .
@@ -10979,9 +10977,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :display-order 4 ;
     :display-priority 0 .
 
-:EvictionEvent a owl:Class ;
+:EvictionEvent a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Eviction Event" ;
-    rdfs:subClassOf :RemediationEvent ;
+    rdfs:subClassOf :SecurityEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DetectionEvent ] ;
     :definition "An event describing actions to remove adversaries or malicious resources from a system, re-establishing security and operational integrity." ;
     :related :Evict .
 
@@ -12163,9 +12165,10 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
     :display-order 0 ;
     :display-priority 0 .
 
-:HardeningEvent a owl:Class ;
+:HardeningEvent a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Hardening Event" ;
-    rdfs:subClassOf :RemediationEvent ;
+    rdfs:subClassOf :SecurityEvent ;
     :definition "An event involving actions to strengthen defenses, such as applying patches or implementing secure configurations, reducing attack surfaces, and increasing the difficulty of exploitation by adversaries." ;
     :related :Harden .
 
@@ -13300,9 +13303,10 @@ IPC can occur within a single computer or between multiple computers remotely th
     :display-order 2 ;
     :display-priority 0 .
 
-:IsolationEvent a owl:Class ;
+:IsolationEvent a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Isolation Event" ;
-    rdfs:subClassOf :RemediationEvent ;
+    rdfs:subClassOf :SecurityEvent ;
     :definition "An event involving actions to create logical or physical barriers that isolate compromised components, preventing adversary movement and reducing attack surfaces." ;
     :related :Isolate .
 
@@ -16964,7 +16968,7 @@ False negatives can occur via alteration of the verification logic or source of 
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :Process ] ;
-    :definition "An event capturing lifecycle transitions, interactions, or activities of system processes, including their creation, termination, and inter-process communication." ;
+    :definition "An event capturing lifecycle transitions, interactions, or activities of computer processes, including their creation, termination, and inter-process communication." ;
     rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/process_activity> .
 
 :ProcessEviction a owl:Class,
@@ -16987,11 +16991,6 @@ False negatives can occur via alteration of the verification logic or source of 
             owl:someValuesFrom :ProcessSegment ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/System_image#Process_images> ;
     :definition "A process image is a copy of a given process's state at a given point in time. It is often used to create persistence within an otherwise volatile system." .
-
-:ProcessInjectionEvent a owl:Class ;
-    rdfs:label "Process Injection Event" ;
-    rdfs:subClassOf :ProcessEvent ;
-    :definition "An event involving the insertion of executable code, modules, or libraries into a target process, often for extending or hijacking its behavior." .
 
 :ProcessLineageAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -17746,18 +17745,6 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
     :kb-reference :Reference-MaliciousRelayDetectionOnNetworks_VECTRANETWORKSInc ;
     :synonym "Relay Network Detection" .
 
-:RemediationEvent a owl:Class ;
-    rdfs:label "Remediation Event" ;
-    rdfs:subClassOf :SecurityEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :caused-by ;
-            owl:someValuesFrom :DefensiveTechnique ],
-        [ a owl:Restriction ;
-            owl:onProperty :preceded-by ;
-            owl:someValuesFrom :DetectionEvent ] ;
-    :definition "An event describing proactive and corrective actions taken to mitigate or eliminate cybersecurity threats, vulnerabilities, or compromises, ensuring the security and integrity of systems and resources." ;
-    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/remediation_activity> .
-
 :RemoteAuthenticationService a owl:Class ;
     rdfs:label "Remote Authentication Service" ;
     rdfs:subClassOf :AuthenticationService,
@@ -17920,9 +17907,10 @@ This technique analyzes a user's resource accesses by comparing the user's recen
     rdfs:isDefinedBy <http://dbpedia.org/resource/Resource_fork> ;
     :definition "The resource fork is a fork or section of a file on Apple's classic Mac OS operating system, which was also carried over to the modern macOS for compatibility, used to store structured data along with the unstructured data stored within the data fork." .
 
-:RestorationEvent a owl:Class ;
+:RestorationEvent a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Restoration Event" ;
-    rdfs:subClassOf :RemediationEvent ;
+    rdfs:subClassOf :SecurityEvent ;
     :definition "An event representing actions to return a compromised system or resource to a trusted operational state, such as through backup restoration, system reinstallation, or repair." ;
     :related :Restore .
 
@@ -18340,8 +18328,8 @@ List of known unauthorized script files or regular expression patterns must be k
     rdfs:label "Security Event" ;
     rdfs:subClassOf :DigitalEvent,
         [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :Artifact ] ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :DefensiveAction ] ;
     :definition "An event describing occurrences related to cybersecurity, including detection, remediation, or enforcement actions. Security events provide critical insights into the state, behavior, and resilience of digital systems." .
 
 :SecurityToken a owl:Class ;
@@ -18641,12 +18629,6 @@ System service applications may originate from the operating system installation
 * The source of truth must not be corrupted in order for this method to work.""" ;
     :kb-reference :Reference-ServiceBinaryModifications_MITRE .
 
-:ServiceCreationEvent a owl:Class ;
-    rdfs:label "Service Creation Event" ;
-    rdfs:subClassOf :ApplicationCreationEvent,
-        :ServiceEvent ;
-    :definition "An event representing the installation or registration of a service application within the system, enabling it to provide background or reusable functionality." .
-
 :ServiceDeletionEvent a owl:Class ;
     rdfs:label "Service Deletion Event" ;
     rdfs:subClassOf :ApplicationDeletionEvent,
@@ -18699,6 +18681,12 @@ The organization collects and models architectural information about the service
             owl:onProperty :has-participant ;
             owl:someValuesFrom :ServiceApplication ] ;
     :definition "An event capturing the operation, configuration, or lifecycle of a service application. Services are specialized applications designed to provide reusable functionality to clients, systems, or other applications, often operating in the background or across networks." .
+
+:ServiceInstallationEvent a owl:Class ;
+    rdfs:label "Service Installation Event" ;
+    rdfs:subClassOf :ApplicationInstallationEvent,
+        :ServiceEvent ;
+    :definition "An event representing the installation or registration of a service application within the system, enabling it to provide background or reusable functionality." .
 
 :ServiceModificationEvent a owl:Class ;
     rdfs:label "Service Modification Event" ;
