@@ -2075,6 +2075,45 @@ In a more general sense, ASP includes all applications of answer sets to knowled
     rdfs:seeAlso <http://dbpedia.org/resource/Application_software>,
         <http://wordnet-rdf.princeton.edu/id/06582286-n> .
 
+:Application-basedProcessIsolation a :Application-basedProcessIsolation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Application-based Process Isolation" ;
+    rdfs:subClassOf :ExecutionIsolation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :Subroutine ] ;
+    :d3fend-id "D3-ABPI" ;
+    :definition "Application code which prevents its own subroutines from accessing intra-process / internal memory space." ;
+    :kb-article """## How it works
+Some applications implement logic to permit or deny a particular subroutine access to other data within the same applicaition process. This is intended to prevent critical application process data from being tampered with.
+
+### Application-based Process Isolation in web browsers.
+
+Isolation in browsers usually is designed with the following architectural mindset:
+* Sandboxes and web resources should not be allowed to access each other because compromise of one should not effect the other.
+* The principle of least-privilege should be followed when browsing.
+The following aspects help make browser-based process isolation possible:
+* Same Origin Policy
+* Separate tabs and iframes use their own DOMs (cross-site document object models always run as a different process)
+* CORS ensures cross-site data is not delivered to a process unless the server allows it
+* Cookie and local data storage is separated by domain/site
+* Separate execution environments (threads)
+
+## Considerations
+- Using isolation in browsers does mitigate and protect by default some types of attacks (e.g. renderer attacks and access to the filesystem) but it depends on correct configuration of CORS, use of valid/appropriate certificates.
+-  Application-based Process Isolation may increase memory footprint.
+-  Application-based Process Isolation may decrease application performance.""" ;
+    :kb-reference :Reference-PrivateApplicationAccessWithBrowserIsolation,
+        :Reference-ProtectingWebApplicationsFromUntrustedEndpointsUsingRemoteBrowserIsolation,
+        :Reference-SiteIsolationDesignDocument ;
+    :synonym "Browser-based Process Isolation",
+        "Remote Browser Isolation",
+        "Sandbox" .
+
 :ApplicationConfiguration a owl:Class ;
     rdfs:label "Application Configuration" ;
     rdfs:subClassOf :ConfigurationResource ;
@@ -3451,6 +3490,11 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:label "Cloud Service Authorization" ;
     rdfs:subClassOf :Authorization ;
     :definition "Cloud authorization is the function of specifying access rights to cloud resources." .
+
+:CloudServiceProvider a owl:Class ;
+    rdfs:label "Cloud Service Provider" ;
+    rdfs:subClassOf :ServiceProvider ;
+    :definition "A cloud service provider delivers scalable and distributed computing resources over a network, enabling clients to access infrastructure, platforms, and applications remotely." .
 
 :CloudServiceSensor a owl:Class ;
     rdfs:label "Cloud Service Sensor" ;
@@ -19401,6 +19445,12 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1027.013" ;
     :definition "Adversaries may encrypt or encode files to obfuscate strings, bytes, and other specific patterns to impede detection. Encrypting and/or encoding file content aims to conceal malicious artifacts within a file used in an intrusion. Many other techniques, such as [Software Packing](https://attack.mitre.org/techniques/T1027/002), [Steganography](https://attack.mitre.org/techniques/T1027/003), and [Embedded Payloads](https://attack.mitre.org/techniques/T1027/009), share this same broad objective. Encrypting and/or encoding files could lead to a lapse in detection of static signatures, only for this malicious content to be revealed (i.e., [Deobfuscate/Decode Files or Information](https://attack.mitre.org/techniques/T1140)) at the time of execution/use." .
 
+:T1027.014 a owl:Class ;
+    rdfs:label "Polymorphic Code" ;
+    rdfs:subClassOf :T1027 ;
+    :attack-id "T1027.014" ;
+    :definition "Adversaries may utilize polymorphic code (also known as metamorphic or mutating code) to evade detection. Polymorphic code is a type of software capable of changing its runtime footprint during code execution.(Citation: polymorphic-blackberry) With each execution of the software, the code is mutated into a different version of itself that achieves the same purpose or objective as the original. This functionality enables the malware to evade traditional signature-based defenses, such as antivirus and antimalware tools.(Citation: polymorphic-sentinelone)" .
+
 :T1028 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Windows Remote Management" ;
@@ -19575,6 +19625,12 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1036 ;
     :attack-id "T1036.009" ;
     :definition "An adversary may attempt to evade process tree-based analysis by modifying executed malware's parent process ID (PPID). If endpoint protection software leverages the “parent-child\" relationship for detection, breaking this relationship could result in the adversary’s behavior not being associated with previous process tree activity. On Unix-based systems breaking this process tree is common practice for administrators to execute software using scripts and programs.(Citation: 3OHA double-fork 2022) " .
+
+:T1036.010 a owl:Class ;
+    rdfs:label "Masquerade Account Name" ;
+    rdfs:subClassOf :T1036 ;
+    :attack-id "T1036.010" ;
+    :definition "Adversaries may match or approximate the names of legitimate accounts to make newly created ones appear benign. This will typically occur during [Create Account](https://attack.mitre.org/techniques/T1136), although accounts may also be renamed at a later date. This may also coincide with [Account Access Removal](https://attack.mitre.org/techniques/T1531) if the actor first deletes an account before re-creating one with the same name.(Citation: Huntress MOVEit 2023)" .
 
 :T1037 a owl:Class ;
     rdfs:label "Boot or Logon Initialization Scripts" ;
@@ -20145,6 +20201,12 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1059.010" ;
     :definition "Adversaries may execute commands and perform malicious tasks using AutoIT and AutoHotKey automation scripts. AutoIT and AutoHotkey (AHK) are scripting languages that enable users to automate Windows tasks. These automation scripts can be used to perform a wide variety of actions, such as clicking on buttons, entering text, and opening and closing programs.(Citation: AutoIT)(Citation: AutoHotKey)" .
 
+:T1059.011 a owl:Class ;
+    rdfs:label "Lua" ;
+    rdfs:subClassOf :T1059 ;
+    :attack-id "T1059.011" ;
+    :definition "Adversaries may abuse Lua commands and scripts for execution. Lua is a cross-platform scripting and programming language primarily designed for embedded use in applications. Lua can be executed on the command-line (through the stand-alone lua interpreter), via scripts (<code>.lua</code>), or from Lua-embedded programs (through the <code>struct lua_State</code>).(Citation: Lua main page)(Citation: Lua state)" .
+
 :T1060 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Registry Run Keys / Startup Folder" ;
@@ -20335,6 +20397,12 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1070.009" ;
     :definition "Adversaries may clear artifacts associated with previously established persistence on a host system to remove evidence of their activity. This may involve various actions, such as removing services, deleting executables, [Modify Registry](https://attack.mitre.org/techniques/T1112), [Plist File Modification](https://attack.mitre.org/techniques/T1647), or other methods of cleanup to prevent defenders from collecting evidence of their persistent presence.(Citation: Cylance Dust Storm) Adversaries may also delete accounts previously created to maintain persistence (i.e. [Create Account](https://attack.mitre.org/techniques/T1136)).(Citation: Talos - Cisco Attack 2022)" .
 
+:T1070.010 a owl:Class ;
+    rdfs:label "Relocate Malware" ;
+    rdfs:subClassOf :T1070 ;
+    :attack-id "T1070.010" ;
+    :definition "Once a payload is delivered, adversaries may reproduce copies of the same malware on the victim system to remove evidence of their presence and/or avoid defenses. Copying malware payloads to new locations may also be combined with [File Deletion](https://attack.mitre.org/techniques/T1070/004) to cleanup older artifacts." .
+
 :T1071 a owl:Class ;
     rdfs:label "Application Layer Protocol" ;
     rdfs:subClassOf :CommandAndControlTechnique,
@@ -20386,6 +20454,12 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :OutboundInternetDNSLookupTraffic ] ;
     :attack-id "T1071.004" ;
     :definition "Adversaries may communicate using the Domain Name System (DNS) application layer protocol to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. " .
+
+:T1071.005 a owl:Class ;
+    rdfs:label "Publish/Subscribe Protocols" ;
+    rdfs:subClassOf :T1071 ;
+    :attack-id "T1071.005" ;
+    :definition "Adversaries may communicate using publish/subscribe (pub/sub) application layer protocols to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server." .
 
 :T1072 a owl:Class ;
     rdfs:label "Software Deployment Tools" ;
