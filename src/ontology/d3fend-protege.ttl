@@ -2435,12 +2435,12 @@ ANN Classification. [Link](http://uc-r.github.io/ann_classification).""" .
 
 :AssignGroupsEvent a owl:Class ;
     rdfs:label "Assign Groups Event" ;
-    rdfs:subClassOf :AuthorizationEvent ;
+    rdfs:subClassOf :SessionAuthorizationEvent ;
     :definition "An event where a user is assigned to specific groups, which collectively determine their permissions and access rights. Group assignments often facilitate role-based access control (RBAC) by associating users with predefined policies or functional roles." .
 
 :AssignPrivilegesEvent a owl:Class ;
     rdfs:label "Assign Privileges Event" ;
-    rdfs:subClassOf :AuthorizationEvent ;
+    rdfs:subClassOf :SessionAuthorizationEvent ;
     :definition "An event where specific privileges or rights are granted to a user or session, defining their ability to perform sensitive operations or access restricted resources within a system." .
 
 :AssignPrivilegesToGroupEvent a owl:Class ;
@@ -2644,12 +2644,8 @@ This technique covers statistical outliers. Though depending on the complexity o
 
 :AuthorizationEvent a owl:Class ;
     rdfs:label "Authorization Event" ;
-    rdfs:subClassOf :DigitalEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :caused-by ;
-            owl:someValuesFrom :Authorization ] ;
-    :definition "An event representing the assignment of privileges, roles, or group memberships to a user session, typically during the initiation of a session. Authorization events determine the scope of access and control a user or entity has within a system or application, ensuring compliance with access policies and security principles." ;
-    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/authorize_session> .
+    rdfs:subClassOf :DigitalEvent ;
+    :definition "An event regarding access adjudication decisions." .
 
 :AuthorizationEventThresholding a :AuthorizationEventThresholding,
         owl:Class,
@@ -3004,11 +3000,6 @@ This technique is highly dependent on network infrastructure and networking requ
     :definition "A \"bucket of models\" is an ensemble technique in which a model selection algorithm is used to choose the best model for each problem. When tested with only one problem, a bucket of models can produce no better results than the best model in the set, but when evaluated across many problems, it will typically produce much better results, on average, than any model in the set." ;
     :kb-article """## References
 Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_learning).""" .
-
-:BufferOverflowEvent a owl:Class ;
-    rdfs:label "Memory Buffer Overflow Event" ;
-    rdfs:subClassOf :MemoryEvent ;
-    :definition "An event where data exceeds allocated buffer boundaries, potentially leading to system instability or exploitation by malicious actors." .
 
 :BuildTool a owl:Class ;
     rdfs:label "Build Tool" ;
@@ -3776,7 +3767,7 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 
 :ComputeDeviceEvent a owl:Class ;
     rdfs:label "Compute Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :Processor ] ;
@@ -9969,59 +9960,6 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:seeAlso <http://dbpedia.org/resource/Application_development>,
         <http://dbpedia.org/resource/Application_software> .
 
-:DeviceBindEvent a owl:Class ;
-    rdfs:label "Device Bind Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event where a device is logically bound to a system or process, typically for exclusive use or integration with specific software components." .
-
-:DeviceConnectionEvent a owl:Class ;
-    rdfs:label "Device Connection Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event representing the physical or logical attachment of a device to a system, enabling its operational functionality." .
-
-:DeviceDisabledEvent a owl:Class ;
-    rdfs:label "Device Disabled Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event where a device transitions to an inactive or unavailable state, often due to deactivation, failure, or maintenance." .
-
-:DeviceDisconnectionEvent a owl:Class ;
-    rdfs:label "Device Disconnection Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event representing the removal of a device from a system, ceasing its operational functionality or availability." .
-
-:DeviceEnabledEvent a owl:Class ;
-    rdfs:label "Device Enabled Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event where a device becomes operational and available for use, typically following initialization, activation, or repair." .
-
-:DeviceEvent a owl:Class ;
-    rdfs:label "Device Event" ;
-    rdfs:subClassOf :DigitalEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :HardwareDevice ] ;
-    :definition "An event capturing the existence, state, or interaction of hardware or virtual devices within a system. Device events encompass activities such as discovery, connection, disconnection, operational state changes, or configuration modifications, providing visibility into device behavior and health." .
-
-:DeviceMoveEvent a owl:Class ;
-    rdfs:label "Device Move Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event where a device is relocated or reassigned within a system or network, potentially affecting its operational scope or connectivity." .
-
-:DeviceStateEvent a owl:Class ;
-    rdfs:label "Device State Event" ;
-    rdfs:subClassOf :DeviceEvent ;
-    :definition "An event involving a change to a device's state, such as connection, disconnection, modification, or operational state transitions (e.g., online or offline). Device state events provide visibility into device availability and operational conditions." .
-
-:DeviceUnbindEvent a owl:Class ;
-    rdfs:label "Device Unbind Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event where a device is logically unbound from a system or process, releasing it from exclusive use or integration." .
-
-:DeviceUpdateEvent a owl:Class ;
-    rdfs:label "Device Update Event" ;
-    rdfs:subClassOf :DeviceStateEvent ;
-    :definition "An event capturing updates or changes to a device's configuration, properties, or state, including firmware updates, reconfigurations, or optimizations." .
-
 :DHCPAckEvent a owl:Class ;
     rdfs:label "DHCP Ack Event" ;
     skos:altLabel "DHCPACK" ;
@@ -12235,6 +12173,59 @@ Administrators collect information on hardware devices such as peripherals, NICs
     :definition "Hardware devices are the physical artifacts that constitute a network or computer system. Hardware devices are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, hard disk drive (HDD), graphic cards, sound cards, memory (RAM), motherboard, and so on, all of which are tangible physical objects. By contrast, software is instructions that can be stored and run by hardware. Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/device_hw_info> .
 
+:HardwareDeviceBindEvent a owl:Class ;
+    rdfs:label "Hardware Device Bind Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is logically bound to a system or process, typically for exclusive use or integration with specific software components." .
+
+:HardwareDeviceConnectionEvent a owl:Class ;
+    rdfs:label "Hardware Device Connection Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event representing the physical or logical attachment of a device to a system, enabling its operational functionality." .
+
+:HardwareDeviceDisabledEvent a owl:Class ;
+    rdfs:label "Hardware Device Disabled Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device transitions to an inactive or unavailable state, often due to deactivation, failure, or maintenance." .
+
+:HardwareDeviceDisconnectionEvent a owl:Class ;
+    rdfs:label "Hardware Device Disconnection Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event representing the removal of a device from a system, ceasing its operational functionality or availability." .
+
+:HardwareDeviceEnabledEvent a owl:Class ;
+    rdfs:label "Hardware Device Enabled Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device becomes operational and available for use, typically following initialization, activation, or repair." .
+
+:HardwareDeviceEvent a owl:Class ;
+    rdfs:label "Hardware Device Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "An event capturing the existence, state, or interaction of hardware or virtual devices within a system. Device events encompass activities such as discovery, connection, disconnection, operational state changes, or configuration modifications, providing visibility into device behavior and health." .
+
+:HardwareDeviceMoveEvent a owl:Class ;
+    rdfs:label "Hardware Device Move Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is relocated or reassigned within a system or network, potentially affecting its operational scope or connectivity." .
+
+:HardwareDeviceStateEvent a owl:Class ;
+    rdfs:label "Hardware Device State Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
+    :definition "An event involving a change to a device's state, such as connection, disconnection, modification, or operational state transitions (e.g., online or offline). Device state events provide visibility into device availability and operational conditions." .
+
+:HardwareDeviceUnbindEvent a owl:Class ;
+    rdfs:label "Hardware Device Unbind Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is logically unbound from a system or process, releasing it from exclusive use or integration." .
+
+:HardwareDeviceUpdateEvent a owl:Class ;
+    rdfs:label "Hardware Device Update Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event capturing updates or changes to a device's configuration, properties, or state, including firmware updates, reconfigurations, or optimizations." .
+
 :HardwareDriver a owl:Class ;
     rdfs:label "Hardware Driver" ;
     skos:altLabel "Device Driver" ;
@@ -12957,7 +12948,7 @@ Given some example of legitimate behavioral input patterns, attackers could mimi
 
 :InputDeviceEvent a owl:Class ;
     rdfs:label "Input Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :InputDevice ] ;
@@ -14520,7 +14511,7 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
 
 :MemoryDeviceEvent a owl:Class ;
     rdfs:label "Memory Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :PrimaryStorage ] ;
@@ -14971,7 +14962,7 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
 
 :NetworkDeviceEvent a owl:Class ;
     rdfs:label "Network Device Event" ;
-    rdfs:subClassOf :DeviceEvent ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
     :definition "An event capturing the activity or state of network devices, such as Ethernet adapters, Wi-Fi modules, or virtual interfaces. These events highlight connectivity, configuration, or performance changes." .
 
 :NetworkDirectoryResource a owl:Class ;
@@ -16157,7 +16148,7 @@ There are various strategies for developing filtering rulesets:
 
 :OutputDeviceEvent a owl:Class ;
     rdfs:label "Output Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OutputDevice ] ;
@@ -16395,7 +16386,7 @@ Collection and analysis of large network packet captures requires large storage 
 
 :PeripheralDeviceEvent a owl:Class ;
     rdfs:label "Peripheral Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :RemovableMediaDevice ] ;
@@ -16695,7 +16686,7 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
 
 :PowerThermalDeviceEvent a owl:Class ;
     rdfs:label "Power and Thermal Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :Sensor ] ;
@@ -18701,6 +18692,15 @@ The organization collects and models architectural information about the service
     :definition "In computer science, in particular networking, a session is a semi-permanent interactive information interchange, also known as a dialogue, a conversation or a meeting, between two or more communicating devices, or between a computer and user (see Login session). A session is set up or established at a certain point in time, and then torn down at some later point. An established communication session may involve more than one message in each direction. A session is typically, but not always, stateful, meaning that at least one of the communicating parts needs to save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/session> .
 
+:SessionAuthorizationEvent a owl:Class ;
+    rdfs:label "Session Authorization Event" ;
+    rdfs:subClassOf :AuthorizationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :Authorization ] ;
+    :definition "An event representing the assignment of privileges, roles, or group memberships to a user session, typically during the initiation of a session. Authorization events determine the scope of access and control a user or entity has within a system or application, ensuring compliance with access policies and security principles." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/authorize_session> .
+
 :SessionCookie a owl:Class ;
     rdfs:label "Session Cookie" ;
     skos:altLabel "In-memory Cookie",
@@ -19332,7 +19332,7 @@ Wolfram MathWorld. (n.d.). Statistics. [Link](https://mathworld.wolfram.com/Stat
 
 :StorageDeviceEvent a owl:Class ;
     rdfs:label "Storage Device Event" ;
-    rdfs:subClassOf :DeviceEvent,
+    rdfs:subClassOf :HardwareDeviceEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :SecondaryStorage ] ;
