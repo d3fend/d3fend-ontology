@@ -135,6 +135,19 @@
     rdfs:label "broader-transitive" ;
     rdfs:subPropertyOf :semantic-relation .
 
+:caused-by a owl:ObjectProperty ;
+    rdfs:label "caused-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :causes ;
+    rdfs:isDefinedBy <https://www.commoncoreontologies.org/ont00001819> ;
+    :definition "x caused-by y: The event or action x occurs as a consequence of event or action y." .
+
+:causes a owl:ObjectProperty ;
+    rdfs:label "causes" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy <https://www.commoncoreontologies.org/ont00001803> ;
+    :definition "x causes y: The event or action x brings about event or action y as a consequence." .
+
 :cited-by a owl:ObjectProperty ;
     rdfs:label "cited-by" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
@@ -480,7 +493,10 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :has-participant a owl:ObjectProperty ;
     rdfs:label "has-participant" ;
-    rdfs:subPropertyOf :associated-with .
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :participates-in ;
+    rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000057> ;
+    :definition "x has-participant y: The event x involves an object y as a participant, indicating that y plays some role in the event, whether actively, passively, or otherwise." .
 
 :has-prerequisite a owl:ObjectProperty ;
     rdfs:subPropertyOf :d3fend-use-case-object-property .
@@ -932,6 +948,25 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/02209474-v> ;
     :definition "x owns y: The subject x has ownership or possession of some object y." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Ownership> .
+
+:participates-in a owl:ObjectProperty ;
+    rdfs:label "participates-in" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000056> ;
+    :definition "x participates-in y: The object x takes part in the event y, signifying that x contributes to or is affected by the event’s occurrence in some way." .
+
+:preceded-by a owl:ObjectProperty ;
+    rdfs:label "preceded-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :precedes ;
+    rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000062> ;
+    :definition "x preceded-by y: The event or action x occurs after event or action y in time." .
+
+:precedes a owl:ObjectProperty ;
+    rdfs:label "precedes" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000063> ;
+    :definition "x precedes y: The event or action x occurs before event or action y in time." .
 
 :process-ancestor a owl:ObjectProperty,
         owl:TransitiveProperty ;
@@ -1621,7 +1656,7 @@ skos:altLabel a owl:AnnotationProperty .
 
 :Access a owl:Class ;
     rdfs:label "Access" ;
-    rdfs:subClassOf :DigitalEvent,
+    rdfs:subClassOf :Event,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :Resource ],
@@ -1851,6 +1886,11 @@ GeeksforGeeks. (n.d.). Adaptive Resonance Theory (ART). [Link](https://www.geeks
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Address_space> ;
     :definition "An address space defines a range of discrete addresses, each of which may correspond to a network host, peripheral device, disk sector, a memory cell or other logical or physical entity. For software programs to save and retrieve stored data, each unit of data must have an address where it can be located. The number of address spaces available depends on the underlying address structure, which is usually limited by the computer architecture being used." .
+
+:AddUserToGroupEvent a owl:Class ;
+    rdfs:label "Add User to Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where a user is added to a group, granting the user the permissions and privileges associated with the group." .
 
 :AdminFeatureAssessment a owl:Class ;
     rdfs:label "Admin Feature Assessment" ;
@@ -2159,6 +2199,30 @@ Hardening an application's configuration involves analyzing not only the applica
     :kb-reference :Reference-RedHatEnterpriseLinux8SecurityTechnicalImplementationGuide,
         :Reference-Windows10STIG .
 
+:ApplicationDeletionEvent a owl:Class ;
+    rdfs:label "Application Deletion Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event capturing the removal of an application from a system, ensuring its binaries, configuration files, and registry entries are deleted or deactivated." .
+
+:ApplicationDisableEvent a owl:Class ;
+    rdfs:label "Application Disable Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event capturing the disabling of an application, preventing it from being operational or accessed until re-enabled." .
+
+:ApplicationEnableEvent a owl:Class ;
+    rdfs:label "Application Enable Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event representing the enabling of an application, allowing it to be started or accessed when required." .
+
+:ApplicationEvent a owl:Class ;
+    rdfs:label "Application Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Application ] ;
+    :definition "An event that captures the behavior, state, or interactions of software applications or services operating within a system. Application events encompass lifecycle changes, configuration updates, and operational anomalies, providing insight into the health and performance of software components." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/application_lifecycle> .
+
 :ApplicationHardening a :ApplicationHardening,
         owl:Class,
         owl:NamedIndividual ;
@@ -2175,6 +2239,11 @@ Hardening an application's configuration involves analyzing not only the applica
 Exploits may, for example, rely on knowledge of addresses in a process's memory, they may alter memory contents, and they may cause a program to use instructions in a way that they were not intended.  By, for example, including code that dynamically changes the memory address of data or code on each run, introducing logic to validating the memory contents before certain potentially dangerous flows are executed, or monitoring a program for unusual sequence of instructions, this makes it harder for an attacker to craft a working exploit.""" ;
     :synonym "Process Hardening" .
 
+:ApplicationInstallationEvent a owl:Class ;
+    rdfs:label "Application Installation Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
+
 :ApplicationInstaller a owl:Class ;
     rdfs:label "Application Installer" ;
     rdfs:subClassOf :UserApplication .
@@ -2186,6 +2255,11 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
             owl:onProperty :monitors ;
             owl:someValuesFrom :Application ] ;
     :definition "Collects information on applications on an endpoint." .
+
+:ApplicationLayerEvent a owl:Class ;
+    rdfs:label "Application Layer Event" ;
+    rdfs:subClassOf :NetworkEvent ;
+    :definition "An event occurring at the application layer, involving protocols that support application-specific communication." .
 
 :ApplicationLayerFirewall a owl:Class ;
     rdfs:label "Application Layer Firewall" ;
@@ -2212,6 +2286,11 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :ApplicationConfiguration ;
     :definition "The current configuration of an application process, stored in memory. It may have been sourced from other types of application configurations, e.g. Application Configuration Files or Application Configuration Database Records." .
 
+:ApplicationRestartEvent a owl:Class ;
+    rdfs:label "Application Restart Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event where an application is sequentially stopped and started, typically to refresh its state, apply updates, or resolve issues while preserving its availability." .
+
 :ApplicationRule a owl:Class ;
     rdfs:label "Application Rule" ;
     rdfs:subClassOf :ApplicationConfiguration ;
@@ -2223,6 +2302,21 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     :definition "An application shim adapts an application program to run on a version of a platform for which they were not originally created. Most commonly \"Application Shimming\" refers to use of The Windows Application Compatibility Toolkit (ACT) provides backward compatibility by simulating the behavior of older version of Windows." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Shim_(computing)#Examples>,
         :Shim .
+
+:ApplicationStartEvent a owl:Class ;
+    rdfs:label "Application Start Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event where an application transitions from an inactive state to an active state, initializing its resources and becoming operational for user interaction or automated processes." .
+
+:ApplicationStopEvent a owl:Class ;
+    rdfs:label "Application Stop Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event capturing the cessation of an application’s operations, transitioning it to an inactive state and releasing any allocated resources." .
+
+:ApplicationUpdateEvent a owl:Class ;
+    rdfs:label "Application Update Event" ;
+    rdfs:subClassOf :ApplicationEvent ;
+    :definition "An event describing changes made to an application, such as updates, reconfigurations, or patch installations, while maintaining its presence on the system." .
 
 :ApproximateStringMatching a owl:Class,
         owl:NamedIndividual ;
@@ -2339,6 +2433,21 @@ ANN Classification. [Link](http://uc-r.github.io/ann_classification).""" .
         :Reference-SecurityVulnerabilityInformationAggregation,
         :Reference-SystemAndMethodForVulnerabilityRiskAssessment .
 
+:AssignGroupsEvent a owl:Class ;
+    rdfs:label "Assign Groups Event" ;
+    rdfs:subClassOf :SessionAuthorizationEvent ;
+    :definition "An event where a user is assigned to specific groups, which collectively determine their permissions and access rights. Group assignments often facilitate role-based access control (RBAC) by associating users with predefined policies or functional roles." .
+
+:AssignPrivilegesEvent a owl:Class ;
+    rdfs:label "Assign Privileges Event" ;
+    rdfs:subClassOf :SessionAuthorizationEvent ;
+    :definition "An event where specific privileges or rights are granted to a user or session, defining their ability to perform sensitive operations or access restricted resources within a system." .
+
+:AssignPrivilegesToGroupEvent a owl:Class ;
+    rdfs:label "Assign Privileges to Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where specific privileges or rights are granted to a group, enabling its members to perform actions or access resources as defined by the privileges." .
+
 :AssociationRuleLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Association Rule Learning" ;
@@ -2446,6 +2555,15 @@ Windows Credential Management API""" ;
     :kb-reference :Reference-SecureCachingOfServerCredentials_DellProductsLP,
         :Reference-SystemAndMethodForProvidingAnActivelyInvalidatedClient-sideNetworkResourceCache_IMVU .
 
+:AuthenticationEvent a owl:Class ;
+    rdfs:label "Authentication Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :Authentication ] ;
+    :definition "An event involving the systematic process of verifying the identity of an account, user, or entity within a system. Authentication events ensure that only authorized entities gain access to protected resources by validating credentials, tokens, or cryptographic evidence." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/authentication> .
+
 :AuthenticationEventThresholding a :AuthenticationEventThresholding,
         owl:Class,
         owl:NamedIndividual ;
@@ -2523,6 +2641,11 @@ This technique covers statistical outliers. Though depending on the complexity o
             owl:someValuesFrom :NetworkResourceAccess ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Authorization> ;
     :definition "Authorization is the function of specifying access rights to resources related to information security and computer security in general and to access control in particular. More formally, \"to authorize\" is to define an access policy. For example, human resources staff is normally authorized to access employee records and this policy is usually formalized as access control rules in a computer system. During operation, the system uses the access control rules to decide whether access requests from (authenticated) consumers shall be approved (granted) or disapproved (rejected). Resources include individual files or an item's data, computer programs, computer devices and functionality provided by computer applications. Examples of consumers are computer users, computer program" .
+
+:AuthorizationEvent a owl:Class ;
+    rdfs:label "Authorization Event" ;
+    rdfs:subClassOf :DigitalEvent ;
+    :definition "An event regarding access adjudication decisions." .
 
 :AuthorizationEventThresholding a :AuthorizationEventThresholding,
         owl:Class,
@@ -3586,8 +3709,7 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 
 :Command a owl:Class ;
     rdfs:label "Command" ;
-    rdfs:subClassOf :DigitalEvent,
-        :DigitalInformation ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Command_(computing)> ;
     :definition "In computing, a command is a directive to a computer program acting as an interpreter of some kind, in order to perform a specific task. Most commonly a command is either a directive to some kind of command-line interface, such as a shell, or an event in a graphical user interface triggered by the user selecting an option in a menu." .
 
@@ -3642,6 +3764,14 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:label "Compiler Configuration File" ;
     rdfs:subClassOf :ApplicationConfigurationFile ;
     :definition "A file containing Information used to configure the parameters and initial settings for a compiler." .
+
+:ComputeDeviceEvent a owl:Class ;
+    rdfs:label "Compute Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Processor ] ;
+    :definition "An event capturing the operation, state, or performance of computational hardware, such as CPUs, GPUs, or accelerators. These events reflect processing capacity changes, utilization anomalies, or device health." .
 
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
@@ -9815,6 +9945,14 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     :display-order 1 ;
     :display-priority 0 .
 
+:DetectionEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Detection Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event capturing the identification of a potential security issue, such as unauthorized access attempts, policy violations, or anomalous activities. Detection events form the foundation of cybersecurity monitoring and response." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/categories/findings> ;
+    :related :Detect .
+
 :DeveloperApplication a owl:Class ;
     rdfs:label "Developer Application" ;
     rdfs:subClassOf :UserApplication ;
@@ -9822,10 +9960,68 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:seeAlso <http://dbpedia.org/resource/Application_development>,
         <http://dbpedia.org/resource/Application_software> .
 
+:DHCPAckEvent a owl:Class ;
+    rdfs:label "DHCP Ack Event" ;
+    skos:altLabel "DHCPACK" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP server sends an ACK message to acknowledge a client's REQUEST, confirming the allocation of an IP address and associated network settings." .
+
+:DHCPDiscoverEvent a owl:Class ;
+    rdfs:label "DHCP Discover Event" ;
+    skos:altLabel "DHCPDISCOVER" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP client broadcasts a DISCOVER message to identify available DHCP servers capable of providing IP configuration." .
+
+:DHCPEvent a owl:Class ;
+    rdfs:label "DHCP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :UDPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :DHCPNetworkTraffic ] ;
+    :definition "An event involving the Dynamic Host Configuration Protocol (DHCP), a UDP-based protocol used to dynamically assign IP addresses and configure network parameters, enabling devices to communicate efficiently on a network." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/dhcp_activity> .
+
+:DHCPInformEvent a owl:Class ;
+    rdfs:label "DHCP Inform Event" ;
+    skos:altLabel "DHCPINFORM" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP client sends an INFORM message to request configuration parameters, such as DNS or gateway information, without requiring IP address assignment." .
+
+:DHCPLeaseExpireEvent a owl:Class ;
+    rdfs:label "DHCP Lease Expire Event" ;
+    skos:altLabel "DHCPLEASEEXPIRE" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event indicating that a DHCP lease has expired, rendering the previously assigned IP address available for reassignment to other devices." .
+
+:DHCPNakEvent a owl:Class ;
+    rdfs:label "DHCP Nak Event" ;
+    skos:altLabel "DHCPNAK" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP server sends a NAK message to reject a client's REQUEST, indicating that the requested configuration cannot be granted." .
+
 :DHCPNetworkTraffic a owl:Class ;
     rdfs:label "DHCP Network Traffic" ;
     rdfs:subClassOf :NetworkTraffic ;
     :definition "DHCP Network Traffic is network traffic related to the DHCP protocol, used by network nodes to negotiate and configure either IPv4 or IPv6 addresses." .
+
+:DHCPOfferEvent a owl:Class ;
+    rdfs:label "DHCP Offer Event" ;
+    skos:altLabel "DHCPOFFER" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP server sends an OFFER message to a client in response to a DISCOVER request, proposing an IP address and associated configuration parameters." .
+
+:DHCPReleaseEvent a owl:Class ;
+    rdfs:label "DHCP Release Event" ;
+    skos:altLabel "DHCPRELEASE" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP client sends a RELEASE message to relinquish its assigned IP address and cancel any remaining lease duration." .
+
+:DHCPRequestEvent a owl:Class ;
+    rdfs:label "DHCP Request Event" ;
+    skos:altLabel "DHCPREQUEST" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP client sends a REQUEST message to confirm or renew its desired IP configuration with a specific DHCP server." .
 
 :DHCPServer a owl:Class ;
     rdfs:label "DHCP Server" ;
@@ -9851,14 +10047,16 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalEvent a owl:Class ;
     rdfs:label "Digital Event" ;
-    rdfs:subClassOf :Event .
+    rdfs:subClassOf :Event ;
+    :definition "A digital event represents an observable occurrence, action, or state change within digital systems, networks, or their interactions. These events are characterized by their impact on the confidentiality, integrity, availability, or functionality of digital resources, processes, identities, or communications. Digital events are essential units of information in cybersecurity, serving as the basis for detecting threats, analyzing anomalies, and orchestrating responses in complex, interconnected environments." .
 
 :DigitalEventRecord a owl:Class ;
     rdfs:label "Digital Event Record" ;
     rdfs:subClassOf :Record,
         [ a owl:Restriction ;
             owl:onProperty :records ;
-            owl:someValuesFrom :DigitalEvent ] .
+            owl:someValuesFrom :DigitalEvent ] ;
+    :definition "A digital event record is a structured representation of a digital event, encapsulating all relevant details about the occurrence for storage, analysis, and response. These records serve as the primary artifacts for cybersecurity operations, enabling threat detection, forensic investigations, and compliance reporting. Digital event records include metadata such as timestamps, origin, context, and associated resources, ensuring traceability and actionable intelligence in digital ecosystems." .
 
 :DigitalFingerprint a owl:Class ;
     rdfs:label "Digital Fingerprint" ;
@@ -10123,10 +10321,22 @@ For example, a DNS policy can be created for blocking DNS queries for FQDNs that
     :kb-reference :Reference-UseDNSPolicyForApplyingFiltersOnDNSQueries ;
     :synonym "DNS Blacklisting" .
 
+:DNSEvent a owl:Class ;
+    rdfs:label "DNS Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        [ a owl:Class ;
+            owl:unionOf (
+                    :TCPEvent
+                    :UDPEvent ) ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :DNSNetworkTraffic ] ;
+    :definition "An event involving the Domain Name System (DNS), which translates domain names to IP addresses and operates over UDP and TCP." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/dns_activity> .
+
 :DNSLookup a owl:Class ;
     rdfs:label "DNS Lookup" ;
-    rdfs:subClassOf :DigitalEvent,
-        :DigitalInformationBearer ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A Domain Name System (DNS) lookup is a record returned from a DNS resolver after querying a DNS name server.  Typically considered an A or AAAA record, where a domain name is resolved to an IPv4 or IPv6 address, respectively." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Domain_Name_System>,
         <http://dbpedia.org/resource/List_of_DNS_record_types>,
@@ -10137,12 +10347,22 @@ For example, a DNS policy can be created for blocking DNS queries for FQDNs that
     rdfs:subClassOf :NetworkTraffic ;
     :definition "DNS network traffic is network traffic related to queries and responses involving the Domain Name System. DNS traffic can involve clients, servers such as relays or resolvers. This includes only network traffic conforming to standard DNS protocol; not custom protocols." .
 
+:DNSQueryEvent a owl:Class ;
+    rdfs:label "DNS Query Event" ;
+    rdfs:subClassOf :DNSEvent ;
+    :definition "An event where a DNS query is made to resolve a domain name." .
+
 :DNSRecord a owl:Class ;
     rdfs:label "DNS Record" ;
     rdfs:subClassOf :Record ;
     :definition "A Domain Name System (DNS) record is a record of information returned to clients seeking to find computers, services, and other resources connected to the Internet or a private network.  Record information is stored on a domain name server so it can respond to DNS queries from clients.There are a variety of record types, depending on the client's information needs. Common types include Start of Authority, IP addresses, SMTP mail exchangers, name servers, reverse DNS lookup pointers, etc." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Domain_Name_System>,
         <http://dbpedia.org/resource/List_of_DNS_record_types> .
+
+:DNSResponseEvent a owl:Class ;
+    rdfs:label "DNS Response Event" ;
+    rdfs:subClassOf :DNSEvent ;
+    :definition "An event where a DNS server responds to a query with resolution data." .
 
 :DNSServer a owl:Class ;
     rdfs:label "DNS Server" ;
@@ -10390,6 +10610,16 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Email_attachment> ;
     :definition "An email attachment is a computer file sent along with an email message. One or more files can be attached to any email message, and be sent along with it to the recipient. This is typically used as a simple method to share documents and images." .
 
+:EmailEvent a owl:Class ;
+    rdfs:label "Email Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MailNetworkTraffic ] ;
+    :definition "An event involving email communication, including sending, receiving, and processing emails. Email events encapsulate activities essential to the transmission and analysis of email messages in a networked environment." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/email_activity> .
+
 :EmailFiltering a :EmailFiltering,
         owl:Class,
         owl:NamedIndividual ;
@@ -10409,6 +10639,11 @@ This technique is distinct from d3f:EmailDeletion because it prevents an email f
 ## Considerations
 * The effectiveness of mail filters depend on the completeness of the filter policies""" ;
     :kb-reference :Reference-SystemAndMethodForProvidingAnonymousRemailingAndFilteringOfElectronicMail_Nokia .
+
+:EmailReceiveEvent a owl:Class ;
+    rdfs:label "Email Receive Event" ;
+    rdfs:subClassOf :EmailEvent ;
+    :definition "An event where an email is delivered to a recipient's mail server or mailbox. This includes receiving messages from internal or external sources via protocols such as IMAP, POP3, or their secure variants." .
 
 :EmailRemoval a :EmailRemoval,
         owl:Class,
@@ -10441,6 +10676,16 @@ Email files may propagate through many storage systems across the an organizatio
     rdfs:label "Email Rule" ;
     rdfs:subClassOf :ApplicationRule ;
     :definition "A configuration of an email application which is used to apply logical or data processing functions to data processed by the email  application." .
+
+:EmailScanEvent a owl:Class ;
+    rdfs:label "Email Scan Event" ;
+    rdfs:subClassOf :EmailEvent ;
+    :definition "An event where an email is inspected or analyzed for content, security, or compliance purposes. Scanning often involves identifying spam, detecting malware, or ensuring policy adherence before delivery or after reception." .
+
+:EmailSendEvent a owl:Class ;
+    rdfs:label "Email Send Event" ;
+    rdfs:subClassOf :EmailEvent ;
+    :definition "An event where an email is transmitted from a client to a recipient via a mail server. This process often involves protocols such as SMTP or its secure variants, with potential authentication and encryption for secure delivery." .
 
 :EmbeddedComputer a owl:Class ;
     rdfs:label "Embedded Computer" ;
@@ -10592,6 +10837,65 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :definition "Event logs record events taking place in the execution of a system in order to provide an audit trail that can be used to understand the activity of the system and to diagnose problems. They are essential to understand the activities of complex systems, particularly in the case of applications with little user interaction (such as server applications)." ;
     :synonym "Digital Event Log" .
 
+:EventLogArchiveEvent a owl:Class ;
+    rdfs:label "Event Log Archive Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event involving the archiving of event log data, typically to preserve historical records in a compressed or secure format." .
+
+:EventLogClearEvent a owl:Class ;
+    rdfs:label "Event Log Clear Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event log data is cleared from the system, often as part of log maintenance or potentially to cover tracks." .
+
+:EventLogDeleteEvent a owl:Class ;
+    rdfs:label "Event Log Delete Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event log database, file, or cache is deleted from the system, removing the log's historical records." .
+
+:EventLogDisableEvent a owl:Class ;
+    rdfs:label "Event Log Disable Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event indicating that the event logging service has been disabled, preventing it from collecting or recording logs." .
+
+:EventLogEnableEvent a owl:Class ;
+    rdfs:label "Event Log Enable Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event logging service is enabled, allowing it to actively collect and record logs." .
+
+:EventLogEvent a owl:Class ;
+    rdfs:label "Event Log Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :EventLog ] ;
+    :definition "An event that captures actions or operations related to the management of system event logs, including modifications, access, and service state changes." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/event_log> .
+
+:EventLogExportEvent a owl:Class ;
+    rdfs:label "Event Log Export Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event representing the export of event log data to a file or external system for backup or analysis purposes." .
+
+:EventLogRestartEvent a owl:Class ;
+    rdfs:label "Event Log Restart Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event representing the restarting of the event logging service, often performed during system maintenance or troubleshooting." .
+
+:EventLogRotateEvent a owl:Class ;
+    rdfs:label "Event Log Rotate Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event log is rotated, often as part of log rotation policies to manage storage and ensure continuity." .
+
+:EventLogStartEvent a owl:Class ;
+    rdfs:label "Event Log Start Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event logging service is started, enabling the collection and recording of system events." .
+
+:EventLogStopEvent a owl:Class ;
+    rdfs:label "Event Log Stop Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event indicating that the event logging service has been stopped, halting the recording of system events." .
+
 :Evict a :DefensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
@@ -10600,6 +10904,16 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :definition "The eviction tactic is used to remove an adversary from a computer network." ;
     :display-order 4 ;
     :display-priority 0 .
+
+:EvictionEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Eviction Event" ;
+    rdfs:subClassOf :SecurityEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DetectionEvent ] ;
+    :definition "An event describing actions to remove adversaries or malicious resources from a system, re-establishing security and operational integrity." ;
+    :related :Evict .
 
 :ExactMatching a owl:Class,
         owl:NamedIndividual ;
@@ -10897,6 +11211,11 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
     :definition "A file maintained in computer-readable form." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/06521201-n> .
 
+:FileAccessEvent a owl:Class ;
+    rdfs:label "File Access Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file is accessed for operations such as reading, opening, or inspecting its contents or metadata, without necessarily modifying its state." .
+
 :FileAccessPatternAnalysis a :FileAccessPatternAnalysis,
         owl:Class,
         owl:NamedIndividual ;
@@ -10989,6 +11308,11 @@ Rules, often called signatures, are used for both generic and targeted malware d
     :synonym "File Content Signatures",
         "File Signatures" .
 
+:FileCopyEvent a owl:Class ;
+    rdfs:label "File Copy Event" ;
+    rdfs:subClassOf :FileCreationEvent ;
+    :definition "An event where a file is duplicated, creating a new file in a different location or under a different name while preserving the original file's content and attributes." .
+
 :FileCreationAnalysis a :FileCreationAnalysis,
         owl:Class,
         owl:NamedIndividual ;
@@ -11001,6 +11325,21 @@ Rules, often called signatures, are used for both generic and targeted malware d
     :definition "Analyzing the properties of file create system call invocations." ;
     :kb-reference :Reference-CAR-2020-09-001%3AScheduledTask-FileAccess_MITRE,
         :Reference-LsassProcessDumpViaProcdump_MITRE .
+
+:FileCreationEvent a owl:Class ;
+    rdfs:label "File Creation Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event representing the creation of a new file within the system, establishing its existence and initial attributes in the file system or storage medium." .
+
+:FileDecryptionEvent a owl:Class ;
+    rdfs:label "File Decryption Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a previously encrypted file is decoded, rendering its content accessible to authorized users or processes." .
+
+:FileDeletionEvent a owl:Class ;
+    rdfs:label "File Deletion Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file is permanently removed from the file system or storage medium, potentially triggering actions related to data retention or recovery." .
 
 :FileEncryption a :FileEncryption,
         owl:Class,
@@ -11026,6 +11365,20 @@ Asymmetric encryption is typically accomplished using public and private key cer
 - Secure transfer of private keys between multiple devices.""" ;
     :kb-reference :Reference-MethodForFileEncryption .
 
+:FileEncryptionEvent a owl:Class ;
+    rdfs:label "File Encryption Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event involving the application of cryptographic techniques to a file, ensuring its content is securely encoded and inaccessible without proper decryption keys." .
+
+:FileEvent a owl:Class ;
+    rdfs:label "File Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :File ] ;
+    :definition "An event involving operations performed on digital files, encompassing actions such as creation, modification, deletion, access, and attribute or permission changes." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/file_activity> .
+
 :FileEviction a :FileEviction,
         owl:Class,
         owl:NamedIndividual ;
@@ -11048,6 +11401,16 @@ When it is determined that a file should be removed for security purposes, the o
 
 On Windows systems, deleting a file in File Explorer does not permanently delete a file - it sends it to the Recycle Bin instead. The Recycle Bin must be emptied, or alternative steps must be performed to remove files completely. Even then, in some cases the data may persist in disk, so data shredder tools may be needed to completely wipe a file. Thus, AV tools are recommended.""" ;
     :kb-reference :Reference-HowDoesAntivirusQuarantineWork-SafetyDetectives .
+
+:FileGetAttributesEvent a owl:Class ;
+    rdfs:label "File Get Attributes Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file's metadata attributes, such as size, creation date, or type, are queried or retrieved without altering its content." .
+
+:FileGetPermissionsEvent a owl:Class ;
+    rdfs:label "File Get Permissions Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file's security settings or access control list (ACL) is retrieved, detailing permissions granted to users or processes." .
 
 :FileHash a owl:Class ;
     rdfs:label "File Hash" ;
@@ -11104,6 +11467,11 @@ Files can change constantly due to the non-static nature of a computer system. F
     :kb-reference :Reference-FileIntegrityMonitoringinMicrosoftDefenderforCloud-Microsoft,
         :Reference-Tripwire .
 
+:FileMountEvent a owl:Class ;
+    rdfs:label "File Mount Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file system or storage volume is mounted, making its files and directories accessible to the operating system or applications." .
+
 :FilePathOpenFunction a owl:Class ;
     rdfs:label "File Path Open Function" ;
     rdfs:subClassOf :Subroutine,
@@ -11114,6 +11482,11 @@ Files can change constantly due to the non-static nature of a computer system. F
             owl:onProperty :invokes ;
             owl:someValuesFrom :OpenFile ] ;
     :definition "Has an input of a file path, and opens a file handle for reading or writing." .
+
+:FileRenamingEvent a owl:Class ;
+    rdfs:label "File Renaming Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event representing the renaming of a file, modifying its identifier within the file system while retaining its content and metadata." .
 
 :FileSection a owl:Class ;
     rdfs:label "File Section" ;
@@ -11127,6 +11500,16 @@ Files can change constantly due to the non-static nature of a computer system. F
     rdfs:subClassOf :Server ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/File_server> ;
     :definition "The term server highlights the role of the machine in the traditional client-server scheme, where the clients are the workstations using the storage. A file server does not normally perform computational tasks or run programs on behalf of its client workstations. File servers are commonly found in schools and offices, where users use a local area network to connect their client computers." .
+
+:FileSetAttributesEvent a owl:Class ;
+    rdfs:label "File Set Attributes Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file's metadata attributes are modified, such as changing its timestamps, labels, or categorization within the system." .
+
+:FileSetPermissionsEvent a owl:Class ;
+    rdfs:label "File Set Permissions Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event involving the modification of a file's permissions or access control list (ACL), specifying which users or processes are granted or restricted access." .
 
 :FileShareService a owl:Class ;
     rdfs:label "File Share Service" ;
@@ -11175,7 +11558,17 @@ Files can change constantly due to the non-static nature of a computer system. F
 :FileTransferNetworkTraffic a owl:Class ;
     rdfs:label "File Transfer Network Traffic" ;
     rdfs:subClassOf :NetworkTraffic ;
-    :definition "File transfer network traffic is network traffic related to file transfers between network nodes..This includes only network traffic conforming to standard file transfer protocols, not custom transfer protocols." .
+    :definition "File transfer network traffic is network traffic related to file transfers between network nodes. This includes only network traffic conforming to standard file transfer protocols, not custom transfer protocols." .
+
+:FileUnmountEvent a owl:Class ;
+    rdfs:label "File Unmount Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file system or storage volume is unmounted, disconnecting its files and directories from the operating system or applications." .
+
+:FileUpdateEvent a owl:Class ;
+    rdfs:label "File Update Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event involving changes to the content or metadata of an existing file, reflecting updates that alter its state or properties." .
 
 :FingerPrintScannerInputDevice a owl:Class ;
     rdfs:label "Finger Print Scanner Input Device" ;
@@ -11407,6 +11800,46 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
             owl:onProperty :deletes ;
             owl:someValuesFrom :MemoryBlock ] .
 
+:FTPDeleteEvent a owl:Class ;
+    rdfs:label "FTP Delete Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where files or directories are removed from an FTP server, resulting in their permanent deletion from the remote system." .
+
+:FTPEvent a owl:Class ;
+    rdfs:label "FTP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FileTransferNetworkTraffic ] ;
+    :definition "An event involving the File Transfer Protocol (FTP), a standard network protocol used to transfer files between a client and server over a TCP/IP network. FTP facilitates operations such as file uploads, downloads, directory listing, and remote file management." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/ftp_activity> .
+
+:FTPGetEvent a owl:Class ;
+    rdfs:label "FTP Get Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where a file is downloaded from an FTP server to a client, retrieving data from the remote system to the local destination." .
+
+:FTPListEvent a owl:Class ;
+    rdfs:label "FTP List Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where the contents of a directory on an FTP server are listed, providing metadata such as file names, sizes, and timestamps." .
+
+:FTPPollEvent a owl:Class ;
+    rdfs:label "FTP Poll Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where a client queries an FTP server to check for the presence of specific files or directories without initiating a transfer." .
+
+:FTPPutEvent a owl:Class ;
+    rdfs:label "FTP Put Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where a file is uploaded from a client to an FTP server, transferring data from the local system to the remote destination." .
+
+:FTPRenameEvent a owl:Class ;
+    rdfs:label "FTP Rename Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where files or directories on an FTP server are renamed, modifying their identifiers without altering their content or location." .
+
 :FuzzyLogic a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Fuzzy Logic" ;
@@ -11602,9 +12035,28 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
 :Group a owl:Class ;
     rdfs:subClassOf :D3FENDCore .
 
+:GroupCreationEvent a owl:Class ;
+    rdfs:label "Group Creation Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where a new group is established within the system, defining an entity to manage users and permissions collectively." .
+
+:GroupDeletionEvent a owl:Class ;
+    rdfs:label "Group Deletion Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where an existing group is permanently removed from the system, dissolving its associated memberships and privileges." .
+
 :Grouping a owl:Class ;
     rdfs:label "Grouping" ;
     rdfs:subClassOf :Summarizing .
+
+:GroupManagementEvent a owl:Class ;
+    rdfs:label "Group Management Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :AccessControlGroup ] ;
+    :definition "An event involving the creation, modification, or deletion of a group, or changes to its membership and privileges. Group management events facilitate the enforcement of role-based access control by organizing users and permissions into logical units for streamlined administration and policy enforcement." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/group_management> .
 
 :GroupPolicy a owl:Class ;
     rdfs:label "Group Policy" ;
@@ -11635,6 +12087,13 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
     :definition "The harden tactic is used to increase the opportunity cost of computer network exploitation. Hardening differs from Detection in that it generally is conducted before a system is online and operational." ;
     :display-order 0 ;
     :display-priority 0 .
+
+:HardeningEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Hardening Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event involving actions to strengthen defenses, such as applying patches or implementing secure configurations, reducing attack surfaces, and increasing the difficulty of exploitation by adversaries." ;
+    :related :Harden .
 
 :HardLink a owl:Class ;
     rdfs:label "Hard Link" ;
@@ -11713,6 +12172,59 @@ Administrators collect information on hardware devices such as peripherals, NICs
     rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_hardware> ;
     :definition "Hardware devices are the physical artifacts that constitute a network or computer system. Hardware devices are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, hard disk drive (HDD), graphic cards, sound cards, memory (RAM), motherboard, and so on, all of which are tangible physical objects. By contrast, software is instructions that can be stored and run by hardware. Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/device_hw_info> .
+
+:HardwareDeviceBindEvent a owl:Class ;
+    rdfs:label "Hardware Device Bind Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is logically bound to a system or process, typically for exclusive use or integration with specific software components." .
+
+:HardwareDeviceConnectionEvent a owl:Class ;
+    rdfs:label "Hardware Device Connection Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event representing the physical or logical attachment of a device to a system, enabling its operational functionality." .
+
+:HardwareDeviceDisabledEvent a owl:Class ;
+    rdfs:label "Hardware Device Disabled Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device transitions to an inactive or unavailable state, often due to deactivation, failure, or maintenance." .
+
+:HardwareDeviceDisconnectionEvent a owl:Class ;
+    rdfs:label "Hardware Device Disconnection Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event representing the removal of a device from a system, ceasing its operational functionality or availability." .
+
+:HardwareDeviceEnabledEvent a owl:Class ;
+    rdfs:label "Hardware Device Enabled Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device becomes operational and available for use, typically following initialization, activation, or repair." .
+
+:HardwareDeviceEvent a owl:Class ;
+    rdfs:label "Hardware Device Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "An event capturing the existence, state, or interaction of hardware or virtual devices within a system. Device events encompass activities such as discovery, connection, disconnection, operational state changes, or configuration modifications, providing visibility into device behavior and health." .
+
+:HardwareDeviceMoveEvent a owl:Class ;
+    rdfs:label "Hardware Device Move Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is relocated or reassigned within a system or network, potentially affecting its operational scope or connectivity." .
+
+:HardwareDeviceStateEvent a owl:Class ;
+    rdfs:label "Hardware Device State Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
+    :definition "An event involving a change to a device's state, such as connection, disconnection, modification, or operational state transitions (e.g., online or offline). Device state events provide visibility into device availability and operational conditions." .
+
+:HardwareDeviceUnbindEvent a owl:Class ;
+    rdfs:label "Hardware Device Unbind Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is logically unbound from a system or process, releasing it from exclusive use or integration." .
+
+:HardwareDeviceUpdateEvent a owl:Class ;
+    rdfs:label "Hardware Device Update Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event capturing updates or changes to a device's configuration, properties, or state, including firmware updates, reconfigurations, or optimizations." .
 
 :HardwareDriver a owl:Class ;
     rdfs:label "Hardware Driver" ;
@@ -11967,6 +12479,66 @@ Host shutdown can either be initiated in the physical presence of the device usi
     rdfs:subClassOf :DocumentFile ;
     :definition "A document file encoded in HTML.The HyperText Markup Language, or HTML is the standard markup language for documents designed to be displayed in a web browser. It can be assisted by technologies such as Cascading Style Sheets (CSS) and scripting languages such as JavaScript. Web browsers receive HTML documents from a web server or from local storage and render the documents into multimedia web pages. HTML describes the structure of a web page semantically and originally included cues for the appearance of the document." ;
     rdfs:seeAlso <http://dbpedia.org/resource/HTML> .
+
+:HTTPConnectEvent a owl:Class ;
+    rdfs:label "HTTP CONNECT Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP CONNECT method is used to establish a tunnel to the server identified by the target resource." .
+
+:HTTPDeleteEvent a owl:Class ;
+    rdfs:label "HTTP DELETE Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP DELETE method is used to delete the specified resource." .
+
+:HTTPEvent a owl:Class ;
+    rdfs:label "HTTP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WebNetworkTraffic ] ;
+    :definition "An event involving the Hypertext Transfer Protocol (HTTP), which operates over TCP to transmit hypermedia documents." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/http_activity> .
+
+:HTTPGetEvent a owl:Class ;
+    rdfs:label "HTTP GET Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP GET method is used to request a representation of the specified resource." .
+
+:HTTPHeadEvent a owl:Class ;
+    rdfs:label "HTTP HEAD Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP HEAD method is used to request metadata about the specified resource without the response body." .
+
+:HTTPOptionsEvent a owl:Class ;
+    rdfs:label "HTTP OPTIONS Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP OPTIONS method is used to describe the communication options for the target resource." .
+
+:HTTPPostEvent a owl:Class ;
+    rdfs:label "HTTP POST Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP POST method is used to submit data to the specified resource, often causing a change in state or side effects on the server." .
+
+:HTTPPutEvent a owl:Class ;
+    rdfs:label "HTTP PUT Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP PUT method is used to replace all current representations of the target resource with the request payload." .
+
+:HTTPRequestEvent a owl:Class ;
+    rdfs:label "HTTP Request Event" ;
+    rdfs:subClassOf :HTTPEvent ;
+    :definition "An event where an HTTP request is sent from a client to a server over an established TCP connection." .
+
+:HTTPResponseEvent a owl:Class ;
+    rdfs:label "HTTP Response Event" ;
+    rdfs:subClassOf :HTTPEvent ;
+    :definition "An event where an HTTP response is sent from a server to a client over an established TCP connection." .
+
+:HTTPTraceEvent a owl:Class ;
+    rdfs:label "HTTP TRACE Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP TRACE method is used to perform a message loop-back test along the path to the target resource." .
 
 :HumanInputDeviceFirmware a owl:Class ;
     rdfs:label "Human Input Device Firmware" ;
@@ -12374,6 +12946,14 @@ Given some example of legitimate behavioral input patterns, attackers could mimi
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-ContinuousAuthenticationByAnalysisOfKeyboardTypingCharacteristics_BradfordUniv.,UK>,
         :Reference-www.biometric-solutions.com_keystroke-dynamics .
 
+:InputDeviceEvent a owl:Class ;
+    rdfs:label "Input Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :InputDevice ] ;
+    :definition "An event involving human-machine interface devices, such as keyboards, mice, or touchscreens." .
+
 :InputFunction a owl:Class ;
     rdfs:label "Input Function" ;
     rdfs:subClassOf :Subroutine ;
@@ -12689,6 +13269,13 @@ IPC can occur within a single computer or between multiple computers remotely th
     :display-order 2 ;
     :display-priority 0 .
 
+:IsolationEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Isolation Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event involving actions to create logical or physical barriers that isolate compromised components, preventing adversary movement and reducing attack surfaces." ;
+    :related :Isolate .
+
 :JavaArchive a owl:Class ;
     rdfs:label "Java Archive" ;
     rdfs:subClassOf :ArchiveFile,
@@ -12990,6 +13577,15 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
             owl:someValuesFrom :SystemCall ] ;
     :definition "Monitors system calls (operating system api functions)." .
 
+:KernelEvent a owl:Class ;
+    rdfs:label "Kernel Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Kernel ] ;
+    :definition "An event involving operations at the kernel level of an operating system, encompassing interactions with core system resources such as drivers, modules, system calls, and other privileged processes. Kernel events are critical for understanding low-level system behavior and ensuring the integrity of the operating environment." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/kernel_activity> .
+
 :KernelModule a owl:Class ;
     rdfs:label "Kernel Module" ;
     skos:altLabel "LKM",
@@ -13000,6 +13596,28 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
 
 Most current Unix-like systems and Microsoft Windows support loadable kernel modules, although they might use a different name for them, such as kernel loadable module (kld) in FreeBSD, kernel extension (kext) in macOS,[1] kernel extension module in AIX, kernel-mode driver in Windows NT[2] and downloadable kernel module (DKM) in VxWorks. They are also known as kernel loadable modules (or KLM), and simply as kernel modules (KMOD).""" ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/kernel_driver> .
+
+:KernelModuleEvent a owl:Class ;
+    rdfs:label "Kernel Module Event" ;
+    rdfs:subClassOf :KernelEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareDriver ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :KernelModule ] ;
+    :definition "An event involving the management of kernel modules, such as the loading or unloading of device drivers, extensions, or other dynamically linked components essential for kernel functionality." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/kernel_extension> .
+
+:KernelModuleLoadEvent a owl:Class ;
+    rdfs:label "Kernel Module Load Event" ;
+    rdfs:subClassOf :KernelModuleEvent ;
+    :definition "An event representing the loading of a kernel module, such as a device driver or dynamically linked extension, into the operating system kernel to extend or modify its capabilities." .
+
+:KernelModuleUnloadEvent a owl:Class ;
+    rdfs:label "Kernel Module Unload Event" ;
+    rdfs:subClassOf :KernelModuleEvent ;
+    :definition "An event representing the removal of a kernel module from the operating system kernel, deallocating resources and potentially altering system functionality." .
 
 :KernelProcessTable a owl:Class ;
     rdfs:label "Kernel Process Table" ;
@@ -13427,6 +14045,14 @@ Newer system call.""" .
     rdfs:isDefinedBy <https://man7.org/linux/man-pages/man2/writev.2.html> ;
     :definition "Write data into multiple buffers." .
 
+:LoadLibraryEvent a owl:Class ;
+    rdfs:label "Load Library Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SharedLibraryFile ] ;
+    :definition "An event where a process dynamically loads a library or module into its memory space, extending its capabilities." .
+
 :LoadModule a owl:Class ;
     rdfs:label "Load Module" ;
     rdfs:subClassOf :SystemCall,
@@ -13625,6 +14251,16 @@ Wikipedia. (n.d.). Logistic regression. [Link](https://en.wikipedia.org/wiki/Log
     rdfs:label "Log Message Function" ;
     rdfs:subClassOf :Subroutine ;
     :definition "Produces an entry in a log." .
+
+:LogoffEvent a owl:Class ;
+    rdfs:label "Logoff Event" ;
+    rdfs:subClassOf :AuthenticationEvent ;
+    :definition "An event where a subject terminates an active authentication session, formally ending their access to a system, application, or resource. This event ensures the deallocation of session tokens and secures the system against unauthorized continuation of access." .
+
+:LogonEvent a owl:Class ;
+    rdfs:label "Logon Event" ;
+    rdfs:subClassOf :AuthenticationEvent ;
+    :definition "An event where a subject initiates an authentication session to gain access to a system, application, or resource. This process typically includes credential validation, token issuance, and session establishment, marking the beginning of the subject's authenticated state." .
 
 :LogonUser a owl:Class ;
     rdfs:label "Logon User" ;
@@ -13826,6 +14462,11 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
             owl:someValuesFrom :MemoryAddress ] ;
     :definition "A memory address space is a space containing memory addresses." .
 
+:MemoryAllocationEvent a owl:Class ;
+    rdfs:label "Memory Allocation Event" ;
+    rdfs:subClassOf :MemoryEvent ;
+    :definition "An event representing the allocation of memory resources to a process, providing it with the capacity to store data or execute instructions." .
+
 :MemoryAllocationFunction a owl:Class ;
     rdfs:label "Memory Allocation Function" ;
     rdfs:subClassOf :Subroutine,
@@ -13863,6 +14504,31 @@ This technique monitors for indicators of whether a return address is outside me
 Kernel malware can manipulate memory contents, for example modifying pointers to hide processes, and thereby impact the accuracy of memory allocation information used to perform the analysis.""" ;
     :kb-reference :Reference-InferentialExploitAttemptDetection_CrowdstrikeInc .
 
+:MemoryDeletionEvent a owl:Class ;
+    rdfs:label "Memory Deletion Event" ;
+    rdfs:subClassOf :MemoryEvent ;
+    :definition "An event marking the release or deallocation of memory resources, reclaiming them for reuse within the system." .
+
+:MemoryDeviceEvent a owl:Class ;
+    rdfs:label "Memory Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :PrimaryStorage ] ;
+    :definition "An event describing activity in primary storage devices, such as DRAM or SRAM memory initialization, reconfiguration, or failures." .
+
+:MemoryEvent a owl:Class ;
+    rdfs:label "Memory Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryAddress ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ] ;
+    :definition "An event capturing operations on the memory resources of a system, encompassing allocation, modification, access, protection, or deallocation." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/memory_activity> .
+
 :MemoryExtent a owl:Class ;
     rdfs:label "Memory Extent" ;
     rdfs:subClassOf :DigitalInformation .
@@ -13898,6 +14564,19 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
     rdfs:label "Memory Management Unit Component" ;
     rdfs:subClassOf :HardwareDevice .
 
+:MemoryMapEvent a owl:Class ;
+    rdfs:label "Memory Map Event" ;
+    rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :VirtualMemorySpace ] ;
+    :definition "An event representing the mapping of memory regions into a process's virtual address space, enabling efficient access to shared or reserved memory." .
+
+:MemoryModificationEvent a owl:Class ;
+    rdfs:label "Memory Modification Event" ;
+    rdfs:subClassOf :MemoryEvent ;
+    :definition "An event where a process modifies allocated memory, potentially altering its content, behavior, or state." .
+
 :MemoryPool a owl:Class ;
     rdfs:label "Memory Pool" ;
     rdfs:subClassOf :MemoryExtent,
@@ -13911,11 +14590,21 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
     rdfs:label "Memory Protection Unit" ;
     rdfs:subClassOf :ProcessorComponent .
 
+:MemoryReadEvent a owl:Class ;
+    rdfs:label "Memory Read Event" ;
+    rdfs:subClassOf :MemoryEvent ;
+    :definition "An event where a process retrieves data from a specific memory address, either from its own allocated space or that of another process." .
+
 :MemoryWord a owl:Class ;
     rdfs:label "Memory Word" ;
     rdfs:subClassOf :MemoryExtent ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Word_(computer_architecture)> ;
     :definition "A memory word is the natural unit of data used by a particular computer processor design; a fixed-size piece of data handled as a unit by the instruction set or the hardware of the processor." .
+
+:MemoryWriteEvent a owl:Class ;
+    rdfs:label "Memory Write Event" ;
+    rdfs:subClassOf :MemoryEvent ;
+    :definition "An event where a process writes data to a memory address, storing new information or updating existing content." .
 
 :MessageAnalysis a :MessageAnalysis,
         owl:Class,
@@ -14232,6 +14921,50 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     :definition "Firmware that is installed on a network card (network interface controller)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Network_interface_controller> .
 
+:NetworkConnectionCloseEvent a owl:Class ;
+    rdfs:label "Network Connection Close Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection is closed." .
+
+:NetworkConnectionEvent a owl:Class ;
+    rdfs:label "Network Connection Event" ;
+    rdfs:subClassOf :NetworkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkSession ] ;
+    :definition "An event related to the establishment, maintenance, or termination of a network connection." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/network_activity> .
+
+:NetworkConnectionFailEvent a owl:Class ;
+    rdfs:label "Network Connection Fail Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection attempt fails." .
+
+:NetworkConnectionListenEvent a owl:Class ;
+    rdfs:label "Network Connection Listen Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network endpoint begins listening for new network connections." .
+
+:NetworkConnectionOpenEvent a owl:Class ;
+    rdfs:label "Network Connection Open Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection is successfully opened." .
+
+:NetworkConnectionRefuseEvent a owl:Class ;
+    rdfs:label "Network Connection Refuse Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection is refused." .
+
+:NetworkConnectionResetEvent a owl:Class ;
+    rdfs:label "Network Connection Reset Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where an attempt is made to establish a network connection." .
+
+:NetworkDeviceEvent a owl:Class ;
+    rdfs:label "Network Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
+    :definition "An event capturing the activity or state of network devices, such as Ethernet adapters, Wi-Fi modules, or virtual interfaces. These events highlight connectivity, configuration, or performance changes." .
+
 :NetworkDirectoryResource a owl:Class ;
     rdfs:label "Network Directory Resource" ;
     rdfs:subClassOf :NetworkFileShareResource,
@@ -14239,6 +14972,15 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
             owl:onProperty :contains ;
             owl:someValuesFrom :Directory ] ;
     :definition "A directory resource made available from one host to other hosts on a computer network." .
+
+:NetworkEvent a owl:Class ;
+    rdfs:label "Network Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :definition "An event involving network communications within or between digital systems." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/categories/network> .
 
 :NetworkFileResource a owl:Class ;
     rdfs:label "Network File Resource" ;
@@ -14662,6 +15404,46 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
         :SymbolicLink ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/NTFS_links> ;
     :definition "An NTFS symbolic link records the path of another file that the links contents should show. Can accept relative paths. SMB networking (UNC path) and directory support added in NTFS 3.1." .
+
+:NTPBroadcastEvent a owl:Class ;
+    rdfs:label "NTP Broadcast Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP server broadcasts time synchronization messages to multiple clients simultaneously, enabling synchronization without individual request-response cycles." .
+
+:NTPClientSyncEvent a owl:Class ;
+    rdfs:label "NTP Client Synchronization Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP client requests and adjusts its clock based on time synchronization data provided by an NTP server, ensuring alignment with a standard time source." .
+
+:NTPControlMessageEvent a owl:Class ;
+    rdfs:label "NTP Control Message Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP client or server exchanges control messages used for diagnostic, monitoring, or administrative management of the NTP protocol, rather than time synchronization." .
+
+:NTPEvent a owl:Class ;
+    rdfs:label "NTP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :UDPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTimeServer ] ;
+    :definition "An event involving the Network Time Protocol (NTP), a protocol designed to synchronize the clocks of computer systems over packet-switched, variable-latency data networks, UDP as its transport protocol." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/ntp_activity> .
+
+:NTPServerResponseEvent a owl:Class ;
+    rdfs:label "NTP Server Response Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP server sends time synchronization data to a client, enabling the client to align its local clock with the server's reference time." .
+
+:NTPSymmetricActiveExchangeEvent a owl:Class ;
+    rdfs:label "NTP Symmetric Active Exchange Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP peer operating in symmetric active mode initiates clock synchronization messages to a peer in symmetric passive mode, enabling time synchronization between equal-status systems." .
+
+:NTPSymmetricPassiveExchangeEvent a owl:Class ;
+    rdfs:label "NTP Symmetric Passive Exchange Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP peer operating in symmetric passive mode responds to clock synchronization messages initiated by a symmetric active peer, facilitating mutual timekeeping." .
 
 :NumericPatternMatching a owl:Class,
         owl:NamedIndividual ;
@@ -15364,6 +16146,14 @@ There are various strategies for developing filtering rulesets:
     rdfs:isDefinedBy <http://dbpedia.org/resource/Output_device> ;
     :definition "An output device is any piece of computer hardware equipment which converts information into human-readable form. It can be text, graphics, tactile, audio, and video. Some of the output devices are Visual Display Units (VDU) i.e. a Monitor, Printer, Graphic Output devices, Plotters, Speakers etc. A new type of Output device is been developed these days, known as Speech synthesizer, a mechanism attached to the computer which produces verbal output sounding almost like human speeches." .
 
+:OutputDeviceEvent a owl:Class ;
+    rdfs:label "Output Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OutputDevice ] ;
+    :definition "An event describing the activity or state of output devices, including sound cards, display adapters, or media controllers. These events relate to audio, video, or graphics functionality." .
+
 :OWL a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "OWL" ;
@@ -15593,6 +16383,14 @@ Aggregate pull vs. push ratios from metadata are used to develop a baseline for 
 ## Considerations
 Collection and analysis of large network packet captures requires large storage and intensive computing power. The time windows used to calculate the ratio may vary in implementations, this consideration should take into account a threat model and likely effects (impacts) delivered by an adversary.""" ;
     :kb-reference :Reference-SystemForDetectingThreatsUsingScenario-basedTrackingOfInternalAndExternalNetworkTraffic_VECTRANETWORKSInc .
+
+:PeripheralDeviceEvent a owl:Class ;
+    rdfs:label "Peripheral Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :RemovableMediaDevice ] ;
+    :definition "An event involving external or auxiliary devices, such as USB drives, Thunderbolt peripherals, or Bluetooth devices. Peripheral events provide visibility into resource availability and potential unauthorized access." .
 
 :PeripheralFirmware a owl:Class ;
     rdfs:label "Peripheral Firmware" ;
@@ -15886,6 +16684,19 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
     :definition "A PowerShell profile script is a script that runs when PowerShell starts and can be used as a logon script to customize user environments." ;
     rdfs:seeAlso <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.1> .
 
+:PowerThermalDeviceEvent a owl:Class ;
+    rdfs:label "Power and Thermal Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Sensor ] ;
+    :definition "An event involving power supplies, batteries, or thermal management devices. These events represent changes in power states, temperature thresholds, or cooling system activity." .
+
+:PreAuthenticationEvent a owl:Class ;
+    rdfs:label "Pre-Authentication Event" ;
+    rdfs:subClassOf :AuthenticationEvent ;
+    :definition "An event representing preparatory steps or processes conducted prior to the primary authentication operation. Pre-authentication often involves initial protocol exchanges, cryptographic challenges, or the validation of supplemental factors (e.g., pre-shared keys) to ensure the readiness and security of the authentication workflow." .
+
 :PredicateLogic a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Predicate Logic" ;
@@ -16012,6 +16823,11 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
     :definition "A process is an instance of a computer program that is being executed. It contains the program code and its current activity. Depending on the operating system (OS), a process may be made up of multiple threads of execution that execute instructions concurrently. A computer program is a passive collection of instructions, while a process is the actual execution of those instructions. Several processes may be associated with the same program; for example, opening up several instances of the same program often means more than one process is being executed." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/process> .
 
+:ProcessAccessEvent a owl:Class ;
+    rdfs:label "Process Access Event" ;
+    rdfs:subClassOf :ProcessEvent ;
+    :definition "An event where one process interacts with another, such as reading memory, inspecting state, or altering behavior." .
+
 :ProcessAnalysis a owl:Class,
         owl:NamedIndividual,
         :ProcessAnalysis ;
@@ -16092,6 +16908,11 @@ False negatives can occur via alteration of the verification logic or source of 
         :Reference-TamperProofMutatingSoftware_ARXANTECHNOLOGIESInc,
         :Reference-ThreatDetectionThroughTheAccumulatedDetectionOfThreatCharacteristics_SophosLtd .
 
+:ProcessCreationEvent a owl:Class ;
+    rdfs:label "Process Creation Event" ;
+    rdfs:subClassOf :ProcessEvent ;
+    :definition "An event where a new process is spawned, initializing its execution context and resource allocation." .
+
 :ProcessDataSegment a owl:Class ;
     rdfs:label "Process Data Segment" ;
     rdfs:subClassOf :ProcessSegment ;
@@ -16106,6 +16927,15 @@ False negatives can occur via alteration of the verification logic or source of 
     rdfs:isDefinedBy <http://dbpedia.org/resource/Environment_variable> ;
     :definition "An environment variable is a dynamic-named value that can affect the way running processes will behave on a computer. They are part of the environment in which a process runs." ;
     :todo "Did \"Environment Variable\" have an conflict with prior version of ATT&CK technique names or were there other env var classes that are no longer in d3fend?" .
+
+:ProcessEvent a owl:Class ;
+    rdfs:label "Process Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Process ] ;
+    :definition "An event capturing lifecycle transitions, interactions, or activities of computer processes, including their creation, termination, and inter-process communication." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/process_activity> .
 
 :ProcessEviction a owl:Class,
         owl:NamedIndividual,
@@ -16251,6 +17081,11 @@ A security agent installed on the host machine intercepts API calls between a pr
 ## Considerations
 Comparing loaded code segments of processes with what is expected to have been loaded from a file can result in false positives, due to legitimate uses of self-modification for decrypting or uncompressing code segments.""" ;
     :kb-reference :Reference-SystemAndMethodForProcessHollowingDetection_CarbonBlackInc .
+
+:ProcessSetUserIDEvent a owl:Class ;
+    rdfs:label "Process Set User ID Event" ;
+    rdfs:subClassOf :ProcessEvent ;
+    :definition "An event where a process changes or adopts a specific user identity, modifying its access privileges or operational context." .
 
 :ProcessSpawnAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -16455,6 +17290,11 @@ Processes that are started in a subsystem might not be fully terminated if they 
     :kb-reference :Reference-InstantProcessTerminationToolToRecoverControlOfAnInformationHandlingSystem_DellProductsLP,
         :Reference-MalwareDetectionUsingLocalComputationalModels_CrowdstrikeInc ;
     :todo "Research on the proprietary methods.  This might include directly overwriting process memory, altering system data structures which relate to processes, changing the operating system task scheduler, or other low-level nonstandard operations that cause a process to cease its own intended operation." .
+
+:ProcessTerminationEvent a owl:Class ;
+    rdfs:label "Process Termination Event" ;
+    rdfs:subClassOf :ProcessEvent ;
+    :definition "An event marking the cessation of a process, including resource deallocation and cleanup, either due to normal completion or abnormal termination." .
 
 :ProcessTree a owl:Class ;
     rdfs:label "Process Tree" ;
@@ -16682,6 +17522,39 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
             owl:someValuesFrom :MemoryBlock ] ;
     :definition "A function which accesses raw memory, usually using memory addresses." .
 
+:RDPConnectRequestEvent a owl:Class ;
+    rdfs:label "RDP Connect Request Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event where an RDP client sends a connection request specifying session parameters, such as display settings, compression preferences, and security requirements, to prepare for an interactive session." .
+
+:RDPConnectResponseEvent a owl:Class ;
+    rdfs:label "RDP Connect Response Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event where an RDP server acknowledges a connection request, finalizing session parameters and confirming the transition to an interactive remote session." .
+
+:RDPEvent a owl:Class ;
+    rdfs:label "RDP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        [ a owl:Class ;
+            owl:unionOf (
+                    :TCPEvent
+                    :UDPEvent ) ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :RDPSession ] ;
+    :definition "An event involving the Remote Desktop Protocol (RDP), a communication protocol developed by Microsoft that facilitates secure remote access to graphical interfaces on desktops or applications hosted on remote servers. RDP supports multi-channel communication for transferring input, output, and management commands." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/rdp_activity> .
+
+:RDPInitialRequestEvent a owl:Class ;
+    rdfs:label "RDP Initial Request Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event where an RDP client initiates communication with a server by sending a request to establish a session and negotiate protocol capabilities for remote interaction." .
+
+:RDPInitialResponseEvent a owl:Class ;
+    rdfs:label "RDP Initial Response Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event where an RDP server responds to an initial request from a client, presenting its supported capabilities and agreeing to proceed with session negotiation." .
+
 :RDPSession a owl:Class ;
     rdfs:label "RDP Session" ;
     skos:altLabel "Remote Desktop Session",
@@ -16690,6 +17563,12 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     :definition "A Remote Desktop Protocol (RDP) session is a session established using the RDP protocol to access Remove Desktop Services (RDS)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Remote_Desktop_Protocol>,
         <http://dbpedia.org/resource/Remote_Desktop_Services> .
+
+:RDPTLSHandshakeEvent a owl:Class ;
+    rdfs:label "RDP TLS Handshake Event" ;
+    rdfs:subClassOf :RDPEvent,
+        :TCPEvent ;
+    :definition "An event representing the cryptographic exchange of keys and certificates between an RDP client and server to establish a secure communication channel. The handshake ensures encryption, integrity, and authentication for the session." .
 
 :ReadFile a owl:Class ;
     rdfs:label "Read File" ;
@@ -16917,6 +17796,11 @@ Analysis algorithms look for patterns in the network traffic captured from the s
     :definition "A removable media device is a hardware device used for computer storage and that is designed to be inserted and removed from the system.  It is distinct from other removable media in that all the hardware required to read the data are built into the device.  So USB flash drives and external hard drives are removable media devices, whereas tapes and disks are not, as they require additional hardware to perform read/write operations." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Removable_media> .
 
+:RemoveUserFromGroupEvent a owl:Class ;
+    rdfs:label "Remove User from Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where a user is removed from a group, revoking the permissions and privileges associated with the group from the user." .
+
 :ResamplingEnsemble a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Resampling Ensemble" ;
@@ -16945,8 +17829,7 @@ Wikipedia contributors. (2021, August 23). Residual neural network. In Wikipedia
 
 :ResourceAccess a owl:Class ;
     rdfs:label "Resource Access" ;
-    rdfs:subClassOf :DigitalEvent,
-        :UserAction ;
+    rdfs:subClassOf :UserAction ;
     :definition "Ephemeral digital artifact comprising a request of a resource and any response from that resource." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Computer_access_control> .
 
@@ -16989,6 +17872,13 @@ This technique analyzes a user's resource accesses by comparing the user's recen
     rdfs:subClassOf :FileSection ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Resource_fork> ;
     :definition "The resource fork is a fork or section of a file on Apple's classic Mac OS operating system, which was also carried over to the modern macOS for compatibility, used to store structured data along with the unstructured data stored within the data fork." .
+
+:RestorationEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Restoration Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event representing actions to return a compromised system or resource to a trusted operational state, such as through backup restoration, system reinstallation, or repair." ;
+    :related :Restore .
 
 :Restore a :DefensiveTactic,
         owl:Class,
@@ -17159,6 +18049,11 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     :kb-reference :Reference-UseDNSPolicyForApplyingFiltersOnDNSQueries ;
     :synonym "Reverse Resolution IP Blacklisting" .
 
+:RevokePrivilegesFromGroupEvent a owl:Class ;
+    rdfs:label "Revoke Privileges from Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where specific privileges or rights are removed from a group, restricting its members from performing actions or accessing resources previously allowed by those privileges." .
+
 :RFNode a owl:Class ;
     rdfs:label "RF Node" ;
     rdfs:subClassOf :NetworkNode .
@@ -17312,6 +18207,45 @@ Jobs can be scheduled in many different and sometimes creative ways through oper
         :Reference-PreventingExecutionOfTaskScheduledMalware_McAfeeLLC ;
     :synonym "Scheduled Job Execution" .
 
+:ScheduledJobCreationEvent a owl:Class ;
+    rdfs:label "Scheduled Job Creation Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event representing the addition of a new task to the system's scheduler, defining its execution criteria and associated actions." .
+
+:ScheduledJobDeletionEvent a owl:Class ;
+    rdfs:label "Scheduled Job Deletion Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event marking the removal of a scheduled task from the system, terminating its execution schedule." .
+
+:ScheduledJobDisableEvent a owl:Class ;
+    rdfs:label "Scheduled Job Disable Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event where a scheduled task is deactivated, preventing further execution until re-enabled." .
+
+:ScheduledJobEnableEvent a owl:Class ;
+    rdfs:label "Scheduled Job Enable Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event where a scheduled task is activated, allowing it to execute according to its defined parameters." .
+
+:ScheduledJobEvent a owl:Class ;
+    rdfs:label "Scheduled Job Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ScheduledJob ] ;
+    :definition "An event capturing the lifecycle or management of scheduled tasks within a system, including creation, modification, execution, or removal." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/scheduled_job_activity> .
+
+:ScheduledJobStartEvent a owl:Class ;
+    rdfs:label "Scheduled Job Start Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event indicating the execution of a scheduled task, triggered either automatically by the scheduler or manually by a user." .
+
+:ScheduledJobUpdateEvent a owl:Class ;
+    rdfs:label "Scheduled Job Update Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event where an existing scheduled task is updated, altering parameters such as timing, conditions, or actions." .
+
 :Scheduling a owl:Class ;
     rdfs:label "Scheduling" ;
     rdfs:subClassOf :Planning .
@@ -17355,6 +18289,14 @@ List of known unauthorized script files or regular expression patterns must be k
     rdfs:isDefinedBy <https://whatis.techtarget.com/definition/memory> ;
     :definition "Secondary memory (storage, hard disk) is the computer component holding information that does not need to be accessed quickly and that needs to be retained long-term." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Computer_data_storage#Secondary_storage> .
+
+:SecurityEvent a owl:Class ;
+    rdfs:label "Security Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :DefensiveAction ] ;
+    :definition "An event describing occurrences related to cybersecurity, including detection, remediation, or enforcement actions. Security events provide critical insights into the state, behavior, and resilience of digital systems." .
 
 :SecurityToken a owl:Class ;
     rdfs:label "Security Token" ;
@@ -17653,6 +18595,12 @@ System service applications may originate from the operating system installation
 * The source of truth must not be corrupted in order for this method to work.""" ;
     :kb-reference :Reference-ServiceBinaryModifications_MITRE .
 
+:ServiceDeletionEvent a owl:Class ;
+    rdfs:label "Service Deletion Event" ;
+    rdfs:subClassOf :ApplicationDeletionEvent,
+        :ServiceEvent ;
+    :definition "An event capturing the uninstallation or deregistration of a service application, ensuring it is no longer operational or available to clients." .
+
 :ServiceDependency a owl:Class ;
     rdfs:label "Service Dependency" ;
     rdfs:subClassOf :Dependency ;
@@ -17680,6 +18628,32 @@ The organization collects and models architectural information about the service
         :Reference-UnifiedArchitectureFrameworkUAF ;
     :synonym "Distributed Tracing" .
 
+:ServiceDisableEvent a owl:Class ;
+    rdfs:label "Service Disable Event" ;
+    rdfs:subClassOf :ApplicationDisableEvent,
+        :ServiceEvent ;
+    :definition "An event capturing the deactivation of a service application, preventing it from being started or accessed until re-enabled." .
+
+:ServiceEnableEvent a owl:Class ;
+    rdfs:label "Service Enable Event" ;
+    rdfs:subClassOf :ApplicationEnableEvent,
+        :ServiceEvent ;
+    :definition "An event representing the activation of a service application, allowing it to start and provide its background or networked functionality." .
+
+:ServiceEvent a owl:Class ;
+    rdfs:label "Service Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ServiceApplication ] ;
+    :definition "An event capturing the operation, configuration, or lifecycle of a service application. Services are specialized applications designed to provide reusable functionality to clients, systems, or other applications, often operating in the background or across networks." .
+
+:ServiceInstallationEvent a owl:Class ;
+    rdfs:label "Service Installation Event" ;
+    rdfs:subClassOf :ApplicationInstallationEvent,
+        :ServiceEvent ;
+    :definition "An event representing the installation or registration of a service application within the system, enabling it to provide background or reusable functionality." .
+
 :ServiceProvider a owl:Class ;
     rdfs:label "Service Provider" ;
     rdfs:subClassOf :Provider,
@@ -17687,12 +18661,45 @@ The organization collects and models architectural information about the service
             owl:onProperty :provides ;
             owl:someValuesFrom :Service ] .
 
+:ServiceRestartEvent a owl:Class ;
+    rdfs:label "Service Restart Event" ;
+    rdfs:subClassOf :ApplicationRestartEvent,
+        :ServiceEvent ;
+    :definition "An event describing the sequential stopping and starting of a service application to refresh its state, apply updates, or resolve operational issues." .
+
+:ServiceStartEvent a owl:Class ;
+    rdfs:label "Service Start Event" ;
+    rdfs:subClassOf :ApplicationStartEvent,
+        :ServiceEvent ;
+    :definition "An event representing the initiation of a service application, transitioning it from an inactive state to an active state, enabling its background or networked operations." .
+
+:ServiceStopEvent a owl:Class ;
+    rdfs:label "Service Stop Event" ;
+    rdfs:subClassOf :ApplicationStopEvent,
+        :ServiceEvent ;
+    :definition "An event capturing the cessation of a service application’s operations, transitioning it to an inactive state while ceasing its functionality to clients or dependent systems." .
+
+:ServiceUpdateEvent a owl:Class ;
+    rdfs:label "Service Update Event" ;
+    rdfs:subClassOf :ApplicationUpdateEvent,
+        :ServiceEvent ;
+    :definition "An event describing changes made to a service application, such as updates, reconfigurations, or patch installations, ensuring its continued availability and functionality." .
+
 :Session a owl:Class ;
     rdfs:label "Session" ;
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Session_(computer_science)> ;
     :definition "In computer science, in particular networking, a session is a semi-permanent interactive information interchange, also known as a dialogue, a conversation or a meeting, between two or more communicating devices, or between a computer and user (see Login session). A session is set up or established at a certain point in time, and then torn down at some later point. An established communication session may involve more than one message in each direction. A session is typically, but not always, stateful, meaning that at least one of the communicating parts needs to save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/session> .
+
+:SessionAuthorizationEvent a owl:Class ;
+    rdfs:label "Session Authorization Event" ;
+    rdfs:subClassOf :AuthorizationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :Authorization ] ;
+    :definition "An event representing the assignment of privileges, roles, or group memberships to a user session, typically during the initiation of a session. Authorization events determine the scope of access and control a user or entity has within a system or application, ensuring compliance with access policies and security principles." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/authorize_session> .
 
 :SessionCookie a owl:Class ;
     rdfs:label "Session Cookie" ;
@@ -17874,6 +18881,46 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
         :UnixLink ;
     :definition "A slow symbolic link is any symbolic link on a Unix filesystem that is not a fast symbolic link; slow symlink is thus retroactively termed from fast symlink.  Slow symbolic links stored the symbolic link information as data in regular files." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Symbolic_link#Storage_of_symbolic_links> .
+
+:SMBEvent a owl:Class ;
+    rdfs:label "SMB Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FileTransferNetworkTraffic ] ;
+    :definition "An event involving the Server Message Block (SMB) protocol, a network file sharing protocol that allows client-server communication for accessing files, printers, and other shared network resources. SMB supports both transactional file operations and communication over reliable transport layers." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/smb_activity> .
+
+:SMBFileCreateEvent a owl:Class ;
+    rdfs:label "SMB File Create Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is created if it does not already exist, failing if the file is already present. This operation strictly enforces new file creation." .
+
+:SMBFileOpenEvent a owl:Class ;
+    rdfs:label "SMB File Open Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is opened if it exists, failing otherwise. This operation is used to access or query the existing file." .
+
+:SMBFileOpenIfEvent a owl:Class ;
+    rdfs:label "SMB File Open If Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is opened if it exists, or created if it does not. This operation merges file creation and access behavior." .
+
+:SMBFileOverwriteEvent a owl:Class ;
+    rdfs:label "SMB File Overwrite Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is opened and truncated if it exists, failing if the file does not already exist. This operation is destructive and focuses on replacing the file's contents." .
+
+:SMBFileOverwriteIfEvent a owl:Class ;
+    rdfs:label "SMB File Overwrite If Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is opened and truncated if it exists, or created otherwise. This operation combines destructive overwrite and creation behaviors." .
+
+:SMBFileSupersedeEvent a owl:Class ;
+    rdfs:label "SMB File Supersede Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is overwritten if it exists or created if it does not. This operation combines file creation and modification semantics." .
 
 :Software a owl:Class ;
     rdfs:label "Software" ;
@@ -18059,6 +19106,52 @@ The goal is for homophones to be encoded to the same representation so that they
     :kb-article """## References
 Towards Data Science. (n.d.). Spectral Clustering. [Link](https://towardsdatascience.com/spectral-clustering-aba2640c0d5b)""" .
 
+:SSHConnectionCloseEvent a owl:Class ;
+    rdfs:label "SSH Connection Close Event" ;
+    rdfs:subClassOf :NetworkConnectionCloseEvent,
+        :SSHEvent ;
+    :definition "An event indicating the termination of an SSH connection, signaling the end of a secure session." .
+
+:SSHConnectionFailEvent a owl:Class ;
+    rdfs:label "SSH Connection Fail Event" ;
+    rdfs:subClassOf :NetworkConnectionFailEvent,
+        :SSHEvent ;
+    :definition "An event indicating a failure to establish an SSH connection, often due to issues such as authentication errors, network timeouts, or server unavailability." .
+
+:SSHConnectionOpenEvent a owl:Class ;
+    rdfs:label "SSH Connection Open Event" ;
+    rdfs:subClassOf :NetworkConnectionOpenEvent,
+        :SSHEvent ;
+    :definition "An event indicating the successful establishment of an SSH connection between a client and a server, marking the initiation of a secure session." .
+
+:SSHConnectionRefuseEvent a owl:Class ;
+    rdfs:label "SSH Connection Refuse Event" ;
+    rdfs:subClassOf :NetworkConnectionRefuseEvent,
+        :SSHEvent ;
+    :definition "An event indicating that an SSH connection attempt was refused, typically due to server-side restrictions or closed ports." .
+
+:SSHConnectionResetEvent a owl:Class ;
+    rdfs:label "SSH Connection Reset Event" ;
+    rdfs:subClassOf :NetworkConnectionResetEvent,
+        :SSHEvent ;
+    :definition "An event indicating the abrupt termination of an SSH connection due to protocol errors, network disruptions, or administrative actions." .
+
+:SSHEvent a owl:Class ;
+    rdfs:label "SSH Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SSHSession ] ;
+    :definition "An event involving the Secure Shell (SSH) protocol, a cryptographic network protocol designed to provide secure remote login, command execution, and data transfer. SSH facilitates encrypted communication between clients and servers, ensuring confidentiality, integrity, and authenticity." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/ssh_activity> .
+
+:SSHListenEvent a owl:Class ;
+    rdfs:label "SSH Listen Event" ;
+    rdfs:subClassOf :NetworkConnectionListenEvent,
+        :SSHEvent ;
+    :definition "An event indicating that an SSH server has started listening for incoming connection requests, enabling potential clients to initiate secure sessions." .
+
 :SSHSession a owl:Class ;
     rdfs:label "SSH Session" ;
     rdfs:subClassOf :RemoteSession ;
@@ -18236,6 +19329,14 @@ Wolfram MathWorld. (n.d.). Statistics. [Link](https://mathworld.wolfram.com/Stat
     :definition "Computer data storage, often called storage or memory, is a technology consisting of computer components and recording media used to retain digital data. It is a core function and fundamental component of computers. In the Von Neumann architecture, the CPU consists of two main parts: The control unit and the arithmetic / logic unit (ALU). The former controls the flow of data between the CPU and memory, while the latter performs arithmetic and logical operations on data." ;
     :synonym "Computer data storage",
         "Storage" .
+
+:StorageDeviceEvent a owl:Class ;
+    rdfs:label "Storage Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SecondaryStorage ] ;
+    :definition "An event describing the activity, configuration, or errors of storage devices, including physical disks, SSDs, or logical partitions. These events often pertain to data availability, integrity, and storage health." .
 
 :StoredProcedure a owl:Class ;
     rdfs:label "Stored Procedure" ;
@@ -18441,8 +19542,7 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
 
 :SystemCall a owl:Class ;
     rdfs:label "System Call" ;
-    rdfs:subClassOf :DigitalEvent,
-        :DigitalInformationBearer,
+    rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
             owl:someValuesFrom :Subroutine ] ;
@@ -18500,6 +19600,14 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
         :Reference-Hardware-assistedSystemAndMethodForDetectingAndAnalyzingSystemCallsMadeToAnOpertingSystemKernel_EndgameInc,
         :Reference-MalwareDetectionInEventLoops_CrowdstrikeInc,
         :Reference-PostSandboxMethodsAndSystemsForDetectingAndBlockingZero-dayExploitsViaApiCallValidation_K2CyberSecurityInc .
+
+:SystemCallEvent a owl:Class ;
+    rdfs:label "System Call Event" ;
+    rdfs:subClassOf :KernelEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SystemCall ] ;
+    :definition "An event where a user-space process requests a service or resource from the operating system kernel through a system call interface, enabling controlled interactions with hardware or kernel-level operations." .
 
 :SystemCallFiltering a owl:Class,
         owl:NamedIndividual,
@@ -25737,6 +26845,11 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Target Audience" ;
     rdfs:subClassOf :AgentGroup .
 
+:TCPEvent a owl:Class ;
+    rdfs:label "TCP Event" ;
+    rdfs:subClassOf :TransportLayerEvent ;
+    :definition "An event involving the Transmission Control Protocol (TCP), providing reliable, ordered, and error-checked delivery of data between applications." .
+
 :Technique a owl:Class ;
     rdfs:label "Technique" ;
     rdfs:subClassOf :Plan .
@@ -25961,6 +27074,11 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
     rdfs:isDefinedBy <https://dbpedia.org/page/Translation_lookaside_buffer> ;
     :definition "A translation lookaside buffer (TLB) is a memory cache that is used to reduce the time taken to access a user memory location. It is a part of the chip's memory-management unit (MMU)." .
 
+:TransportLayerEvent a owl:Class ;
+    rdfs:label "Transport Layer Event" ;
+    rdfs:subClassOf :NetworkEvent ;
+    :definition "An event occurring at the transport layer, responsible for end-to-end communication and data transfer management." .
+
 :TransportLink a owl:Class ;
     rdfs:label "Transport Link" ;
     rdfs:subClassOf :LogicalLink .
@@ -25982,6 +27100,31 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:seeAlso <http://dbpedia.org/resource/Public_key_certificate>,
         <https://www.educative.io/edpresso/keystore-vs-truststore> ;
     :todo "Not sure in practice we need this abstraction... what is the trust store that is not a certificate trust store?  Or was it to distinguish between standard CA PKI truststores and other non-SSL schemes?" .
+
+:TunnelCloseEvent a owl:Class ;
+    rdfs:label "Tunnel Close Event" ;
+    rdfs:subClassOf :TunnelEvent ;
+    :definition "An event where a network tunnel is terminated, ending encapsulated communication and releasing the associated resources." .
+
+:TunnelEvent a owl:Class ;
+    rdfs:label "Tunnel Event" ;
+    rdfs:subClassOf :NetworkEvent ;
+    :definition "An event involving the establishment, usage, or termination of a network tunnel. Tunnels provide encapsulated communication pathways across various layers, enabling secure, isolated, or virtualized transport of data." .
+
+:TunnelOpenEvent a owl:Class ;
+    rdfs:label "Tunnel Open Event" ;
+    rdfs:subClassOf :TunnelEvent ;
+    :definition "An event where a network tunnel is established, enabling encapsulated communication between endpoints. This marks the initiation of secure or isolated data transport through the tunnel." .
+
+:TunnelRenewEvent a owl:Class ;
+    rdfs:label "Tunnel Renew Event" ;
+    rdfs:subClassOf :TunnelEvent ;
+    :definition "An event where the lifecycle of a network tunnel is extended, ensuring continued encapsulated communication and avoiding session expiration." .
+
+:UDPEvent a owl:Class ;
+    rdfs:label "UDP Event" ;
+    rdfs:subClassOf :TransportLayerEvent ;
+    :definition "An event involving the User Datagram Protocol (UDP), providing a connectionless datagram service with minimal protocol mechanisms." .
 
 :UncertaintySampling a owl:Class,
         owl:NamedIndividual ;
@@ -26009,6 +27152,14 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
     rdfs:label "Unix Link" ;
     rdfs:subClassOf :FileSystemLink ;
     :definition "A Unix link is a file link in a Unix file system." .
+
+:UnloadLibraryEvent a owl:Class ;
+    rdfs:label "Unload Library Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SharedLibraryFile ] ;
+    :definition "An event where a process unloads a dynamically linked library or module, reducing its memory footprint or functionality." .
 
 :UnloadModule a owl:Class ;
     rdfs:subClassOf :SystemCall,
@@ -26135,7 +27286,8 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 
 :User a owl:Class ;
     rdfs:label "User" ;
-    rdfs:subClassOf :DigitalInformationBearer,
+    rdfs:subClassOf :Agent,
+        :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :has-account ;
             owl:someValuesFrom :UserAccount ],
@@ -26155,6 +27307,70 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     rdfs:seeAlso <http://dbpedia.org/resource/User_account>,
         <https://schema.ocsf.io/objects/user> .
 
+:UserAccountAttachPolicyEvent a owl:Class ;
+    rdfs:label "User Account Attach Policy Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where an IAM policy is attached to a user account." .
+
+:UserAccountCreationEvent a owl:Class ;
+    rdfs:label "User Account Creation Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event representing the creation of a new user account within a system or domain." .
+
+:UserAccountDeletionEvent a owl:Class ;
+    rdfs:label "User Account Deletion Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event representing the permanent deletion of a user account from a system or domain." .
+
+:UserAccountDetachPolicyEvent a owl:Class ;
+    rdfs:label "User Account Detach Policy Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where an IAM policy is detached from a user account." .
+
+:UserAccountDisableEvent a owl:Class ;
+    rdfs:label "User Account Disable Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where a user account is disabled, preventing its active use within the system." .
+
+:UserAccountEnableEvent a owl:Class ;
+    rdfs:label "User Account Enable Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where a user account is enabled, granting it active use within the system." .
+
+:UserAccountEvent a owl:Class ;
+    rdfs:label "User Account Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :UserAccount ] ;
+    :definition "An event capturing operations or state changes performed on user accounts, including lifecycle management, access control modifications, and policy assignments." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/account_change> .
+
+:UserAccountLockEvent a owl:Class ;
+    rdfs:label "User Account Lock Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where a user account is locked out due to failed authentication attempts or administrative action." .
+
+:UserAccountMFADisableEvent a owl:Class ;
+    rdfs:label "User Account MFA Disable Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where multi-factor authentication (MFA) is disabled for a user account." .
+
+:UserAccountMFAEnableEvent a owl:Class ;
+    rdfs:label "User Account MFA Enable Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where multi-factor authentication (MFA) is enabled for a user account." .
+
+:UserAccountPasswordChangeEvent a owl:Class ;
+    rdfs:label "User Account Password Change Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where a user account's password is modified, typically by the user or an administrator." .
+
+:UserAccountPasswordResetEvent a owl:Class ;
+    rdfs:label "User Account Password Reset Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event where a user account's password is reset, typically due to a forgotten password or administrative action." .
+
 :UserAccountPermissions a owl:Class,
         owl:NamedIndividual,
         :UserAccountPermissions ;
@@ -26167,10 +27383,14 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     :definition "Restricting a user account's access to resources." ;
     :kb-reference :Reference-ConfigureUserAccessControlAndPermissions .
 
+:UserAccountUpdateEvent a owl:Class ;
+    rdfs:label "User Account Update Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event capturing updates to a user account, including changes to its attributes or configuration." .
+
 :UserAction a owl:Class ;
     rdfs:label "User Action" ;
-    rdfs:subClassOf :DigitalEvent,
-        :DigitalInformationBearer ;
+    rdfs:subClassOf :DigitalInformationBearer ;
     :definition "An action performed by a user. Executing commands, granting permissions, and accessing resources are examples of user actions." ;
     :todo "Subclasses are incorrect" .
 
@@ -26877,6 +28097,14 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         <https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users> ;
     :definition "The Windows Registry is a hierarchical database that stores low-level settings for the Microsoft Windows operating system and for applications that opt to use the registry. The kernel, device drivers, services, Security Accounts Manager, and user interface can all use the registry. The registry also allows access to counters for profiling system performance." .
 
+:WindowsRegistryEvent a owl:Class ;
+    rdfs:label "Windows Registry Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WindowsRegistry ] ;
+    :definition "Events involving interactions with the Windows Registry, including keys, values, and associated security configurations." .
+
 :WindowsRegistryKey a owl:Class ;
     rdfs:label "Windows Registry Key" ;
     rdfs:subClassOf :SystemConfigurationDatabaseRecord,
@@ -26895,6 +28123,60 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:seeAlso <https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-hives>,
         <https://schema.ocsf.io/objects/registry_key> .
 
+:WindowsRegistryKeyCreationEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Creation Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where a new registry key is added to the Windows Registry, establishing a new hierarchical node for configuration." .
+
+:WindowsRegistryKeyDeletionEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Deletion Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event representing the removal of a registry key from the Windows Registry, including its hierarchical structure and associated metadata." .
+
+:WindowsRegistryKeyEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Event" ;
+    rdfs:subClassOf :WindowsRegistryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
+    :definition "Events representing actions performed on Windows Registry keys, such as creation, modification, or deletion, which define hierarchical nodes for storing configuration data." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/win/registry_key_activity> .
+
+:WindowsRegistryKeyExportEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Export Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event representing the export of registry key data from the Windows Registry to an external file or format." .
+
+:WindowsRegistryKeyImportEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Import Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where registry key data is imported into the Windows Registry from an external source." .
+
+:WindowsRegistryKeyReadEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Read Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where a registry key is accessed to query its structure, properties, or associated metadata without modifying its state." .
+
+:WindowsRegistryKeyRenamingEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Renaming Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where the name of a registry key is changed, altering its identifier within the registry hierarchy." .
+
+:WindowsRegistryKeyRestoreEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Restore Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where a registry key is restored to a previous state using a backup or recovery mechanism." .
+
+:WindowsRegistryKeySetSecurityEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Set Security Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event representing the application or modification of access controls or security settings to a registry key." .
+
+:WindowsRegistryKeyUpdateEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Update Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where an existing registry key is updated or reconfigured, reflecting changes to its metadata or properties." .
+
 :WindowsRegistryValue a owl:Class ;
     rdfs:label "Windows Registry Value" ;
     rdfs:subClassOf :SystemConfigurationDatabaseRecord,
@@ -26908,6 +28190,35 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "A Windows Registry Value is a data structure consisting of a name, type, data (as a pointer), and the length. Windows Registry Values are always associated with a Windows Registry Key. They store the actual configuration data for the operating system and the programs that run on the system." ;
     rdfs:seeAlso <https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry>,
         <https://schema.ocsf.io/objects/registry_value> .
+
+:WindowsRegistryValueDeletionEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Deletion Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent ;
+    :definition "An event where a registry value is deleted from the Windows Registry, permanently removing its associated data." .
+
+:WindowsRegistryValueEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Event" ;
+    rdfs:subClassOf :WindowsRegistryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WindowsRegistryValue ] ;
+    :definition "Events representing actions performed on Windows Registry values, which store configuration data within registry keys." ;
+    rdfs:seeAlso <https://schema.ocsf.io/1.3.0/classes/win/registry_value_activity> .
+
+:WindowsRegistryValueGetEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Get Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent ;
+    :definition "An event where the data of a registry value is retrieved, typically to read its configuration or state." .
+
+:WindowsRegistryValueSetEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Set Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent ;
+    :definition "An event where data is assigned to a registry value, either creating it or updating its existing content." .
+
+:WindowsRegistryValueUpdateEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Update Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent ;
+    :definition "An event indicating changes to the data or configuration of an existing registry value within the Windows Registry." .
 
 :WindowsResumeThread a owl:Class ;
     rdfs:label "Windows ResumeThread" ;
