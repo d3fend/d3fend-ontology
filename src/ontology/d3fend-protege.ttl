@@ -202,6 +202,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
     rdfs:range owl:Thing .
 
+:controls a owl:ObjectProperty ;
+    rdfs:label "controls" ;
+    :definition "x controls y: An entity x that regulate, guide, or manage the behavior of an entity y." ;
+    rdfs:subPropertyOf :associated-with .
+
 :copies a owl:ObjectProperty ;
     rdfs:label "copies" ;
     rdfs:subPropertyOf :creates ;
@@ -16120,6 +16125,97 @@ Operating System Monitoring Techniques have varied implementations including bui
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteMemory ] .
+
+:OTActuationDevice a owl:Class ;
+    rdfs:label "OT Actuation Device" ;
+    :definition "An OT Actuation device is a device capable of TCP/IP communication, has firmware and controls an OT Actuator." ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/products/hardware/allen-bradley/motion-control/servo-drives/single-axis-control/kinetix-5500.html> ;
+    rdfs:comment "Kinetix 5500 Servo Drive" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OTActuator ], 
+        :OTEmbeddedComputer .
+
+:OTActuator a owl:Class ; 
+    rdfs:label "OT Actuator" ;
+    :definition "An OT actuator is a device for moving or controlling a mechanism or system. It is operated by a source of energy, typically electric current, hydraulic fluid pressure, or pneumatic pressure, and converts that energy into motion. An actuator is the mechanism by which a control system acts upon an environment. The control system can be simple (a fixed mechanical or electronic system), software-based (e.g., a printer driver, robot control system), or a human or other agent." ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/actuator> ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/motion-control/actuators.html#mpai> ;
+    rdfs:comment "Kinetic MPAI Electrical Cylinder" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OTFinalElement ], 
+        :PhysicalArtifact .
+
+:OTController a owl:Class ;
+    rdfs:label "OT Controller" ;
+    :definition "A device having an output that varies to regulate a controlled variable in a specified manner. A controller may be a self-contained analog or digital instrument, or it may be the equivalent of such an instrument in a shared-control system. An automatic controller varies its output automatically in response to a direct or indirect input of a measured process variable. A manual controller. (ISA 5.1)" ;
+    rdfs:isDefinedBy <http://integrated.cc/cse/Instrumentation_Symbols_and_Identification.pdf> ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/programmable-controllers/compactlogix-and-compact-guardlogix-control-systems.html#5480controllers> ;
+    rdfs:comment "Rockwell 5480 Controller" ;
+    rdfs:subClassOf  [ a owl:Restriction ;
+            owl:onProperty :attached-to ;
+            owl:someValuesFrom :OTInputOutputModule ],
+        :OTEmbeddedComputer .
+
+:OTEmbeddedComputer a owl:Class ;
+    rdfs:label "OT Embedded Computer" ;
+    :definition "An OT Device which has a TCP/IP network stack and service applications. Usually listening for and sending :OTCommand" ;
+    rdfs:subClassOf  [ a owl:Restriction ;
+            owl:onProperty :attached-to ;
+            owl:someValuesFrom :OTPowerSupply ],
+        :EmbeddedComputer .
+
+:OTFinalElement a owl:Class ;
+    rdfs:label "OT Final Element" ;
+    rdfs:subClassOf :PhysicalArtifact .
+
+:OTInputOutputModule a owl:Class ;
+    rdfs:label "OT Input Output Module" ;
+    :synonym "IO Module" ;
+    :definition "An I/O module is used to communicate with a computer as well as the data involved in the communications." ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/i_o> ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/i-o/compact-5000-i-o-modules.html> ;
+    rdfs:comment "Rockwell Compact 5000 IO Module" ;
+    rdfs:comment "In contrast to Analog OT Input Output Module" ;
+    rdfs:subClassOf  [ a owl:Restriction ;
+            owl:onProperty :attached-to ;
+            owl:someValuesFrom :OTSensingDevice ],
+        [ a owl:Restriction ;
+            owl:onProperty :attached-to ;
+            owl:someValuesFrom :OTSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :attached-to ;
+            owl:someValuesFrom :OTActuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OTActuationDevice ],
+        :OTController .
+
+:OTPowerSupply a owl:Class ; 
+    rdfs:label "OT Power Supply" ;
+    :definition "A power supply refers to a component or system that provides the necessary electrical energy to operate devices, machinery, and control systems within an industrial or commercial setting. Power supplies can range from simple batteries to complex electrical power distribution systems depending on the application." ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/programmable-controllers/compactlogix-and-compact-guardlogix-control-systems.html#5480controllers> ;
+    rdfs:comment "Rockwell CompactLogix Power Supplies" ;
+    rdfs:subClassOf :PhysicalArtifact .
+
+:OTSensingDevice a owl:Class ;
+    rdfs:label "OT Sensing Device" ;
+    :definition "An OT Sensing Device is a device capable of TCP/IP communication and has it's own firmware. An OT Sensing Device contains an OT Sensor." ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/products/hardware/allen-bradley/sensors-and-switches/condition-sensors/temperature-controllers/837t-solid-state.html> ;
+    rdfs:comment "837T Solid-state Temperature Sensors" ;
+    rdfs:subClassOf  [ a owl:Restriction ;
+            owl:onProperty :attached-to ;
+            owl:someValuesFrom :OTSensor ],
+        :OTEmbeddedComputer .
+
+:OTSensor a owl:Class ; 
+    rdfs:label "OT Sensor" ; 
+    :definition "An OT sensor is a device that measures a physical quantity and converts it into a signal which can be read by an observer or by an instrument. A sensor is a device, which responds to an input quantity by generating a functionally related output usually in the form of an electrical or optical signal." ;
+    rdfs:isDefinedBy <https://csrc.nist.rip/glossary/term/sensor> ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/products/details.837T-N1N14A50A-D4.html> ;
+    rdfs:comment "837T-N1N14A50A-D4" ;
+    rdfs:subClassOf  :OTFinalElement .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
