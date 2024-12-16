@@ -1101,7 +1101,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     owl:inverseOf :restricts .
 
-:restricts a owl:ObjectProperty ;
+:restricts a owl:InverseFunctionalProperty,
+        owl:ObjectProperty ;
     rdfs:label "restricts" ;
     rdfs:subPropertyOf :associated-with ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/00234091-v> ;
@@ -1711,15 +1712,6 @@ skos:altLabel a owl:AnnotationProperty .
             owl:onProperty :has-mediator ;
             owl:someValuesFrom :AccessMediator ] .
 
-:AccessControl a owl:Class ;
-    rdfs:label "Access Control Regulation" ;
-    rdfs:subClassOf :DefensiveTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :DigitalInformationBearer ] ;
-    :commment "\"Regulation\" is best one-word (without an and) to capture common admin/authorize techniques and mediation/enforcement tecniques.  \"Governance\" to broad. FICAM blocked a NIST report from 2010 on access and privilige management from making \"access management\" be exact fit.  Citable doc fornconcepts and bringing together the two subclasses, but by different name." ;
-    :synonym "Agent Authorization" .
-
 :AccessControlAdministrationEvent a owl:Class ;
     rdfs:label "Access Control Administration Event" ;
     skos:altLabel "Permission Administration Event",
@@ -1771,7 +1763,13 @@ skos:altLabel a owl:AnnotationProperty .
 
 :AccessMediation a owl:Class ;
     rdfs:label "Access Mediation" ;
-    rdfs:subClassOf :AccessControl ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Isolate ],
+        [ a owl:Restriction ;
+            owl:onProperty :protects ;
+            owl:someValuesFrom :Artifact ] ;
     rdfs:isDefinedBy "CNSSI 4009" ;
     :comment "Access mediation is the process of granting or denying specific requests to: 1) obtain and use information and related information processing services; and 2) enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances). [definition per CNSSI 4009, citing FIPS 201-2]",
         "In the fields of physical security and information security, access control (AC) is the selective restriction of access to a place or other resource, while access management describes the process. The act of accessing may mean consuming, entering, or using. Permission to access a resource is called authorization. Locks and login credentials are two analogous mechanisms of access control. [DBPedia]" ;
@@ -1821,7 +1819,13 @@ skos:altLabel a owl:AnnotationProperty .
 
 :AccessPolicyAdministration a owl:Class ;
     rdfs:label "Access Policy Administration" ;
-    rdfs:subClassOf :AccessControl ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Isolate ],
+        [ a owl:Restriction ;
+            owl:onProperty :protects ;
+            owl:someValuesFrom :Artifact ] ;
     :synonym "Access Authorization" .
 
 :AccessProcess a owl:Class ;
@@ -2064,6 +2068,9 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
             owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Harden ],
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :DigitalInformationBearer ],
@@ -11183,7 +11190,7 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
         owl:NamedIndividual,
         :PlatformHardening ;
     rdfs:label "Executable Allowlisting" ;
-    rdfs:subClassOf :SystemCallMediation,
+    rdfs:subClassOf :SystemCallFiltering,
         [ a owl:Restriction ;
             owl:onProperty :blocks ;
             owl:someValuesFrom :ExecutableFile ],
@@ -11224,11 +11231,12 @@ Organizations which download or create high volumes of software make management 
     :definition "An executable binary contains machine code instructions for a physical CPU. D3FEND also considers byte code for a virtual machine to be binary code.  This is in contrast to executable scripts written in a scripting language." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Executable> .
 
-:ExecutableCode a owl:Class ;
+:ExecutableCode a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Executable Code" ;
     rdfs:subClassOf :Software ;
-    :comment "Added as not all softwarenis directly executable, *but*nthat may be a distinctionnwe don't need/want to makenas the instructions can benexecuted by some mechanism.nnGet's weird with JIT.",
-        "seeAlso on DBPedia Executable asn\"Executable File\" is a conflatednwith other parts." ;
+    :comment "Added as not all software is directly executable, *but* that may be a distinctionn we don't need/want to maken as the instructions can be executed by some mechanism. Get's weird with JIT.",
+        "seeAlso on DBPedia Executable an \"Executable File\" is a conflated with other parts." ;
     :definition "Executable code is  a set of instructions coded so that the computer can use it directly without further translation." ;
     :isDefinedBy "oewn-06369392-n" ;
     rdfs:seeAlso "https://dbpedia.org/page/Executable" ;
@@ -11239,7 +11247,7 @@ Organizations which download or create high volumes of software make management 
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Executable Denylisting" ;
-    rdfs:subClassOf :SystemCallMediation,
+    rdfs:subClassOf :SystemCallFiltering,
         [ a owl:Restriction ;
             owl:onProperty :blocks ;
             owl:someValuesFrom :ExecutableFile ],
@@ -13406,7 +13414,7 @@ Intrusion prevention systems are considered extensions of intrusion detection sy
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "IO Port Restriction" ;
-    rdfs:subClassOf :ExecutionIsolation,
+    rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
             owl:someValuesFrom :InputDevice ],
@@ -13807,9 +13815,11 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
         owl:NamedIndividual ;
     rdfs:label "Kernel-based Process Isolation" ;
     rdfs:subClassOf :ExecutionIsolation ;
+    rdfs:comment "e.g. KVM" ;
     :d3fend-id "D3-KBPI" ;
     :definition "Using kernel-level capabilities to isolate processes." ;
-    :kb-reference :Reference-OverviewOfTheSeccompSandbox .
+    :kb-reference :Reference-OverviewOfTheSeccompSandbox ;
+    :todo "Write kb-article for KBPI" .
 
 :KernelAPISensor a owl:Class ;
     rdfs:label "Kernel API Sensor" ;
@@ -14358,7 +14368,7 @@ Newer system call.""" .
 
 :LocalFileAccessMediation a owl:Class ;
     rdfs:label "Local File Access Mediation" ;
-    rdfs:subClassOf :SystemCallMediation,
+    rdfs:subClassOf :SystemCallFiltering,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :OpenFile ] ;
@@ -14613,58 +14623,6 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
     :definition "A mail service provides the ability to send and receive mail across a computer network.  The mail service runs on message transfer agents (i.e., mail servers) and is accessed by users through an email client." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Email>,
         <http://dbpedia.org/resource/Message_transfer_agent> .
-
-:MandatoryAccessControl a :MandatoryAccessControl,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Mandatory Access Control" ;
-    rdfs:subClassOf :Kernel-basedProcessIsolation,
-        [ a owl:Restriction ;
-            owl:onProperty :isolates ;
-            owl:someValuesFrom :Process ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
-    :d3fend-id "D3-MAC" ;
-    :definition "Controlling access to local computer system resources with kernel-level capabilities." ;
-    :kb-article """## How it works
-Mandatory access control is a non-discretionary access control system because the rules and polices that determine access is determined by a security control authority and not distributed to local users. Access determinations are based on designed access control polices and are not based on local resource owner determinations.
-
-Access is typically granted by defining sets of subjects and sets of objects. Subjects are the entities requesting access and objects are the resources that subjects are trying to access. Rules and policies are defined that associate subjects and object permissions and access controls.
-
-### Common MAC implementations
-#### Security label access control
-A fine-grained form of mandatory access control is to apply security labels to individual resources, including processes, and the access control decisions are against a particular resource and a given user attempting to gain access. This type of MAC requires that the file system has built-in support for security labels.
-
-Access controls are typically implemented through the use of label identifiers for every file system object. Identifier labels are applied to resources and users are assigned a similar access identifier. Users attempting to access a resource will result in the operating system performing an access control check. The access control check will compare the assigned user's credentials to that of the resource or object they are attempting to access.
-
-A security context is associated with resources and is used to determine assess. Typical basic access control elements include users, roles and types and together they form a security context which is the basis for the security labels.
-
-This type of access control is what is employed in SELinux [2]. This form of MAC is considered the most flexible implementation, but it also is the most complex to deploy across the enterprise. Where multiple virtual machines (VM) are run together this type of access control is typically employed to ensure true isolation of processes and VMs.
-
-#### File path level controls
-A less fine-grained form of mandatory access control is to apply security labels that allow for access control at the file path level.  Access control is filesystem agnostic and no relabeling of resources is required. Pathname access control usually seems more natural for implementation and corresponding access audits.
-
-This type of MAC is what is employed in AppArmor [3]. AppArmor was developed to provide a simpler alternative MAC method with much less management overhead. A simple access policy is maintained that defines path resource access rules. Access control attributes are typically associated with programs instead of users.
-
-
-## Considerations
-Some implementations of security label mandatory access control contain complex rules set that are hard to verify and complex to maintain over time.
-
-Initial planning of access model and continuous monitoring of the available users, resources and object is necessary.
-
-## Implementations
-
- * Linux C-Groups, and policy engines like SELinux and AppArmor
- * Windows Mandatory Integrity Control introduced in Windows Vista
-
-
-### Citations
-1. [Implementation of Mandatory Access Control in Distributed Systems](https://link.springer.com/article/10.3103/S0146411618080357)
-2. [SELinux](https://selinuxproject.org/)
-3. [AppArmor](https://www.apparmor.net/)""" ;
-    :kb-reference :Reference-AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation,
-        :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc .
 
 :Matching a owl:Class ;
     rdfs:label "Matching" ;
@@ -15208,7 +15166,8 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     :definition "A network is a group of computers that use a set of common communication protocols over digital interconnections for the purpose of sharing resources located on or provided by the network nodes. The interconnections between nodes are formed from a broad spectrum of telecommunication network technologies, based on physically wired, optical, and wireless radio-frequency methods that may be arranged in a variety of network topologies." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03826490-n> .
 
-:NetworkAccessMediation a owl:Class ;
+:NetworkAccessMediation a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Network Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
@@ -15842,7 +15801,7 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "One-time Password" ;
-    rdfs:subClassOf :AgentAuthentication,
+    rdfs:subClassOf :CredentialRotation,
         [ a owl:Restriction ;
             owl:onProperty :use-limits ;
             owl:someValuesFrom :Password ] ;
@@ -16650,6 +16609,10 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     rdfs:subClassOf :Credential ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Password> ;
     :definition "A password, sometimes called a passcode, is a memorized secret, typically a string of characters, usually used to confirm the identity of a user. Using the terminology of the NIST Digital Identity Guidelines, the secret is memorized by a party called the claimant while the party verifying the identity of the claimant is called the verifier. When the claimant successfully demonstrates knowledge of the password to the verifier through an established authentication protocol, the verifier is able to infer the claimant's identity." .
+
+:PasswordAuthentication a owl:Class ;
+    rdfs:label "Password Authentication" ;
+    rdfs:subClassOf :AgentAuthentication .
 
 :PasswordDatabase a owl:Class ;
     rdfs:label "Password Database" ;
@@ -18471,7 +18434,8 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     rdfs:isDefinedBy <http://dbpedia.org/resource/Router_(computing)> ;
     :definition "A router is a networking device that forwards data packets between computer networks. Routers perform the traffic directing functions on the Internet. Data sent through the internet, such as a web page or email, is in the form of data packets. A packet is typically forwarded from one router to another router through the networks that constitute an internetwork (e.g. the Internet) until it reaches its destination node." .
 
-:RoutingAccessMediation a owl:Class ;
+:RoutingAccessMediation a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Routing Access Mediation" ;
     rdfs:subClassOf :NetworkAccessMediation ;
     :comment "includes VPN implementednat layer 3 of OSI -GS",
@@ -19824,15 +19788,6 @@ Wikipedia. (n.d.). StyleGAN. [Link](https://en.wikipedia.org/wiki/StyleGAN)""" ;
         "Semantic Subroutine",
         "Software Function" .
 
-:SubroutineAccessMediation a owl:Class ;
-    rdfs:label "Subroutine Access Mediation" ;
-    rdfs:subClassOf :AccessMediation,
-        [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :Subroutine ] ;
-    :comment "? programming standards, ?" ;
-    :definition "Subroutine Access Control" .
-
 :SubspaceClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Subspace Clustering" ;
@@ -20032,22 +19987,66 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
         owl:NamedIndividual,
         :SystemCallFiltering ;
     rdfs:label "System Call Filtering" ;
-    rdfs:subClassOf :Kernel-basedProcessIsolation,
-        [ a owl:Restriction ;
-            owl:onProperty :filters ;
-            owl:someValuesFrom :SystemCall ] ;
-    :d3fend-id "D3-SCF" ;
-    :definition "Configuring a kernel to use an allow or deny list to filter kernel api calls." ;
-    :kb-reference :Reference-OverviewOfTheSeccompSandbox ;
-    :todo "write kb-article" .
-
-:SystemCallMediation a owl:Class ;
-    rdfs:label "System Call Mediation" ;
+    skos:altLabel "Mandatory Access Control",
+        "System Call Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :SystemCall ],
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
             owl:onProperty :protects ;
-            owl:someValuesFrom :SystemCall ] ;
-    :synonym "System Call Control" .
+            owl:someValuesFrom :SystemCall ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :CreateProcess ] ;
+    :d3fend-id "D3-MAC",
+        "D3-SCF" ;
+    :definition "Configuring a kernel to use an allow or deny list to filter kernel api calls.",
+        "Controlling access to local computer system resources with kernel-level capabilities." ;
+    :kb-article """## How it works
+Mandatory access control is a non-discretionary access control system because the rules and polices that determine access is determined by a security control authority and not distributed to local users. Access determinations are based on designed access control polices and are not based on local resource owner determinations.
+
+Access is typically granted by defining sets of subjects and sets of objects. Subjects are the entities requesting access and objects are the resources that subjects are trying to access. Rules and policies are defined that associate subjects and object permissions and access controls.
+
+### Common MAC implementations
+#### Security label access control
+A fine-grained form of mandatory access control is to apply security labels to individual resources, including processes, and the access control decisions are against a particular resource and a given user attempting to gain access. This type of MAC requires that the file system has built-in support for security labels.
+
+Access controls are typically implemented through the use of label identifiers for every file system object. Identifier labels are applied to resources and users are assigned a similar access identifier. Users attempting to access a resource will result in the operating system performing an access control check. The access control check will compare the assigned user's credentials to that of the resource or object they are attempting to access.
+
+A security context is associated with resources and is used to determine assess. Typical basic access control elements include users, roles and types and together they form a security context which is the basis for the security labels.
+
+This type of access control is what is employed in SELinux [2]. This form of MAC is considered the most flexible implementation, but it also is the most complex to deploy across the enterprise. Where multiple virtual machines (VM) are run together this type of access control is typically employed to ensure true isolation of processes and VMs.
+
+#### File path level controls
+A less fine-grained form of mandatory access control is to apply security labels that allow for access control at the file path level.  Access control is filesystem agnostic and no relabeling of resources is required. Pathname access control usually seems more natural for implementation and corresponding access audits.
+
+This type of MAC is what is employed in AppArmor [3]. AppArmor was developed to provide a simpler alternative MAC method with much less management overhead. A simple access policy is maintained that defines path resource access rules. Access control attributes are typically associated with programs instead of users.
+
+
+## Considerations
+Some implementations of security label mandatory access control contain complex rules set that are hard to verify and complex to maintain over time.
+
+Initial planning of access model and continuous monitoring of the available users, resources and object is necessary.
+
+## Implementations
+
+ * Linux C-Groups, and policy engines like SELinux and AppArmor
+ * Windows Mandatory Integrity Control introduced in Windows Vista
+
+
+### Citations
+1. [Implementation of Mandatory Access Control in Distributed Systems](https://link.springer.com/article/10.3103/S0146411618080357)
+2. [SELinux](https://selinuxproject.org/)
+3. [AppArmor](https://www.apparmor.net/)""" ;
+    :kb-reference :Reference-AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation,
+        :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc,
+        :Reference-OverviewOfTheSeccompSandbox ;
+    :synonym "System Call Control" ;
+    :todo "write kb-article" .
 
 :SystemConfigSystemCall a owl:Class ;
     rdfs:label "System Config System Call" ;
@@ -28231,7 +28230,8 @@ It is a combination of VPN hardware and software technologies that provides VPN 
             owl:someValuesFrom :URL ] ;
     :definition "A web file resource is a file resource identified by a Uniform Resource Identifier (URI) and made available from one host to another host via a web protocol and across a network or networks." .
 
-:WebIdentityToken a owl:Class ;
+:WebIdentityToken a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Web Identity Token" ;
     rdfs:subClassOf :Credential,
         [ a owl:Restriction ;
@@ -28883,6 +28883,9 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 ### Individuals
 
+:AccessControl a owl:NamedIndividual ;
+    :commment "\"Regulation\" is best one-word (without an and) to capture common admin/authorize techniques and mediation/enforcement tecniques.  \"Governance\" to broad. FICAM blocked a NIST report from 2010 on access and privilige management from making \"access management\" be exact fit.  Citable doc fornconcepts and bringing together the two subclasses, but by different name." .
+
 :AdobePDFFile1.3 a :DocumentFile,
         owl:NamedIndividual ;
     rdfs:label "Adobe PDF File 1.3" ;
@@ -29426,7 +29429,7 @@ order to constitute a complete standard. For a complete definition of all requir
         owl:NamedIndividual ;
     rdfs:label "User Account Management" ;
     :related :LocalFilePermissions,
-        :MandatoryAccessControl,
+        :SystemCallFiltering,
         :SystemConfigurationPermissions .
 
 :M1019 a :ATTACKEnterpriseMitigation,
@@ -29467,8 +29470,8 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:label "Privileged Process Integrity" ;
     :related :BootloaderAuthentication,
         :DriverLoadIntegrityChecking,
-        :MandatoryAccessControl,
-        :ProcessSegmentExecutionPrevention .
+        :ProcessSegmentExecutionPrevention,
+        :SystemCallFiltering .
 
 :M1026 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
@@ -29581,7 +29584,7 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:label "Disable or Remove Feature or Program" ;
     :related :ApplicationConfigurationHardening,
         :ExecutableDenylisting,
-        :MandatoryAccessControl .
+        :SystemCallFiltering .
 
 :M1043 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
@@ -29621,7 +29624,6 @@ order to constitute a complete standard. For a complete definition of all requir
     :d3fend-comment "\"Sandboxing\" is often used to describe a detection environment which includes some forms of analysis (see D3-DA.)\"  Many forms of isolation (e.g., quarantining) are more static in nature and simply limit software's access to system resources." ;
     :related :DynamicAnalysis,
         :Hardware-basedProcessIsolation,
-        :MandatoryAccessControl,
         :SystemCallFiltering .
 
 :M1049 a :ATTACKEnterpriseMitigation,
@@ -29648,7 +29650,7 @@ order to constitute a complete standard. For a complete definition of all requir
 :M1052 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "User Account Control" ;
-    :related :MandatoryAccessControl .
+    :related :SystemCallFiltering .
 
 :M1053 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
@@ -29837,7 +29839,7 @@ The time field indicates the first and last time a system reported a user logged
     :kb-author "Matthew Conover" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Symantec Corporation" ;
-    :kb-reference-of :MandatoryAccessControl ;
+    :kb-reference-of :SystemCallFiltering ;
     :kb-reference-title "Analysis of the Windows Vista Security Model" ;
     :todo "Could not determine reference type; TechniqueReference class used instead",
         "MITRE Analysis was not found" .
@@ -29890,7 +29892,7 @@ Outlier data values which deviate from behavioral profile by more than a predete
     :kb-author "Gang Duan" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Neuvector Inc" ;
-    :kb-reference-of :MandatoryAccessControl ;
+    :kb-reference-of :SystemCallFiltering ;
     :kb-reference-title "Architecture of transparent network security for application containers" ;
     :todo "MITRE Analysis was not found" .
 
