@@ -168,6 +168,11 @@
     rdfs:label "claims" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property .
 
+:communicates-with a owl:ObjectProperty ;
+    rdfs:label "communicates with" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x communicates with y: An entity x sends and receives data by any means of data transferance to an entity y." .
+
 :configures a owl:ObjectProperty ;
     rdfs:label "configures" ;
     rdfs:subPropertyOf :associated-with,
@@ -202,6 +207,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "contributor" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
     rdfs:range owl:Thing .
+
+:controls a owl:ObjectProperty ;
+    rdfs:label "controls" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x controls y: An entity x that regulate, guide, or manage the behavior of an entity y." .
 
 :copies a owl:ObjectProperty ;
     rdfs:label "copies" ;
@@ -956,6 +966,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000056> ;
     :definition "x participates-in y: The object x takes part in the event y, signifying that x contributes to or is affected by the event’s occurrence in some way." .
+
+:powered-by a owl:ObjectProperty ;
+    rdfs:label "powered by" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x is powered by y: An entity x is charged, or given energy or force by an entity y." .
 
 :preceded-by a owl:ObjectProperty ;
     rdfs:label "preceded-by" ;
@@ -10701,7 +10716,7 @@ Analyzing the interaction of a piece of code with a system while the code is bei
  * Sometimes the malware behavior is triggered only under certain conditions (on a specific system date, after a certain time, or after it is sent a specific command) and can't be detected through a short execution in a virtual environment.
 
 ## Implementations
-* [Cuckoo Sandbox](https://cuckoosandbox.org)""" ;
+* Cuckoo Sandbox""" ;
     :kb-reference :Reference-MalwareAnalysisSystem_PaloAltoNetworksInc,
         :Reference-UseOfAnApplicationControllerToMonitorAndControlSoftwareFileAndApplicationEnvironments_SophosLtd ;
     :synonym "Malware Detonation",
@@ -16270,6 +16285,69 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteMemory ] .
 
+:OTActuator a owl:Class ;
+    rdfs:label "OT Actuator" ;
+    rdfs:subClassOf :OutputDevice ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/actuator> ;
+    :definition "An OT actuator is a device for moving or controlling a mechanism or system. It is operated by a source of energy, typically electric current, hydraulic fluid pressure, or pneumatic pressure, and converts that energy into motion. An actuator is the mechanism by which a control system acts upon an environment. The control system can be simple (a fixed mechanical or electronic system), software-based (e.g., a printer driver, robot control system), or a human or other agent." .
+
+:OTController a owl:Class ;
+    rdfs:label "OT Controller" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :OTInputOutputModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OTActuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OTSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :powered-by ;
+            owl:someValuesFrom :OTPowerSupply ] ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
+    :definition "A device or program that operates automatically to regulate a controlled variable." .
+
+:OTEmbeddedComputer a owl:Class ;
+    rdfs:label "OT Embedded Computer" ;
+    rdfs:subClassOf :EmbeddedComputer .
+
+:OTInputOutputModule a owl:Class ;
+    rdfs:label "OT Input Output Module" ;
+    rdfs:subClassOf :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :OTActuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :OTSensor ] ;
+    rdfs:comment "Rockwell Compact 5000 IO Module",
+        "There are many types of I/O modules, including: analog input, analog output, HART input, HART output, digital input, digital output, mV input, pulse input, universal I/O, vibration input, and many other types of input or output modules.The functionality of the I/O Module can be embedded in the controller or as a separate module connected via chassis or I/O link." ;
+    rdfs:isDefinedBy <https://consteel-electronics.com/articles/what-is-IO-module> ;
+    :definition "An I/O module is a hardware component designed to connect to external devices and sensors, converting analog or digital signals into a format that can be processed by a control system and vice versa." ;
+    rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/i-o/compact-5000-i-o-modules.html> ;
+    :synonym "IO Module" .
+
+:OTPowerSupply a owl:Class ;
+    rdfs:label "OT Power Supply" ;
+    rdfs:subClassOf :PhysicalArtifact ;
+    rdfs:comment "OT examples include: Phoenix Contact QUINT, Eaton PSG, and many controller-branded power supplies.",
+        "See following for definition source - IEEE 100: The Authoritative Dictionary of IEEE Standards Terms IEEE STANDARDS DICTIONARY OF ELECTRICAL AND ELECTRONICS TERMS" ;
+    :definition "An electronic module that converts power from some power source to a form which is needed by the equipment to which power is being supplied." .
+
+:OTSensor a owl:Class ;
+    rdfs:label "OT Sensor" ;
+    rdfs:subClassOf :Sensor ;
+    rdfs:comment "Components of the sensor include a sensing element and may include a power source, display, housing, communication interface or signal processor.",
+        "Types of sensors include: level, pressure, temperature, and flow measurement devices." ;
+    rdfs:isDefinedBy <https://csrc.nist.rip/glossary/term/sensor> ;
+    :definition "An OT sensor is a device that measures a physical quantity and converts it into a signal which can be read by an observer or by an instrument. A sensor is a device, which responds to an input quantity by generating a functionally related output usually in the form of an electrical or optical signal." ;
+    rdfs:seeAlso <https://emerson.com/en-us/catalog/rosemount-sku-3051-coplanar-pressure-transmitter>,
+        <https://www.emerson.com/en-us/catalog/rosemount-sku-708-wireless-acoustic-transmitter>,
+        <https://www.omega.com/en-us/pressure-measurement/pressure-gauges/c/analog-pressure-gauges>,
+        <https://www.vega.com/en-us/products/product-catalog/level/radar> .
+
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
     rdfs:subClassOf :DNSNetworkTraffic,
@@ -18829,7 +18907,7 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
     rdfs:label "Sensor" ;
     rdfs:subClassOf :D3FENDCore,
         :DigitalInformationBearer ;
-    :definition "In the broadest definition, a sensor is a device, module, machine, or subsystem that detects events or changes in its environment and sends the information to other electronics, frequently a computer processor." ;
+    :definition "In the broadest definition, a sensor is a device, module, machine, or subsystem that detects events or changes in its environment and sends the information to other electronics, frequently a computer." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Sensor> .
 
 :SeqGAN a owl:Class,
