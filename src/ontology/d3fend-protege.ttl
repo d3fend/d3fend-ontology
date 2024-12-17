@@ -6271,7 +6271,10 @@ Management servers with enterprise policies for account management provide the a
     rdfs:label "Double Free" ;
     rdfs:subClassOf :CWE-666,
         :CWE-825,
-        :CWE-1341 ;
+        :CWE-1341,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :MemoryFreeFunction ] ;
     :cwe-id "CWE-415" .
 
 :CWE-416 a owl:Class ;
@@ -7041,7 +7044,10 @@ Management servers with enterprise policies for account management provide the a
 
 :CWE-590 a owl:Class ;
     rdfs:label "Free of Memory not on the Heap" ;
-    rdfs:subClassOf :CWE-762 ;
+    rdfs:subClassOf :CWE-762,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :MemoryFreeFunction ] ;
     :cwe-id "CWE-590" .
 
 :CWE-591 a owl:Class ;
@@ -7606,7 +7612,10 @@ Management servers with enterprise policies for account management provide the a
 
 :CWE-761 a owl:Class ;
     rdfs:label "Free of Pointer not at Start of Buffer" ;
-    rdfs:subClassOf :CWE-763 ;
+    rdfs:subClassOf :CWE-763,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :MemoryFreeFunction ] ;
     :cwe-id "CWE-761" .
 
 :CWE-762 a owl:Class ;
@@ -7843,7 +7852,10 @@ Management servers with enterprise policies for account management provide the a
 
 :CWE-822 a owl:Class ;
     rdfs:label "Untrusted Pointer Dereference" ;
-    rdfs:subClassOf :CWE-119 ;
+    rdfs:subClassOf :CWE-119,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :PointerDereferencingFunction ] ;
     :cwe-id "CWE-822" .
 
 :CWE-823 a owl:Class ;
@@ -7853,13 +7865,19 @@ Management servers with enterprise policies for account management provide the a
 
 :CWE-824 a owl:Class ;
     rdfs:label "Access of Uninitialized Pointer" ;
-    rdfs:subClassOf :CWE-119 ;
+    rdfs:subClassOf :CWE-119,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :PointerDereferencingFunction ] ;
     :cwe-id "CWE-824" .
 
 :CWE-825 a owl:Class ;
     rdfs:label "Expired Pointer Dereference" ;
     rdfs:subClassOf :CWE-119,
-        :CWE-672 ;
+        :CWE-672,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserInputFunction ] ;
     :cwe-id "CWE-825" .
 
 :CWE-826 a owl:Class ;
@@ -13064,6 +13082,26 @@ Georgian Impact Blog. (n.d.). Transfer Learning Part 1. [Link](https://medium.co
     rdfs:isDefinedBy <https://dbpedia.org/wiki/Instant_messaging> ;
     :definition "Client software used to engage in Instant Messaging, a type of online chat that offers real-time text transmission over the Internet. A LAN messenger operates in a similar way over a local area network. Short messages are typically transmitted between two parties, when each user chooses to complete a thought and select \"send\". Some IM applications can use push technology to provide real-time text, which transmits messages character by character, as they are composed. More advanced instant messaging can add file transfer, clickable hyperlinks, Voice over IP, or video chat." .
 
+:IntegerRangeValidation a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Integer Range Validation" ;
+    rdfs:subClassOf :SourceCodeHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :MathematicalFunction ] ;
+    :d3fend-id "D3-IRV" ;
+    :definition """Ensuring that an integer is within a valid range.
+""" ;
+    :kb-article """## How it Works
+Integer Range Validation can be done by programmatically checking the value of an integer before or after an operation to determine if the resulting value will be valid. 
+Checking the value of an integer to ensure it is in a valid range helps prevent integer overflow, wraparound, and logical errors.
+
+## Considerations
+* A valid range can be defined by language, data-type, or logical constraints.
+* Take extra care when doing operations on integers that will result in a value close to the bounds of a valid range.
+* Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
+    :kb-reference :Reference-IntegerRangeValidation_SEI .
+
 :IntegratedHoneynet a :IntegratedHoneynet,
         owl:Class,
         owl:NamedIndividual ;
@@ -14601,6 +14639,22 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
     rdfs:isDefinedBy <https://dbpedia.org/page/Block_(data_storage)> ;
     :definition "In computing (specifically data transmission and data storage), a block, sometimes called a physical record, is a sequence of bytes or bits, usually containing some whole number of records, having a maximum length; a block size. Data thus structured are said to be blocked. The process of putting data into blocks is called blocking, while deblocking is the process of extracting data from blocks. Blocked data is normally stored in a data buffer and read or written a whole block at a time." .
 
+:MemoryBlockStartValidation a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Memory Block Start Validation" ;
+    rdfs:subClassOf :PointerValidation,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :MemoryFreeFunction ] ;
+    :d3fend-id "D3-MBSV" ;
+    :definition "Ensuring that a pointer accurately references the beginning of a designated memory block." ;
+    :kb-article """## How it Works
+Ensure that a pointer is referencing the beginning of the intended block before using.
+
+## Considerations
+Be careful with pointer arithmetic.""" ;
+    :kb-reference :Reference-CManualPointerArithmetic_GNU .
+
 :MemoryBoundaryTracking a :MemoryBoundaryTracking,
         owl:Class,
         owl:NamedIndividual ;
@@ -15283,8 +15337,7 @@ Administrators collect information on network nodes in their architecture using 
     :definition "A network session is a temporary and interactive information interchange between two or more devices communicating over a network. A session is established at a certain point in time, and then 'torn down' - brought to an end - at some later point. An established communication session may involve more than one message in each direction. A session is typically stateful, meaning that at least one of the communicating parties needs to hold current state information and save information about the session history in order to be able to communicate, as opposed to stateless communication, where the communication consists of independent requests with responses. Network sessions may be established and implemented as part of protocols and services at the application, session, or transport layers of the OSI model." ;
     rdfs:seeAlso <http://dbpedia.org/resource/OSI_model>,
         <http://dbpedia.org/resource/Session_(computer_science)>,
-        <https://schema.ocsf.io/objects/network_connection_info> ;
-    :todo "Better model the subclasses here." .
+        <https://schema.ocsf.io/objects/network_connection_info> .
 
 :NetworkTimeServer a owl:Class ;
     rdfs:label "Network Time Server" ;
@@ -15579,6 +15632,31 @@ Wikipedia. (n.d.). Nonlinear regression. [Link](https://en.wikipedia.org/wiki/No
     rdfs:label "NTP Symmetric Passive Exchange Event" ;
     rdfs:subClassOf :NTPEvent ;
     :definition "An event where an NTP peer operating in symmetric passive mode responds to clock synchronization messages initiated by a symmetric active peer, facilitating mutual timekeeping." .
+
+:NullPointerChecking a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Null Pointer Checking" ;
+    rdfs:subClassOf :PointerValidation,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :MemoryFreeFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :PointerDereferencingFunction ] ;
+    :d3fend-id "D3-NPC" ;
+    :definition "Checking if a pointer is NULL." ;
+    :kb-article """
+## How it Works
+Programmatically checking if a pointer is NULL before use.
+
+## Considerations
+* Pointers should be checked prior to use after they have, or may have been modified.
+* Note that it may vary by circumstance whether the caller, or callee is responsible for checking if a pointer is NULL.
+* Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
+    :kb-reference :Reference-NullPointerChecking_SEI,
+        :Reference-NullPointerDereference_CWE,
+        :Reference-PointerValidationFunction_SEI ;
+    :synonym "Nil Pointer Checking" .
 
 :NumericPatternMatching a owl:Class,
         owl:NamedIndividual ;
@@ -16789,6 +16867,14 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
     rdfs:comment "Note, this is not the actual code which performs the dereferencing operation internal to an application runtime." ;
     :definition "A function which has an operation which dereferences a pointer." .
 
+:PointerValidation a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Pointer Validation" ;
+    rdfs:subClassOf :SourceCodeHardening ;
+    :d3fend-id "D3-PV" ;
+    :definition "Ensuring that a pointer variable has the required properties for use. " ;
+    :kb-reference :Reference-PointerValidationFunction_SEI .
+
 :PointEstimation a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Point Estimation" ;
@@ -17765,6 +17851,24 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     :kb-article """## References
 Wikipedia. (2021, September 7). Recurrent Neural Network. [Link](https://en.wikipedia.org/wiki/Recurrent_neural_network)""" ;
     :todo "Review: Which Definition" .
+
+:ReferenceNullification a owl:Class ;
+    rdfs:label "Reference Nullification" ;
+    rdfs:subClassOf :SourceCodeHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :MemoryFreeFunction ] ;
+    :d3fend-id "D3-RN" ;
+    :definition """Invalidating all pointers that reference a specific memory block, ensuring that the block cannot be accessed or modified after deallocation.
+""" ;
+    :kb-article """## How it Works
+Nullifying references to memory blocks makes those blocks no longer accessible. This is critical to prevent use-after-free errors.
+
+## Considerations
+* If a memory block is freed, all other references to that block should be nullified.
+* This is particularly relevant when manually managing memory.
+* Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
+    :kb-reference :Reference-ReferenceNullification_SecureSoftwareInc .
 
 :RegexMatching a owl:Class,
         owl:NamedIndividual ;
@@ -19242,6 +19346,17 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :StaticAnalysisTool ;
     :definition "A source code analyzer tool is a static analysis tool that operates specifically on source code, but not object code." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Static_program_analysis> .
+
+:SourceCodeHardening a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Source Code Hardening" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Harden ] ;
+    :d3fend-id "D3-SCH" ;
+    :definition "Hardening source code with the intention of making it more difficult to exploit and less error prone." ;
+    :enables :Harden .
 
 :SourceCodeReference a owl:Class ;
     rdfs:label "Source Code Reference" ;
@@ -27283,6 +27398,26 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
 Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Central_tendency)""" ;
     :synonym "Truncated mean" .
 
+:TrustedLibrary a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Trusted Library" ;
+    rdfs:subClassOf :SourceCodeHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Subroutine ] ;
+    :d3fend-id "D3-TL" ;
+    :definition """A trusted library is a collection of pre-verified and secure code modules or components that are used within software applications to perform specific functions. These libraries are considered reliable and have been vetted for security vulnerabilities, ensuring they do not introduce risks into the application.
+""" ;
+    :kb-article """## How it Works
+Using a trusted library can reduce the chances of introducing errors compared to writing code from scratch.
+
+
+
+## Considerations
+
+Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
+    :kb-reference :Reference-LeverageSecurityFrameworksLibraries_OWASP .
+
 :TrustStore a owl:Class ;
     rdfs:label "Trust Store" ;
     rdfs:subClassOf :DigitalInformationBearer ;
@@ -27790,6 +27925,42 @@ Geolocation data for each user logon attempt is collected and used to create a b
     :kb-article """## References
 Wikipedia. (n.d.). Statistical dispersion. [Link](https://en.wikipedia.org/wiki/Statistical_dispersion)""" ;
     :todo "Name should maybe be thought about as dispersion may be more descriptive or intuitive. Perhaps dispersion measure" .
+
+:VariableInitialization a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Variable Initialization" ;
+    rdfs:subClassOf :SourceCodeHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Subroutine ] ;
+    :d3fend-id "D3-VI" ;
+    :definition "Setting variables to a known value before use." ;
+    :kb-article """## How it Works
+Initializing variables upon declaration ensures that the variable has a known quantity before use.
+
+## Considerations
+* Default behavior when declaring variables varies by language.
+* This is particularly important in programming languages that do not initialize variables to a default value upon declaration. In these instances, the value that a variable will contain after declaration is indeterminate which can cause issues. In fact, that value could be different each time the program is ran.
+* Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
+    :kb-reference :Reference-CManualIntegerInitialization_GNU,
+        :Reference-VariableInitialization_CWE .
+
+:VariableTypeValidation a owl:Class ;
+    rdfs:label "Variable Type Validation" ;
+    rdfs:subClassOf :SourceCodeHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :PointerDereferencingFunction ] ;
+    :d3fend-id "D3-VTV" ;
+    :definition "Ensuring that a variable has the correct type." ;
+    :kb-article """## How it Works
+A developer should consider how the variable will be used throughout the program and choose the correct variable type.
+A developer should programmatically check if a variable has the correct (expected) type before using that variable.
+
+## Considerations
+* The result of an operation on an unexpected variable type will vary based on the language.
+* Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
+    :kb-reference :Reference-TypeSystems_Princeton .
 
 :Variance a owl:Class,
         owl:NamedIndividual ;
@@ -28868,7 +29039,7 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 :DS0039 a :ATTACKEnterpriseDataSource,
         owl:NamedIndividual ;
     rdfs:label "Asset (ATT&CK DS)" ;
-    :definiton "Data sources with information about the set of devices found within the network, along with their current software and configurations" ;
+    :definition "Data sources with information about the set of devices found within the network, along with their current software and configurations" ;
     :exactly :AssetInventoryAgent .
 
 :DS0040 a :ATTACKEnterpriseDataSource,
@@ -30244,6 +30415,22 @@ These flaws weaken the reliability and effectiveness of encrypted Internet conne
     :kb-reference-of :NetworkTrafficPolicyMapping ;
     :kb-reference-title "Cisco ASR 9000 Series Aggregation Services Routers - Access List Commands" .
 
+:Reference-CManualIntegerInitialization_GNU a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Integer Initialization - GNU C Manual" ;
+    :has-link "https://www.gnu.org/software/gnu-c-manual/gnu-c-manual.html#Integer-Types"^^xsd:anyURI ;
+    :kb-organization "GNU" ;
+    :kb-reference-of :VariableInitialization ;
+    :kb-reference-title "Integer Initialization in C" .
+
+:Reference-CManualPointerArithmetic_GNU a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - Memory Block Start Validation - GNU C Manual" ;
+    :has-link "https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Pointer-Arithmetic.html"^^xsd:anyURI ;
+    :kb-organization "GNU" ;
+    :kb-reference-of :MemoryBlockStartValidation ;
+    :kb-reference-title "Pointer Arithmetic in C" .
+
 :Reference-CommandLaunchedFromWinLogon_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2014-11-008: Command Launched from WinLogon - MITRE" ;
@@ -31261,6 +31448,14 @@ Determining that the return address is outside memory previously allocated for a
     :kb-reference-title "Instant process termination tool to recover control of an information handling system" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-IntegerRangeValidation_SEI a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Integer Range Validation" ;
+    :has-link "https://resources.sei.cmu.edu/downloads/secure-coding/assets/sei-cert-c-coding-standard-2016-v01.pdf"^^xsd:anyURI ;
+    :kb-organization "Software Engineering Institute" ;
+    :kb-reference-of :IntegerRangeValidation ;
+    :kb-reference-title "SEI CERT C Coding Standard" .
+
 :Reference-IntegrityAssuranceThroughEarlyLoadingInTheBootPhase_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Integrity assurance through early loading in the boot phase - Crowdstrike Inc" ;
@@ -31311,6 +31506,14 @@ A disappearance of the heartbeat from the endpoint may indicate that the endpoin
     :kb-organization "Sophos Ltd" ;
     :kb-reference-of :EndpointHealthBeacon ;
     :kb-reference-title "Intrusion detection using a heartbeat" .
+
+:Reference-LeverageSecurityFrameworksLibraries_OWASP a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Leverage Security Frameworks and Libraries - OWASP" ;
+    :has-link "https://top10proactive.owasp.org/archive/2018/c2-leverage-security-frameworks-libraries/"^^xsd:anyURI ;
+    :kb-organization "OWASP" ;
+    :kb-reference-of :TrustedLibrary ;
+    :kb-reference-title "Leverage Security Frameworks and Libraries" .
 
 :Reference-LibreNMSDocsNetworkMapExtension a owl:NamedIndividual,
         :UserManualReference ;
@@ -31793,6 +31996,22 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-of :OperationalRiskAssessment ;
     :kb-reference-title "NIST Interagency Report 8011 Volume 1 - Automation Support for Security Control Assessments" .
 
+:Reference-NullPointerChecking_SEI a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Null Pointer Checking - SEI" ;
+    :has-link "https://wiki.sei.cmu.edu/confluence/display/c/EXP34-C.+Do+not+dereference+null+pointers"^^xsd:anyURI ;
+    :kb-organization "Software Engineering Institute" ;
+    :kb-reference-of :NullPointerChecking ;
+    :kb-reference-title "SEI CERT C Coding Standard" .
+
+:Reference-NullPointerDereference_CWE a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Null Pointer Dereferencing - CWE-476" ;
+    :has-link "https://cwe.mitre.org/data/definitions/476.html"^^xsd:anyURI ;
+    :kb-organization "MITRE" ;
+    :kb-reference-of :NullPointerChecking ;
+    :kb-reference-title "CWE-476: NULL Pointer Dereference" .
+
 :Reference-OpenSourceIntelligenceDeceptions_IllusiveNetworksLtd a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Open source intelligence deceptions - Illusive Networks Ltd" ;
@@ -31880,6 +32099,15 @@ While this analytic does not take the user into account, doing so could generate
     :kb-organization "Project Zero, Google, Inc" ;
     :kb-reference-of :PointerAuthentication ;
     :kb-reference-title "Examining Pointer Authentication on the iPhone XS" .
+
+:Reference-PointerValidationFunction_SEI a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Pointer Validation Function - SEI" ;
+    :has-link "https://wiki.sei.cmu.edu/confluence/display/c/MEM10-C.+Define+and+use+a+pointer+validation+function"^^xsd:anyURI ;
+    :kb-organization "Software Engineering Institute" ;
+    :kb-reference-of :NullPointerChecking,
+        :PointerValidation ;
+    :kb-reference-title "SEI CERT C Coding Standard" .
 
 :Reference-PostSandboxMethodsAndSystemsForDetectingAndBlockingZero-dayExploitsViaApiCallValidation_K2CyberSecurityInc a owl:NamedIndividual,
         :PatentReference ;
@@ -32077,6 +32305,14 @@ Powershell can be used to hide monitored command line execution such as:
     :kb-abstract "Red Hat Enterprise Linux 8 Security Guidelines" ;
     :kb-reference-of :ApplicationConfigurationHardening ;
     :kb-reference-title "Red Hat Enterprise Linux 8 Security Technical Implementation Guide" .
+
+:Reference-ReferenceNullification_SecureSoftwareInc a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Reference Nullification" ;
+    :has-link "https://cwe.mitre.org/documents/sources/TheCLASPApplicationSecurityProcess.pdf"^^xsd:anyURI ;
+    :kb-organization "Secure Software, Inc." ;
+    :kb-reference-of :ReferenceNullification ;
+    :kb-reference-title "The CLASP Application Security Process" .
 
 :Reference-Reg.exeCalledFromCommandShell_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
@@ -33107,6 +33343,14 @@ This specification defines the Trusted Platform Module (TPM) a device that enabl
     :kb-organization "Microsoft Technology Licensing LLC" ;
     :kb-reference-title "Trusted Communications With Child Processes" .
 
+:Reference-TypeSystems_Princeton a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Type Systems" ;
+    :has-link "https://www.cs.princeton.edu/courses/archive/fall98/cs441/mainus/node4.html "^^xsd:anyURI ;
+    :kb-organization "Princeton University" ;
+    :kb-reference-of :VariableTypeValidation ;
+    :kb-reference-title "Why type checking?" .
+
 :Reference-UACBypass_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-04-001: UAC Bypass - MITRE" ;
@@ -33251,6 +33495,15 @@ Could be applied to a number of different types of monitoring depending on what 
     :kb-organization "SolarWinds Worldwide LLC" ;
     :kb-reference-of :ActivePhysicalLinkMapping ;
     :kb-reference-title "Using spanning tree protocol (STP) to enhance layer-2 topology maps" .
+
+:Reference-VariableInitialization_CWE a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Variable Initialization - CWE-457" ;
+    :has-link "https://cwe.mitre.org/data/definitions/457.html"^^xsd:anyURI ;
+    :kb-author "MITRE" ;
+    :kb-organization "MITRE" ;
+    :kb-reference-of :VariableInitialization ;
+    :kb-reference-title "CWE-457: Use of Uninitialized Variable" .
 
 :Reference-VirtualizedProcessIsolation_AdvancedMicroDevicesInc a owl:NamedIndividual,
         :PatentReference ;
