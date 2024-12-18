@@ -168,10 +168,11 @@
     rdfs:label "claims" ;
     rdfs:subPropertyOf :d3fend-catalog-object-property .
 
-:communicates-with a owl:ObjectProperty ;
-    rdfs:label "communicates with" ;
+:communicates-with a owl:ObjectProperty,
+        owl:SymmetricProperty ;
+    rdfs:label "communicates-with" ;
     rdfs:subPropertyOf :associated-with ;
-    :definition "x communicates with y: An entity x sends and receives data by any means of data transferance to an entity y." .
+    :definition "x communicates-with y: x and y exchange signals or data bidirectionally, enabling mutual awareness, coordination, or interaction." .
 
 :configures a owl:ObjectProperty ;
     rdfs:label "configures" ;
@@ -208,10 +209,17 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
     rdfs:range owl:Thing .
 
+:controlled-by a owl:ObjectProperty ;
+    rdfs:label "controlled-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :controls ;
+    :definition "x controlled-by y: x's operation or behavior is directed or regulated by y." .
+
 :controls a owl:ObjectProperty ;
     rdfs:label "controls" ;
     rdfs:subPropertyOf :associated-with ;
-    :definition "x controls y: An entity x that regulate, guide, or manage the behavior of an entity y." .
+    owl:inverseOf :controlled-by ;
+    :definition "x controls y: x directs or regulates y's operational state, behavior, or function." .
 
 :copies a owl:ObjectProperty ;
     rdfs:label "copies" ;
@@ -968,9 +976,16 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x participates-in y: The object x takes part in the event y, signifying that x contributes to or is affected by the event’s occurrence in some way." .
 
 :powered-by a owl:ObjectProperty ;
-    rdfs:label "powered by" ;
-    rdfs:subPropertyOf :associated-with ;
-    :definition "x is powered by y: An entity x is charged, or given energy or force by an entity y." .
+    rdfs:label "powered-by" ;
+    rdfs:subPropertyOf :dependsOn ;
+    owl:inverseOf :powers ;
+    :definition "x powered-by y: x obtains its essential energy or force from y to perform its function or remain active." .
+
+:powers a owl:ObjectProperty ;
+    rdfs:label "powers" ;
+    rdfs:subPropertyOf :has-dependent ;
+    owl:inverseOf :powered-by ;
+    :definition "x powers y: x furnishes y with the energy or force required for y's functionality or operation." .
 
 :preceded-by a owl:ObjectProperty ;
     rdfs:label "preceded-by" ;
@@ -1923,6 +1938,12 @@ Another means of establishing network connectivity is by means of sendingn traff
     :kb-article """## References
 The Actor-Critic Reinforcement Learning Algorithm. Medium. [Link](https://medium.com/intro-to-artificial-intelligence/the-actor-critic-reinforcement-learning-algorithm-c8095a655c14).""" ;
     :todo "The citation suggest (at a very brief glance) this may belong under temporal difference learning" .
+
+:Actuator a owl:Class ;
+    rdfs:label "Actuator" ;
+    rdfs:subClassOf :OutputDevice ;
+    :definition "An actuator is a mechanical or electromechanical device that, upon receiving a relatively low-energy control signal (e.g., electrical voltage, fluid pressure, or human force), translates its primary energy source (electric, hydraulic, or pneumatic) into targeted mechanical motion or adjustment. It typically works in conjunction with a control device (like a valve or logic driver) and is central to automation, enabling machines or systems to move, open, close, or otherwise manipulate their components or environment. By amplifying or redirecting energy from one form to another, the actuator executes control commands, thereby automating processes in industrial, automotive, aerospace, and other domains where precise mechanical action is essential." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Actuator> .
 
 :AdaptiveResonanceTheoryClustering a owl:Class,
         owl:NamedIndividual ;
@@ -13343,6 +13364,11 @@ Beginner's Guide to Semi-Supervised Learning. Jashish Blog.  [Link](http://jashi
 Intrusion prevention systems are considered extensions of intrusion detection systems because they both monitor network traffic and/or system activities for malicious activity. The main differences are, unlike intrusion detection systems, intrusion prevention systems are placed in-line and are able to actively prevent or block intrusions that are detected. IPS can take such actions as sending an alarm, dropping detected malicious packets, resetting a connection or blocking traffic from the offending IP address. An IPS also can correct cyclic redundancy check (CRC) errors, defragment packet streams, mitigate TCP sequencing issues, and clean up unwanted transport and network layer options.""" ;
     rdfs:seeAlso <http://dbpedia.org/resource/Intrusion_detection_system> .
 
+:IOModule a owl:Class ;
+    rdfs:label "I/O Module" ;
+    rdfs:subClassOf :HardwareDevice ;
+    :definition "An I/O Module is a hardware device that translates signals between external sensors or actuators and control systems. It typically handles analog-to-digital (and vice versa) conversion, serving as the data interface that allows physical processes to be monitored and controlled by digital controllers." .
+
 :IOPortRestriction a :IOPortRestriction,
         owl:Class,
         owl:NamedIndividual ;
@@ -16287,16 +16313,16 @@ Operating System Monitoring Techniques have varied implementations including bui
 
 :OTActuator a owl:Class ;
     rdfs:label "OT Actuator" ;
-    rdfs:subClassOf :OutputDevice ;
+    rdfs:subClassOf :Actuator ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/actuator> ;
-    :definition "An OT actuator is a device for moving or controlling a mechanism or system. It is operated by a source of energy, typically electric current, hydraulic fluid pressure, or pneumatic pressure, and converts that energy into motion. An actuator is the mechanism by which a control system acts upon an environment. The control system can be simple (a fixed mechanical or electronic system), software-based (e.g., a printer driver, robot control system), or a human or other agent." .
+    :definition "An OT actuator is an industrial-grade actuator optimized for operational technology (OT) environments, such as SCADA or process-control systems. It tolerates harsher conditions, meets stricter safety and reliability standards, and integrates seamlessly with ICS protocols to enable real-time mechanical motion or adjustments in production lines and critical infrastructure." .
 
 :OTController a owl:Class ;
     rdfs:label "OT Controller" ;
     rdfs:subClassOf :OTEmbeddedComputer,
         [ a owl:Restriction ;
             owl:onProperty :communicates-with ;
-            owl:someValuesFrom :OTInputOutputModule ],
+            owl:someValuesFrom :OTIOModule ],
         [ a owl:Restriction ;
             owl:onProperty :controls ;
             owl:someValuesFrom :OTActuator ],
@@ -16307,46 +16333,46 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :powered-by ;
             owl:someValuesFrom :OTPowerSupply ] ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
-    :definition "A device or program that operates automatically to regulate a controlled variable." .
+    :definition "An OT Controller is an industrial control device that automatically regulates one or more controlled variables in response to command inputs and real-time feedback signals." .
 
 :OTEmbeddedComputer a owl:Class ;
     rdfs:label "OT Embedded Computer" ;
-    rdfs:subClassOf :EmbeddedComputer .
+    rdfs:subClassOf :EmbeddedComputer ;
+    :definition "A ruggedized computational device, embedded in industrial control systems, designed to handle real-time tasks and environmental stressors common in OT." .
 
-:OTInputOutputModule a owl:Class ;
-    rdfs:label "OT Input Output Module" ;
-    rdfs:subClassOf :HardwareDevice,
+:OTIOModule a owl:Class ;
+    rdfs:label "OT I/O Module" ;
+    rdfs:subClassOf :IOModule,
         [ a owl:Restriction ;
             owl:onProperty :communicates-with ;
             owl:someValuesFrom :OTActuator ],
         [ a owl:Restriction ;
             owl:onProperty :communicates-with ;
             owl:someValuesFrom :OTSensor ] ;
-    rdfs:comment "Rockwell Compact 5000 IO Module",
-        "There are many types of I/O modules, including: analog input, analog output, HART input, HART output, digital input, digital output, mV input, pulse input, universal I/O, vibration input, and many other types of input or output modules.The functionality of the I/O Module can be embedded in the controller or as a separate module connected via chassis or I/O link." ;
+    rdfs:comment "There are many types of I/O modules, including: analog input, analog output, HART input, HART output, digital input, digital output, mV input, pulse input, universal I/O, vibration input, and many other types of input or output modules. The functionality of the I/O Module can be embedded in the controller or as a separate module connected via chassis or I/O link." ;
     rdfs:isDefinedBy <https://consteel-electronics.com/articles/what-is-IO-module> ;
-    :definition "An I/O module is a hardware component designed to connect to external devices and sensors, converting analog or digital signals into a format that can be processed by a control system and vice versa." ;
+    :definition "An OT I/O Module is an industrial-grade interface designed for harsh Operational Technology (OT) environments. It reliably connects sensors and actuators to industrial control systems, ensuring precise, real-time data exchange in applications such as SCADA or ICS. Engineered for ruggedness and consistent performance, it can manage analog, digital, or other specialized signal types while enduring demanding conditions." ;
     rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/i-o/compact-5000-i-o-modules.html> ;
-    :synonym "IO Module" .
+    skos:example "Rockwell Compact 5000 IO Module" .
 
 :OTPowerSupply a owl:Class ;
     rdfs:label "OT Power Supply" ;
-    rdfs:subClassOf :PhysicalArtifact ;
-    rdfs:comment "OT examples include: Phoenix Contact QUINT, Eaton PSG, and many controller-branded power supplies.",
-        "See following for definition source - IEEE 100: The Authoritative Dictionary of IEEE Standards Terms IEEE STANDARDS DICTIONARY OF ELECTRICAL AND ELECTRONICS TERMS" ;
-    :definition "An electronic module that converts power from some power source to a form which is needed by the equipment to which power is being supplied." .
+    rdfs:subClassOf :PowerSupply ;
+    :definition "An OT power supply is a power supply whose control amplifier is optimized for signal-processing tasks rather than supplying mere steady-state power to a load. It is a self-contained combination of operational amplifiers, power amplifiers, and integral power circuits designed for higher-level operations in industrial or OT contexts." ;
+    rdfs:seeAlso <https://ieeexplore.ieee.org/servlet/opac?punumber=4116785> ;
+    skos:example "Phoenix Contact QUINT, Eaton PSG, and many controller-branded power supplies." .
 
 :OTSensor a owl:Class ;
     rdfs:label "OT Sensor" ;
     rdfs:subClassOf :Sensor ;
-    rdfs:comment "Components of the sensor include a sensing element and may include a power source, display, housing, communication interface or signal processor.",
-        "Types of sensors include: level, pressure, temperature, and flow measurement devices." ;
+    rdfs:comment "Components of the sensor include a sensing element and may include a power source, display, housing, communication interface or signal processor." ;
     rdfs:isDefinedBy <https://csrc.nist.rip/glossary/term/sensor> ;
-    :definition "An OT sensor is a device that measures a physical quantity and converts it into a signal which can be read by an observer or by an instrument. A sensor is a device, which responds to an input quantity by generating a functionally related output usually in the form of an electrical or optical signal." ;
+    :definition "An OT Sensor is an industrial-grade sensing device engineered for operational technology (OT) environments (e.g. SCADA, ICS). It measures physical variables—such as pressure, temperature, or flow—under demanding conditions, converting them into reliable signals for real-time monitoring and process control loops." ;
     rdfs:seeAlso <https://emerson.com/en-us/catalog/rosemount-sku-3051-coplanar-pressure-transmitter>,
         <https://www.emerson.com/en-us/catalog/rosemount-sku-708-wireless-acoustic-transmitter>,
         <https://www.omega.com/en-us/pressure-measurement/pressure-gauges/c/analog-pressure-gauges>,
-        <https://www.vega.com/en-us/products/product-catalog/level/radar> .
+        <https://www.vega.com/en-us/products/product-catalog/level/radar> ;
+    skos:example "Level sensors, pressure sensors, temperature sensors, and flow measurement devices." .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
@@ -17029,6 +17055,12 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
     rdfs:subClassOf :UserInitScript ;
     :definition "A PowerShell profile script is a script that runs when PowerShell starts and can be used as a logon script to customize user environments." ;
     rdfs:seeAlso <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.1> .
+
+:PowerSupply a owl:Class ;
+    rdfs:label "Power Supply" ;
+    rdfs:subClassOf :HardwareDevice ;
+    :definition "A power supply is an electrical device or module that converts and regulates energy from a source (e.g., the power grid or batteries) to an appropriate voltage, current, and frequency for one or more loads. It may stand alone or be integrated into its host appliance, often providing overcurrent protection, voltage regulation, or power conditioning for safe, stable operation." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Power_supply> .
 
 :PowerThermalDeviceEvent a owl:Class ;
     rdfs:label "Power and Thermal Device Event" ;
