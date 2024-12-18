@@ -32,13 +32,14 @@ WHERE {{ ?x :d3fend-id '{}' . }}
 # d3fend.AccountLocking
 def get_d3fend_technique_name(d3fend_id):
     query = d3fend_technique_query.format(d3fend_id)
-    result = list(
-        d3fend_world.sparql(query)
-    )  # owlready2 sparql query to lookup technique name; could cache
-    # print("{} -> {}\n".format(d3fend_id, result))
-    if result[0] and result[0][0]:
+    raw_result = d3fend_world.sparql(query)
+    # print(raw_result)
+    result = list(raw_result)  # owlready2 sparql query to lookup technique name; could cache
+    if result and result[0] and result[0][0]:
+        # print("{} -> {}\n".format(d3fend_id, result))
         return result[0][0].name  # .namespace, .iri
     else:
+        # print("{} -> found nothing!\n".format(d3fend_id))
         return None
 
 
@@ -49,8 +50,7 @@ def get_cci_iri(cci_id):
 # Use when adding CCI mappings to NIST controls, but if doing that,
 # remember to use XML data for those NIST reference mappings, tying to
 # CCI XML data from DoD Cyber Exchange, as the spreadsheet isn't
-# faithful table mapping of that XML:
-#
+# faithful table mapping of that XML:/e
 # https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip)
 def get_sp800_53_control_iri_name(version, control_id):
     """Formats IRI for a NIST SP800-53 control by removing spaces and brackets and embedding the release version"""
