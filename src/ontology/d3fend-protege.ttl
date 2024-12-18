@@ -3531,7 +3531,8 @@ Certificate rotation should be performed when:
 
 Considerations:
 - Managing certificate rotation across an enterprise can be complex. Automated solutions, sold by multiple vendors, should be considered to manage this complexity.""" ;
-    rdfs:seeAlso <https://docs.couchbase.com/server/7.0/manage/manage-security/rotate-server-certificates.html> .
+    rdfs:seeAlso <https://docs.couchbase.com/server/7.0/manage/manage-security/rotate-server-certificates.html> ;
+    :kb-article :Reference-PasswordandKeyRotation-SSH .
 
 :CertificateTrustStore a owl:Class ;
     rdfs:label "Certificate Trust Store" ;
@@ -4454,7 +4455,7 @@ Credentials can be systematically changed at predetermined intervals or based on
     rdfs:label "Credential Transmission Scoping" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CTS" ;
     :definition "Limiting the transmission of a credential to a scoped set of relying parties." ;
@@ -13807,7 +13808,10 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Kernel-based Process Isolation" ;
-    rdfs:subClassOf :ExecutionIsolation ;
+    rdfs:subClassOf :ExecutionIsolation ,
+            [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Process ] ;
     rdfs:comment "e.g. KVM" ;
     :d3fend-id "D3-KBPI" ;
     :definition "Using kernel-level capabilities to isolate processes." ;
@@ -13906,7 +13910,7 @@ Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wik
             owl:someValuesFrom :LocalAreaNetwork ] ;
     :d3fend-id "D3-LAMED" ;
     :definition "LAN access mediation is a network security strategy that controls and manages access to a Local Area Network by ensuring only authorized devices and users can connect, enhancing overall security." ;
-    :kb-article """#How it works
+    :kb-article """## How it works
 
 LAN Access Mediation is a network security approach that manages and controls access to a Local Area Network by using key components such as Access Control Lists (ACLs) to specify which devices are allowed or denied access, Port Security to restrict device connections to specific switch ports, RADIUS for determining the level of access or specific resources available to users or devices, and 802.1X for enforcing device authentication before granting network access. This comprehensive strategy ensures that only authorized devices and users can connect to the network, enhancing overall security.""" ;
     :kb-reference :Reference-WhatIsNetworkAccessControl ;
@@ -18492,7 +18496,10 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
         owl:NamedIndividual,
         :RoutingAccessMediation ;
     rdfs:label "Routing Access Mediation" ;
-    rdfs:subClassOf :NetworkAccessMediation ;
+    rdfs:subClassOf :NetworkAccessMediation,
+            [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Network ] ;
     :d3fend-id "D3-RAM" ;
     :definition "Routing Access Mediation is a network security approach that manages and controls access at the network layer using VPNs, tunneling protocols, firewall rules, and traffic inspection to ensure secure and efficient data routing." ;
     :kb-article """## How it works
@@ -20052,33 +20059,32 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
         [ a owl:Restriction ;
             owl:onProperty :isolates ;
             owl:someValuesFrom :Process ] ;
-    :d3fend-id "D3-MAC",
-        "D3-SCF" ;
-    :definition "Configuring a kernel to use an allow or deny list to filter kernel api calls.",
-        "Controlling access to local computer system resources with kernel-level capabilities." ;
+    :d3fend-id "D3-SCF" ;
+    :definition  "Controlling access to local computer system resources with kernel-level capabilities." ;
+    :comment "previously known as D3-MAC; def//Configuring a kernel to use an allow or deny list to filter kernel api calls." ;
     :kb-article """## How it works
-Mandatory access control is a non-discretionary access control system because the rules and polices that determine access is determined by a security control authority and not distributed to local users. Access determinations are based on designed access control polices and are not based on local resource owner determinations.
+System call filtering uses a mandatory access control paradigm (that is, a non-discretionary access control) system because the rules and polices that determine access is determined by a security control authority and not distributed to local users. Access determinations are based on designed access control polices and are not based on local resource owner determinations.
 
 Access is typically granted by defining sets of subjects and sets of objects. Subjects are the entities requesting access and objects are the resources that subjects are trying to access. Rules and policies are defined that associate subjects and object permissions and access controls.
 
-### Common MAC implementations
+### Common implementations
 #### Security label access control
-A fine-grained form of mandatory access control is to apply security labels to individual resources, including processes, and the access control decisions are against a particular resource and a given user attempting to gain access. This type of MAC requires that the file system has built-in support for security labels.
+A fine-grained form control is to apply security labels to individual resources, including processes, and the access control decisions are against a particular resource and a given user attempting to gain access. This type of control requires that the file system has built-in support for security labels.
 
 Access controls are typically implemented through the use of label identifiers for every file system object. Identifier labels are applied to resources and users are assigned a similar access identifier. Users attempting to access a resource will result in the operating system performing an access control check. The access control check will compare the assigned user's credentials to that of the resource or object they are attempting to access.
 
 A security context is associated with resources and is used to determine assess. Typical basic access control elements include users, roles and types and together they form a security context which is the basis for the security labels.
 
-This type of access control is what is employed in SELinux [2]. This form of MAC is considered the most flexible implementation, but it also is the most complex to deploy across the enterprise. Where multiple virtual machines (VM) are run together this type of access control is typically employed to ensure true isolation of processes and VMs.
+This type of access control is what is employed in SELinux [2]. This form of security kernel access control is considered the most flexible implementation, but it also is the most complex to deploy across the enterprise. Where multiple virtual machines (VM) are run together this type of access control is typically employed to ensure true isolation of processes and VMs.
 
 #### File path level controls
 A less fine-grained form of mandatory access control is to apply security labels that allow for access control at the file path level.  Access control is filesystem agnostic and no relabeling of resources is required. Pathname access control usually seems more natural for implementation and corresponding access audits.
 
-This type of MAC is what is employed in AppArmor [3]. AppArmor was developed to provide a simpler alternative MAC method with much less management overhead. A simple access policy is maintained that defines path resource access rules. Access control attributes are typically associated with programs instead of users.
+This type of system call filtering is what is employed in AppArmor [3]. AppArmor was developed to provide a simpler alternative method with much less management overhead. A simple access policy is maintained that defines path resource access rules. Access control attributes are typically associated with programs instead of users.
 
 
 ## Considerations
-Some implementations of security label mandatory access control contain complex rules set that are hard to verify and complex to maintain over time.
+Some implementations of security label-based control contain complex rules set that are hard to verify and complex to maintain over time.
 
 Initial planning of access model and continuous monitoring of the available users, resources and object is necessary.
 
@@ -20089,14 +20095,12 @@ Initial planning of access model and continuous monitoring of the available user
 
 
 ### Citations
-1. [Implementation of Mandatory Access Control in Distributed Systems](https://link.springer.com/article/10.3103/S0146411618080357)
-2. [SELinux](https://selinuxproject.org/)
-3. [AppArmor](https://www.apparmor.net/)""" ;
+1. [SELinux](https://selinuxproject.org/)
+2. [AppArmor](https://www.apparmor.net/)""" ;
     :kb-reference :Reference-AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation,
         :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc,
         :Reference-OverviewOfTheSeccompSandbox ;
-    :synonym "System Call Control" ;
-    :todo "write kb-article" .
+    :synonym "System Call Control" .
 
 :SystemConfigSystemCall a owl:Class ;
     rdfs:label "System Config System Call" ;
@@ -27455,7 +27459,11 @@ Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series
     :definition "Token-based authentication is an authentication protocol where users verify their identity in exchange for a unique access token. Users can then access the website, application, or resource for the life of the token without having to re-enter their credentials." ;
     :kb-article """## How it works
 
-Token-based authentication starts with a user logging into a system, device or application, typically using a password or a security question. An authorization server validates that initial authentication and then issues an access token, which is a small piece of data that lets a client application make a secure call or signal to an API server.  Once this initial token-based authentication protocol is completed, the token works like a stamped ticket: The user can continue to seamlessly access the relevant resources, without re-authenticating, for the duration of the token lifecycle. That lifecycle ends when the user logs out or quits an app — and can also be triggered by a set time-out protocol.nn## Considerations:nnWhile token-based authentication is undoubtedly a major step above traditional password-based authentication, the token is still considered a “bearer token” — that is, access is granted to whomever holds the token.""" ;
+Token-based authentication starts with a user logging into a system, device or application, typically using a password or a security question. An authorization server validates that initial authentication and then issues an access token, which is a small piece of data that lets a client application make a secure call or signal to an API server. Once this initial token-based authentication protocol is completed, the token works like a stamped ticket: The user can continue to seamlessly access the relevant resources, without re-authenticating, for the duration of the token lifecycle. That lifecycle ends when the user logs out or quits an app — and can also be triggered by a set time-out protocol.
+
+## Considerations:
+
+While token-based authentication is undoubtedly a major step above traditional password-based authentication, the token is still considered a “bearer token” — that is, access is granted to whomever holds the token.""" ;
     :kb-reference :Reference-Entrust-What-Is-Token-Based-Authentication .
 
 :TokenBinding a owl:Class,
