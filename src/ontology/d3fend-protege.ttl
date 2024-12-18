@@ -1739,7 +1739,7 @@ skos:altLabel a owl:AnnotationProperty .
             owl:onProperty :enables ;
             owl:someValuesFrom :Isolate ],
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :Artifact ] ;
     rdfs:isDefinedBy "CNSSI 4009",
         "FIPS 201-2" ;
@@ -1798,7 +1798,7 @@ skos:altLabel a owl:AnnotationProperty .
             owl:onProperty :enables ;
             owl:someValuesFrom :Isolate ],
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :restricts ;
             owl:someValuesFrom :Artifact ] ;
     :d3fend-id "D3-APA" ;
     :definition "Access policy adminitration is the method of granting and revoking user permissions to resources." ;
@@ -2050,9 +2050,6 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
             owl:onProperty :enables ;
             owl:someValuesFrom :Harden ],
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :DigitalInformationBearer ],
-        [ a owl:Restriction ;
             owl:onProperty :strengthens ;
             owl:someValuesFrom :AccessMediator ] ;
     :d3fend-id "D3-AA" ;
@@ -2241,7 +2238,7 @@ In a more general sense, ASP includes all applications of answer sets to knowled
             owl:onProperty :isolates ;
             owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :protects ;
             owl:someValuesFrom :Subroutine ] ;
     :d3fend-id "D3-ABPI" ;
     :definition "Application code which prevents its own subroutines from accessing intra-process / internal memory space." ;
@@ -2972,7 +2969,13 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Biometric Authentication" ;
-    rdfs:subClassOf :AgentAuthentication ;
+    rdfs:subClassOf :AgentAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :Person ],
+        [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :AccessMediator ] ;
     :d3fend-id "D3-BAN" ;
     :definition "Using biological measures in order to authenticate a user." ;
     :kb-reference :Reference-TokenlessBiometricTransactionAuthorizationMethodAndSystem,
@@ -3432,9 +3435,6 @@ Google Developers. (n.d.). Clustering Algorithms. [Link](https://developers.goog
     rdfs:label "Certificate-based Authentication" ;
     rdfs:subClassOf :AgentAuthentication,
         [ a owl:Restriction ;
-            owl:onProperty :authenticates ;
-            owl:someValuesFrom :Agent ],
-        [ a owl:Restriction ;
             owl:onProperty :reads ;
             owl:someValuesFrom :Certificate ] ;
     :d3fend-id "D3-CBAN" ;
@@ -3482,7 +3482,10 @@ TLS certificates are designed to expire to ensure that the cryptographic keys ar
     rdfs:subClassOf :CredentialHardening,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
-            owl:someValuesFrom :PublicKey ] ;
+            owl:someValuesFrom :PublicKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Certificate ] ;
     :d3fend-id "D3-CP" ;
     :definition "Persisting either a server's X.509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections." ;
     :kb-article """## How it works
@@ -4320,7 +4323,7 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
     :definition "Determining which credentials may have been compromised by analyzing the user logon history of a particular system." ;
     :kb-article """## How it works
 
-#### Memory
+l#### Memory
 Credentials may be stored in memory for a variety of reasons; on Windows, they may be stored in lsass.exe.  Once a credential dumper like mimikatz runs and dumps the memory of lsass.exe, the credentials of every account logged on since boot are potentially compromised.
 When such an event occurs, this analytic will give the forensic context to identify compromised users. Those users could potentially be used in later events for additional logons.
 
@@ -4369,7 +4372,10 @@ Effective implementation requires identifying any location that could end up con
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Harden ] ;
+            owl:someValuesFrom :Harden ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CH" ;
     :definition "Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials." ;
     :enables :Harden .
@@ -4423,9 +4429,6 @@ Management servers with enterprise policies for account management provide the a
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
-            owl:someValuesFrom :Credential ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricts ;
             owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CTS" ;
     :definition "Limiting the transmission of a credential to a scoped set of relying parties." ;
@@ -10673,9 +10676,6 @@ Attackers will create infrastructure from which to carry out their operations an
     rdfs:label "Domain Trust Policy" ;
     rdfs:subClassOf :AccessPolicyAdministration,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :DirectoryService ],
-        [ a owl:Restriction ;
             owl:onProperty :restricts ;
             owl:someValuesFrom :DirectoryService ],
         [ a owl:Restriction ;
@@ -11178,7 +11178,7 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
             owl:onProperty :blocks ;
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-EAL" ;
     :definition "Using a digital signature to authenticate a file before opening." ;
@@ -11220,7 +11220,7 @@ Organizations which download or create high volumes of software make management 
             owl:onProperty :blocks ;
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-EDL" ;
     :definition "Blocking the execution of files on a host in accordance with defined application policy rules." ;
@@ -12310,7 +12310,7 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
             owl:onProperty :isolates ;
             owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :protects ;
             owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-HBPI" ;
     :definition "Preventing one process from writing to the memory space of another process through hardware based address manager implementations." ;
@@ -13874,7 +13874,7 @@ Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wik
     rdfs:label "LAN Access Mediation" ;
     rdfs:subClassOf :NetworkAccessMediation,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :LocalAreaNetwork ] ;
     :d3fend-id "D3-LAMED" ;
     :definition "LAN access mediation is a network security strategy that controls and manages access to a Local Area Network by ensuring only authorized devices and users can connect, enhancing overall security." ;
@@ -14345,7 +14345,7 @@ Newer system call.""" .
     rdfs:label "Local File Access Mediation" ;
     rdfs:subClassOf :SystemCallFiltering,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :OpenFile ] ;
     rdfs:comment "Replaces d3-LFP" ;
     :d3fend-id "D3-LFAM" ;
@@ -14357,12 +14357,6 @@ Newer system call.""" .
         owl:NamedIndividual ;
     rdfs:label "Local File Permissions" ;
     rdfs:subClassOf :AccessPolicyAdministration,
-        [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :Directory ],
-        [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :File ],
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
             owl:someValuesFrom :Directory ],
@@ -15142,7 +15136,7 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     rdfs:label "Network Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :Network ] ;
     :d3fend-id "D3-NAM" ;
     :definition "Network access mediation is the control method for authorizing access to a system by a user (or a process acting on behalf of a user) communicating through a network, including a local area network, a wide area network, and the Internet." ;
@@ -15375,7 +15369,7 @@ Administrators collect information on network nodes in their architecture using 
     rdfs:label "Network Resource Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :RemoteResource ] ;
     :d3fend-id "D3-NRAM" ;
     :definition "Control of access to organizational systems and services by users or processes over a network." ;
@@ -16765,7 +16759,7 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     rdfs:label "Physical Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :PhysicalArtifact ] ;
     :d3fend-id "D3-PAM" ;
     :definition "Physical access mediation is the process of granting or denying specific requests to enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances.)" ;
@@ -18054,7 +18048,10 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
         owl:NamedIndividual,
         :RemoteFileAccessMediation ;
     rdfs:label "Remote File Access Mediation" ;
-    rdfs:subClassOf :NetworkResourceAccessMediation ;
+    rdfs:subClassOf :NetworkResourceAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :File ] ;
     :d3fend-id "D3-RFAM" ;
     :definition "Remote file access mediation manages remote access to file systems over a network." ;
     :kb-article """## How it works
@@ -19757,9 +19754,6 @@ In practice, the method of feasible string-search algorithm may be affected by t
     rdfs:label "Strong Password Policy" ;
     rdfs:subClassOf :CredentialHardening,
         [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :Password ],
-        [ a owl:Restriction ;
             owl:onProperty :strengthens ;
             owl:someValuesFrom :Password ] ;
     :d3fend-id "D3-SPP" ;
@@ -19998,13 +19992,7 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
             owl:someValuesFrom :SystemCall ],
         [ a owl:Restriction ;
             owl:onProperty :isolates ;
-            owl:someValuesFrom :Process ],
-        [ a owl:Restriction ;
-            owl:onProperty :protects ;
-            owl:someValuesFrom :SystemCall ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
+            owl:someValuesFrom :Process ] ;
     :d3fend-id "D3-MAC",
         "D3-SCF" ;
     :definition "Configuring a kernel to use an allow or deny list to filter kernel api calls.",
@@ -27402,10 +27390,7 @@ Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series
         owl:NamedIndividual,
         :Token-basedAuthentication ;
     rdfs:label "Token-based Authentication" ;
-    rdfs:subClassOf :AgentAuthentication,
-        [ a owl:Restriction ;
-            owl:onProperty :authenticates ;
-            owl:someValuesFrom :Agent ] ;
+    rdfs:subClassOf :AgentAuthentication ;
     rdfs:isDefinedBy "https://www.entrust.com/resources/learn/what-is-token-based-authentication" ;
     :d3fend-id "D3-TBA" ;
     :definition "Token-based authentication is an authentication protocol where users verify their identity in exchange for a unique access token. Users can then access the website, application, or resource for the life of the token without having to re-enter their credentials." ;
@@ -28299,7 +28284,10 @@ It is a combination of VPN hardware and software technologies that provides VPN 
         owl:NamedIndividual,
         :WebSessionAccessMediation ;
     rdfs:label "Web Session Access Mediation" ;
-    rdfs:subClassOf :NetworkResourceAccessMediation ;
+    rdfs:subClassOf :NetworkResourceAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :ServiceApplicationProcess ] ;
     :d3fend-id "D3-WSAM" ;
     :definition "Web session access mediation is the regulation of access to web-based resources and sessions over a network." ;
     :kb-article """## How it works
