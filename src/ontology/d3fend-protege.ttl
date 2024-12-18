@@ -491,9 +491,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :d3fend-catalog-object-property ;
     owl:inverseOf :member-of .
 
-:has-note a owl:ObjectProperty ;
-    rdfs:subPropertyOf :d3fend-object-property .
-
 :has-participant a owl:ObjectProperty ;
     rdfs:label "has-participant" ;
     rdfs:subPropertyOf :associated-with ;
@@ -617,12 +614,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x invokes y: The subject x invokes a system service y by use of an instruction object y that interrupts the program being executed and passes control to the operating system to perform that operation." ;
     rdfs:seeAlso <http://dbpedia.org/resource/System_call> ;
     :todo "Calls in Wordnet can be function call or system / supervisor call; we may want to make this distinction in future.  So far, we have always used this in the second sense (system call.)" .
-
-:is-about a owl:ObjectProperty ;
-    rdfs:subPropertyOf :d3fend-object-property .
-
-:is-subject-of a owl:ObjectProperty ;
-    rdfs:subPropertyOf :d3fend-object-property .
 
 :isolates a owl:ObjectProperty ;
     rdfs:label "isolates" ;
@@ -974,9 +965,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000063> ;
     :definition "x precedes y: The event or action x occurs before event or action y in time." .
-
-:prescribes a owl:ObjectProperty ;
-    rdfs:subPropertyOf :d3fend-object-property .
 
 :process-ancestor a owl:ObjectProperty,
         owl:TransitiveProperty ;
@@ -1807,7 +1795,7 @@ skos:altLabel a owl:AnnotationProperty .
 
 :AccessPolicyAdministration a :AccessPolicyAdministration,
         owl:Class,
-	owl:NamedIndividual ;
+        owl:NamedIndividual ;
     rdfs:label "Access Policy Administration" ;
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
@@ -2056,7 +2044,7 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 
 :AgentAuthentication a :AgentAuthentication,
         owl:Class,
-	owl:NamedIndividual ;
+        owl:NamedIndividual ;
     rdfs:label "Agent Authentication" ;
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
@@ -11235,18 +11223,6 @@ Organizations which download or create high volumes of software make management 
     :definition "An executable binary contains machine code instructions for a physical CPU. D3FEND also considers byte code for a virtual machine to be binary code.  This is in contrast to executable scripts written in a scripting language." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Executable> .
 
-:ExecutableCode a owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Executable Code" ;
-    rdfs:subClassOf :Software ;
-    :comment "Added as not all software is directly executable, *but* that may be a distinctionn we don't need/want to maken as the instructions can be executed by some mechanism. Get's weird with JIT.",
-        "seeAlso on DBPedia Executable an \"Executable File\" is a conflated with other parts." ;
-    :definition "Executable code is  a set of instructions coded so that the computer can use it directly without further translation." ;
-    :isDefinedBy "oewn-06369392-n" ;
-    rdfs:seeAlso "https://dbpedia.org/page/Executable",
-        "https://www.lawinsider.com/dictionary/executable-code" ;
-    :synonym "Executable" .
-
 :ExecutableDenylisting a :ExecutableDenylisting,
         owl:Class,
         owl:NamedIndividual ;
@@ -14397,12 +14373,6 @@ Newer system call.""" .
     rdfs:label "Local File Permissions" ;
     rdfs:subClassOf :AccessPolicyAdministration,
         [ a owl:Restriction ;
-            owl:onProperty :is-about ;
-            owl:someValuesFrom :AccessPolicyAdministration ],
-        [ a owl:Restriction ;
-            owl:onProperty :prescribes ;
-            owl:someValuesFrom :LocalFileAccessMediation ],
-        [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :Directory ],
         [ a owl:Restriction ;
@@ -16634,9 +16604,9 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     rdfs:isDefinedBy <http://dbpedia.org/resource/Password> ;
     :definition "A password, sometimes called a passcode, is a memorized secret, typically a string of characters, usually used to confirm the identity of a user. Using the terminology of the NIST Digital Identity Guidelines, the secret is memorized by a party called the claimant while the party verifying the identity of the claimant is called the verifier. When the claimant successfully demonstrates knowledge of the password to the verifier through an established authentication protocol, the verifier is able to infer the claimant's identity." .
 
-:PasswordAuthentication a :PasswordAuthentication,
-         owl:Class,
-	 owl:NamedIndividual ;
+:PasswordAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :PasswordAuthentication ;
     rdfs:label "Password Authentication" ;
     rdfs:subClassOf :AgentAuthentication ;
     :d3fend-id "D3-PWA" ;
@@ -27443,9 +27413,9 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
 Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series)""" ;
     :todo "Lots of time series leaves couls be put here." .
 
-:Token-basedAuthentication a :Token-basedAuthentication,
-         owl:Class,
-	 owl:NamedIndividual ;
+:Token-basedAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :Token-basedAuthentication ;
     rdfs:label "Token-based Authentication" ;
     rdfs:subClassOf :AgentAuthentication,
         [ a owl:Restriction ;
@@ -27458,16 +27428,25 @@ Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series
 
 Token-based authentication starts with a user logging into a system, device or application, typically using a password or a security question. An authorization server validates that initial authentication and then issues an access token, which is a small piece of data that lets a client application make a secure call or signal to an API server.  Once this initial token-based authentication protocol is completed, the token works like a stamped ticket: The user can continue to seamlessly access the relevant resources, without re-authenticating, for the duration of the token lifecycle. That lifecycle ends when the user logs out or quits an app — and can also be triggered by a set time-out protocol.nn## Considerations:nnWhile token-based authentication is undoubtedly a major step above traditional password-based authentication, the token is still considered a “bearer token” — that is, access is granted to whomever holds the token.""" .
 
-:TokenBinding a owl:Class ;
+:TokenBinding a :TokenBinding, 
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "Token Binding" ;
     rdfs:subClassOf :CredentialHardening,
         [ a owl:Restriction ;
             owl:onProperty :strengthens ;
             owl:someValuesFrom :AccessToken ] ;
+    :d3fend-id "D3-TB" ;
     :definition "Token binding is a security mechanism used to enhance the protection of tokens, such as cookies or OAuth tokens, by binding them to a specific connection." ;
-    :kb-article "## How it worksnnWhen issuing a security token to a client that supports Token Binding, a server includes the client's Token Binding ID (or its cryptographic hash) in the token. Later on, when a client presents a security token containing a Token Binding ID, the server verifies that the ID in the token matches the ID of the Token Binding established with the client. In the case of a mismatch, the server rejects the token.nn## Considerationsnn- While industry participation in the standards process is widespread, browser support remains limited.nn- In practice, token-binding implementations are tied to Transport Security Layer (TLS)." ;
-    rdfs:seeAlso "https://en.wikipedia.org/wiki/Token_Binding",
-        "https://www.rfc-editor.org/rfc/rfc8471" .
+    :kb-article """## How it works
+
+When issuing a security token to a client that supports Token Binding, a server includes the client's Token Binding ID (or its cryptographic hash) in the token. Later on, when a client presents a security token containing a Token Binding ID, the server verifies that the ID in the token matches the ID of the Token Binding established with the client. In the case of a mismatch, the server rejects the token.
+
+## Considerations
+
+- While industry participation in the standards process is widespread, browser support remains limited.
+- In practice, token-binding implementations are tied to Transport Security Layer (TLS).""" ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Token_Binding> .
 
 :TPMBootIntegrity a owl:Class,
         owl:NamedIndividual,
@@ -31111,6 +31090,15 @@ In one embodiment, a response policy zone (RPZ) application generates an RPZ tha
     :kb-reference-title "Enhancing Network Security By Preventing User-Initiated Malware Execution" ;
     :todo "Could not determine reference type; TechniqueReference class used instead" .
 
+:Reference-Entrust-What-Is-Token-Based-Authentication a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Identity Providers: What is Token Based Authentication" ;
+    :has-link "https://www.entrust.com/resources/learn/what-is-token-based-authentication" ;
+    :kb-abstract "Token-based authentication is an authentication protocol where users verify their identity in exchange for a unique access token. Users can then access the website, application, or resource for the life of the token without having to re-enter their credentials." ;
+    :kb-organization "Entrust" ;
+    :kb-reference-of :Token-basedAuthentication ;
+    :kb-reference-title "Identity Providers: What is Token Based Authentication" .
+
 :Reference-ExecutionWithAT_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2013-05-004: Execution with AT - MITRE" ;
@@ -32131,15 +32119,6 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-of :OperationalRiskAssessment ;
     :kb-reference-title "NIST Special Publication 800-37 Revision 2 - Risk Management Framework for Information Systems and Organizations" .
 
-:Reference-Entrust-What-Is-Token-Based-Authentication a :InternetArticleReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Identity Providers: What is Token Based Authentication" ;
-    :has-link "https://www.entrust.com/resources/learn/what-is-token-based-authentication" ;
-    :kb-abstract "Token-based authentication is an authentication protocol where users verify their identity in exchange for a unique access token. Users can then access the website, application, or resource for the life of the token without having to re-enter their credentials." ;
-    :kb-organization "Entrust" ;
-    :kb-reference-of :Token-basedAuthentication ;
-    :kb-reference-title "Identity Providers: What is Token Based Authentication" .
-
 :Reference-NIST-Special-Publication-800-53-Revision-5 a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - NIST Special Publication 800-53 Revision 5 - Security and Privacy Controls for Information Systems and Organizations" ;
@@ -32149,7 +32128,7 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-of :AccessPolicyAdministration,
         :EndpointBasedWebServerAccessMediation,
         :NetworkResourceAccessMediation,
-	:PasswordAuthentication,
+        :PasswordAuthentication,
         :ProxyBasedWebServerAccessMediation,
         :RemoteFileAccessMediation,
         :WebSessionAccessMediation ;
@@ -33766,6 +33745,16 @@ With keystroke dynamics the biometric template used to identify an individual is
     :kb-reference-title "Keystroke Dynamics" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-RFC8471TheTokenBindingProtocolVersion1.0 a owl:NamedIndividual,
+       :SpecificationReference ;
+    rdfs:label "Reference - The Token Binding Protocol Version 1.0" ;
+    :has-link "https://datatracker.ietf.org/doc/html/rfc7642" ;
+    :kb-abstract "This document specifies version 1.0 of the Token Binding protocol. The Token Binding protocol allows client/server applications to create long-lived, uniquely identifiable TLS bindings spanning  multiple TLS sessions and connections. Applications are then enabled to cryptographically bind security tokens to the TLS layer, preventing token export and replay attacks.  To protect privacy, the Token Binding identifiers are only conveyed over TLS and can be reset by the user at any time." ;
+    :kb-author "A. Popov, M. Nystroem, Microsoft Corp., D. Balfanz, Google Inc., J Hodges, Kings Mountain Systems" ;
+    :kb-organization "IETF" ;
+    :kb-reference-of :TokenBinding ;
+    :kb-reference-title "RFC8471: The Token Binding Protocol Version 1.0" .
+		   
 :RegOpenKeyA a :GetSystemConfigValue,
         owl:NamedIndividual .
 
