@@ -1746,7 +1746,9 @@ skos:altLabel a owl:AnnotationProperty .
     rdfs:subClassOf :AccessMediationEvent ;
     :definition "An event signifying that access to a resource has been authorized and successfully enforced, allowing the requesting agent to perform specified operations based on the access control policies." .
 
-:AccessMediation a owl:Class ;
+:AccessMediation a :AccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Access Mediation" ;
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
@@ -1755,9 +1757,10 @@ skos:altLabel a owl:AnnotationProperty .
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :Artifact ] ;
-    rdfs:isDefinedBy "CNSSI 4009" ;
-    :comment "Access mediation is the process of granting or denying specific requests to: 1) obtain and use information and related information processing services; and 2) enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances). [definition per CNSSI 4009, citing FIPS 201-2]",
-        "In the fields of physical security and information security, access control (AC) is the selective restriction of access to a place or other resource, while access management describes the process. The act of accessing may mean consuming, entering, or using. Permission to access a resource is called authorization. Locks and login credentials are two analogous mechanisms of access control. [DBPedia]" ;
+    rdfs:isDefinedBy "CNSSI 4009",
+        "FIPS 201-2" ;
+    :d3fend-id "D3-AMED" ;
+    :definition "Access mediation is the process of granting or denying specific requests to: 1) obtain and use information and related information processing services; and 2) enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances)." ;
     rdfs:seeAlso "CSC-STD-001-83 (1983)",
         "https://dbpedia.org/page/Access_control",
         "Ross, Winstead, and McEvilley (2022)",
@@ -10929,10 +10932,18 @@ Email files may propagate through many storage systems across the an organizatio
     :definition "Encrypted encapsulation of routable network traffic." ;
     :kb-reference :Reference-SecurityArchitectureForTheInternetProtocol .
 
-:EndpointBasedWebServerAccessMediation a owl:Class ;
+:EndpointBasedWebServerAccessMediation a :EndpointBasedWebServerAccessMediation, 
+        owl:Class,
+	owl:Individual ;
     rdfs:label "Endpoint-based Web Server Access Mediation" ;
     rdfs:subClassOf :WebSessionAccessMediation ;
-    :comment "potentially futurentechnique" .
+    :d3fend-id "D3-EBWSAM" ;
+    :definition "Endpoint-based web server access mediation regulates web server access directly from user endpoints." ;
+    :kb-article """## How it works
+
+Endpoint-based Web Server Access Mediation focuses on managing access to web servers directly from user devices. This involves implementing security measures like client certificates or endpoint security software to ensure that only authorized devices can initiate sessions with web servers. Examples include direct access to internal web applications from company laptops.
+""" ;
+    :todo "defer as future new technique or keep?" .
 
 :EndpointHealthBeacon a :EndpointHealthBeacon,
         owl:Class,
@@ -11224,8 +11235,8 @@ Organizations which download or create high volumes of software make management 
         "seeAlso on DBPedia Executable an \"Executable File\" is a conflated with other parts." ;
     :definition "Executable code is  a set of instructions coded so that the computer can use it directly without further translation." ;
     :isDefinedBy "oewn-06369392-n" ;
-    rdfs:seeAlso "https://dbpedia.org/page/Executable" ;
-    :seeAlso "https://www.lawinsider.com/dictionary/executable-code" ;
+    rdfs:seeAlso "https://dbpedia.org/page/Executable",
+        "https://www.lawinsider.com/dictionary/executable-code" ;
     :synonym "Executable" .
 
 :ExecutableDenylisting a :ExecutableDenylisting,
@@ -13888,13 +13899,20 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     :kb-article """## References
 Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wiki/Probability_distribution)""" .
 
-:LANAccessMediation a owl:Class ;
+:LANAccessMediation a :LANAccessMediation,
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "LAN Access Mediation" ;
     rdfs:subClassOf :NetworkAccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :LocalAreaNetwork ] ;
-    :comment "layer 2 (\"comply to connect\"/n\"network access control) -GS" .
+    :d3fend-id "D3-LAMED" ; 
+    :definition "LAN access mediation is a network security strategy that controls and manages access to a Local Area Network by ensuring only authorized devices and users can connect, enhancing overall security." ;
+    :kb-article """#How it works
+
+LAN Access Mediation is a network security approach that manages and controls access to a Local Area Network by using key components such as Access Control Lists (ACLs) to specify which devices are allowed or denied access, Port Security to restrict device connections to specific switch ports, RADIUS for determining the level of access or specific resources available to users or devices, and 802.1X for enforcing device authentication before granting network access. This comprehensive strategy ensures that only authorized devices and users can connect to the network, enhancing overall security.""" ;
+    :seeAlso "Comply to Connect (C2C)", "Layer 2 Enforcement" .
 
 :LaptopComputer a owl:Class ;
     rdfs:label "Laptop Computer" ;
@@ -14351,13 +14369,16 @@ Newer system call.""" .
         :SystemServiceSoftware ;
     :definition "A local authorization service running on a host can authorize a user logged into just that local host computer." .
 
-:LocalFileAccessMediation a owl:Class ;
+:LocalFileAccessMediation a :LocalFileAccessMediation,
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "Local File Access Mediation" ;
     rdfs:subClassOf :SystemCallFiltering,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :OpenFile ] ;
     rdfs:comment "Replaces d3-LFP" ;
+    :d3fend-id "D3-LFAM" ;
     :definition "Restricting access to a local file by configuring operating system functionality." ;
     :synonym "Local File Access Control" .
 
@@ -15151,18 +15172,21 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     :definition "A network is a group of computers that use a set of common communication protocols over digital interconnections for the purpose of sharing resources located on or provided by the network nodes. The interconnections between nodes are formed from a broad spectrum of telecommunication network technologies, based on physically wired, optical, and wireless radio-frequency methods that may be arranged in a variety of network topologies." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03826490-n> .
 
-:NetworkAccessMediation a owl:Class,
+:NetworkAccessMediation a :NetworkAccessMediation,
+        owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Network Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :Network ] ;
-    :definition "Network access mediation is the control process/method for authorizing access to a system by a user (or a process acting on behalf of a user) communicating through a network, including a local area network, a wide area network, and the Internet." ;
-    :seeAlso "NIST 800-53r5 (re: \"network access\") but they have confused NAC (as Fortinet nicely defined) with Network /Resource/ Access Mediation; \"System\" was doing ambiguous work here and really in most general sense would just be Access in general (so Access Mediation), no getting after ...",
-        "NIST SP 800-160v1r1 (re: \"mediation\")" ;
-    :synonym "Network Access Control" ;
-    :todo "Relate definition of network access to any network access event class.  Such events would be mediated by this technique, the mediat-ion/-ed authorization events would be realizations of this mediation.nnnCan't unify as superclass over D3-NRAM, so need to make very clear in Access Mediation's How it works why the tax is how it is." .
+    :d3fend-id "D3-NAM" ;
+    :definition "Network access mediation is the control method for authorizing access to a system by a user (or a process acting on behalf of a user) communicating through a network, including a local area network, a wide area network, and the Internet." ;
+    :kb-article """## How it works
+
+Network Access Mediation is a crucial process in telecommunications and IT networks that involves controlling access to network resources. It acts as an intermediary layer between network access requests and the actual network resources, ensuring that only authorized users and devices can access the network.""" ;
+    rdfs:seeAlso "NIST SP 800-160v1r1 (re: \"mediation\")" ;
+    :synonym "Network Access Control" .
 
 :NetworkCardFirmware a owl:Class ;
     rdfs:label "Network Card Firmware" ;
@@ -15381,13 +15405,19 @@ Administrators collect information on network nodes in their architecture using 
             owl:someValuesFrom :Resource ] ;
     :definition "Ephemeral digital artifact comprising a request of a network resource and any response from that network resource." .
 
-:NetworkResourceAccessMediation a owl:Class ;
+:NetworkResourceAccessMediation a :NetworkResourceAccessMediation,
+    owl:Class,
+    owl:NamedIndividual ; 
     rdfs:label "Network Resource Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :RemoteResource ] ;
-    :definition "Network resource Control of access to an organizational system by a user (or a process acting on behalf of a user) communicating through an external network." ;
+    :d3fend-id "D3-NRAM" ;
+    :definition "Control of access to organizational systems and services by users or processes over a network." ;
+    :kb-article """## How it works
+
+Network Resource Access Control involves managing and regulating access to resources within an organization's network. This includes ensuring that only authorized users or processes can access specific systems or data, often through authentication and authorization mechanisms. Examples include accessing internal databases, file servers, or application services.""" ;
     rdfs:seeAlso "NIST SP 800-53 Rev. 5" ;
     :synonym "Remote Access Control" .
 
@@ -16761,14 +16791,16 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     :synonym "Matthews Correlation Coefficient (in machine learning)",
         "MCC" .
 
-:PhysicalAccessMediation a owl:Class ;
+:PhysicalAccessMediation a :PhysicalAccessMediation,
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "Physical Access Mediation" ;
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :protects ;
             owl:someValuesFrom :PhysicalArtifact ] ;
-    :comment "The process of granting or denying specific requests to enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances.) [CNSSI 4009]" ;
-    rdfs:seeAlso "CNSSI 4009" ;
+    :d3fend-id "D3-PAM" ;   
+    :definition "Physical access mediation is the process of granting or denying specific requests to enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances.)" ;
     :synonym "Physical Access Control" .
 
 :PhysicalAddress a owl:Class ;
@@ -17722,10 +17754,17 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
             owl:onProperty :produces ;
             owl:someValuesFrom :CapabilityImplementation ] .
 
-:ProxyBasedWebServerAccessMediation a owl:Class ;
+:ProxyBasedWebServerAccessMediation a :ProxyBasedWebServerAccessMediation,
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "Proxy-based Web Server Access Mediation" ;
     rdfs:subClassOf :WebSessionAccessMediation ;
-    :comment "potentially futurentechnique" .
+    :d3fend-id "D3-PBWSAM" ;
+    :definition "Proxy-based web server access mediation focuses on the regulation of web server access through intermediary proxy servers." ;
+    :kb-article """## How it works
+
+Proxy-based Web Server Access Mediation involves controlling access to web servers via proxy servers, which act as intermediaries between users and web resources. This approach can enhance security by anonymizing user requests, filtering content, and enforcing access policies. Examples include using corporate proxies to access external websites or services.""" ;
+    :todo "defer as future new technique or keep?" .
 
 :ProxyServer a owl:Class ;
     rdfs:label "Proxy Server" ;
@@ -18043,9 +18082,16 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
         :RemoteCommand ;
     :definition "A remote query session enabling a user to make an SQL, SPARQL, or similar query over the network from one host to another." .
 
-:RemoteFileAccessMediation a owl:Class ;
+:RemoteFileAccessMediation a :RemoteFileAccessMediation,
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "Remote File Access Mediation" ;
     rdfs:subClassOf :NetworkResourceAccessMediation ;
+    :d3fend-id "D3-RFAM" ;
+    :definition "Remote file access mediation manages remote access to file systems over a network.";
+    :kb-article """## How it works
+
+Remote File Access Mediation focuses on controlling how users or processes access file systems from remote locations. This involves ensuring secure connections, often through protocols like SFTP or SMB, and enforcing permissions to prevent unauthorized access or data breaches. Examples of enforcement areas include accessing shared drives or cloud storage from remote offices or home networks.""";
     :synonym "File Share Access Mediation" .
 
 :RemoteLoginSession a owl:Class ;
@@ -18419,13 +18465,17 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     rdfs:isDefinedBy <http://dbpedia.org/resource/Router_(computing)> ;
     :definition "A router is a networking device that forwards data packets between computer networks. Routers perform the traffic directing functions on the Internet. Data sent through the internet, such as a web page or email, is in the form of data packets. A packet is typically forwarded from one router to another router through the networks that constitute an internetwork (e.g. the Internet) until it reaches its destination node." .
 
-:RoutingAccessMediation a owl:Class,
+:RoutingAccessMediation a :RoutingAccessMediation,
+        owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Routing Access Mediation" ;
     rdfs:subClassOf :NetworkAccessMediation ;
-    :comment "includes VPN implementednat layer 3 of OSI -GS",
-        "tunneling protocols, nfirewall rules, ...? -GS" ;
-    :kb-article-link "https://www.geeksforgeeks.org/context-based-access-control-cbac/ (Cisco's CBAC and Wikipedia coverage)" .
+    :d3fend-id "D3-RAM" ;
+    :definition: "Routing Access Mediation is a network security approach that manages and controls access at the network layer using VPNs, tunneling protocols, firewall rules, and traffic inspection to ensure secure and efficient data routing." ;	
+    :kb-article """## How it works
+
+Routing Access Mediation is a network security strategy focused on managing and controlling access at the network layer. It includes the use of VPNs for secure remote access, tunneling protocols for encapsulating data, firewall rules for filtering traffic, and advanced inspection techniques like Cisco's Context-Based Access Control (CBAC) to monitor and regulate data flow. This approach ensures secure and efficient routing of data across networks, protecting against unauthorized access and enhancing overall network security.""" ;
+    rdfs:seeAlso <https://www.geeksforgeeks.org/context-based-access-control-cbac/> .
 
 :RPCNetworkTraffic a owl:Class ;
     rdfs:label "RPC Network Traffic" ;
@@ -28263,9 +28313,16 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:isDefinedBy <http://dbpedia.org/resource/Web_application> ;
     :definition "A web server application (or web app) is an application software that runs on a web server, unlike computer-based software programs that are stored locally on the Operating System (OS) of the device. Web applications are accessed by the user through a web browser with an active internet connection. These applications are programmed using a client-server modeled structure-the user (\"client\") is provided services through an off-site server that is hosted by a third-party. Examples of commonly-used, web applications, include: web-mail, online retail sales, online banking, and online auctions." .
 
-:WebSessionAccessMediation a owl:Class ;
+:WebSessionAccessMediation a :WebSessionAccessMediation,
+        owl:Class,
+	owl:NamedIndividual ;
     rdfs:label "Web Session Access Mediation" ;
-    rdfs:subClassOf :NetworkResourceAccessMediation .
+    rdfs:subClassOf :NetworkResourceAccessMediation ;
+    :d3fend-id "D3-WSAM" ;
+    :definition "Web session access mediation is the regulation of access to web-based resources and sessions over a network." ;
+    :kb-article """## How it works
+
+Web Session Access Mediation involves managing user access to web applications and services, ensuring secure and authorized sessions. This includes authenticating users, maintaining session integrity, and protecting against threats like session hijacking. Examples include accessing corporate intranets, SaaS applications, or online portals.""" .
 
 :WebSessionActivityAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -32047,6 +32104,24 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-of :OperationalRiskAssessment ;
     :kb-reference-title "NIST Special Publication 800-37 Revision 2 - Risk Management Framework for Information Systems and Organizations" .
 
+:Reference-NIST-Special-Publication-800-53-Revision-5 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-53 Revision 5 - Security and Privacy Controls for Information Systems and Organizations" ;
+    :has-link: "https://doi.org/10.6028/NIST.SP.800-53r5" ;
+    :kb-abstract: """This publication provides a catalog of security and privacy controls for information systems and organizations to protect organizational operations and assets, individuals, other organizations, and the Nation from a diverse set of threats and risks, including hostile attacks, human errors, natural disasters, structural failures, foreign intelligence entities, and privacy risks. The controls are flexible and customizable and implemented as part of an organization-wide process to manage risk. The controls address diverse requirements derived from mission and business needs, laws, executive orders, directives, regulations, policies, standards, and guidelines. Finally, the consolidated control catalog addresses security and privacy from a functionality perspective (i.e., the strength of functions and mechanisms provided by the controls) and from an assurance perspective (i.e., the measure of confidence in the security or privacy capability provided by the controls). Addressing functionality and assurance helps to ensure that information technology products and the systems that rely on those products are sufficiently trustworthy.""" ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :NetworkResourceAccessMediation, :RemoteFileAccessMediation, :WebSessionAccessMediation, :EndpointBasedWebServerAccessMediation, :ProxyBasedWebServerAccessMediation ;
+    :kb-reference-title "NIST Special Publication 800-53 Revision 5 - Security and Privacy Controls for Information Systems and Organizations" .
+
+:Reference-CNNSI-4009 a :GuidelineReference,
+        owl:NamedIndividual ;
+	rdfs:label "Reference - Committee on National Security Systems (CNSS) Glossary" ;
+	:has-link: "https://www.cnss.gov/CNSS/openDoc.cfm?a=YBWv%2FunyKwO1DRmXTMNBmg%3D%3D&b=700AB40062C162AC553021ECFFF77ED118BDFB62906A7AB536FAF9C205ACFFF39E8FFC45AC099821F22B03B56AF885A1" ;
+	:kb-abstract: "[The CNSS Glossary is a jointly curated glossary of terms for National Security Systems by DoD, IC, and Civil Agencies (e.g., NIST)" ;
+	:kb-organization: "Committee on National Security Systems (CNSS)" ;
+	:kb-reference-of :PhysicalAccessMediation ;
+	:kb-reference-title "Committee on National Security Systems (CNSS) Glossary" .
+
 :Reference-NIST-Special-Publication-800-53A-Revision-5 a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - NIST Special Publication 800-53A Revision 5 - Assessing Security and Privacy Controls in Information Systems and Organizations" ;
@@ -33568,6 +33643,15 @@ Level 2""" ;
     :kb-reference-of :CredentialTransmissionScoping ;
     :kb-reference-title """Web Authentication: An API for accessing Public Key Credentials
 Level 2""" .
+
+:Reference-WhatIsNetworkAccessControl a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - What is Network Access Control?" ;
+    :has-link "https://www.fortinet.com/resources/cyberglossary/what-is-network-access-control" ;
+    :kb-abstract "Network access control (NAC), also known as network admission control, is the process of restricting unauthorized users and devices from gaining access to a corporate or private network. NAC ensures that only users who are authenticated and devices that are authorized and compliant with security policies can enter the network." ;
+    :kb-organization "Fortinet" ;
+    :kb-reference-of :NetworkAccessMediation, :LANAccessMediation, :RoutingAccessMediation ;
+    :kb-reference-title "What is Network Access Control?" .
 
 :Reference-WhatIsNX_XDFeature_RedHat a :InternetArticleReference,
         owl:NamedIndividual ;
