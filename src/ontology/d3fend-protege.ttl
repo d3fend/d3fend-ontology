@@ -956,6 +956,13 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:seeAlso :creates ;
     :todo "Make definition of produces more generic to match sense of Product Developer produces Product (so generalize to any object really, not just computery digital stuff.)" .
 
+:protected-by a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :protects .
+
+:protects a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with .
+
 :provider a owl:ObjectProperty ;
     rdfs:label "provider" ;
     rdfs:subPropertyOf :associated-with ;
@@ -1036,6 +1043,13 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :semantic-relation a owl:ObjectProperty ;
     rdfs:label "semantic-relation" ;
+    rdfs:subPropertyOf :associated-with .
+
+:signed-by a owl:ObjectProperty ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :signs .
+
+:signs a owl:ObjectProperty ;
     rdfs:subPropertyOf :associated-with .
 
 :spoofs a owl:ObjectProperty ;
@@ -1215,6 +1229,8 @@ dcterms:title a owl:AnnotationProperty .
     :comment "Intended d3fend equivalent to http://purl.obolibrary.org/obo/IAO_0000115; will take over from use of rdfs:comment to hold definition." ;
     :definition "x definition y: The d3fend object x has the definition y." ;
     :todo "Will port rdfs:comment entries that have been definitions to d3f:definition to free up comments for non-definitional expansions and commentary." .
+
+:definiton a owl:AnnotationProperty .
 
 :description a owl:AnnotationProperty ;
     rdfs:label "description"@en ;
@@ -1435,6 +1451,9 @@ skos:example a owl:AnnotationProperty .
     :comment "d3f:issued casts the dcterms:issued rdf Property as a DatatypeProperty." ;
     :definition "Date of formal issuance of the resource." .
 
+:kb-article-link a owl:DatatypeProperty ;
+    rdfs:subPropertyOf :d3fend-data-property .
+
 :kb-reference-title a owl:DatatypeProperty ;
     rdfs:label "kb-reference-title" ;
     rdfs:subPropertyOf :d3fend-kb-data-property ;
@@ -1495,6 +1514,9 @@ skos:example a owl:AnnotationProperty .
         owl:FunctionalProperty ;
     rdfs:label "rating" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
+
+:seeAlso a owl:DatatypeProperty ;
+    rdfs:subPropertyOf :d3fend-data-property .
 
 :stage a owl:DatatypeProperty,
         owl:FunctionalProperty ;
@@ -1614,6 +1636,24 @@ skos:example a owl:AnnotationProperty .
     rdfs:subClassOf :AccessMediationEvent ;
     :definition "An event signifying that access to a resource has been authorized and successfully enforced, allowing the requesting agent to perform specified operations based on the access control policies." .
 
+:AccessMediation a :AccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Access Mediation" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Isolate ] ;
+    rdfs:isDefinedBy "CNSSI 4009",
+        "FIPS 201-2" ;
+    :d3fend-id "D3-AMED" ;
+    :definition "Access mediation is the process of granting or denying specific requests to: 1) obtain and use information and related information processing services; and 2) enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances)." ;
+    rdfs:seeAlso "CSC-STD-001-83 (1983)",
+        "https://dbpedia.org/page/Access_control",
+        "Ross, Winstead, and McEvilley (2022)",
+        "Saltzer and Schroeder (1975)" ;
+    :synonym "Access Control" .
+
 :AccessMediationEvent a owl:Class ;
     rdfs:label "Access Mediation Event" ;
     skos:altLabel "Access Enforcement Event" ;
@@ -1651,6 +1691,18 @@ skos:example a owl:AnnotationProperty .
     :d3fend-id "D3-AM" ;
     :definition "Access modeling identifies and records the access permissions granted to administrators, users, groups, and systems." ;
     :kb-reference :Reference-RFC7642SystemForCrossDomainIdentityManagementDefinitionsOverviewConceptsAndRequirements .
+
+:AccessPolicyAdministration a :AccessPolicyAdministration,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Access Policy Administration" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Isolate ] ;
+    :d3fend-id "D3-APA" ;
+    :definition "Access policy administration is the method of granting and revoking user permissions to resources." ;
+    :synonym "Access Authorization" .
 
 :AccessProcess a owl:Class ;
     rdfs:label "Access Process" ;
@@ -1862,7 +1914,30 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
 
 :Agent a owl:Class ;
     rdfs:label "Agent" ;
-    rdfs:subClassOf :D3FENDCore .
+    rdfs:subClassOf :D3FENDCore,
+        [ a owl:Restriction ;
+            owl:onProperty :identified-by ;
+            owl:someValuesFrom :DigitalIdentity ] ;
+    :definition "An entity capable of performing intentional actions." .
+
+:AgentAuthentication a :AgentAuthentication,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Agent Authentication" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Harden ],
+        [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :UserAccount ] ;
+    :d3fend-id "D3-AA" ;
+    :definition "Agent authorization is the means by which the agent's identity is verified as an authorized user." ;
+    :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5 ;
+    :synonym "Authentication" .
 
 :AgentGroup a owl:Class ;
     rdfs:label "Agent Group" ;
@@ -2032,7 +2107,7 @@ In a more general sense, ASP includes all applications of answer sets to knowled
             owl:onProperty :isolates ;
             owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :protects ;
             owl:someValuesFrom :Subroutine ] ;
     :d3fend-id "D3-ABPI" ;
     :definition "Application code which prevents its own subroutines from accessing intra-process / internal memory space." ;
@@ -2446,8 +2521,12 @@ Windows Credential Management API""" ;
     rdfs:label "Authentication Event" ;
     skos:altLabel "Agent Authentication Event" ;
     rdfs:subClassOf :DigitalEvent,
+        :Event,
         [ a owl:Restriction ;
             owl:onProperty :caused-by ;
+            owl:someValuesFrom :Authentication ],
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
             owl:someValuesFrom :Authentication ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
@@ -2737,10 +2816,10 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Biometric Authentication" ;
-    rdfs:subClassOf :CredentialHardening,
+    rdfs:subClassOf :AgentAuthentication,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:someValuesFrom :Person ] ;
     :d3fend-id "D3-BAN" ;
     :definition "Using biological measures in order to authenticate a user." ;
     :kb-reference :Reference-TokenlessBiometricTransactionAuthorizationMethodAndSystem,
@@ -3131,10 +3210,7 @@ Google Developers. (n.d.). Clustering Algorithms. [Link](https://developers.goog
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Certificate-based Authentication" ;
-    rdfs:subClassOf :CredentialHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :authenticates ;
-            owl:someValuesFrom :User ],
+    rdfs:subClassOf :AgentAuthentication,
         [ a owl:Restriction ;
             owl:onProperty :reads ;
             owl:someValuesFrom :Certificate ] ;
@@ -3183,7 +3259,10 @@ TLS certificates are designed to expire to ensure that the cryptographic keys ar
     rdfs:subClassOf :CredentialHardening,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
-            owl:someValuesFrom :PublicKey ] ;
+            owl:someValuesFrom :PublicKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Certificate ] ;
     :d3fend-id "D3-CP" ;
     :definition "Persisting either a server's X.509 certificate or their public key and comparing that to server's presented identity to allow for greater client confidence in the remote server's identity for SSL connections." ;
     :kb-article """## How it works
@@ -3207,6 +3286,29 @@ An extension of PKP is Subject Public Key Information Pinning (SPKI) includes pu
     :kb-reference :Reference-CertificateAndPublicKeyPinning,
         :Reference-End-to-endCertificatePinning,
         :Reference-PublicKeyPinningExtensionForHTTP .
+
+:CertificateRotation a :CertificateRotation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Certificate Rotation" ;
+    rdfs:subClassOf :CredentialRotation,
+        [ a owl:Restriction ;
+            owl:onProperty :regenerates ;
+            owl:someValuesFrom :Certificate ] ;
+    :d3fend-id "D3-CERO" ;
+    :definition "The replacement of existing certificates with new ones, generated by entirely new private keys." ;
+    :kb-article """## How it works
+
+Certificate rotation should be performed when:
+- Any certificate expires.
+- A new CA authority is substituted for the old, thus requiring a replacement root certificate.
+- New or modified constraints need to be imposed on one or more certificates.
+- A security breach has occurred.
+
+Considerations:
+- Managing certificate rotation across an enterprise can be complex. Automated solutions, sold by multiple vendors, should be considered to manage this complexity.""",
+        :Reference-PasswordandKeyRotation-SSH ;
+    rdfs:seeAlso <https://docs.couchbase.com/server/7.0/manage/manage-security/rotate-server-certificates.html> .
 
 :CertificateTrustStore a owl:Class ;
     rdfs:label "Certificate Trust Store" ;
@@ -4014,7 +4116,7 @@ Wikipedia. (n.d.). Cramér's V. [Link](https://en.wikipedia.org/wiki/Cram%C3%A9r
     :definition "Determining which credentials may have been compromised by analyzing the user logon history of a particular system." ;
     :kb-article """## How it works
 
-#### Memory
+l#### Memory
 Credentials may be stored in memory for a variety of reasons; on Windows, they may be stored in lsass.exe.  Once a credential dumper like mimikatz runs and dumps the memory of lsass.exe, the credentials of every account logged on since boot are potentially compromised.
 When such an event occurs, this analytic will give the forensic context to identify compromised users. Those users could potentially be used in later events for additional logons.
 
@@ -4063,7 +4165,10 @@ Effective implementation requires identifying any location that could end up con
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
-            owl:someValuesFrom :Harden ] ;
+            owl:someValuesFrom :Harden ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CH" ;
     :definition "Credential Hardening techniques modify system or network properties in order to protect system or network/domain credentials." ;
     :enables :Harden .
@@ -4098,17 +4203,20 @@ Management servers with enterprise policies for account management provide the a
             owl:onProperty :regenerates ;
             owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CRO" ;
-    :definition "Expiring an existing set of credentials and reissuing a new valid set" ;
+    :definition "Credential rotation is a security procedure in which authentication credentials, such as passwords, API keys, or certificates, are regularly changed or replaced to minimize the risk of unauthorized access." ;
     :kb-article """## How it works
 
-Management servers with enterprise policies for account management provide the ability to change or reset passwords for accounts. Some organizations rotate credentials periodically to limit the risk of stolen credentials.
+Credentials can be systematically changed at predetermined intervals or based on specific events.  Credentials such as user passwords may be rotated manually, but it is increasingly common to use an automated system to manage rotation of enterprise passwords, certificates and keys.
 
 ## Considerations
 
+- Rotation of credentials must be managed carefully to avoid inadvertent service interruption
+- Management servers with enterprise policies for account management provide the ability to change or reset passwords for accounts. Some organizations rotate credentials periodically to limit the risk of stolen credentials.
 - When responding to an incident, severity of compromise should be considered to determine what credentials to what accounts should be regenerated
 - If proactively rotating credentials periodically, several factors should be considered to determine the frequency. Also introduces some risk including promoting the creation of weak passwords and poor storage practices for employees and presents challenges in proper tracking.""" ;
     :kb-reference <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-EvictionGuidanceforNetworksAffectedbytheSolarWindsandActiveDirectory/M365Compromise-CISA>,
-        :Reference-PasswordandKeyRotation-SSH .
+        :Reference-PasswordandKeyRotation-SSH ;
+    rdfs:seeAlso <https://www.ituonline.com/tech-definitions/what-is-credential-rotation/> .
 
 :CredentialScrubbing a :CredentialScrubbing,
         owl:Class,
@@ -4135,9 +4243,9 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Credential Transmission Scoping" ;
-    rdfs:subClassOf :CredentialHardening,
+    rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :isolates ;
             owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CTS" ;
     :definition "Limiting the transmission of a credential to a scoped set of relying parties." ;
@@ -9882,6 +9990,17 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:seeAlso <https://schema.ocsf.io/objects/fingerprint> ;
     :todo "Create relationship 'identifies some data' once data ontology implemented" .
 
+:DigitalIdentity a owl:Class ;
+    rdfs:label "Digital Identity" ;
+    rdfs:subClassOf :DigitalInformation,
+        [ a owl:Restriction ;
+            owl:onProperty :identified-by ;
+            owl:someValuesFrom :Identifier ] ;
+    rdfs:comment "Variously describes or designates.  Designation is not compete or definite without context.  The representation generally can be identified by a unique identifier, though this may be private information." ;
+    rdfs:isDefinedBy "CNSS 4009 (2022)" ;
+    :definition "The unique representation of a subject engaged in an online transaction. A digital identity is always unique in the context of a digital service, but does not necessarily need to uniquely identify the subject in all contexts. In other words, accessing a digital service may not mean that the subject's real-life identity is known.  Note: There is no single, widely accepted definition for this term and context is important. This definition is specific to online transactions." ;
+    rdfs:seeAlso <https://pages.nist.gov/800-63-3/sp800-63-3.html> .
+
 :DigitalInformation a owl:Class ;
     rdfs:label "Digital Information" ;
     rdfs:subClassOf :DigitalArtifact .
@@ -10314,7 +10433,7 @@ Attackers will create infrastructure from which to carry out their operations an
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Domain Trust Policy" ;
-    rdfs:subClassOf :CredentialHardening,
+    rdfs:subClassOf :AccessPolicyAdministration,
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
             owl:someValuesFrom :DirectoryService ],
@@ -10558,6 +10677,20 @@ Email files may propagate through many storage systems across the an organizatio
     :d3fend-id "D3-ET" ;
     :definition "Encrypted encapsulation of routable network traffic." ;
     :kb-reference :Reference-SecurityArchitectureForTheInternetProtocol .
+
+:EndpointBasedWebServerAccessMediation a :EndpointBasedWebServerAccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Endpoint-based Web Server Access Mediation" ;
+    rdfs:subClassOf :WebSessionAccessMediation ;
+    :d3fend-id "D3-EBWSAM" ;
+    :definition "Endpoint-based web server access mediation regulates web server access directly from user endpoints." ;
+    :kb-article """## How it works
+
+Endpoint-based Web Server Access Mediation focuses on managing access to web servers directly from user devices. This involves implementing security measures like client certificates or endpoint security software to ensure that only authorized devices can initiate sessions with web servers. Examples include direct access to internal web applications from company laptops.
+""" ;
+    :kb-reference :Reference-NIST-Special-Publication-800-41-Revision-1 ;
+    :todo "defer as future new technique or keep?" .
 
 :EndpointHealthBeacon a :EndpointHealthBeacon,
         owl:Class,
@@ -10805,7 +10938,7 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
             owl:onProperty :blocks ;
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-EAL" ;
     :definition "Using a digital signature to authenticate a file before opening." ;
@@ -10847,7 +10980,7 @@ Organizations which download or create high volumes of software make management 
             owl:onProperty :blocks ;
             owl:someValuesFrom :ExecutableFile ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-EDL" ;
     :definition "Blocking the execution of files on a host in accordance with defined application policy rules." ;
@@ -11930,7 +12063,7 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
             owl:onProperty :isolates ;
             owl:someValuesFrom :Process ],
         [ a owl:Restriction ;
-            owl:onProperty :restricts ;
+            owl:onProperty :protects ;
             owl:someValuesFrom :CreateProcess ] ;
     :d3fend-id "D3-HBPI" ;
     :definition "Preventing one process from writing to the memory space of another process through hardware based address manager implementations." ;
@@ -12400,7 +12533,10 @@ Decision Trees for Classification: ID3 Algorithm Explained. Towards Data Science
 :Identifier a owl:Class ;
     rdfs:label "Identifier" ;
     skos:altLabel "ID" ;
-    rdfs:subClassOf :DigitalInformation ;
+    rdfs:subClassOf :DigitalInformation,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :Artifact ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Identifier> ;
     :definition "An identifier is a name that identifies (that is, labels the identity of) either a unique object or a unique class of objects, where the \"object\" or class may be an idea, physical [countable] object (or class thereof), or physical [noncountable] substance (or class thereof). The abbreviation ID often refers to identity, identification (the process of identifying), or an identifier (that is, an instance of identification). An identifier may be a word, number, letter, symbol, or any combination of those." .
 
@@ -13008,7 +13144,7 @@ Intrusion prevention systems are considered extensions of intrusion detection sy
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "IO Port Restriction" ;
-    rdfs:subClassOf :ExecutionIsolation,
+    rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
             owl:someValuesFrom :InputDevice ],
@@ -13404,10 +13540,15 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Kernel-based Process Isolation" ;
-    rdfs:subClassOf :ExecutionIsolation ;
+    rdfs:subClassOf :ExecutionIsolation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Process ] ;
+    rdfs:comment "e.g. KVM" ;
     :d3fend-id "D3-KBPI" ;
     :definition "Using kernel-level capabilities to isolate processes." ;
-    :kb-reference :Reference-OverviewOfTheSeccompSandbox .
+    :kb-reference :Reference-OverviewOfTheSeccompSandbox ;
+    :todo "Write kb-article for KBPI" .
 
 :KernelAPISensor a owl:Class ;
     rdfs:label "Kernel API Sensor" ;
@@ -13490,6 +13631,23 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     :definition "The measure of the \"fatness\" of the tails of a pmf or pdf. The fourth standardized moment of the distribution." ;
     :kb-article """## References
 Wikipedia. (n.d.). Probability distribution. [Link](https://en.wikipedia.org/wiki/Probability_distribution)""" .
+
+:LANAccessMediation a :LANAccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "LAN Access Mediation" ;
+    rdfs:subClassOf :NetworkAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :LocalAreaNetwork ] ;
+    :d3fend-id "D3-LAMED" ;
+    :definition "LAN access mediation is a network security strategy that controls and manages access to a Local Area Network by ensuring only authorized devices and users can connect, enhancing overall security." ;
+    :kb-article """## How it works
+
+LAN Access Mediation is a network security approach that manages and controls access to a Local Area Network by using key components such as Access Control Lists (ACLs) to specify which devices are allowed or denied access, Port Security to restrict device connections to specific switch ports, RADIUS for determining the level of access or specific resources available to users or devices, and 802.1X for enforcing device authentication before granting network access. This comprehensive strategy ensures that only authorized devices and users can connect to the network, enhancing overall security.""" ;
+    :kb-reference :Reference-WhatIsNetworkAccessControl ;
+    rdfs:seeAlso "Comply to Connect (C2C)",
+        "Layer 2 Enforcement" .
 
 :LaptopComputer a owl:Class ;
     rdfs:label "Laptop Computer" ;
@@ -13941,11 +14099,25 @@ Newer system call.""" .
         :SystemServiceSoftware ;
     :definition "A local authorization service running on a host can authorize a user logged into just that local host computer." .
 
+:LocalFileAccessMediation a :LocalFileAccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Local File Access Mediation" ;
+    rdfs:subClassOf :SystemCallFiltering,
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :OpenFile ] ;
+    rdfs:comment "Replaces d3-LFP" ;
+    :d3fend-id "D3-LFAM" ;
+    :definition "Restricting access to a local file by configuring operating system functionality." ;
+    :kb-reference :Reference-FileAndFolderPermissions ;
+    :synonym "Local File Access Control" .
+
 :LocalFilePermissions a :LocalFilePermissions,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Local File Permissions" ;
-    rdfs:subClassOf :PlatformHardening,
+    rdfs:subClassOf :AccessPolicyAdministration,
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
             owl:someValuesFrom :Directory ],
@@ -14126,6 +14298,15 @@ Wikipedia. (n.d.). Logistic regression. [Link](https://en.wikipedia.org/wiki/Log
     :kb-article """## References
 Wikipedia. (2021, September 29). Long short-term memory. [Link](https://en.wikipedia.org/wiki/Long_short-term_memory)""" .
 
+:MACAddress a owl:Class ;
+    rdfs:label "MAC Address" ;
+    rdfs:subClassOf :Identifier,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :NetworkInterfaceCard ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/MAC_address> ;
+    :definition "A media access control address (MAC address) is a unique identifier assigned to a network interface controller (NIC) for use as a network address in communications within a network segment." .
+
 :MachineLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Machine Learning" ;
@@ -14172,58 +14353,6 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
     :definition "A mail service provides the ability to send and receive mail across a computer network.  The mail service runs on message transfer agents (i.e., mail servers) and is accessed by users through an email client." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Email>,
         <http://dbpedia.org/resource/Message_transfer_agent> .
-
-:MandatoryAccessControl a :MandatoryAccessControl,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Mandatory Access Control" ;
-    rdfs:subClassOf :Kernel-basedProcessIsolation,
-        [ a owl:Restriction ;
-            owl:onProperty :isolates ;
-            owl:someValuesFrom :Process ],
-        [ a owl:Restriction ;
-            owl:onProperty :restricts ;
-            owl:someValuesFrom :CreateProcess ] ;
-    :d3fend-id "D3-MAC" ;
-    :definition "Controlling access to local computer system resources with kernel-level capabilities." ;
-    :kb-article """## How it works
-Mandatory access control is a non-discretionary access control system because the rules and polices that determine access is determined by a security control authority and not distributed to local users. Access determinations are based on designed access control polices and are not based on local resource owner determinations.
-
-Access is typically granted by defining sets of subjects and sets of objects. Subjects are the entities requesting access and objects are the resources that subjects are trying to access. Rules and policies are defined that associate subjects and object permissions and access controls.
-
-### Common MAC implementations
-#### Security label access control
-A fine-grained form of mandatory access control is to apply security labels to individual resources, including processes, and the access control decisions are against a particular resource and a given user attempting to gain access. This type of MAC requires that the file system has built-in support for security labels.
-
-Access controls are typically implemented through the use of label identifiers for every file system object. Identifier labels are applied to resources and users are assigned a similar access identifier. Users attempting to access a resource will result in the operating system performing an access control check. The access control check will compare the assigned user's credentials to that of the resource or object they are attempting to access.
-
-A security context is associated with resources and is used to determine assess. Typical basic access control elements include users, roles and types and together they form a security context which is the basis for the security labels.
-
-This type of access control is what is employed in SELinux [2]. This form of MAC is considered the most flexible implementation, but it also is the most complex to deploy across the enterprise. Where multiple virtual machines (VM) are run together this type of access control is typically employed to ensure true isolation of processes and VMs.
-
-#### File path level controls
-A less fine-grained form of mandatory access control is to apply security labels that allow for access control at the file path level.  Access control is filesystem agnostic and no relabeling of resources is required. Pathname access control usually seems more natural for implementation and corresponding access audits.
-
-This type of MAC is what is employed in AppArmor [3]. AppArmor was developed to provide a simpler alternative MAC method with much less management overhead. A simple access policy is maintained that defines path resource access rules. Access control attributes are typically associated with programs instead of users.
-
-
-## Considerations
-Some implementations of security label mandatory access control contain complex rules set that are hard to verify and complex to maintain over time.
-
-Initial planning of access model and continuous monitoring of the available users, resources and object is necessary.
-
-## Implementations
-
- * Linux C-Groups, and policy engines like SELinux and AppArmor
- * Windows Mandatory Integrity Control introduced in Windows Vista
-
-
-### Citations
-1. [Implementation of Mandatory Access Control in Distributed Systems](https://link.springer.com/article/10.3103/S0146411618080357)
-2. [SELinux](https://selinuxproject.org/)
-3. [AppArmor](https://www.apparmor.net/)""" ;
-    :kb-reference :Reference-AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation,
-        :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc .
 
 :Matching a owl:Class ;
     rdfs:label "Matching" ;
@@ -14700,10 +14829,10 @@ Wikipedia. (n.d.). Moving average model. [Link](https://en.wikipedia.org/wiki/Mo
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Multi-factor Authentication" ;
-    rdfs:subClassOf :CredentialHardening,
+    rdfs:subClassOf :AgentAuthentication,
         [ a owl:Restriction ;
-            owl:onProperty :authenticates ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-MFA" ;
     :definition "Requiring proof of two or more pieces of evidence in order to authenticate a user." ;
     :kb-article """## How it works
@@ -14785,6 +14914,23 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A network is a group of computers that use a set of common communication protocols over digital interconnections for the purpose of sharing resources located on or provided by the network nodes. The interconnections between nodes are formed from a broad spectrum of telecommunication network technologies, based on physically wired, optical, and wireless radio-frequency methods that may be arranged in a variety of network topologies." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/03826490-n> .
+
+:NetworkAccessMediation a :NetworkAccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Access Mediation" ;
+    rdfs:subClassOf :AccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Network ] ;
+    :d3fend-id "D3-NAM" ;
+    :definition "Network access mediation is the control method for authorizing access to a system by a user (or a process acting on behalf of a user) communicating through a network, including a local area network, a wide area network, and the Internet." ;
+    :kb-article """## How it works
+
+Network Access Mediation is a crucial process in telecommunications and IT networks that involves controlling access to network resources. It acts as an intermediary layer between network access requests and the actual network resources, ensuring that only authorized users and devices can access the network.""" ;
+    :kb-reference :Reference-WhatIsNetworkAccessControl ;
+    rdfs:seeAlso "NIST SP 800-160v1r1 (re: \"mediation\")" ;
+    :synonym "Network Access Control" .
 
 :NetworkCardFirmware a owl:Class ;
     rdfs:label "Network Card Firmware" ;
@@ -14888,6 +15034,13 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     rdfs:subClassOf :InitScript,
         :NetworkFileResource ;
     :definition "A computer file resource made available from one host to other hosts on a computer network that is also an initialization script." .
+
+:NetworkInterfaceCard a owl:Class ;
+    rdfs:label "Network Interface Card" ;
+    rdfs:subClassOf :HardwareDevice ;
+    rdfs:isDefinedBy <https://dbpedia.org/page/Network_interface_controller> ;
+    :definition "A network interface card (NIC, also known as a network interface controller, network adapter, LAN adapter or physical network interface, and by similar terms) is a computer hardware component that connects a computer to a computer network." ;
+    :synonym "Network Interface Controller" .
 
 :NetworkIsolation a :NetworkIsolation,
         owl:Class,
@@ -15002,6 +15155,23 @@ Administrators collect information on network nodes in their architecture using 
             owl:onProperty :accesses ;
             owl:someValuesFrom :Resource ] ;
     :definition "Ephemeral digital artifact comprising a request of a network resource and any response from that network resource." .
+
+:NetworkResourceAccessMediation a :NetworkResourceAccessMediation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Network Resource Access Mediation" ;
+    rdfs:subClassOf :AccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :NetworkResource ] ;
+    :d3fend-id "D3-NRAM" ;
+    :definition "Control of access to organizational systems and services by users or processes over a network." ;
+    :kb-article """## How it works
+
+Network Resource Access Control involves managing and regulating access to resources within an organization's network. This includes ensuring that only authorized users or processes can access specific systems or data, often through authentication and authorization mechanisms. Examples include accessing internal databases, file servers, or application services.""" ;
+    :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5 ;
+    rdfs:seeAlso "NIST SP 800-53 Rev. 5" ;
+    :synonym "Remote Access Control" .
 
 :NetworkScanner a owl:Class ;
     rdfs:label "Network Scanner" ;
@@ -15418,10 +15588,7 @@ Programmatically checking if a pointer is NULL before use.
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "One-time Password" ;
-    rdfs:subClassOf :CredentialHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :authenticates ;
-            owl:someValuesFrom :UserAccount ],
+    rdfs:subClassOf :PasswordRotation,
         [ a owl:Restriction ;
             owl:onProperty :use-limits ;
             owl:someValuesFrom :Password ] ;
@@ -15446,7 +15613,8 @@ Physical loss of One-time Password device.
 ### Compromise of long-term backup codes
 These are often provided in the form of a downloadable document with a regular name, which can be searched for in the case that the user forgets where they put them.  This digital file or printed document could be stolen.
 Additionally, after the code file is printed, it could be recovered from the system printer spool unless the spooler cache is cleared.""" ;
-    :kb-reference :Reference-RFC2289-AOne-TimePasswordSystem ;
+    :kb-reference :Reference-DigitalIdentityGuidelines800-63-3,
+        :Reference-RFC2289-AOne-TimePasswordSystem ;
     rdfs:seeAlso <http://dbpedia.org/resource/One-time_password> ;
     :synonym "OTP" .
 
@@ -16288,6 +16456,18 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     rdfs:isDefinedBy <http://dbpedia.org/resource/Password> ;
     :definition "A password, sometimes called a passcode, is a memorized secret, typically a string of characters, usually used to confirm the identity of a user. Using the terminology of the NIST Digital Identity Guidelines, the secret is memorized by a party called the claimant while the party verifying the identity of the claimant is called the verifier. When the claimant successfully demonstrates knowledge of the password to the verifier through an established authentication protocol, the verifier is able to infer the claimant's identity." .
 
+:PasswordAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :PasswordAuthentication ;
+    rdfs:label "Password Authentication" ;
+    rdfs:subClassOf :AgentAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Password ] ;
+    :d3fend-id "D3-PWA" ;
+    :definition "Password authentication is a security mechanism used to verify the identity of a user or entity attempting to access a system or resource by requiring the input of a secret string of characters, known as a password, that is associated with the user or entity." ;
+    :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5 .
+
 :PasswordDatabase a owl:Class ;
     rdfs:label "Password Database" ;
     rdfs:subClassOf :Database ;
@@ -16304,6 +16484,27 @@ Log integrity is verified by log auditors. Auditors make use of log proofs are u
     rdfs:subClassOf :Application ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Password_manager> ;
     :definition "A password manager is a software application or hardware that helps a user store and organize passwords. Password managers usually store passwords encrypted, requiring the user to create a master password: a single, ideally very strong password which grants the user access to their entire password database. Some password managers store passwords on the user's computer (called offline password managers), whereas others store data in the provider's cloud (often called online password managers). However offline password managers also offer data storage in the user's own cloud accounts rather than the provider's cloud. While the core functionality of a password manager is to securely store large collections of passwords, many provide additional features such as form filling and password generation." .
+
+:PasswordRotation a owl:Class,
+        owl:NamedIndividual,
+        :PasswordRotation ;
+    rdfs:label "Password Rotation" ;
+    rdfs:subClassOf :CredentialRotation,
+        [ a owl:Restriction ;
+            owl:onProperty :regenerates ;
+            owl:someValuesFrom :Password ] ;
+    :d3fend-id "D3-PR" ;
+    :definition "Requiring periodic regeneneration of passwords for accounts." ;
+    :kb-article """## How it works
+
+Users may be requested to change their passwords on a regular schedule. Management servers with enterprise policies for account management provide the ability to change or reset passwords for accounts.
+
+## Considerations
+
+Requiring users to change their passwords frequently can result in insecure password practices by the user. The latest update of NIST SP 800-63B, Digital Identity Guidelines, recommends requiring password reset only when a known compromise has occurred, or every 365 days, rather than every 60 or 90 days.""" ;
+    :kb-reference :Reference-PasswordandKeyRotation-SSH ;
+    rdfs:seeAlso <https://pages.nist.gov/800-63-3/sp800-63-3.html>,
+        <https://www.auditboard.com/blog/nist-password-guidelines/> .
 
 :PasswordStore a owl:Class ;
     rdfs:label "Password Store" ;
@@ -16446,6 +16647,19 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
 \\Wikipedia. (n.d.). Phi coefficient. [Link](https://en.wikipedia.org/wiki/Phi_coefficient)""" ;
     :synonym "Matthews Correlation Coefficient (in machine learning)",
         "MCC" .
+
+:PhysicalAccessMediation a owl:Class,
+        owl:NamedIndividual,
+        :PhysicalAccessMediation ;
+    rdfs:label "Physical Access Mediation" ;
+    rdfs:subClassOf :AccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :PhysicalArtifact ] ;
+    :d3fend-id "D3-PAM" ;
+    :definition "Physical access mediation is the process of granting or denying specific requests to enter specific physical facilities (e.g., Federal buildings, military establishments, border crossing entrances.)" ;
+    :kb-reference :Reference-CNNSI-4009 ;
+    :synonym "Physical Access Control" .
 
 :PhysicalAddress a owl:Class ;
     rdfs:label "Physical Address" ;
@@ -17382,6 +17596,19 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:label "Provider" ;
     rdfs:subClassOf :Organization .
 
+:ProxyBasedWebServerAccessMediation a owl:Class,
+        owl:NamedIndividual,
+        :ProxyBasedWebServerAccessMediation ;
+    rdfs:label "Proxy-based Web Server Access Mediation" ;
+    rdfs:subClassOf :WebSessionAccessMediation ;
+    :d3fend-id "D3-PBWSAM" ;
+    :definition "Proxy-based web server access mediation focuses on the regulation of web server access through intermediary proxy servers." ;
+    :kb-article """## How it works
+
+Proxy-based Web Server Access Mediation involves controlling access to web servers via proxy servers, which act as intermediaries between users and web resources. This approach can enhance security by anonymizing user requests, filtering content, and enforcing access policies. Examples include using corporate proxies to access external websites or services.""" ;
+    :kb-reference :Reference-NIST-Special-Publication-800-41-Revision-1 ;
+    :todo "defer as future new technique or keep?" .
+
 :ProxyServer a owl:Class ;
     rdfs:label "Proxy Server" ;
     rdfs:subClassOf :ComputerNetworkNode,
@@ -17716,6 +17943,22 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
     rdfs:subClassOf :DatabaseQuery,
         :RemoteCommand ;
     :definition "A remote query session enabling a user to make an SQL, SPARQL, or similar query over the network from one host to another." .
+
+:RemoteFileAccessMediation a owl:Class,
+        owl:NamedIndividual,
+        :RemoteFileAccessMediation ;
+    rdfs:label "Remote File Access Mediation" ;
+    rdfs:subClassOf :NetworkResourceAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-RFAM" ;
+    :definition "Remote file access mediation manages remote access to file systems over a network." ;
+    :kb-article """## How it works
+
+Remote File Access Mediation focuses on controlling how users or processes access file systems from remote locations. This involves ensuring secure connections, often through protocols like SFTP or SMB, and enforcing permissions to prevent unauthorized access or data breaches. Examples of enforcement areas include accessing shared drives or cloud storage from remote offices or home networks.""" ;
+    :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5 ;
+    :synonym "File Share Access Mediation" .
 
 :RemoteLoginSession a owl:Class ;
     rdfs:label "Remote Login Session" ;
@@ -18087,6 +18330,22 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     rdfs:subClassOf :ComputerNetworkNode ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Router_(computing)> ;
     :definition "A router is a networking device that forwards data packets between computer networks. Routers perform the traffic directing functions on the Internet. Data sent through the internet, such as a web page or email, is in the form of data packets. A packet is typically forwarded from one router to another router through the networks that constitute an internetwork (e.g. the Internet) until it reaches its destination node." .
+
+:RoutingAccessMediation a owl:Class,
+        owl:NamedIndividual,
+        :RoutingAccessMediation ;
+    rdfs:label "Routing Access Mediation" ;
+    rdfs:subClassOf :NetworkAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Network ] ;
+    :d3fend-id "D3-RAM" ;
+    :definition "Routing Access Mediation is a network security approach that manages and controls access at the network layer using VPNs, tunneling protocols, firewall rules, and traffic inspection to ensure secure and efficient data routing." ;
+    :kb-article """## How it works
+
+Routing Access Mediation is a network security strategy focused on managing and controlling access at the network layer. It includes the use of VPNs for secure remote access, tunneling protocols for encapsulating data, firewall rules for filtering traffic, and advanced inspection techniques like Cisco's Context-Based Access Control (CBAC) to monitor and regulate data flow. This approach ensures secure and efficient routing of data across networks, protecting against unauthorized access and enhancing overall network security.""" ;
+    :kb-reference :Reference-WhatIsNetworkAccessControl ;
+    rdfs:seeAlso <https://www.geeksforgeeks.org/context-based-access-control-cbac/> .
 
 :RPCNetworkTraffic a owl:Class ;
     rdfs:label "RPC Network Traffic" ;
@@ -18728,6 +18987,16 @@ Detecting unauthorized user sessions by comparing the duration of a user logon s
     :definition "Forcefully end all active sessions associated with compromised accounts or devices." ;
     :kb-article "Defined in NIST 800-53 as AC-12." ;
     :kb-reference :Reference-NIST-Special-Publication-800-53A-Revision-5 .
+
+:SessionToken a owl:Class ;
+    rdfs:label "Stateless Session Token" ;
+    rdfs:subClassOf :AccessToken ;
+    rdfs:isDefinedBy "https://dbpedia.org/page/Session_ID" ;
+    :definition "In computer science, a session identifier, session ID or session token is a piece of data that is used in network communications (often over HTTPS) to identify a session, a series of related message exchanges." ;
+    :kb-article "## How it worksnnSession identifiers become necessary in cases where the communications infrastructure uses a stateless protocol such as HTTP. For example, a buyer who visits a seller's website wants to collect a number of articles in a virtual shopping cart and then finalize the shopping by going to the site's checkout page. This typically involves an ongoing communication where several webpages are requested by the client and sent back to them by the server. In such a situation, it is vital to keep track of the current state of the shopper's cart, and a session ID is one way to achieve that goal." ;
+    :synonym "Session ID",
+        "Session Identifier",
+        "Session Token" .
 
 :SetRegisters a owl:Class ;
     rdfs:label "Set Registers" ;
@@ -19372,10 +19641,7 @@ In practice, the method of feasible string-search algorithm may be affected by t
     rdfs:subClassOf :CredentialHardening,
         [ a owl:Restriction ;
             owl:onProperty :strengthens ;
-            owl:someValuesFrom :Password ],
-        [ a owl:Restriction ;
-            owl:onProperty :strengthens ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:someValuesFrom :Password ] ;
     :d3fend-id "D3-SPP" ;
     :definition "Modifying system configuration to increase password strength." ;
     :kb-article """## How it works
@@ -19604,14 +19870,57 @@ System calls are analyzed with a variety of methods. Some analytics look for spe
         owl:NamedIndividual,
         :SystemCallFiltering ;
     rdfs:label "System Call Filtering" ;
-    rdfs:subClassOf :Kernel-basedProcessIsolation,
+    skos:altLabel "Mandatory Access Control",
+        "System Call Mediation" ;
+    rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :SystemCall ] ;
+            owl:someValuesFrom :SystemCall ],
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :Process ] ;
+    :comment "previously known as D3-MAC; def//Configuring a kernel to use an allow or deny list to filter kernel api calls." ;
     :d3fend-id "D3-SCF" ;
-    :definition "Configuring a kernel to use an allow or deny list to filter kernel api calls." ;
-    :kb-reference :Reference-OverviewOfTheSeccompSandbox ;
-    :todo "write kb-article" .
+    :definition "Controlling access to local computer system resources with kernel-level capabilities." ;
+    :kb-article """## How it works
+System call filtering uses a mandatory access control paradigm (that is, a non-discretionary access control) system because the rules and polices that determine access is determined by a security control authority and not distributed to local users. Access determinations are based on designed access control polices and are not based on local resource owner determinations.
+
+Access is typically granted by defining sets of subjects and sets of objects. Subjects are the entities requesting access and objects are the resources that subjects are trying to access. Rules and policies are defined that associate subjects and object permissions and access controls.
+
+### Common implementations
+#### Security label access control
+A fine-grained form control is to apply security labels to individual resources, including processes, and the access control decisions are against a particular resource and a given user attempting to gain access. This type of control requires that the file system has built-in support for security labels.
+
+Access controls are typically implemented through the use of label identifiers for every file system object. Identifier labels are applied to resources and users are assigned a similar access identifier. Users attempting to access a resource will result in the operating system performing an access control check. The access control check will compare the assigned user's credentials to that of the resource or object they are attempting to access.
+
+A security context is associated with resources and is used to determine assess. Typical basic access control elements include users, roles and types and together they form a security context which is the basis for the security labels.
+
+This type of access control is what is employed in SELinux [2]. This form of security kernel access control is considered the most flexible implementation, but it also is the most complex to deploy across the enterprise. Where multiple virtual machines (VM) are run together this type of access control is typically employed to ensure true isolation of processes and VMs.
+
+#### File path level controls
+A less fine-grained form of mandatory access control is to apply security labels that allow for access control at the file path level.  Access control is filesystem agnostic and no relabeling of resources is required. Pathname access control usually seems more natural for implementation and corresponding access audits.
+
+This type of system call filtering is what is employed in AppArmor [3]. AppArmor was developed to provide a simpler alternative method with much less management overhead. A simple access policy is maintained that defines path resource access rules. Access control attributes are typically associated with programs instead of users.
+
+
+## Considerations
+Some implementations of security label-based control contain complex rules set that are hard to verify and complex to maintain over time.
+
+Initial planning of access model and continuous monitoring of the available users, resources and object is necessary.
+
+## Implementations
+
+ * Linux C-Groups, and policy engines like SELinux and AppArmor
+ * Windows Mandatory Integrity Control introduced in Windows Vista
+
+
+### Citations
+1. [SELinux](https://selinuxproject.org/)
+2. [AppArmor](https://www.apparmor.net/)""" ;
+    :kb-reference :Reference-AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation,
+        :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc,
+        :Reference-OverviewOfTheSeccompSandbox ;
+    :synonym "System Call Control" .
 
 :SystemConfigSystemCall a owl:Class ;
     rdfs:label "System Config System Call" ;
@@ -26960,6 +27269,47 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
 Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series)""" ;
     :todo "Lots of time series leaves couls be put here." .
 
+:Token-basedAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :Token-basedAuthentication ;
+    rdfs:label "Token-based Authentication" ;
+    rdfs:subClassOf :AgentAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :AccessToken ] ;
+    rdfs:isDefinedBy "https://www.entrust.com/resources/learn/what-is-token-based-authentication" ;
+    :d3fend-id "D3-TBA" ;
+    :definition "Token-based authentication is an authentication protocol where users verify their identity in exchange for a unique access token. Users can then access the website, application, or resource for the life of the token without having to re-enter their credentials." ;
+    :kb-article """## How it works
+
+Token-based authentication starts with a user logging into a system, device or application, typically using a password or a security question. An authorization server validates that initial authentication and then issues an access token, which is a small piece of data that lets a client application make a secure call or signal to an API server. Once this initial token-based authentication protocol is completed, the token works like a stamped ticket: The user can continue to seamlessly access the relevant resources, without re-authenticating, for the duration of the token lifecycle. That lifecycle ends when the user logs out or quits an app — and can also be triggered by a set time-out protocol.
+
+## Considerations:
+
+While token-based authentication is undoubtedly a major step above traditional password-based authentication, the token is still considered a “bearer token” — that is, access is granted to whomever holds the token.""" ;
+    :kb-reference :Reference-Entrust-What-Is-Token-Based-Authentication .
+
+:TokenBinding a owl:Class,
+        owl:NamedIndividual,
+        :TokenBinding ;
+    rdfs:label "Token Binding" ;
+    rdfs:subClassOf :CredentialHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :AccessToken ] ;
+    :d3fend-id "D3-TB" ;
+    :definition "Token binding is a security mechanism used to enhance the protection of tokens, such as cookies or OAuth tokens, by binding them to a specific connection." ;
+    :kb-article """## How it works
+
+When issuing a security token to a client that supports Token Binding, a server includes the client's Token Binding ID (or its cryptographic hash) in the token. Later on, when a client presents a security token containing a Token Binding ID, the server verifies that the ID in the token matches the ID of the Token Binding established with the client. In the case of a mismatch, the server rejects the token.
+
+## Considerations
+
+- While industry participation in the standards process is widespread, browser support remains limited.
+- In practice, token-binding implementations are tied to Transport Security Layer (TLS).""",
+        :Reference-RFC8471TheTokenBindingProtocolVersion1.0 ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Token_Binding> .
+
 :TPMBootIntegrity a owl:Class,
         owl:NamedIndividual,
         :TPMBootIntegrity ;
@@ -27318,7 +27668,13 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 :UserAccount a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "User Account" ;
-    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :identified-by ;
+            owl:someValuesFrom :DigitalIdentity ],
+        [ a owl:Restriction ;
+            owl:onProperty :used-by ;
+            owl:someValuesFrom :Agent ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_(computing)#User_account> ;
     :definition "A user account allows a user to authenticate to a system and potentially to receive authorization to access resources provided by or connected to that system; however, authentication does not imply authorization. To log into an account, a user is typically required to authenticate oneself with a password or other credentials for the purposes of accounting, security, logging, and resource management." ;
     rdfs:seeAlso <http://dbpedia.org/resource/User_account>,
@@ -27392,7 +27748,7 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
         owl:NamedIndividual,
         :UserAccountPermissions ;
     rdfs:label "User Account Permissions" ;
-    rdfs:subClassOf :CredentialHardening,
+    rdfs:subClassOf :AccessPolicyAdministration,
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
             owl:someValuesFrom :UserAccount ] ;
@@ -27772,6 +28128,15 @@ It is a combination of VPN hardware and software technologies that provides VPN 
         "Logic present in hardware or software which enables an attacker to violate the intended security policy." ;
     :definition "A weakness is a condition in a software, firmware, hardware, or service component that, under certain circumstances, could contribute to the introduction of vulnerabilities." .
 
+:WebAccessToken a owl:Class ;
+    rdfs:label "Web Access Token" ;
+    rdfs:subClassOf :SessionToken ;
+    :comment "A JSON web token (JWT) is an example of a web access token; most common type. OpenID might specify another format in the future." ;
+    :definition "A web access token is a credential that allows a web client application to access a specific resource to perform specific actions on behalf of the user." ;
+    rdfs:seeAlso "https://auth0.com/blog/id-token-access-token-what-is-the-difference/",
+        "https://en.wikipedia.org/wiki/JSON_Web_Token" ;
+    :synonym "WAT" .
+
 :WebAPIResource a owl:Class ;
     rdfs:label "Web API Resource" ;
     rdfs:subClassOf :WebResource ;
@@ -27806,6 +28171,18 @@ It is a combination of VPN hardware and software technologies that provides VPN 
             owl:onProperty :addressed-by ;
             owl:someValuesFrom :URL ] ;
     :definition "A web file resource is a file resource identified by a Uniform Resource Identifier (URI) and made available from one host to another host via a web protocol and across a network or networks." .
+
+:WebIdentityToken a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Web Identity Token" ;
+    rdfs:subClassOf :Credential,
+        [ a owl:Restriction ;
+            owl:onProperty :signed-by ;
+            owl:someValuesFrom :CryptographicKey ] ;
+    rdfs:isDefinedBy "https://auth0.com/blog/id-token-access-token-what-is-the-difference/" ;
+    :definition "An ID token is an artifact that proves that the user has been authenticated." ;
+    :kb-article "## How it worksnnAn ID token is proof of the user's authentication. An ID token is encoded as a JSON Web Token (JWT), a standard format that allows your application to easily inspect its content, and make sure it comes from the expected issuer and that no one else changed it." ;
+    :synonym "Identity Token" .
 
 :WebNetworkTraffic a owl:Class ;
     rdfs:label "Web Network Traffic" ;
@@ -27842,6 +28219,21 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:subClassOf :ServiceApplication ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Web_application> ;
     :definition "A web server application (or web app) is an application software that runs on a web server, unlike computer-based software programs that are stored locally on the Operating System (OS) of the device. Web applications are accessed by the user through a web browser with an active internet connection. These applications are programmed using a client-server modeled structure-the user (\"client\") is provided services through an off-site server that is hosted by a third-party. Examples of commonly-used, web applications, include: web-mail, online retail sales, online banking, and online auctions." .
+
+:WebSessionAccessMediation a owl:Class,
+        owl:NamedIndividual,
+        :WebSessionAccessMediation ;
+    rdfs:label "Web Session Access Mediation" ;
+    rdfs:subClassOf :NetworkResourceAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :isolates ;
+            owl:someValuesFrom :ServiceApplicationProcess ] ;
+    :d3fend-id "D3-WSAM" ;
+    :definition "Web session access mediation is the regulation of access to web-based resources and sessions over a network." ;
+    :kb-article """## How it works
+
+Web Session Access Mediation involves managing user access to web applications and services, ensuring secure and authorized sessions. This includes authenticating users, maintaining session integrity, and protecting against threats like session hijacking. Examples include accessing corporate intranets, SaaS applications, or online portals.""" ;
+    :kb-reference :Reference-NIST-Special-Publication-800-41-Revision-1 .
 
 :WebSessionActivityAnalysis a owl:Class,
         owl:NamedIndividual,
@@ -28985,7 +29377,7 @@ order to constitute a complete standard. For a complete definition of all requir
         owl:NamedIndividual ;
     rdfs:label "User Account Management" ;
     :related :LocalFilePermissions,
-        :MandatoryAccessControl,
+        :SystemCallFiltering,
         :SystemConfigurationPermissions .
 
 :M1019 a :ATTACKEnterpriseMitigation,
@@ -29026,8 +29418,8 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:label "Privileged Process Integrity" ;
     :related :BootloaderAuthentication,
         :DriverLoadIntegrityChecking,
-        :MandatoryAccessControl,
-        :ProcessSegmentExecutionPrevention .
+        :ProcessSegmentExecutionPrevention,
+        :SystemCallFiltering .
 
 :M1026 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
@@ -29140,7 +29532,7 @@ order to constitute a complete standard. For a complete definition of all requir
     rdfs:label "Disable or Remove Feature or Program" ;
     :related :ApplicationConfigurationHardening,
         :ExecutableDenylisting,
-        :MandatoryAccessControl .
+        :SystemCallFiltering .
 
 :M1043 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
@@ -29180,7 +29572,6 @@ order to constitute a complete standard. For a complete definition of all requir
     :d3fend-comment "\"Sandboxing\" is often used to describe a detection environment which includes some forms of analysis (see D3-DA.)\"  Many forms of isolation (e.g., quarantining) are more static in nature and simply limit software's access to system resources." ;
     :related :DynamicAnalysis,
         :Hardware-basedProcessIsolation,
-        :MandatoryAccessControl,
         :SystemCallFiltering .
 
 :M1049 a :ATTACKEnterpriseMitigation,
@@ -29207,7 +29598,7 @@ order to constitute a complete standard. For a complete definition of all requir
 :M1052 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
     rdfs:label "User Account Control" ;
-    :related :MandatoryAccessControl .
+    :related :SystemCallFiltering .
 
 :M1053 a :ATTACKEnterpriseMitigation,
         owl:NamedIndividual ;
@@ -29394,7 +29785,7 @@ The time field indicates the first and last time a system reported a user logged
     :kb-author "Matthew Conover" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Symantec Corporation" ;
-    :kb-reference-of :MandatoryAccessControl ;
+    :kb-reference-of :SystemCallFiltering ;
     :kb-reference-title "Analysis of the Windows Vista Security Model" ;
     :todo "Could not determine reference type; TechniqueReference class used instead",
         "MITRE Analysis was not found" .
@@ -29447,7 +29838,7 @@ Outlier data values which deviate from behavioral profile by more than a predete
     :kb-author "Gang Duan" ;
     :kb-mitre-analysis " " ;
     :kb-organization "Neuvector Inc" ;
-    :kb-reference-of :MandatoryAccessControl ;
+    :kb-reference-of :SystemCallFiltering ;
     :kb-reference-title "Architecture of transparent network security for application containers" ;
     :todo "MITRE Analysis was not found" .
 
@@ -30113,6 +30504,15 @@ These flaws weaken the reliability and effectiveness of encrypted Internet conne
     :kb-reference-of :MemoryBlockStartValidation ;
     :kb-reference-title "Pointer Arithmetic in C" .
 
+:Reference-CNNSI-4009 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Committee on National Security Systems (CNSS) Glossary" ;
+    :has-link "https://www.cnss.gov/CNSS/openDoc.cfm?a=YBWv%2FunyKwO1DRmXTMNBmg%3D%3D&b=700AB40062C162AC553021ECFFF77ED118BDFB62906A7AB536FAF9C205ACFFF39E8FFC45AC099821F22B03B56AF885A1"^^xsd:anyURI ;
+    :kb-abstract "[The CNSS Glossary is a jointly curated glossary of terms for National Security Systems by DoD, IC, and Civil Agencies (e.g., NIST)" ;
+    :kb-organization "Committee on National Security Systems (CNSS)" ;
+    :kb-reference-of :PhysicalAccessMediation ;
+    :kb-reference-title "Committee on National Security Systems (CNSS) Glossary" .
+
 :Reference-CommandLaunchedFromWinLogon_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2014-11-008: Command Launched from WinLogon - MITRE" ;
@@ -30486,7 +30886,8 @@ This patent includes File Content Signatures because in the case of a script fil
     :has-link "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63-3.pdf"^^xsd:anyURI ;
     :kb-author "NIST" ;
     :kb-organization "NIST" ;
-    :kb-reference-of :StrongPasswordPolicy ;
+    :kb-reference-of :One-timePassword,
+        :StrongPasswordPolicy ;
     :kb-reference-title "Digital Identity Guidelines" .
 
 :Reference-DistributedMeta-informationQueryInANetwork_Bit9Inc a owl:NamedIndividual,
@@ -30612,6 +31013,15 @@ In one embodiment, a response policy zone (RPZ) application generates an RPZ tha
     :kb-reference-of :ExecutableAllowlisting ;
     :kb-reference-title "Enhancing Network Security By Preventing User-Initiated Malware Execution" ;
     :todo "Could not determine reference type; TechniqueReference class used instead" .
+
+:Reference-Entrust-What-Is-Token-Based-Authentication a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Identity Providers: What is Token Based Authentication" ;
+    :has-link "https://www.entrust.com/resources/learn/what-is-token-based-authentication"^^xsd:anyURI ;
+    :kb-abstract "Token-based authentication is an authentication protocol where users verify their identity in exchange for a unique access token. Users can then access the website, application, or resource for the life of the token without having to re-enter their credentials." ;
+    :kb-organization "Entrust" ;
+    :kb-reference-of :Token-basedAuthentication ;
+    :kb-reference-title "Identity Providers: What is Token Based Authentication" .
 
 :Reference-ExecutionWithAT_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
@@ -31649,6 +32059,32 @@ architecture using the Snort NIDS.""" ;
     :kb-reference-of :OperationalRiskAssessment ;
     :kb-reference-title "NIST Special Publication 800-37 Revision 2 - Risk Management Framework for Information Systems and Organizations" .
 
+:Reference-NIST-Special-Publication-800-41-Revision-1 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Special Publication 800-41 Revision 1 Guidelines on Firewalls and Firewall Policy" ;
+    :has-link "https://doi.org/10.6028/NIST.SP.800-41r1"^^xsd:anyURI ;
+    :kb-abstract "Firewalls are devices or programs that control the flow of network traffic between networks or hosts employing differing security postures. This publication provides an overview of several types of firewall technologies and discusses their security capabilities and their relative advantages and disadvantages in detail. It also makes recommendations for establishing firewall policies and for selecting, configuring, testing, deploying, and managing firewall solutions." ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :EndpointBasedWebServerAccessMediation,
+        :ProxyBasedWebServerAccessMediation,
+        :WebSessionAccessMediation ;
+    :kb-reference-title "Special Publication 800-41 Revision 1 Guidelines on Firewalls and Firewall Policy" .
+
+:Reference-NIST-Special-Publication-800-53-Revision-5 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-53 Revision 5 - Security and Privacy Controls for Information Systems and Organizations" ;
+    :has-link "https://doi.org/10.6028/NIST.SP.800-53r5"^^xsd:anyURI ;
+    :kb-abstract "This publication provides a catalog of security and privacy controls for information systems and organizations to protect organizational operations and assets, individuals, other organizations, and the Nation from a diverse set of threats and risks, including hostile attacks, human errors, natural disasters, structural failures, foreign intelligence entities, and privacy risks. The controls are flexible and customizable and implemented as part of an organization-wide process to manage risk. The controls address diverse requirements derived from mission and business needs, laws, executive orders, directives, regulations, policies, standards, and guidelines. Finally, the consolidated control catalog addresses security and privacy from a functionality perspective (i.e., the strength of functions and mechanisms provided by the controls) and from an assurance perspective (i.e., the measure of confidence in the security or privacy capability provided by the controls). Addressing functionality and assurance helps to ensure that information technology products and the systems that rely on those products are sufficiently trustworthy." ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :AccessPolicyAdministration,
+        :EndpointBasedWebServerAccessMediation,
+        :NetworkResourceAccessMediation,
+        :PasswordAuthentication,
+        :ProxyBasedWebServerAccessMediation,
+        :RemoteFileAccessMediation,
+        :WebSessionAccessMediation ;
+    :kb-reference-title "NIST Special Publication 800-53 Revision 5 - Security and Privacy Controls for Information Systems and Organizations" .
+
 :Reference-NIST-Special-Publication-800-53A-Revision-5 a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - NIST Special Publication 800-53A Revision 5 - Assessing Security and Privacy Controls in Information Systems and Organizations" ;
@@ -31747,7 +32183,9 @@ While this analytic does not take the user into account, doing so could generate
     rdfs:label "Reference - Password and Key Rotation - SSH" ;
     :has-link "https://www.ssh.com/academy/iam/password-key-rotation"^^xsd:anyURI ;
     :kb-organization "SSH" ;
-    :kb-reference-of :CredentialRotation ;
+    :kb-reference-of :CertificateRotation,
+        :CredentialRotation,
+        :PasswordRotation ;
     :kb-reference-title "Password and Key Rotation" .
 
 :Reference-PlatformFirmwareResiliencyGuidelines_NIST a :GuidelineReference,
@@ -32183,6 +32621,16 @@ delivery, up to message rejection.""" ;
     :kb-organization "IETF" ;
     :kb-reference-of :AccessModeling ;
     :kb-reference-title "RFC7642: System for Cross-domain Identity Management: Definitions, Overview, Concepts, and Requirements" .
+
+:Reference-RFC8471TheTokenBindingProtocolVersion1.0 a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - The Token Binding Protocol Version 1.0" ;
+    :has-link "https://datatracker.ietf.org/doc/html/rfc8471"^^xsd:anyURI ;
+    :kb-abstract "This document specifies version 1.0 of the Token Binding protocol. The Token Binding protocol allows client/server applications to create long-lived, uniquely identifiable TLS bindings spanning  multiple TLS sessions and connections. Applications are then enabled to cryptographically bind security tokens to the TLS layer, preventing token export and replay attacks.  To protect privacy, the Token Binding identifiers are only conveyed over TLS and can be reset by the user at any time." ;
+    :kb-author "A. Popov, M. Nystroem, Microsoft Corp., D. Balfanz, Google Inc., J Hodges, Kings Mountain Systems" ;
+    :kb-organization "IETF" ;
+    :kb-reference-of :TokenBinding ;
+    :kb-reference-title "RFC8471: The Token Binding Protocol Version 1.0" .
 
 :Reference-RPCCallInterception_CrowdstrikeInc a owl:NamedIndividual,
         :PatentReference ;
@@ -33229,6 +33677,17 @@ Level 2""" ;
     :kb-reference-of :CredentialTransmissionScoping ;
     :kb-reference-title """Web Authentication: An API for accessing Public Key Credentials
 Level 2""" .
+
+:Reference-WhatIsNetworkAccessControl a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - What is Network Access Control?" ;
+    :has-link "https://www.fortinet.com/resources/cyberglossary/what-is-network-access-control"^^xsd:anyURI ;
+    :kb-abstract "Network access control (NAC), also known as network admission control, is the process of restricting unauthorized users and devices from gaining access to a corporate or private network. NAC ensures that only users who are authenticated and devices that are authorized and compliant with security policies can enter the network." ;
+    :kb-organization "Fortinet" ;
+    :kb-reference-of :LANAccessMediation,
+        :NetworkAccessMediation,
+        :RoutingAccessMediation ;
+    :kb-reference-title "What is Network Access Control?" .
 
 :Reference-WhatIsNX_XDFeature_RedHat a :InternetArticleReference,
         owl:NamedIndividual ;
