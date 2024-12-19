@@ -7,6 +7,8 @@ D3FEND_RELEASE_DATE ?="2024-10-11T00:00:00.000Z"
 
 ATTACK_VERSION ?= 16.0
 
+CAPEC_VERSION := 3.9
+
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
@@ -132,6 +134,17 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	$(END)
+
+download-capec:
+	mkdir -p data
+	echo "Version: $(CAPEC_VERSION)"
+	cd data; wget https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
+	unzip data/capec_v$(CAPEC_VERSION).zip -d data
+	$(END)
+
+update-capec:
+	bash src/util/update_capec.sh $(CAPEC_VERSION)
 	$(END)
 
 update-puns:
