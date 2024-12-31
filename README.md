@@ -21,6 +21,10 @@ to many lines in the file. This enables efficient code reviews.
 
 ## System Dependencies
 
+Building the D3FEND ontology distribution must be done in a Linux or Linux-like environment.
+The following packages must be installed:
+
+- make
 - java 15.0.1, other versions may work however
 - python 3.9
 - python pipenv package with `pipenv` in your PATH
@@ -28,7 +32,7 @@ to many lines in the file. This enables efficient code reviews.
 ## Building
 
 The Makefile has all the necessary targets (commands) needed to build the D3FEND ontology.
-Once your system dependencies are installed, Run `make install-deps`, then you can run
+Once your system dependencies are installed, run `make install-deps`, then you can run
 `make all` to build the ontology.
 
 > In order to run `make build/d3fend.csv`, you need to be
