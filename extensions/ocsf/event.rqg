@@ -1,3 +1,4 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.3.0/ontology/>
 PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -64,100 +65,100 @@ PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 #     ]
 # }
 
-# GENERATE <https://schema.ocsf.io/1.3.0/event> ( ?source ) {
-#   ?this a owl:Class ;
-#     rdfs:subClassOf d3f:DigitalEvent ;
-#     rdfs:subClassOf ocsf:BaseEvent ;
-#     rdfs:subClassOf ?extendsClass ;
-#     rdfs:label ?caption ;
-#     ocsf:name ?name ;
-#     dcterms:description ?description ;
-#     ocsf:associations ?associations ;
-#     ocsf:category ?category .
-
-#   GENERATE {
-#     ?this rdfs:subClassOf [ a owl:Restriction ;
-#                             owl:onProperty ?attribute ;
-#                             ?restrictionP ?restrictionO ] .
-
-#     GENERATE {
-#       ?this ocsf:profiles ?profile .
-#     } ITERATOR iter:JSONPath(?profiles, "$[*]") AS ?profile .
-
-#   } ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
-#   WHERE {
-#     BIND ( IRI("https://schema.ocsf.io/1.3.0/ontology/" + ?attributeName) AS ?attribute )
-#     BIND(
-# 	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",owl:cardinality, 1/0),
-
-#                   owl:someValuesFrom
-#                   ) AS ?restrictionP
-# 	 )
-
-#     ?attribute rdfs:range ?range .
-#     BIND(
-# 	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",1, 1/0),
-#                   IF(fun:JSONPath(?attributes, "$.{?attributeName}.type"),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:JSONPath(?attributes, "$.{?attributeName}.type")), 1/0),
-
-#                   ?range
-#                   ) AS ?restrictionO
-# 	 )
-#   } .
-
-#   GENERATE {
-#     ?this ocsf:constraints ?constraints .
-#   } WHERE {FILTER (STR(?constraints) != "\{\}")} .
-# }
-
-# ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
-
-# WHERE {
-#   BIND(
-#        COALESCE(IF(?name = "base_event",IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption)), 1/0),
-# 		IF(BOUND(?caption),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "Event"), 1/0),
-
-
-# 		IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "Event")
-# 		) AS ?this
-#        )
-
-#   OPTIONAL {
-#     ?extendsClass a owl:Class ;
-#       ocsf:name ?extends .
-#   }
-
-# }
-
 GENERATE <https://schema.ocsf.io/1.3.0/event> ( ?source ) {
-  # Generate the class for the current event in the D3FEND namespace
-  ?eventClass a owl:Class ;
-  rdfs:label ?eventLabel ;
-  rdfs:subClassOf ?superClass ;
-  rdfs:seeAlso ?ocsf ;
-  d3f:definition ?definition .
+  ?this a owl:Class ;
+    rdfs:subClassOf d3f:DigitalEvent ;
+    rdfs:subClassOf ocsf:BaseEvent ;
+    rdfs:subClassOf ?extendsClass ;
+    rdfs:label ?caption ;
+    ocsf:name ?name ;
+    dcterms:description ?description ;
+    ocsf:associations ?associations ;
+    ocsf:category ?category .
+
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+                            owl:onProperty ?attribute ;
+                            ?restrictionP ?restrictionO ] .
+
+    GENERATE {
+      ?this ocsf:profiles ?profile .
+    } ITERATOR iter:JSONPath(?profiles, "$[*]") AS ?profile .
+
+  } ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  WHERE {
+    BIND ( IRI("https://schema.ocsf.io/1.3.0/ontology/" + ?attributeName) AS ?attribute )
+    BIND(
+	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",owl:cardinality, 1/0),
+
+                  owl:someValuesFrom
+                  ) AS ?restrictionP
+	 )
+
+    ?attribute rdfs:range ?range .
+    BIND(
+	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",1, 1/0),
+                  IF(fun:JSONPath(?attributes, "$.{?attributeName}.type"),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:JSONPath(?attributes, "$.{?attributeName}.type")), 1/0),
+
+                  ?range
+                  ) AS ?restrictionO
+	 )
+  } .
+
+  GENERATE {
+    ?this ocsf:constraints ?constraints .
+  } WHERE {FILTER (STR(?constraints) != "\{\}")} .
 }
-ITERATOR iter:JSONPath(?source, "$") AS ?object
+
+ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
+
 WHERE {
-  # Extract properties from the JSON schema
-  BIND (fun:JSONPath(?object, "$.caption") AS ?caption)
-  BIND (fun:JSONPath(?object, "$.description") AS ?definition)
-  BIND (fun:JSONPath(?object, "$.extends") AS ?extends)
+  BIND(
+       COALESCE(IF(?name = "base_event",IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption)), 1/0),
+		IF(BOUND(?caption),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "Event"), 1/0),
 
-  # Append "Event" to the caption for the class name and label
-  BIND (CONCAT(?caption, " Event") AS ?eventLabel)
 
-  # Construct IRIs for the event class in D3FEND namespace, appending "Event"
-  BIND (IRI(CONCAT("http://d3fend.mitre.org/ontologies/d3fend.owl#", fun:camelCase(?caption), "Event")) AS ?eventClass)
+		IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "Event")
+		) AS ?this
+       )
 
-  # Construct IRI for the corresponding OCSF class, appending "Event"
-  BIND (fun:JSONPath(?object, "$.name") AS ?name)
-  BIND (IRI(CONCAT("https://schema.ocsf.io/1.3.0/classes/", ?name)) AS ?ocsf)
+  OPTIONAL {
+    ?extendsClass a owl:Class ;
+      ocsf:name ?extends .
+  }
 
-  # Determine the superclass in D3FEND namespace
-  BIND (
-	IF (STR(?extends) = "base_event",
-            d3f:DigitalEvent,
-            IRI(CONCAT("http://d3fend.mitre.org/ontologies/d3fend.owl#", fun:camelCase(?extends), "Event"))
-	    ) AS ?superClass
-	)
 }
+
+# GENERATE <https://schema.ocsf.io/1.3.0/event> ( ?source ) {
+#   # Generate the class for the current event in the D3FEND namespace
+#   ?eventClass a owl:Class ;
+#   rdfs:label ?eventLabel ;
+#   rdfs:subClassOf ?superClass ;
+#   rdfs:seeAlso ?ocsf ;
+#   d3f:definition ?definition .
+# }
+# ITERATOR iter:JSONPath(?source, "$") AS ?object
+# WHERE {
+#   # Extract properties from the JSON schema
+#   BIND (fun:JSONPath(?object, "$.caption") AS ?caption)
+#   BIND (fun:JSONPath(?object, "$.description") AS ?definition)
+#   BIND (fun:JSONPath(?object, "$.extends") AS ?extends)
+
+#   # Append "Event" to the caption for the class name and label
+#   BIND (CONCAT(?caption, " Event") AS ?eventLabel)
+
+#   # Construct IRIs for the event class in D3FEND namespace, appending "Event"
+#   BIND (IRI(CONCAT("http://d3fend.mitre.org/ontologies/d3fend.owl#", fun:camelCase(?caption), "Event")) AS ?eventClass)
+
+#   # Construct IRI for the corresponding OCSF class, appending "Event"
+#   BIND (fun:JSONPath(?object, "$.name") AS ?name)
+#   BIND (IRI(CONCAT("https://schema.ocsf.io/1.3.0/classes/", ?name)) AS ?ocsf)
+
+#   # Determine the superclass in D3FEND namespace
+#   BIND (
+# 	IF (STR(?extends) = "base_event",
+#             d3f:DigitalEvent,
+#             IRI(CONCAT("http://d3fend.mitre.org/ontologies/d3fend.owl#", fun:camelCase(?extends), "Event"))
+# 	    ) AS ?superClass
+# 	)
+# }
