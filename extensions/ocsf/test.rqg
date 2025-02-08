@@ -1,0 +1,35 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.3.0/ontology/>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+# For testing functions or other stuff without moding main .rpq files
+GENERATE {
+  ocsf:Bogo a owl:Individual;
+      rdfs:space_lc ?space_two_lowercase_words ;
+      rdfs:space_lc ?space_three_lowercase_words ;
+      rdfs:underscore_lc ?underscore_two_words ;
+      rdfs:underscore_lc ?underscore_three_words ;
+      rdfs:comment ?space_two_capitalized_words ;
+      rdfs:comment ?space_three_capitalized_words ;
+      rdfs:comment ?space_acronym_two_words ;
+      rdfs:comment ?space_acronym_three_words ;
+}
+# Single step no logic iterator
+ITERATOR iter:for(0,1,1) AS ?index
+WHERE {
+  BIND(fun:camelCase(fun:titleCase("one two")) AS ?space_two_lowercase_words)
+  BIND(fun:camelCase(fun:titleCase("one two three")) AS ?space_three_lowercase_words)
+  BIND(fun:camelCase(fun:titleCase("one_two")) AS ?underscore_two_words)
+  BIND(fun:camelCase(fun:titleCase("one_two_three")) AS ?underscore_three_words)
+  BIND(fun:camelCase("Alpha Beta") AS ?space_two_capitalized_words)
+  BIND(fun:camelCase("Alpha Beta Charlie") AS ?space_three_capitalized_words)
+  BIND(fun:camelCase("IPC Interface") AS ?space_acronym_two_words)
+  BIND(fun:camelCase("AWACS RADAR Rotodome") AS ?space_acronym_three_words)	
+}

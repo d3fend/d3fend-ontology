@@ -1,0 +1,81 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.3.0/ontology/>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+### Categories schema from https://raw.githubusercontent.com/ocsf/ocsf-schema/1.3.0/categories.json
+### 1.3.0 is not same as https://github.com/ocsf/ocsf-schema/blob/main/categories.json
+# {
+#   "caption": "Categories",
+#   "name": "category",
+#   "description": "The OCSF categories organize event classes, each aligned with a specific domain or area of focus.",
+#   "attributes": {
+#     "system": {
+#       "caption": "System Activity",
+#       "description": "System Activity events.",
+#       "uid": 1
+#     },
+#     "findings": {
+#       "caption": "Findings",
+#       "description": "Findings events report findings, detections, and possible resolutions of malware, anomalies, or other actions performed by security products.",
+#       "uid": 2
+#     },
+#     "iam": {
+#       "caption": "Identity & Access Management",
+#       "description": "Identity & Access Management (IAM) events relate to the supervision of the system's authentication and access control model. Examples of such events are the success or failure of authentication, granting of authority, password change, entity change, privileged use etc.",
+#       "uid": 3
+#     },
+#     "network": {
+#       "caption": "Network Activity",
+#       "description": "Network Activity events.",
+#       "uid": 4
+#     },
+#     "discovery": {
+#       "caption": "Discovery",
+#       "description": "Discovery events report the existence and state of devices, files, configurations, processes, registry keys, and other objects.",
+#       "uid": 5
+#     },
+#     "application": {
+#       "caption": "Application Activity",
+#       "description": "Application Activity events report detailed information about the behavior of applications and services.",
+#       "uid": 6
+#     },
+#     "remediation": {
+#       "caption": "Remediation",
+#       "description": "Remediation events report the results of remediation commands targeting files, processes, and other objects.",
+#       "uid": 7
+#     }
+#   }
+# }
+
+GENERATE <https://schema.ocsf.io/1.3.0/category> () {
+  GENERATE {
+    ?this a owl:Class;
+       rdfs:subClassOf ocsf:EventCategory ;
+       rdfs:label ?caption ;
+       d3f:definition ?description ;
+       ocsf:name ?attributeKey . # The name of the category is the key within attributes property of categories.json
+  }
+  ITERATOR iter:JSONListKeys ( ?attributes ) AS ?attributeKey
+  WHERE {
+    BIND(fun:JSONPath( ?attributes, "$.{?attributeKey}.caption") AS ?caption )
+    BIND(IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "EventCategory") AS ?this)
+    BIND(fun:JSONPath( ?attributes, "$.['{ ?attributeKey }']") AS ?attribute )
+    BIND(fun:JSONPath( ?attributes, "$.{?attributeKey}.description") AS ?description )
+  } .
+}  
+
+# Resolves to "https://raw.githubusercontent.com/ocsf/ocsf-schema/1.3.0/categories.json"
+ITERATOR iter:JSONPath(<https://github.com/ocsf/ocsf-schema/raw/1.3.0/categories.json>, "$", "$.attributes" )
+AS ?source ?attributes
+  
+WHERE {
+  BIND("https://schema.ocsf.io/1.3.0/ontology/" AS ?versionIRI)
+}
+

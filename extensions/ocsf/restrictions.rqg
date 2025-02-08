@@ -1,0 +1,30 @@
+GENERATE <https://schema.ocsf.io/1.3.0/restriction> ( ?source ) {
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+                            owl:onProperty ?attribute ;
+                            ?restrictionP ?restrictionO ] .
+
+  }
+  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  WHERE {
+    ?attribute rdfs:range ?range .
+
+    BIND ( IRI("https://schema.ocsf.io/1.3.0/ontology/" + ?attributeName) AS ?attribute )
+    BIND( COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",owl:cardinality, 1/0),
+                  owl:someValuesFrom
+                  ) AS ?restrictionP )
+    BIND( COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",1, 1/0),
+                   IF(fun:JSONPath(?attributes, "$.{?attributeName}.type"),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:JSONPath(?attributes, "$.{?attributeName}.type")), 1/0),
+                   ?range
+            	   ) AS ?restrictionO )
+  } .
+}
+ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
+WHERE {
+  BIND( IF (?name = "base_event",
+            IRI("https://schema.ocsf.io/1.3.0/ontology/BaseEvent"),
+  	    IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "Event")
+	    ) AS ?this )
+  BIND( IRI(CONCAT("https://schema.ocsf.io/1.3.0/ontology/", fun:camelCase(REPLACE(?category, "_", " ")), "EventCategory")) AS ?categoryClass )
+}
+
