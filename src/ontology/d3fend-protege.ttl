@@ -2448,6 +2448,11 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
     rdfs:label "ATTACK Enterprise Thing" ;
     rdfs:subClassOf :ATTACKThing .
 
+:Attacker a owl:Class ;
+    rdfs:label "Attacker" ;
+    rdfs:subClassOf :Agent ;
+    :definition "An agent that attempts to exploit vulnerabilities to gain unauthorized access to data or systems." .
+
 :ATTACKMergedThing a owl:Class ;
     rdfs:label "ATTACK Merged Thing" ;
     rdfs:subClassOf :ATTACKThing .
@@ -9977,7 +9982,8 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:seeAlso <https://schema.ocsf.io/objects/fingerprint> ;
     :todo "Create relationship 'identifies some data' once data ontology implemented" .
 
-:DigitalIdentity a owl:Class ;
+:DigitalIdentity a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Digital Identity" ;
     rdfs:subClassOf :DigitalInformation,
         [ a owl:Restriction ;
@@ -12962,6 +12968,14 @@ If an attacker manages to stop the processes used to log an attack without setti
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Internet Article" .
 
+:InternetBasedAttacker a owl:Class ;
+    rdfs:label "Internet-based Attacker" ;
+    rdfs:subClassOf :RemoteAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WideAreaNetwork ] ;
+    :definition "A remote attacker who leverages the internet to conduct attacks, such as through phishing, malware, or direct network attacks." .
+
 :InternetDNSLookup a owl:Class ;
     rdfs:label "Internet DNS Lookup" ;
     rdfs:subClassOf :DNSLookup ;
@@ -14067,11 +14081,25 @@ Newer system call.""" .
     rdfs:isDefinedBy <http://dbpedia.org/resource/Local_area_network> ;
     :definition "A local area network (LAN) is a computer network that interconnects computers within a limited area such as a residence, school, laboratory, university campus or office building and has its network equipment and interconnects locally managed. Ethernet and Wi-Fi are the two most common transmission technologies in use for local area networks. Historical technologies include ARCNET, Token ring, and AppleTalk." .
 
+:LocalAreaNetworkAttacker a owl:Class ;
+    rdfs:label "Local Area Network Attacker" ;
+    rdfs:subClassOf :LocalAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :LocalAreaNetwork ] ;
+    :definition "An attacker who exploits vulnerabilities within the same local area network." ;
+    :synonym "LAN Attacker" .
+
 :LocalAreaNetworkTraffic a owl:Class ;
     rdfs:label "Local Area Network Traffic" ;
     rdfs:subClassOf :IntranetNetworkTraffic ;
     :definition "Intranet local area network (LAN) traffic is network traffic that does not cross a given network's boundaries; where that network is defined as a LAN." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Intranet> .
+
+:LocalAttacker a owl:Class ;
+    rdfs:label "Local Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An attacker who is physically near or on the premises of the target network or systems." .
 
 :LocalAuthenticationService a owl:Class ;
     rdfs:label "Local Authentication Service" ;
@@ -16660,6 +16688,17 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
             owl:onProperty :has-location ;
             owl:someValuesFrom :PhysicalLocation ] .
 
+:PhysicalAttacker a owl:Class ;
+    rdfs:label "Physical Attacker" ;
+    rdfs:subClassOf :LocalAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :ComputerPlatform ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "An attacker who is physically close enough to interact with the system directly, such as through physical access to devices." .
+
 :PhysicalLink a owl:Class ;
     rdfs:label "Physical Link" ;
     rdfs:subClassOf :Link ;
@@ -17905,6 +17944,11 @@ A relay may use a variety of proxying, forwarding, or routing technologies to br
 Complex intranet VPNs or routing encapsulation may affect the detection analytics.  In addition, unwanted packets might not be forwarded, and additional packets may be added at the relay, further complicating detection.""" ;
     :kb-reference :Reference-MaliciousRelayDetectionOnNetworks_VECTRANETWORKSInc ;
     :synonym "Relay Network Detection" .
+
+:RemoteAttacker a owl:Class ;
+    rdfs:label "Remote Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An attacker who exploits systems without being physically present near the target, often over the internet." .
 
 :RemoteAuthenticationService a owl:Class ;
     rdfs:label "Remote Authentication Service" ;
@@ -19687,6 +19731,17 @@ Parsons, L., Haque, E., & Liu, H. (2004). Subspace Clustering for High Dimension
     :definition "Supervised learning establishes a relationship between the known input and output variables to conduct a predictive analysis." ;
     :kb-article """## References
 Supervised learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Supervised_learning).""" .
+
+:SupplyChainAttacker a owl:Class ;
+    rdfs:label "Supply Chain Attacker" ;
+    rdfs:subClassOf :Attacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Software ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :T1592.001 ] ;
+    :definition "An attacker who exploits vulnerabilities in the supply chain to compromise systems or data." .
 
 :SupportVectorMachineClassification a owl:Class,
         owl:NamedIndividual ;
@@ -27427,6 +27482,19 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
 Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Central_tendency)""" ;
     :synonym "Truncated mean" .
 
+:TrustedAdministratorAttacker a owl:Class ;
+    rdfs:label "Trusted Administrator Attacker" ;
+    rdfs:subClassOf :TrustedAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PrivilegedUserAccount ] ;
+    :definition "A trusted attacker who misuses administrative access to execute attacks, often with elevated privileges." .
+
+:TrustedAttacker a owl:Class ;
+    rdfs:label "Trusted Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An individual within the organization who exploits their access to conduct unauthorized actions, either intentionally or through negligence." .
+
 :TrustedLibrary a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Trusted Library" ;
@@ -27446,6 +27514,20 @@ Using a trusted library can reduce the chances of introducing errors compared to
 
 Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
     :kb-reference :Reference-LeverageSecurityFrameworksLibraries_OWASP .
+
+:TrustedUserAttacker a owl:Class ;
+    rdfs:label "Trusted User Attacker" ;
+    rdfs:subClassOf :TrustedAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DefaultUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DomainUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :LocalUserAccount ] ;
+    :definition "A trusted attacker who abuses regular user-level access privileges to compromise systems or data." .
 
 :TrustStore a owl:Class ;
     rdfs:label "Trust Store" ;
@@ -28791,6 +28873,20 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:someValuesFrom :RFTransmitter ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Wireless_access_point> ;
     :definition "In computer networking, a wireless access point (WAP), or more generally just access point (AP), is a networking hardware device that allows other Wi-Fi devices to connect to a wired network. The AP usually connects to a router (via a wired network) as a standalone device, but it can also be an integral component of the router itself. An AP is differentiated from a hotspot which is a physical location where Wi-Fi access is available." .
+
+:WirelessAttacker a owl:Class ;
+    rdfs:label "Wireless Attacker" ;
+    rdfs:subClassOf :RemoteAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PhysicalLink ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WirelessAccessPoint ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WirelessRouter ] ;
+    :definition "An attacker who targets wireless communication methods, like Wi-Fi, without needing physical access to the premises." .
 
 :WirelessRouter a owl:Class ;
     rdfs:label "Wireless Router" ;
