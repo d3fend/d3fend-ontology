@@ -100,56 +100,32 @@ PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 
 GENERATE <https://schema.ocsf.io/1.3.0/object> ( ?source ) {
   ?this a owl:Class ;
-    rdfs:subClassOf d3f:DigitalArtifact ;
-    rdfs:subClassOf ?extendsClass ;
-    rdfs:label ?caption ;
+    # rdfs:subClassOf ?superClass ;  # Superclass identified by the extends property in OCSF, but defer to later pass since won't know if generated at any given call to this GENERATE
     ocsf:name ?name ;
+    rdfs:label ?caption ;
     dcterms:description ?description ;
-    ocsf:constraints ?constraints .
+    ocsf:constraints ?constraints ;
+    ocsf:extends ?extends .
 
   GENERATE {
-    ?this rdfs:subClassOf [ a owl:Restriction ;
-			    owl:onProperty ?attribute ;
-			    ?restrictionP ?restrictionO ] .
-    GENERATE {
-      ?this ocsf:profiles ?profile .
-    } ITERATOR iter:JSONPath(?profiles, "$[*]") AS ?profile .
+    ?this ocsf:profiles ?profile .
+  }
+  ITERATOR iter:JSONPath(?profiles, "$[*]") AS ?profile .
 
-
-  } ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  GENERATE {
+    ?this ocsf:constraints ?constraints .
+  }
   WHERE {
-    BIND ( IRI("https://schema.ocsf.io/1.3.0/ontology/" + ?attributeName) AS ?attribute )
-    BIND(
-	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",owl:cardinality, 1/0),
-
-		  owl:someValuesFrom
-		  ) AS ?restrictionP
-	 )
-
-    ?attribute rdfs:range ?range .
-    BIND(
-	 COALESCE(IF(fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",1, 1/0),
-		  IF(fun:JSONPath(?attributes, "$.{?attributeName}.type"),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:JSONPath(?attributes, "$.{?attributeName}.type")), 1/0),
-
-		  ?range
-		  ) AS ?restrictionO
-	 )
-
-    FILTER (BOUND(?restrictionO))
+    FILTER (STR(?constraints) != "\{\}")
   } .
-
+  
 }
 
 ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes") AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes
 
 WHERE {
-  BIND(
-       COALESCE(IF(BOUND(?caption),IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption)), 1/0),
-
-		IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?name))
-		) AS ?this
-       )
-
-  ?extendsClass ocsf:name ?extends .
-
+  BIND( IF (?name = "object",
+   	    IRI("https://schema.ocsf.io/1.3.0/ontology/Object"),
+  	    IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption))
+	    ) AS ?this )
 }

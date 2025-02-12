@@ -1,0 +1,72 @@
+PREFIX ocsf: <https://schema.ocsf.io/1.3.0/ontology/>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX iter: <http://w3id.org/sparql-generate/iter/>
+PREFIX fun: <http://w3id.org/sparql-generate/fn/>
+
+
+GENERATE <https://schema.ocsf.io/1.3.0/orestriction> ( ?source ) {
+
+  # Generate someValuesFrom or owl:cardinality 1 restrictions for object properties
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+ 		            owl:onProperty ?attribute ;
+			    ?restriction_property ?restriction_object ] .
+  }
+  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  WHERE {
+    BIND( IRI("https://schema.ocsf.io/1.3.0/ontology/" + ?attributeName) AS ?attribute )
+
+    ?attribute a ?object_property_type ;
+       rdfs:range ?range .
+       
+    BIND(
+      IF(
+        fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",
+	IF(
+	  ?object_property_type = owl:ObjectProperty,
+  	  owl:someValuesFrom,
+	  owl:cardinality	  
+	),
+  	1/0
+      ) AS ?restriction_property
+    )
+    FILTER( BOUND( ?restriction_property ))
+    BIND(
+      IF(
+        ?object_property_type = owl:ObjectProperty,
+	?range,
+	1
+      ) AS ?restriction_object
+    )
+  } .
+
+  # Generate allValuesFrom restrictions for object and datatype properties
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+ 		            owl:onProperty ?attribute ;
+			    owl:allValuesFrom ?restriction_property ] .
+  }
+  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  WHERE {
+    BIND( IRI("https://schema.ocsf.io/1.3.0/ontology/" + ?attributeName) AS ?attribute )
+
+    ?attribute a ?propertyType ;
+       rdfs:range ?restriction_property .
+  } .
+}
+ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
+WHERE {
+  BIND(
+    IF (
+      ?name = "base_event",
+      IRI("https://schema.ocsf.io/1.3.0/ontology/BaseEvent"),
+      IRI("https://schema.ocsf.io/1.3.0/ontology/" + fun:camelCase(?caption) + "Event")
+    ) AS ?this
+  )
+}
