@@ -1,12 +1,16 @@
 # ocsf
 
-## TODO Needs significant update after changes to queries and Makefile.
-## Current sections only still reflect parts of steps.  For the passing
-## moment RTF Code (RTFC).
-## 
-## Note: Currently has two make targets ocsf and ocsf-by-query, that
-## both accomplish same outcome.  Some form of the latter will likely
-## be retained.
+## TODO Needs significant update 
+
+There have been significant changes to queries and Makefile.  Current
+sections only still reflect parts of steps.  For the passing moment
+RTF Code (RTFC).
+ 
+## Note: 
+
+Currently the Makefile has two make targets ocsf and ocsf-by-query,
+that both accomplish same outcome.  Some form of the latter will
+likely be retained.
 
 ## Building
 The extension is generated using SPARQL-Generate.
