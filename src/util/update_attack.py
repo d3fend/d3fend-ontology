@@ -179,7 +179,9 @@ def generate_superclass(all_techniques):
             classes = []
             for obj in tech["kill_chain_phases"]:
                 name = str(
-                    string.capwords(obj["phase_name"].replace("-", " ")) + " Technique"
+                    "ATTACK Enterprise "
+                    + string.capwords(obj["phase_name"].replace("-", " "))
+                    + " Technique"
                 ).replace(" ", "")
                 classes.append(name)
             superclass[attack_id] = classes
