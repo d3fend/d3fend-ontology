@@ -8,6 +8,7 @@ import sys
 owl = Namespace("http://www.w3.org/2002/07/owl#")
 rdfs = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
+skos = Namespace("http://www.w3.org/2004/02/skos/core#")
 
 
 def _print(*args):
@@ -24,10 +25,31 @@ def _print(*args):
 #   deprecated: if tech is deprecated
 #   revoked: if tech is revoked
 #   revoked_by: tech revoked technique is revoked by
-def get_stix_data(thesrc, graph):
+def get_stix_data(thesrc, graph, framework="enterprise"):
     data = []
-    query_results = thesrc.query([Filter("type", "=", "attack-pattern")])
-    superclasses_dict = generate_superclass(query_results)
+    query_results = thesrc.query(
+        [
+            Filter("type", "=", "attack-pattern"),
+            Filter(
+                "kill_chain_phases.kill_chain_name",
+                "=",
+                "mitre-attack"
+                if framework == "enterprise"
+                else f"mitre-{framework}-attack",
+            ),
+            Filter(
+                "kill_chain_phases.phase_name",
+                "!=",
+                "network-effects",
+            ),
+            Filter(
+                "kill_chain_phases.phase_name",
+                "!=",
+                "remote-service-effects",
+            ),
+        ]
+    )
+    superclasses_dict = generate_superclass(query_results, framework)
     for tech in query_results:
         deprecated = tech.get("x_mitre_deprecated", False)
         revoked = tech.get("revoked", False)
@@ -36,6 +58,7 @@ def get_stix_data(thesrc, graph):
                 ref.get("external_id")
                 for ref in tech["external_references"]
                 if ref.get("source_name") == "mitre-attack"
+                or ref.get("source_name") == f"mitre-{framework}-attack"
             ),
             None,
         )
@@ -131,7 +154,7 @@ def add_revoked(graph, tech):
         if revoked_property is None:
             new = 1
             # Add a triple indicating deprecation
-            graph.add((attack_uri, rdfs.seeAlso, Literal(revoked_by)))
+            graph.add((attack_uri, rdfs.seeAlso, d3fend[revoked_by]))
             graph.add((attack_uri, owl.deprecated, Literal(True)))
             graph.add(
                 (
@@ -162,7 +185,7 @@ def get_revoked_by(thesrc):
 # Returns a dictionary of superclasses for each technique
 # If subtechnique, superclass is just parent technique
 # If technique, superclass is tactic or list of tactics
-def generate_superclass(all_techniques):
+def generate_superclass(all_techniques, framework):
     superclass = {}
     for tech in all_techniques:
         attack_id = next(
@@ -170,6 +193,7 @@ def generate_superclass(all_techniques):
                 ref.get("external_id")
                 for ref in tech["external_references"]
                 if ref.get("source_name") == "mitre-attack"
+                or ref.get("source_name") == f"mitre-{framework}-attack"
             ),
             None,
         )
@@ -178,11 +202,13 @@ def generate_superclass(all_techniques):
         else:
             classes = []
             for obj in tech["kill_chain_phases"]:
-                name = str(
-                    "ATTACK Enterprise "
-                    + string.capwords(obj["phase_name"].replace("-", " "))
-                    + " Technique"
-                ).replace(" ", "")
+                prefix = "ATTACK" + (
+                    framework.upper() if framework == "ics" else framework.capitalize()
+                )
+                phase_name = string.capwords(obj["phase_name"].replace("-", " "))
+                name = (
+                    prefix + phase_name.replace(" ", "").replace(" ", "") + "Technique"
+                )
                 classes.append(name)
             superclass[attack_id] = classes
 
@@ -190,7 +216,7 @@ def generate_superclass(all_techniques):
 
 
 # Adds missing techniques to ttl file
-def add_to_ttl(tech, graph):
+def add_to_ttl(tech, graph, framework="enterprise"):
     # 3 cases:
     # Not deprecated or revoked: add class, label, attack-id, subClassOf
     # Deprecated: add class, label, attack-id, subclassOf, owl:deprecated true
@@ -235,7 +261,7 @@ def add_to_ttl(tech, graph):
                 graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass_of]))
         graph.add((attack_uri, d3fend["attack-id"], Literal(attack_id)))
         graph.add((attack_uri, owl.deprecated, Literal(True)))
-        graph.add((attack_uri, rdfs.seeAlso, Literal(revoked_by)))
+        graph.add((attack_uri, rdfs.seeAlso, d3fend[revoked_by]))
         graph.add(
             (
                 attack_uri,
@@ -258,13 +284,14 @@ def add_to_ttl(tech, graph):
     return key
 
 
-def update_definition(graph, tech):
+def update_definition(graph, tech, framework):
     tech = tech["data"]
     attack_id = next(
         (
             ref.get("external_id")
             for ref in tech["external_references"]
             if ref.get("source_name") == "mitre-attack"
+            or ref.get("source_name") == f"mitre-{framework}-attack"
         ),
         None,
     )
@@ -288,7 +315,7 @@ def update_definition(graph, tech):
     return new
 
 
-def update_and_add(graph, data):
+def update_and_add(graph, data, framework="enterprise"):
     # If tech is missing, add it to d3fend-protege.updates.ttl
     # Else, handle if technique has recently become deprecated, revoked, or has an updated label
 
@@ -304,7 +331,7 @@ def update_and_add(graph, data):
 
     for tech in data:
         if tech["missing"]:
-            key = add_to_ttl(tech, graph)
+            key = add_to_ttl(tech, graph, framework)
             counters["missing"] += 1
             counters[key] += 1
         else:
@@ -320,22 +347,38 @@ def update_and_add(graph, data):
                 graph.remove((attack_uri, RDFS.label, current_label))
                 graph.add((attack_uri, RDFS.label, Literal(tech["label"])))
                 counters["label_change"] += 1
-        update_definition(graph, tech)
+        update_definition(graph, tech, framework)
 
     return counters
 
 
-def main(do_counters=True, ATTACK_VERSION="16.0"):
+def main(do_counters=True, ATTACK_VERSION="16.1"):
 
-    src = MemoryStore()
-    src.load_from_file(f"data/enterprise-attack-{ATTACK_VERSION}.json")
+    # Load the base D3FEND graph
     d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.updates.ttl")
 
-    data = get_stix_data(src, d3fend_graph)  # parse stix data
-    counters = update_and_add(
-        d3fend_graph, data
-    )  # add new techniques and modify current ones
+    # Initialize cumulative counters
+    total_counters = {
+        "missing": 0,
+        "missing_deprecated": 0,
+        "missing_revoked": 0,
+        "missing_neither": 0,
+        "recently_deprecated": 0,
+        "recently_revoked": 0,
+        "label_change": 0,
+    }
 
+    for framework in ["enterprise", "mobile", "ics"]:
+        stix_file = f"data/{framework}-attack-{ATTACK_VERSION}.json"
+        print(f"\nProcessing {framework} STIX file: {stix_file}")
+        src = MemoryStore()
+        src.load_from_file(stix_file)
+        data = get_stix_data(src, d3fend_graph, framework)
+        counters = update_and_add(d3fend_graph, data, framework)
+        for key in total_counters:
+            total_counters[key] += counters.get(key, 0)
+
+    # Serialize the updated graph
     d3fend_graph.serialize(
         destination="src/ontology/d3fend-protege.updates.ttl", format="turtle"
     )
