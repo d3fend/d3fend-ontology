@@ -11,6 +11,27 @@ d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
 skos = Namespace("http://www.w3.org/2004/02/skos/core#")
 
 
+def get_framework_labels(original_label, framework):
+    """
+    Given a technique's original label (original_label) and a framework,
+    return a tuple (new_label, pref_label) where:
+      • new_label is the label to store as rdfs:label. For "ics" and "mobile"
+        a suffix is appended (e.g., " - ATTACK ICS" or " - ATTACK Mobile").
+      • pref_label is the preferred label (to be stored as skos:prefLabel) or
+        None if no separate preferred label is needed.
+    For enterprise, no changes are made.
+    """
+    fw = framework.lower()
+    if fw == "enterprise":
+        return original_label, None
+    elif fw == "ics":
+        return original_label + " - ATTACK ICS", original_label
+    elif fw == "mobile":
+        return original_label + " - ATTACK Mobile", original_label
+    else:
+        return original_label, None
+
+
 def _print(*args):
     print(" ".join([str(a) for a in args]).rjust(80, " "))
     print()
@@ -230,10 +251,14 @@ def add_to_ttl(tech, graph, framework="enterprise"):
     subtechnique = tech["data"]["x_mitre_is_subtechnique"]
     attack_uri = URIRef(_XMLNS + attack_id)
     key = ""
+    mod_label, pref_label = get_framework_labels(name, framework)
+
+    if pref_label is not None:
+        graph.add((attack_uri, skos.prefLabel, Literal(pref_label)))
 
     if tech["deprecated"]:
         graph.add((attack_uri, RDF.type, owl.Class))
-        graph.add((attack_uri, RDFS.label, Literal(name)))
+        graph.add((attack_uri, RDFS.label, Literal(mod_label)))
         if subtechnique:
             graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass]))
         else:
@@ -253,7 +278,7 @@ def add_to_ttl(tech, graph, framework="enterprise"):
 
     elif tech["revoked"]:
         graph.add((attack_uri, RDF.type, owl.Class))
-        graph.add((attack_uri, RDFS.label, Literal(name)))
+        graph.add((attack_uri, RDFS.label, Literal(mod_label)))
         if subtechnique:
             graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass]))
         else:
@@ -273,7 +298,7 @@ def add_to_ttl(tech, graph, framework="enterprise"):
 
     else:
         graph.add((attack_uri, RDF.type, owl.Class))
-        graph.add((attack_uri, RDFS.label, Literal(name)))
+        graph.add((attack_uri, RDFS.label, Literal(mod_label)))
         if subtechnique:
             graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass]))
         else:
@@ -345,7 +370,10 @@ def update_and_add(graph, data, framework="enterprise"):
                 attack_uri = URIRef(_XMLNS + tech["id"])
                 current_label = graph.value(attack_uri, RDFS.label)
                 graph.remove((attack_uri, RDFS.label, current_label))
-                graph.add((attack_uri, RDFS.label, Literal(tech["label"])))
+                mod_label, pref_label = get_framework_labels(tech["label"], framework)
+                graph.add((attack_uri, RDFS.label, Literal(mod_label)))
+                if pref_label is not None:
+                    graph.add((attack_uri, skos.prefLabel, Literal(pref_label)))
                 counters["label_change"] += 1
         update_definition(graph, tech, framework)
 
