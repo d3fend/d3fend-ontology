@@ -2,16 +2,18 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION :=0.15.0
-D3FEND_RELEASE_DATE :="2024-04-26T00:00:00.000Z"
+D3FEND_VERSION ?=1.0.0
+D3FEND_RELEASE_DATE ?="2024-12-20T00:42:42.042Z"
 
-ATTACK_VERSION := 15.0
+ATTACK_VERSION ?= 16.0
+
+CAPEC_VERSION := 3.9
 
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL := "https://github.com/ontodev/robot/releases/download/v1.9.5/robot.jar"
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.5/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -41,21 +43,21 @@ START = echo "${BLUE}$@ started ${RESET}"
 END = echo "${GREEN}$@ done ${RESET}"
 FAIL = echo "${RED}$@ failed ${RESET}"
 
-DB_LOCAL := "http://127.0.0.1:9899"
-DB_PROD := "http://PRODUCTIONSERVER.local:9899"
-DB_REST_PATH := "/blazegraph/namespace/d3fend/sparql"
-DB_REST_PATH_INF := "/blazegraph/namespace/d3fend_inf/sparql"
-DB_REST_PATH_BD := "/bigdata/namespace/d3fend/sparql"
-DB_REST_PATH_BD_INF := "/bigdata/namespace/d3fend_inf/sparql"
-DB_REST_PATH_TEST := "/bigdata/namespace/d3fend-test/sparql"
+DB_LOCAL ?= "http://127.0.0.1:9899"
+DB_PROD ?= "http://PRODUCTIONSERVER.local:9899"
+DB_REST_PATH ?= "/blazegraph/namespace/d3fend/sparql"
+DB_REST_PATH_INF ?= "/blazegraph/namespace/d3fend_inf/sparql"
+DB_REST_PATH_BD ?= "/bigdata/namespace/d3fend/sparql"
+DB_REST_PATH_BD_INF ?= "/bigdata/namespace/d3fend_inf/sparql"
+DB_REST_PATH_TEST ?= "/bigdata/namespace/d3fend-test/sparql"
 
-RD_DB_LOCAL := "http://127.0.0.1:12110"
-RD_DB_PROD := "http://PRODUCTIONSERVER.local:9899"
-RD_DB_REST_PATH := "/datastores/d3fend/content"
-RD_DB_REST_PATH_INF := "/blazegraph/namespace/d3fend_inf/sparql"
-RD_DB_REST_PATH_BD := "/bigdata/namespace/d3fend/sparql"
-RD_DB_REST_PATH_BD_INF := "/bigdata/namespace/d3fend_inf/sparql"
-RD_DB_REST_PATH_TEST := "/bigdata/namespace/d3fend-test/sparql"
+RD_DB_LOCAL ?= "http://127.0.0.1:12110"
+RD_DB_PROD ?= "http://PRODUCTIONSERVER.local:9899"
+RD_DB_REST_PATH ?= "/datastores/d3fend/content"
+RD_DB_REST_PATH_INF ?= "/blazegraph/namespace/d3fend_inf/sparql"
+RD_DB_REST_PATH_BD ?= "/bigdata/namespace/d3fend/sparql"
+RD_DB_REST_PATH_BD_INF ?= "/bigdata/namespace/d3fend_inf/sparql"
+RD_DB_REST_PATH_TEST ?= "/bigdata/namespace/d3fend-test/sparql"
 
 
 db-delete-local:
@@ -132,6 +134,17 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	$(END)
+
+download-capec:
+	mkdir -p data
+	echo "Version: $(CAPEC_VERSION)"
+	cd data; wget https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
+	unzip data/capec_v$(CAPEC_VERSION).zip -d data
+	$(END)
+
+update-capec:
+	bash src/util/update_capec.sh $(CAPEC_VERSION)
 	$(END)
 
 update-puns:
@@ -338,7 +351,7 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
-build: build/ontology # build the D3FEND Ontology and Extensions
+build: build/ontology build/d3fend.csv # build the D3FEND Ontology and Extensions
 	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
 	$(END)
 
@@ -393,7 +406,7 @@ dist: distdir
 	$(END)
 
 #all: build build/d3fend.csv extensions dist test  ## build all, check for unallowed content, and test load files
-all: build extensions dist test  ## build all, check for unallowed content, and test load files
+all: build extensions test dist ## build all, check for unallowed content, and test load files
 	$(END)
 
 print-new-techniques: build/d3fend.csv ## compare local build against current public version

@@ -36,7 +36,7 @@ def get_d3fend_technique_name(d3fend_id):
         d3fend_world.sparql(query)
     )  # owlready2 sparql query to lookup technique name; could cache
     # print("{} -> {}\n".format(d3fend_id, result))
-    if result[0] and result[0][0]:
+    if result and result[0] and result[0][0]:
         return result[0][0].name  # .namespace, .iri
     else:
         return None

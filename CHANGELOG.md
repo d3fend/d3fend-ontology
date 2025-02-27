@@ -1,4 +1,51 @@
-# D3FEND Change Log
+# D3FEND Ontology Change Log
+
+## Version - 1.0.0 - 2024-12-20
+
+ - Define D3FEND Digital Event ontology with deeper OCSF integration. (#326)
+ - ATT&CK Data Sources integration and related digital artifacts. (#317)
+ - Add Access Mediation techniques with zero-trust alignment. (#336)
+ - Refine auth events to align with Access Mediation techniques. (#328)
+ - Add Source Code Hardening techniques to ontology. (#325)
+ - Add Credential Scrubbing as Source Code Hardening technique. (#333)
+ - Introduce an upper model for D3FEND OT artifacts. (#329)
+ - Add Cloud Service Provider. (#319)
+ - Application-based Process Isolation. (#320)
+ - First D3FEND-CCO mappings. (#296)
+ - Carve out D3FEND catalog classes and properties into separate file. (#338)
+ - Update to ATT&CK Enterprise v16.0. (#315)
+ - Add Python scripts to automate the import of CAPEC into D3FEND. (#258)
+ - Add missing rdfs:labels. (#332)
+ - Align T1087 subtechniques with correct parent. (#295)
+
+## Version - 0.17.0 - 2024-10-11
+
+ - Promote Link to core and initial major refactor to D3FEND Core. (#248)
+ - Cleanup anonymous individuals and fix network model. (#305)
+ - Update make all order and upgrade CCO with working link.
+ - New Evict and Restore techniques. (#240)
+ - Major clean up on Network Node taxonomy, rename Platform to Computer Platform. (#301)
+ - Add Condition to core. (#298)
+ - Align definition of d3f:T1205 with ATT&CK. (#291)
+ - Add optional custom pki trust config to Dockerfile. (#286)
+ - Add new property, fix missing label, and new system calls. (#244)
+ - Make d3f:Restore a named individual. (#278)
+ - Update dependencies and CI to new github docker setup. (#280)
+ - Fix typo in definition of OSAPISystemFunction. (#235)
+ - Get Running Processes enumerates Process. (#231)
+ - Add "unloads" property. (#230)
+
+
+## Version - 0.16.0 - 2024-07-10
+
+ - Replace rdfs:seeAlso and rdfs:isDefinedBy anyURIs with standard IRIs. (#263)
+ - Removed hidden Reverse Resolution Domain Denylisting class. (#252)
+ - Direct Physical Link Mapping Technique added, deleted hidden Passive Physical Link Mapping class. (#251)
+ - Complete Certificate-based Authentication technique. (#250)
+ - Update to ATT&CK 15. (#239)
+ - Fix typo in definition of OSAPISystemFunction. (#235)
+ - GetRunningProcesses enumerates Process. (#231)
+ - Add "unloads" property. (#230)
 
 ## Version - 0.15.0 - 2024-04-26
 
