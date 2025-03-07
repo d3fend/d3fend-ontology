@@ -1434,6 +1434,32 @@ skos:example a owl:AnnotationProperty .
     rdfs:label "expectation-rating" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
 
+:has-impact-rating a owl:DatatypeProperty ;
+    rdfs:label "has-impact-rating" ;
+    rdfs:subPropertyOf :d3fend-data-property ;
+    :definition "Risk impact rating, expressed on a numeric scale from 1 (lowest impact) to 5 (highest impact)." ;
+    rdfs:range [
+        a rdfs:Datatype ;
+        owl:onDatatype xsd:integer ;
+        owl:withRestrictions (
+            [ xsd:minInclusive 1 ]
+            [ xsd:maxInclusive 5 ]
+        )
+    ] .
+
+:has-likelihood-rating a owl:DatatypeProperty ;
+    rdfs:label "has-likelihood-rating" ;
+    rdfs:subPropertyOf :d3fend-data-property ;
+    :definition "Risk likelihood rating, expressed on a numeric scale from 1 (lowest likelihood) to 5 (highest likelihood)." ;
+    rdfs:range [
+        a rdfs:Datatype ;
+        owl:onDatatype xsd:integer ;
+        owl:withRestrictions (
+            [ xsd:minInclusive 1 ]
+            [ xsd:maxInclusive 5 ]
+        )
+    ] .
+
 :has-link a owl:DatatypeProperty ;
     rdfs:label "has-link" ;
     rdfs:subPropertyOf :d3fend-kb-data-property ;
@@ -15534,9 +15560,17 @@ Programmatically checking if a pointer is NULL before use.
     rdfs:seeAlso <http://dbpedia.org/resource/Object_file> ;
     :todo "Fix IRI to fix 'i' in \"File\" substring of IRI" .
 
-:OffensiveAction a owl:Class ;
+:OffensiveAction a :OffensiveAction,
+        owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Offensive Action" ;
-    rdfs:subClassOf :CyberAction .
+    rdfs:subClassOf :CyberAction,
+        [ a owl:Restriction ;
+        owl:onProperty :has-impact-rating ;
+        owl:someValuesFrom xsd:integer ],
+        [ a owl:Restriction ;
+        owl:onProperty :has-likelihood-rating ;
+        owl:someValuesFrom xsd:integer ] .
 
 :OffensiveTactic a owl:Class ;
     rdfs:label "Offensive Tactic" ;
