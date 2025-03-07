@@ -101,6 +101,10 @@ clean: ## cleans all build artifacts
 	rm -f reports/*
 	$(END)
 
+install-system-deps:
+	yum install make -y
+	$(END)
+
 install-python-deps:
 	pipenv install
 	$(END)

@@ -21,7 +21,7 @@ to many lines in the file. This enables efficient code reviews.
 
 ## System Dependencies
 
-Building the D3FEND ontology distribution must be done in a Linux or Linux-like environment.
+Building the D3FEND ontology distribution must be done in a posix-like environment, e.g. Redhat Linux or macOS.
 The following packages must be installed:
 
 - make
