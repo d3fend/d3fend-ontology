@@ -2,10 +2,12 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=0.17.0
-D3FEND_RELEASE_DATE ?="2024-10-11T00:00:00.000Z"
+D3FEND_VERSION ?=1.0.0
+D3FEND_RELEASE_DATE ?="2024-12-20T00:42:42.042Z"
 
 ATTACK_VERSION ?= 16.0
+
+CAPEC_VERSION := 3.9
 
 JENA_VERSION := 4.5.0
 
@@ -132,6 +134,17 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	$(END)
+
+download-capec:
+	mkdir -p data
+	echo "Version: $(CAPEC_VERSION)"
+	cd data; wget https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
+	unzip data/capec_v$(CAPEC_VERSION).zip -d data
+	$(END)
+
+update-capec:
+	bash src/util/update_capec.sh $(CAPEC_VERSION)
 	$(END)
 
 update-puns:
