@@ -82,7 +82,7 @@ events: categories
 
 # TODO continue to build up graph 
 objects: categories # Not dependent on events, AFAICT
-	java -jar sparql-generate-2.1.0.jar -q objects.rqg -o dataset/ocsf.ttl --append-output
+	java -jar sparql-generate-2.1.0.jar -q objects.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 classes: categories events objects
@@ -99,11 +99,11 @@ dictionary: classes
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 erestrictions: dictionary
-	java -jar sparql-generate-2.1.0.jar -q erestrictions.rqg -o dataset/ocsf.ttl --append-output
+	java -jar sparql-generate-2.1.0.jar -q erestrictions.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 orestrictions: dictionary
-	java -jar sparql-generate-2.1.0.jar -q orestrictions.rqg -o dataset/ocsf.ttl --append-output
+	java -jar sparql-generate-2.1.0.jar -q orestrictions.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 # Add all restrictions

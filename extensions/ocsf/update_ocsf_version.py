@@ -72,7 +72,7 @@ def generate_plural_rqg(repo_dir, output_dir, version, construct_name, subdir):
 
                 # Add to plural GENERATE and WHERE sections
                 generate_section_plural += f"  GENERATE <https://schema.ocsf.io/{version}/{construct_name}> ( ?{variable_name} ) .\n"
-                where_section_plural += f"  BIND ( <{relaive_path}> AS ?{variable_name} )\n"
+                where_section_plural += f"  BIND ( <{relative_path}> AS ?{variable_name} )\n"
 
     generate_section_plural += "}\n\n"
     where_section_plural += "}\n"
