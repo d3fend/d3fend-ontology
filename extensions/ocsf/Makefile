@@ -1,9 +1,28 @@
+# Variables
+OCSF_DOWNLOAD_DIR := ./downloads
+OCSF_VERSION := 1.4.0
+OCSF_DOWNLOAD_VER=ocsf-schema-$(OCSF_VERSION)
+
+# *MUST* have trailing space or will be cut back to just ...downloads/
+BASE_DIR=$(shell pwd)/downloads/$(OCSF_DOWNLOAD_VER)/
+
 # Install sparql-generate jar
 install-sparql-generate:
 	wget https://github.com/sparql-generate/sparql-generate/releases/download/2.1.0/sparql-generate-2.1.0.jar
 
 # Put in the bin/jar directory
 install-deps: install-sparql-generate
+
+# Convenience target to fetch the release name and download the archive on updates
+fetch-latest-archive:
+	@echo "Fetching latest release name..."
+	@RELEASE_NAME=$$(gh release list --repo ocsf/ocsf-schema --limit 1 | awk '{print $$3}') && \
+	echo "Latest release name: $$RELEASE_NAME" && \
+	echo "Downloading archive file $$RELEASE_NAME.zip..." && \
+	mkdir -p $(OCSF_DOWNLOAD_DIR) && \
+	wget -q -O $(OCSF_DOWNLOAD_DIR)/$$RELEASE_NAME.zip https://github.com/ocsf/ocsf-schema/archive/$$RELEASE_NAME.zip && \
+	echo "Archive downloaded to $(OCSF_DOWNLOAD_DIR)/$$RELEASE_NAME.zip" && \
+	cd $(OCSF_DOWNLOAD_DIR); unzip $$RELEASE_NAME.zip
 
 list:
 	@find . -type f -name "*.ttl" | xargs -n 1 echo
@@ -57,7 +76,8 @@ categories: base
 ## Functional to here, events
 events: categories
 #	java -jar sparql-generate-2.1.0.jar -q events.rqg -o events.ttl # just write new triples generated for events.rqg
-	java -jar sparql-generate-2.1.0.jar -q events.rqg -o dataset/ocsf.ttl --append-output
+	echo "Base directory for OCSF json schema->OCSF OWL in D3FEND: $(BASE_DIR)" && \
+	java -jar sparql-generate-2.1.0.jar -q events.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 # TODO continue to build up graph 
@@ -97,6 +117,9 @@ ocsf: base categories events objects superclasses dictionary restrictions
 # # 	java -jar sparql-generate-2.1.0.jar -q mappings.rqg -o mappings/d3fend-ocsf-mappings.ttl
 # # 	pipenv run ttlfmt d3fend-ocsf-mappings.ttl
 
+# Alternate method, may be out of date so check if switch over
+# NOTE: ocsf.rqg is only needed for this alternate walk, but
+# is a lot shorter than chained makefile here.
 ocsf-by-query: 
 	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o dataset/ocsf-by-query.ttl
 	pipenv run ttlfmt dataset/ocsf-by-query.ttl

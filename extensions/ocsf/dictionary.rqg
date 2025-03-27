@@ -1,4 +1,4 @@
-PREFIX ocsf: <https://schema.ocsf.io/1.3.0/ontology/>
+PREFIX ocsf: <https://schema.ocsf.io/1.4.0/ontology/>
 PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -12,10 +12,10 @@ PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 
 # The OCSF Attribute Dictionary defines attributes and includes references to the events and objects in which they are used.
 
-GENERATE <https://schema.ocsf.io/1.3.0/dictionary> () {
+GENERATE <https://schema.ocsf.io/1.4.0/dictionary> () {
   # Generate the data types defined by the dictionary
   GENERATE {
-    GENERATE <https://schema.ocsf.io/1.3.0/type> ( ?type, ?typeIRI, ?typeKey ) .
+    GENERATE <https://schema.ocsf.io/1.4.0/type> ( ?type, ?typeIRI, ?typeKey ) .
   } ITERATOR iter:JSONListKeys ( ?types ) AS ?typeKey
   WHERE {
     BIND( IRI(?versionIRI + ?typeKey) AS ?typeIRI )
@@ -24,7 +24,7 @@ GENERATE <https://schema.ocsf.io/1.3.0/dictionary> () {
 
   # Generate the attributes defined by the dictionary
   GENERATE {
-    GENERATE <https://schema.ocsf.io/1.3.0/attribute> ( ?attribute, ?attributeIRI, ?attributeKey ) .
+    GENERATE <https://schema.ocsf.io/1.4.0/attribute> ( ?attribute, ?attributeIRI, ?attributeKey ) .
   }
   ITERATOR iter:JSONListKeys ( ?attributes ) AS ?attributeKey
   WHERE {
@@ -33,9 +33,9 @@ GENERATE <https://schema.ocsf.io/1.3.0/dictionary> () {
   } .
 }
 
-ITERATOR iter:JSONPath ( <https://github.com/ocsf/ocsf-schema/raw/1.3.0/dictionary.json> , "$", "$.attributes", "$.types.attributes" )
+ITERATOR iter:JSONPath ( <https://schema.ocsf.io/1.4.0/dictionary.json>, "$", "$.attributes", "$.types.attributes" )
 AS ?source ?attributes ?types
 
 WHERE {
-  BIND("https://schema.ocsf.io/1.3.0/ontology/" AS ?versionIRI)
+  BIND("https://schema.ocsf.io/1.4.0/ontology/" AS ?versionIRI)
 }
