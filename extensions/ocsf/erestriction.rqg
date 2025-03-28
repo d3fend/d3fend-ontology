@@ -10,55 +10,105 @@ PREFIX iter: <http://w3id.org/sparql-generate/iter/>
 PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 
 
+# No need to generate any allValuesFrom restrictions for object and
+# datatype properties as we would only repeat the axiom logic we
+# capture in the rdfs:range assertions on the attributes created from
+# the dictionary.  So far tighter restrictions in per event or object
+# classes (other than enumerations of int values) are not found in
+# OCSF.
+
 GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
 
-  # Generate someValuesFrom or owl:cardinality 1 restrictions for object properties
+  ######
+  # Generate someValuesFrom restrictions for object properties
   GENERATE {
     ?this rdfs:subClassOf [ a owl:Restriction ;
  		            owl:onProperty ?attribute ;
-			    ?restriction_property ?restriction_object ] .
+			    owl:someValuesFrom ?range ] .
   }
   ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
   WHERE {
     BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
 
-    ?attribute a ?object_property_type ;
+    ?attribute a owl:ObjectProperty ;
        rdfs:range ?range .
-       
-    BIND(
-      IF(
-        fun:JSONPath(?attributes, "$.{?attributeName}.requirement") = "required",
-	IF(
-	  ?object_property_type = owl:ObjectProperty,
-  	  owl:someValuesFrom,
-	  owl:cardinality	  
-	),
-  	1/0
-      ) AS ?restriction_property
-    )
-    FILTER( BOUND( ?restriction_property ))
-    BIND(
-      IF(
-        ?object_property_type = owl:ObjectProperty,
-	?range,
-	1
-      ) AS ?restriction_object
-    )
-  } .
+  }
 
-  # Generate allValuesFrom restrictions for object and datatype properties
+  ######
+  # Generate owl:qualifiedCardinality restrictions for required data properties with type and enum
   GENERATE {
     ?this rdfs:subClassOf [ a owl:Restriction ;
- 		            owl:onProperty ?attribute ;
-			    owl:allValuesFrom ?restriction_property ] .
+    	                    owl:onProperty ?attribute ;
+			    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+			    owl:onDataRange [
+			       a rdfs:Datatype ;
+			       owl:oneOf ( ?rdf_list ) ;
+			    ]
+   		          ] .
+  }
+  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  WHERE {
+    # Generate the IRI for the attribute
+    BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
+
+    # Ensure the attribute is a datatype property
+    ?attribute a owl:DatatypeProperty ;
+              rdfs:range ?range .
+
+    # Extract the enumeration list from JSON
+    # BIND( fun:JSONPath( ?attributes, "$.{attributeName}.enum.keys()") AS ?enum_list )
+    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum.keys()") AS ?enum_list )
+
+    # Ensure the enumeration list is bound
+    FILTER( BOUND(?enum_list) )
+
+    # Add OCSF implicit values (0 and 99) to the enumeration list
+    BIND(iter:ListConcat(?enum_list, "0,99") AS ?full_enum_list)
+
+    # Construct the RDF list for owl:oneOf
+    BIND(iter:RDFList(?full_enum_list) AS ?rdf_List)
+  }
+
+  ######
+  # Generate owl:qualifiedCardinality restrictions for required data properties with type but no enum
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+    	                    owl:onProperty ?attribute ;
+			    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+			    owl:onDatatype ?range ]
   }
   ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
   WHERE {
     BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
 
-    ?attribute a ?propertyType ;
-       rdfs:range ?restriction_property .
-  } .
+    ?attribute a owl:DatatypeProperty ;
+       rdfs:range ?range .
+
+    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum.keys()") AS ?enum_list )
+    FILTER( !BOUND(?enum_list) )
+  }
+
+  ######
+  # Generate someValuesFrom restrictions for non-mandatory, non-enumerated data properties
+  GENERATE {
+    ?this rdfs:subClassOf [ a owl:Restriction ;
+    	                    owl:onProperty ?attribute ;
+			    owl:someValuesFrom ?range ]
+  }
+  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+  WHERE {
+    BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
+
+    ?attribute a owl:DatatypeProperty ;
+       rdfs:range ?range .
+
+    BIND( fun:JSONPath( ?attributes, "$." + attributeName + ".enum.keys()") AS ?enum_list )
+    FILTER( !BOUND(?enum_list) )
+
+    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".required") AS ?attribute_required )
+    FILTER ( !BOUND(?attribute_required) || ?attribute_required != "required" )
+  }
+  
 }
 ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
 WHERE {
@@ -70,3 +120,29 @@ WHERE {
     ) AS ?this
   )
 }
+
+ 
+  #   BIND(
+  #        IF(
+  # 	    IF (
+  # 	        ?property_type = owl:ObjectProperty
+  # 	        owl:someValuesFrom, # This is strong existential sense of required.
+  # 		owl:cardinality     # Only express cardinality if OCSF says required.
+  #           ),
+  # 	    owl:someValuesFrom # Default to this so there will be a restriction to query and
+  # 	                       # "slot" shown in Protege, even though not truly existential claim
+  # 			       # Open-world reasoners don't leverage, so shouldn't be too
+  # 			       # much of a problem for most users.
+  # 			       # For OWL 2 DL, the class would best be part of a
+  # 			       # unionOf rdfs:domain axiom (all the objects/classes that use
+  # 			       # the attribute in their definiton.)
+  # 	 )
+  #   ) AS ?restriction_type	 
+  #   BIND(
+  #        IF(
+  # 	    ?restriction_type = owl:cardinality,
+  # 	    1,
+  # 	    ?range
+  # 	 )
+  #   ) AS ?restriction_object	 
+  # } .

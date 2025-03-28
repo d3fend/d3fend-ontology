@@ -95,19 +95,22 @@ WHERE {
   # primitive types are mapped to owl:DatatypeProperty, all others are mapped to owl:ObjectProperty
 
   BIND(
-       COALESCE(IF(STRENDS(?type, "_t"), owl:DatatypeProperty, 1/0),
-		owl:ObjectProperty
-		) AS ?propertyType
-       )
+       IF(
+          BOUND(?type) && STRENDS(?type, "_t"),
+          owl:DatatypeProperty,
+	  owl:ObjectProperty
+       ) AS ?propertyType
+  )
 
   OPTIONAL { ?class ocsf:name ?type . }
 
   # If the type is primitive then use its IRI otherwise use the optionally bound class IRI
 
   BIND(
-       COALESCE(IF(STRENDS(?type, "_t"), IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?type), 1/0),
-		?class
-		) AS ?typeIRI
-       )
-
+       IF(
+          BOUND(?type) && STRENDS(?type, "_t"),
+          IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?type),
+	  ?class
+       ) AS ?typeIRI
+  )
 }

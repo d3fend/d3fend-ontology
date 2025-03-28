@@ -4,7 +4,7 @@ OCSF_VERSION := 1.4.0
 OCSF_DOWNLOAD_VER=ocsf-schema-$(OCSF_VERSION)
 
 # *MUST* have trailing space or will be cut back to just ...downloads/
-BASE_DIR=$(shell pwd)/downloads/$(OCSF_DOWNLOAD_VER)/
+BASE_IRI=file://$(shell pwd)/downloads/$(OCSF_DOWNLOAD_VER)/
 
 # Install sparql-generate jar
 install-sparql-generate:
@@ -76,13 +76,13 @@ categories: base
 ## Functional to here, events
 events: categories
 #	java -jar sparql-generate-2.1.0.jar -q events.rqg -o events.ttl # just write new triples generated for events.rqg
-	echo "Base directory for OCSF json schema->OCSF OWL in D3FEND: $(BASE_DIR)" && \
-	java -jar sparql-generate-2.1.0.jar -q events.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
+	echo "Base directory for OCSF json schema->OCSF OWL in D3FEND: $(BASE_IRI)" && \
+	java -jar sparql-generate-2.1.0.jar -q events.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 # TODO continue to build up graph 
 objects: categories # Not dependent on events, AFAICT
-	java -jar sparql-generate-2.1.0.jar -q objects.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
+	java -jar sparql-generate-2.1.0.jar -q objects.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 classes: categories events objects
@@ -99,11 +99,11 @@ dictionary: classes
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 erestrictions: dictionary
-	java -jar sparql-generate-2.1.0.jar -q erestrictions.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
+	java -jar sparql-generate-2.1.0.jar -q erestrictions.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 orestrictions: dictionary
-	java -jar sparql-generate-2.1.0.jar -q orestrictions.rqg -o dataset/ocsf.ttl --append-output --base file://$(BASE_DIR)
+	java -jar sparql-generate-2.1.0.jar -q orestrictions.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
 # Add all restrictions
