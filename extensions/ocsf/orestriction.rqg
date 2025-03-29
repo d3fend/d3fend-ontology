@@ -46,19 +46,13 @@ GENERATE <https://schema.ocsf.io/1.4.0/orestriction> ( ?source ) {
     )
   } .
 
-  # Generate allValuesFrom restrictions for object and datatype properties
-  GENERATE {
-    ?this rdfs:subClassOf [ a owl:Restriction ;
- 		            owl:onProperty ?attribute ;
-			    owl:allValuesFrom ?restriction_property ] .
-  }
-  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
-  WHERE {
-    BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
+  # No need to generate any allValuesFrom restrictions for object and
+  # datatype properties as we are only going to repeat the statement
+  # we captured in the rdfs:range assertion on the attribute from the
+  # dictionary.  So far tighter restrictions in per event or object
+  # classes (other than enumerations of int values) are not found in
+  # OCSF.
 
-    ?attribute a ?propertyType ;
-       rdfs:range ?restriction_property .
-  } .
 }
 ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
 WHERE {

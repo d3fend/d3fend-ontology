@@ -10,21 +10,15 @@ PREFIX iter: <http://w3id.org/sparql-generate/iter/>
 PREFIX fun: <http://w3id.org/sparql-generate/fn/>
 
 
-# No need to generate any allValuesFrom restrictions for object and
-# datatype properties as we would only repeat the axiom logic we
-# capture in the rdfs:range assertions on the attributes created from
-# the dictionary.  So far tighter restrictions in per event or object
-# classes (other than enumerations of int values) are not found in
-# OCSF.
-
 GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
 
   ######
   # Generate someValuesFrom restrictions for object properties
   GENERATE {
     ?this rdfs:subClassOf [ a owl:Restriction ;
- 		            owl:onProperty ?attribute ;
-			    owl:someValuesFrom ?range ] .
+		            owl:onProperty ?attribute ;
+			    owl:someValuesFrom ?range
+			  ] .
   }
   ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
   WHERE {
@@ -32,7 +26,7 @@ GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
 
     ?attribute a owl:ObjectProperty ;
        rdfs:range ?range .
-  }
+  } .
 
   ######
   # Generate owl:qualifiedCardinality restrictions for required data properties with type and enum
@@ -42,9 +36,11 @@ GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
 			    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
 			    owl:onDataRange [
 			       a rdfs:Datatype ;
-			       owl:oneOf ( ?rdf_list ) ;
+			       owl:oneOf ( ?rdf_list )
 			    ]
    		          ] .
+    ?this rdfs:comment ?debug_comment1 .			  
+    ?this rdfs:comment ?debug_comment2 .			  
   }
   ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
   WHERE {
@@ -56,61 +52,87 @@ GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
               rdfs:range ?range .
 
     # Extract the enumeration list from JSON
-    # BIND( fun:JSONPath( ?attributes, "$.{attributeName}.enum.keys()") AS ?enum_list )
-    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum.keys()") AS ?enum_list )
+    # BIND( fun:JSONPath( ?attributes, "$.{attributeName}.enum") AS ?enums )
+    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum") AS ?enum_object )
 
+    # All sorts of variations of key extraction using JSONPath dont' work
+    #BIND( fun:JSONPath( ?enum_object, "$.keys()") AS ?enum_keys )
+    #BIND( fun:JSONPath( ?enum_object, "$~") AS ?enum_keys )
+    # This should work "JSONPath Plus": $.attributes.activity_id.enum.*~
+    #BIND( fun:JSONPath( ?enum_object, "$.*~") AS ?enum_keys )
+
+    BIND(
+         IF (
+	     BOUND(?enum_object),
+	     CONCAT("DEBUG1: ", ?attributeName, " | ", STR(?range), " | ", STR(?enum_object)),
+	     CONCAT("DEBUG1: ", ?attributeName, " | ", STR(?range))
+	 )
+         AS ?debug_comment1
+    )	 
+    BIND(
+         IF (
+	     BOUND(?enum_keys),
+	     CONCAT("DEBUG2: Keys are \{", STR(?enum_keys), "\}."),
+	     "DEBUG2 No keys extracted."
+	 )
+         AS ?debug_comment2
+    )	 
+       
     # Ensure the enumeration list is bound
-    FILTER( BOUND(?enum_list) )
+    # FILTER( BOUND(?enum_keys) )
 
     # Add OCSF implicit values (0 and 99) to the enumeration list
-    BIND(iter:ListConcat(?enum_list, "0,99") AS ?full_enum_list)
+    # BIND(iter:ListConcat(?enum_list, "0,99") AS ?full_enum_list)
 
     # Construct the RDF list for owl:oneOf
-    BIND(iter:RDFList(?full_enum_list) AS ?rdf_List)
-  }
+    # BIND(iter:RDFList(?full_enum_list) AS ?rdf_List)
+  } .
 
-  ######
-  # Generate owl:qualifiedCardinality restrictions for required data properties with type but no enum
-  GENERATE {
-    ?this rdfs:subClassOf [ a owl:Restriction ;
-    	                    owl:onProperty ?attribute ;
-			    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-			    owl:onDatatype ?range ]
-  }
-  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
-  WHERE {
-    BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
+#   ######
+#   # Generate owl:qualifiedCardinality restrictions for required data properties with type but no enum
+#   GENERATE {
+#     ?this rdfs:subClassOf [ a owl:Restriction ;
+#     	                    owl:onProperty ?attribute ;
+# 			    owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+# 			    owl:onDatatype ?range
+# 			  ] .
+#   }
+#   ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+#   WHERE {
+#     BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
 
-    ?attribute a owl:DatatypeProperty ;
-       rdfs:range ?range .
+#     ?attribute a owl:DatatypeProperty ;
+#        rdfs:range ?range .
 
-    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum.keys()") AS ?enum_list )
-    FILTER( !BOUND(?enum_list) )
-  }
+#     BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum.keys()") AS ?enum_list )
+#     FILTER( !BOUND(?enum_list) )
+#   }
 
-  ######
-  # Generate someValuesFrom restrictions for non-mandatory, non-enumerated data properties
-  GENERATE {
-    ?this rdfs:subClassOf [ a owl:Restriction ;
-    	                    owl:onProperty ?attribute ;
-			    owl:someValuesFrom ?range ]
-  }
-  ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
-  WHERE {
-    BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
+#   ######
+#   # Generate someValuesFrom restrictions for non-mandatory, non-enumerated data properties
+#   GENERATE {
+#     ?this rdfs:subClassOf [ a owl:Restriction ;
+#     	                    owl:onProperty ?attribute ;
+# 			    owl:someValuesFrom ?range
+# 			  ] .
+#   }
+#   ITERATOR iter:JSONListKeys(?attributes) AS ?attributeName
+#   WHERE {
+#     BIND( IRI("https://schema.ocsf.io/1.4.0/ontology/" + ?attributeName) AS ?attribute )
 
-    ?attribute a owl:DatatypeProperty ;
-       rdfs:range ?range .
+#     ?attribute a owl:DatatypeProperty ;
+#        rdfs:range ?range .
 
-    BIND( fun:JSONPath( ?attributes, "$." + attributeName + ".enum.keys()") AS ?enum_list )
-    FILTER( !BOUND(?enum_list) )
+#     BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum.keys()") AS ?enum_list )
+#     FILTER( !BOUND(?enum_list) )
 
-    BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".required") AS ?attribute_required )
-    FILTER ( !BOUND(?attribute_required) || ?attribute_required != "required" )
-  }
-  
+#     BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".required") AS ?attribute_required )
+#     FILTER ( !BOUND(?attribute_required) || ?attribute_required != "required" )
+#   }
+
 }
-ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" ) AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
+ITERATOR iter:JSONPath(?source, "$", "$.@deprecated", "$.description", "$.caption", "$.name", "$.extends", "$.observable", "$.constraints", "$.profiles", "$.attributes", "$.associations", "$.category", "$.uid" )
+AS ?object ?deprecated ?description ?caption ?name ?extends ?observable ?constraints ?profiles ?attributes ?associations ?category ?uid
 WHERE {
   BIND(
     IF (
@@ -120,29 +142,3 @@ WHERE {
     ) AS ?this
   )
 }
-
- 
-  #   BIND(
-  #        IF(
-  # 	    IF (
-  # 	        ?property_type = owl:ObjectProperty
-  # 	        owl:someValuesFrom, # This is strong existential sense of required.
-  # 		owl:cardinality     # Only express cardinality if OCSF says required.
-  #           ),
-  # 	    owl:someValuesFrom # Default to this so there will be a restriction to query and
-  # 	                       # "slot" shown in Protege, even though not truly existential claim
-  # 			       # Open-world reasoners don't leverage, so shouldn't be too
-  # 			       # much of a problem for most users.
-  # 			       # For OWL 2 DL, the class would best be part of a
-  # 			       # unionOf rdfs:domain axiom (all the objects/classes that use
-  # 			       # the attribute in their definiton.)
-  # 	 )
-  #   ) AS ?restriction_type	 
-  #   BIND(
-  #        IF(
-  # 	    ?restriction_type = owl:cardinality,
-  # 	    1,
-  # 	    ?range
-  # 	 )
-  #   ) AS ?restriction_object	 
-  # } .
