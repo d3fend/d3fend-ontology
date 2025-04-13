@@ -3307,6 +3307,29 @@ Considerations:
     rdfs:seeAlso <http://dbpedia.org/resource/Public_key_certificate>,
         <https://www.educative.io/edpresso/keystore-vs-truststore> .
 
+:ChangeDefaultPassword a owl:Class ;
+    rdfs:label "Change Default Password" ;
+    rdfs:subClassOf :StrongPasswordPolicy,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :OTController ],
+         [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :Password ],
+        [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :UserAccount ] ;
+    :definition "Changing the default password means replacing the factory-set credentials with a strong, unique password before the device is deployed, preventing unauthorized access." ;
+    :kb-article """## How it works
+Change the default password as soon as a new device is received. The default credentials are normally documented in an instruction manual that is either packaged with the device, published online through official means, or published online through unofficial means. 
+
+## Considerations
+* These should be changed before a device is brought online so that an adversary cannot take advantage of these default credentials.
+* Strong and complex passwords are preferred if the technology allows.""" ;
+    :kb-reference :Reference-CPGChecklist,
+        :Reference-GuidetoOTSecurity,
+        :Reference-MITREATTACKPasswordPolicies .
+
 :ChatroomClient a owl:Class ;
     rdfs:label "Chatroom Client" ;
     skos:altLabel "Chat Room Client" ;
@@ -9146,7 +9169,10 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
 
 :CWE-1393 a owl:Class ;
     rdfs:label "Use of Default Password" ;
-    rdfs:subClassOf :CWE-1392 ;
+    rdfs:subClassOf :CWE-1392,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :UserAccount ] ;
     :cwe-id "CWE-1393" .
 
 :CWE-1394 a owl:Class ;
@@ -12076,6 +12102,20 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
         <http://d3fend.mitre.org/ontologies/d3fend.owl#Reference-IsolationOfApplicationsWithinAVirtualMachine_Bromium,Inc.>,
         :Reference-VirtualizedProcessIsolation_AdvancedMicroDevicesInc ;
     :synonym "Virtualization" .
+
+:Hardware-basedWriteProtection a owl:Class ;
+    rdfs:label "Hardware-based Write Protection" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Storage ] ;
+    :definition "Physical methods of preventing data from being written to computer storage." ;
+    :kb-article """## How it works
+comment
+
+## Considerations
+* considerations""" ;
+    :kb-reference :Reference-WhatisHardwareWriteProtect .
 
 :HardwareComponentInventory a :HardwareComponentInventory,
         owl:Class,
@@ -15618,12 +15658,53 @@ Additionally, after the code file is printed, it could be recovered from the sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Open_(system_call)> ;
     :definition "For most file systems, a program initializes access to a file in a file system using the open system call. This allocates resources associated to the file (the file descriptor), and returns a handle that the process will use to refer to that file. In some cases the open is performed by the first access. During the open, the filesystem may allocate memory for buffers, or it may wait until the first operation. Various other errors which may occur during the open include directory update failures, un-permitted multiple connections, media failures, communication link failures and device failures." .
 
+:OperatingMode a owl:Class ;
+    rdfs:label "Operating Mode" ;
+    rdfs:subClassOf :SystemPlatformVariable ;
+    :definition "The Operating Mode designates the specific, selectable state of an OT controller that delineates its operational behavior and governs access to engineering functions, commonly including Program, Run, Remote, Test, or Stop." ;
+    :synonym "Keyswitch Position" .
+:OperatingModeMonitoring a owl:Class ;
+    rdfs:label "Operating Mode Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OperatingMode ] ;
+    :definition "Detects operating modes such as Program, Run, Remote, or Stop." ;
+    :kb-article """## How it works
+Many OT Controllers have key switches to change the controller into various modes of operation. These modes of operation can include Program, Run, Remote, or Stop.
+
+The key switch position is often available as a system diagnostic function block of the programming logic.
+
+## Considerations
+* It is advised to configure a key switch alarm such that an operator is alerted when the controller is put into a programming mode, as this could indicate unintentional or malicious changes to operational code.""" ;
+    :kb-reference :Reference-PLCKeySwitchMonitoring,
+        :Reference-TRITONMalwareRemainsThreattoGlobalCriticalInfrastructureICS .
+
+:OperatingModeRestriction a owl:Class ;
+    rdfs:label "Operating Mode Restriction" ;
+    rdfs:subClassOf :AccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :OperatingMode ] ;
+    :definition "Restricting unauthorized changes to the operating mode prevents devices from switching into inappropriate or vulnerable states during normal use." ;
+    :kb-article """## How it works
+Many OT Controllers use key switches to change the controller into different modes of operation. These modes of operation can include Program, Run, Remote, or Stop.
+
+The key switch should be left in the appropriate key switch position, e.g., run or remote during normal operations.
+
+Implement a key management procedure to include removing the physical key from the key switch when not in use.""" ;   
+    :kb-reference :Reference-MITREATTACKAuthorizationEnforcement,
+        :Reference-TRITONMalwareRemainsThreattoGlobalCriticalInfrastructureICS .
+
 :OperatingSystem a owl:Class ;
     rdfs:label "Operating System" ;
     rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Kernel ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :LocalUserAccount ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :SystemServiceSoftware ],
@@ -16083,11 +16164,93 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteMemory ] .
 
+:OTAbortService a owl:Class ;
+    rdfs:label "OT Abort Service" ;
+    rdfs:subClassOf :OTModifyDeviceProgramState ;
+    :definition "Command that tells the device to abort a service/program." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTAbortServiceEvent a owl:Class ;
+    rdfs:label "OT Abort Service Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTAbortService ] .
+
 :OTActuator a owl:Class ;
     rdfs:label "OT Actuator" ;
     rdfs:subClassOf :Actuator ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/actuator> ;
     :definition "An OT actuator is an industrial-grade actuator optimized for operational technology (OT) environments, such as SCADA or process-control systems. It tolerates harsher conditions, meets stricter safety and reliability standards, and integrates seamlessly with ICS protocols to enable real-time mechanical motion or adjustments in production lines and critical infrastructure." .
+
+:OTChangeData a owl:Class ;
+    rdfs:label "OT Change Data" ;
+    rdfs:subClassOf :OTModifyDeviceData ;
+    rdfs:comment """BACnet/IP: ATOMIC_WRITE_FILE
+BACnet/IP: WRITE_BROADCAST_TABLE
+BACnet/IP: WRITE_GROUP  """,
+        """DNP3: WRITE
+DNP3: SAVE_CONFIG
+DNP3: ASSIGN_CLASS
+DNP3: RECORD_CURRENT_TIME """,
+        "GEMS: SaveConfig",
+        "Modbus/TCP: WRITE_FILE_RECORD  " ;
+    :definition "OT command that changes existing data on a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTChangeDataEvent a owl:Class ;
+    rdfs:label "OT Change Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTChangeData ] .
+
+:OTChangeDeviceProcessData a owl:Class ;
+    rdfs:label "OT Change Device Process Data" ;
+    rdfs:subClassOf :OTModifyDeviceProcessData ;
+    rdfs:comment """BACnet/IP: WRITE_PROPERTY
+BACnet/IP: WRITE_PROPERTY_MULTIPLE
+BACnet/IP: ATOMIC_WRITE_FILE """,
+        """DNP3: INITIALIZE_DATA
+DNP3: ACTIVATE_CONFIG""",
+        """GEMS: LoadConfig
+GEMS: SetConfig""",
+        """Modbus/TCP: WRITE_MULTIPLE_COILS
+Modbus/TCP: MASK_WRITE_REGISTER
+Modbus/TCP: WRITE_MULTIPLE_REGISTERS
+Modbus/TCP: WRITE_SINGLE_COIL
+Modbus/TCP: WRITE_SINGLE_REGISTER
+Modbus/TCP: WRITE_FILE_RECORD """ ;
+    :definition "OT command that changes existing process data on a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTChangeDeviceProcessDataEvent a owl:Class ;
+    rdfs:label "OT Change Device Process Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTChangeDeviceProcessData ] .
+
+:OTCommand a owl:Class ;
+    rdfs:label "OT Command" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "An operational technology event that captures the occurrence of an OT command being issued, executed, or acknowledged, thereby linking a specific command action to its observable impact within a control system." .
+
+:OTCommandEvent a owl:Class ;
+    rdfs:label "OT Command Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTCommand ] .
 
 :OTController a owl:Class ;
     rdfs:label "OT Controller" ;
@@ -16103,14 +16266,369 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:someValuesFrom :OTSensor ],
         [ a owl:Restriction ;
             owl:onProperty :powered-by ;
-            owl:someValuesFrom :OTPowerSupply ] ;
+            owl:someValuesFrom :OTPowerSupply ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :OTControlProgram ] ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
     :definition "An OT Controller is an industrial control device that automatically regulates one or more controlled variables in response to command inputs and real-time feedback signals." .
+
+:OTControlLogicProcess a owl:Class ;
+    rdfs:label "OT Control Logic Process" ;
+    rdfs:subClassOf :Process,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OTLogicVariable ] ;
+    :definition "The instructions and algorithms within an OT Controller defined by user programming to interpret inputs, process information, and determine outputs." .
+
+:OTControlProgram a owl:Class ;
+    rdfs:label "OT Control Program" ;
+    rdfs:subClassOf :Application,
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :OTControlLogicProcess ] ;
+    :definition "The file stored in controller memory that is used to operate the controller." ;
+    :synonym "OT Project File" .
+
+:OTControlVariable a owl:Class ;
+    rdfs:label "OT Control Variable" ;
+    rdfs:subClassOf :OTLogicVariable ;
+    rdfs:isDefinedBy "https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en" ;
+    :definition "A control variable is the measurement of the physical condition of the device that influences the Process Variables. For example, if the Set Point of a temperature control system for a residential dwelling is 72 degrees, and the Process Variable is 82 degrees, the Control Variable for the air conditioner should be 'on.'" .
+
+:OTCreateData a owl:Class ;
+    rdfs:label "OT Create Data" ;
+    rdfs:subClassOf :OTModifyDeviceData ;
+    rdfs:comment "BACnet/IP: ADD_LIST_ELEMENT ",
+        """DNP3: FREEZE_AT_TIME
+DNP3: FREEZE_CLEAR
+DNP3: IMMED_FREEZE""" ;
+    :definition "OT command that creates data on a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTCreateDataEvent a owl:Class ;
+    rdfs:label "OT Create Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTCreateData ] .
+
+:OTCreateNewDeviceProcessData a owl:Class ;
+    rdfs:label "OT Create New Device Process Data" ;
+    rdfs:subClassOf :OTModifyDeviceProcessData ;
+    rdfs:comment "BACnet/IP: CREATE_OBJECT " ;
+    :definition "OT command that creates process data on a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTCreateNewDeviceProcessDataEvent a owl:Class ;
+    rdfs:label "OT Create New Device Process Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTCreateNewDeviceProcessData ] .
+
+:OTDeleteData a owl:Class ;
+    rdfs:label "OT Delete Data" ;
+    rdfs:subClassOf :OTModifyDeviceData ;
+    rdfs:comment """BACnet/IP: REMOVE_LIST_ELEMENT
+BACnet/IP: DELETE_FOREIGN_DEVICE_TABLE_ENTRY """,
+        "DNP3: DELETE_FILE" ;
+    :definition "OT command that removes existing data on a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDeleteDataEvent a owl:Class ;
+    rdfs:label "OT Delete Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeleteData ] .
+
+:OTDeleteDeviceProcessData a owl:Class ;
+    rdfs:label "OT Delete Device Process Data" ;
+    rdfs:subClassOf :OTModifyDeviceProcessData ;
+    rdfs:comment "BACnet/IP: DELETE_OBJECT " ;
+    :definition "OT command that removes existing process data on a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDeleteDeviceProcessDataEvent a owl:Class ;
+    rdfs:label "OT Delete Device Process Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeleteDeviceProcessData ] .
+
+:OTDeviceAcknowledge a owl:Class ;
+    rdfs:label "OT Device Acknowledge" ;
+    rdfs:subClassOf :OTInformationalMessage ;
+    rdfs:comment """BACnet/IP: ACKNOWLEDGE_ALARM
+DNP3: ACK
+DNP3: RESPONSE""" ;
+    :definition "A device's acknowledgment of a message, not being a response." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDeviceAcknowledgeEvent a owl:Class ;
+    rdfs:label "OT Device Acknowledge Event" ;
+    rdfs:subClassOf :OTInformationalMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceAcknowledge ] .
+
+:OTDeviceException a owl:Class ;
+    rdfs:label "OT Device Exception" ;
+    rdfs:subClassOf :OTInformationalMessage ;
+    rdfs:comment """BACnet/IP: UNCONFIRMED_EVENT_NOTIFICATION
+BACnet/IP: CONFIRMED_EVENT_NOTIFICATION """,
+        """DNP3: Support for Analog Input Events
+DNP3: Support for Analog Output Events
+DNP3: Support for Binary Input Events
+DNP3: Support for Binary Output Events
+DNP3: Support for Counter Events
+DNP3: Support for Double-Bit Binary Events
+DNP3: Support for Frozen Analog Inputs
+DNP3: Support for Frozen Counter Events
+DNP3: Support for Frozen Counters
+DNP3: Identification of Support for User-Specific Attributes""",
+        "GEMS: ErrorResponse",
+        """Modbus/TCP: MASK_WRITE_REGISTER_EXCEPTION
+Modbus/TCP: READ_COILS_EXCEPTION
+Modbus/TCP: READ_DISCRETE_INPUTS_EXCEPTION
+Modbus/TCP: READ_EXCEPTION_STATUS_EXCEPTION
+Modbus/TCP: READ_FIFO_QUEUE_EXCEPTION
+Modbus/TCP: READ_FILE_RECORD_EXCEPTION
+Modbus/TCP: READ_HOLDING_REGISTERS_EXCEPTION
+Modbus/TCP: READ_INPUT_REGISTERS_EXCEPTION
+Modbus/TCP: READ_WRITE_MULTIPLE_REGISTERS_EXCEPTION
+Modbus/TCP: WRITE_FILE_RECORD_EXCEPTION
+Modbus/TCP: WRITE_MULTIPLE_COILS_EXCEPTION
+Modbus/TCP: WRITE_MULTIPLE_REGISTERS_EXCEPTION
+Modbus/TCP: WRITE_SINGLE_COIL_EXCEPTION
+Modbus/TCP: WRITE_SINGLE_REGISTER_EXCEPTION """ ;
+    :definition "Response to a message when the incoming message cannot be parsed correctly, or another exception is raised in the message’s execution or request." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDeviceExceptionEvent a owl:Class ;
+    rdfs:label "OT Device Exception Event" ;
+    rdfs:subClassOf :OTInformationalMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceException ] .
+
+:OTModifyDevicePowerEvent a owl:Class ;
+    rdfs:label "OT Device Power Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDevicePower ] .
+
+:OTDeviceStatus a owl:Class ;
+    rdfs:label "OT Device Status" ;
+    rdfs:subClassOf :OTInformationalMessage ;
+    rdfs:comment """BACnet/IP: SUBSCRIBE_COV
+BACnet/IP: SUBSCRIBE_COV_PROPERTY
+BACnet/IP: UNCONFIRMED_COV_NOTIFICATION
+BACnet/IP: UNCONFIRMED_COV_NOTIFICATION_MULTIPLE
+BACnet/IP: CONFIRMED_COV_NOTIFICATION
+BACnet/IP: VT_DATA
+BACnet/IP: CONFIRMED_TEXT_MESSAGE
+BACnet/IP: UNCONFIRMED_TEXT_MESSAGE
+BACnet/IP: CONFIRMED_PRIVATE_TRANSFER
+BACnet/IP: UNCONFIRMED_PRIVATE_TRANSFER
+BACnet/IP: UTC_TIME_SYNCHRONIZATION """,
+        """DNP3: DISABLE_UNSOLICITED
+DNP3: ENABLE_UNSOLICITED
+DNP3: DELAY_MEASURE
+DNP3: Local Timing Accuracy
+DNP3: DNP3 Subset and Conformance
+DNP3: Duration of Time Accuracy
+DNP3: CONFIRM
+DNP3: CONFIRMED_USER_DATA""",
+        """GEMS: PingMessage
+GEMS: AsyncStatus""" ;
+    :definition "A subscribed device status update message containing configuration, or I/O data." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDeviceStatusEvent a owl:Class ;
+    rdfs:label "OT Device Status Event" ;
+    rdfs:subClassOf :OTInformationalMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceStatus ] .
+
+:OTDisconnectRemoteConnection a owl:Class ;
+    rdfs:label "OT Disconnect Remote Connection" ;
+    rdfs:subClassOf :OTManageRemoteConnection ;
+    rdfs:comment """BACnet/IP: VT_CLOSE
+BACnet/IP: DEVICE_COMMUNICATION_CONTROL """,
+        "GEMS: Disconnect",
+        "Modbus/TCP: RESET_COMM_LINK " ;
+    :definition "The Disconnect Request message is sent to the message receiver to indicate that the transmitter is terminating its TCP socket." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDisconnectRemoteConnectionEvent a owl:Class ;
+    rdfs:label "OT Disconnect Remote Connection Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDisconnectRemoteConnection ] .
+
+:OTDownloadData a owl:Class ;
+    rdfs:label "OT Download Data" ;
+    rdfs:subClassOf :OTGetData ;
+    :definition "Copies a file from one file device to another file device connected to the same PC." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTDownloadDataEvent a owl:Class ;
+    rdfs:label "OT Download Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDownloadData ] .
 
 :OTEmbeddedComputer a owl:Class ;
     rdfs:label "OT Embedded Computer" ;
     rdfs:subClassOf :EmbeddedComputer ;
     :definition "A ruggedized computational device, embedded in industrial control systems, designed to handle real-time tasks and environmental stressors common in OT." .
+
+:OTEngineeringSoftware a owl:Class ;
+    rdfs:label "OT Engineering Software" ;
+    rdfs:subClassOf :DeveloperApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTControlProgram ] ;
+    :definition "Software used in an industrial process to help engineers design, test, and maintain OT. This software enables the programming of OT controllers." .
+
+:OTEngineeringWorkstation a owl:Class ;
+    rdfs:label "OT Engineering Workstation" ;
+    rdfs:subClassOf :ClientComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :OTEngineeringSoftware ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :OTController ] ;
+    rdfs:isDefinedBy "https://attack.mitre.org/assets/A0001/" ;
+    :definition "An Engineering Workstation (EWS) is used to perform various maintenance, configuration, or diagnostics functions for a control system. The EWS will likely require dedicated application software to interface with various devices (e.g., RTUs, PLCs), and may be used to transfer data or files between the control system devices and other networks." ;
+    :synonym "EWS", "Workstation", "Transient Cyber Asset" .
+
+:OTEstablishRemoteConnection a owl:Class ;
+    rdfs:label "OT Establish Remote Connection" ;
+    rdfs:subClassOf :OTManageRemoteConnection ;
+    rdfs:comment """BACnet/IP: VT_OPEN
+BACnet/IP: DEVICE_COMMUNICATION_CONTROL
+BACnet/IP: SECURE_BVLL
+BACnet/IP: BVLC_RESULT""",
+        "GEMS: ConnectionRequest",
+        "Modbus/TCP: RESET_COMM_LINK: " ;
+    :definition "Used to establish an TCP/IP Connection to the target device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTEstablishRemoteConnectionEvent a owl:Class ;
+    rdfs:label "OT Establish Remote Connection Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTEstablishRemoteConnection ] .
+
+:OTEvent a owl:Class ;
+    rdfs:label "OT Event" ;
+    rdfs:subClassOf :DigitalEvent ;
+    :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information.".
+
+:OTGetData a owl:Class ;
+    rdfs:label "OT Get Data" ;
+    rdfs:subClassOf :OTCommand ;
+    :definition "Request data from a remote device." .
+
+:OTGetDataEvent a owl:Class ;
+    rdfs:label "OT Get Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTGetData ] .
+
+:OTHardwareStatus a owl:Class ;
+    rdfs:label "OT Hardware Status" ;
+    rdfs:subClassOf :OTReadDeviceStatus ;
+    :definition "OT command that requests the status of the hardware of a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTHardwareStatusEvent a owl:Class ;
+    rdfs:label "OT Hardware Status Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTHardwareStatus ] .
+
+:OTIdentifyDevice a owl:Class ;
+    rdfs:label "OT Identify Device" ;
+    rdfs:subClassOf :OTManageRemoteConnection ;
+    rdfs:comment """BACnet/IP: I_AM
+BACnet/IP: WHO_IS
+BACnet/IP: AUTHENTICATE
+BACnet/IP: REQUEST_KEY """,
+        """DNP3: LINK_STATUS
+DNP3: REQUEST_LINK_STATUS
+DNP3: RESET_LINK_STATES
+DNP3: TEST_LINK_STATES
+DNP3: AUTHENTICATE_REQ
+DNP3: AUTHENTICATE_RESP""" ;
+    :definition "Request the identification of a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTIdentifyDeviceEvent a owl:Class ;
+    rdfs:label "OT Identify Device Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTIdentifyDevice ] .
+
+:OTInformationalMessage a owl:Class ;
+    rdfs:label "OT Informational Message" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "Messages sent by remote devices not individually initiated by a request." .
+
+:OTInformationalMessageEvent a owl:Class ;
+    rdfs:label "OT Informational Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTInformationalMessage ] .
 
 :OTIOModule a owl:Class ;
     rdfs:label "OT I/O Module" ;
@@ -16127,6 +16645,150 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:seeAlso <https://www.rockwellautomation.com/en-us/support/documentation/technical/i-o/compact-5000-i-o-modules.html> ;
     skos:example "Rockwell Compact 5000 IO Module" .
 
+:OTLogicVariable a owl:Class ;
+    rdfs:label "OT Logic Variable" ;
+    rdfs:subClassOf :RuntimeVariable ;
+    :definition "A variable which directly affects a program running on an OT controller, involving an OT Process." .
+
+:OTManageRemoteConnection a owl:Class ;
+    rdfs:label "OT Manage Remote Connection" ;
+    rdfs:subClassOf :OTCommand ;
+    :definition "Manage remote connection with a device." .
+
+:OTManageRemoteConnectionEvent a owl:Class ;
+    rdfs:label "OT Manage Remote Connection Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTManageRemoteConnection ] .
+
+:OTModeSwitch a owl:Class ;
+    rdfs:label "OT Mode Switch" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment "An OT Mode Switch is a dedicated mechanism, implemented as either a physical keyswitch or a software control, that permits authorized users to transition an OT controller between its operating modes." ;
+    :definition "Keyswitch or mode switch is the mechanism for changing the operating mode of an OT controller or device." ;
+    rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en>,
+        <https://www.dragos.com/blog/industry-news/value-of-plc-key-switch-monitoring/> ;
+    :synonym "Mode Switch", "Programming Key Switch" .
+
+:OTModifyDevice a owl:Class ;
+    rdfs:label "OT Modify Device" ;
+    rdfs:subClassOf :OTCommand ;
+    :definition "Modify the power, memory, configuration, or process data of a remote device." .
+
+:OTModifyDeviceData a owl:Class ;
+    rdfs:label "OT Modify Device Data" ;
+    rdfs:subClassOf :OTModifyDevice ;
+    :definition "OT command that modifies the data stored on a remote device." .
+
+:OTModifyDeviceDataEvent a owl:Class ;
+    rdfs:label "OT Modify Device Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDeviceData ] .
+
+:OTModifyDeviceEvent a owl:Class ;
+    rdfs:label "OT Modify Device Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDevice ] .
+
+:OTModifyDevicePower a owl:Class ;
+    rdfs:label "OT Modify Device Power" ;
+    rdfs:subClassOf :OTModifyDevice ;
+    :definition "Modifies the power state of a device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTModifyDeviceProcessData a owl:Class ;
+    rdfs:label "OT Modify Device Process Data" ;
+    rdfs:subClassOf :OTModifyDevice ;
+    :definition "OT command that modifies the process data of a remote device, such as variables." .
+
+:OTModifyDeviceProcessDataEvent a owl:Class ;
+    rdfs:label "OT Modify Device Process Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDeviceProcessData ] .
+
+:OTModifyDeviceProgramState a owl:Class ;
+    rdfs:label "OT Modify Device Program State" ;
+    rdfs:subClassOf :OTModifyDevice ;
+    rdfs:comment """BACnet/IP: WRITE_PROPERTY
+BACnet/IP: WRITE_PROPERTY_MULTIPLE """,
+        """DNP3: SELECT
+DNP3: OPERATE
+DNP3: DIRECT_OPERATE
+DNP3: DIRECT_OPERATE_NR""",
+        "GEMS: Directive",
+        """Modbus/TCP: WRITE_MULTIPLE_COILS
+Modbus/TCP: MASK_WRITE_REGISTER
+Modbus/TCP: WRITE_MULTIPLE_REGISTERS
+Modbus/TCP: WRITE_SINGLE_COIL
+Modbus/TCP: WRITE_SINGLE_REGISTER """ ;
+    :definition "Modifies the running state of an application or program on a device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTModifyDeviceProgramStateEvent a owl:Class ;
+    rdfs:label "OT Modify Device Program State Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDeviceProgramState ] .
+
+:OTNetworkTraffic a owl:Class ;
+    rdfs:label "OT Network Traffic" ;
+    rdfs:subClassOf :NetworkTraffic,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
+    :definition "Network traffic generated by operational technology devices, e.g. programmable logic controllers" .
+
+:OTParameterStatus a owl:Class ;
+    rdfs:label "OT Parameter Status" ;
+    rdfs:subClassOf :OTReadDeviceStatus ;
+    rdfs:comment "BACnet/IP: GET_ALARM_SUMMARY",
+        "Modbus/TCP: READ_EXCEPTION_STATUS " ;
+    :definition "OT command that requests parameter status data of a remote device often in an ASCII or boolean list." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTParameterStatusEvent a owl:Class ;
+    rdfs:label "OT Parameter Status Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTParameterStatus ] .
+
+:OTPauseService a owl:Class ;
+    rdfs:label "OT Pause Service" ;
+    rdfs:subClassOf :OTModifyDeviceProgramState ;
+    :definition "Command that tells the device to safely pause a service/program." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTPauseServiceEvent a owl:Class ;
+    rdfs:label "OT Pause Service Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTPauseService ] .
+
 :OTPowerSupply a owl:Class ;
     rdfs:label "OT Power Supply" ;
     rdfs:subClassOf :PowerSupply ;
@@ -16134,17 +16796,356 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:seeAlso <https://ieeexplore.ieee.org/servlet/opac?punumber=4116785> ;
     skos:example "Phoenix Contact QUINT, Eaton PSG, and many controller-branded power supplies." .
 
+:OTProcessVariable a owl:Class ;
+    rdfs:label "OT Process Variable" ;
+    rdfs:subClassOf :OTLogicVariable ;
+    :definition "Process variables are the current actual measurement of the physical characteristics of a system. Common process variables include but are not limited to Temperature, Pressure, Level, and Flow. ";
+    skos:example "If the current temperature in a home is 82 degrees Fahrenheit, the process variable is 82 degrees." ;
+    rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> .
+
+:OTProgramService a owl:Class ;
+    rdfs:label "OT Program Service" ;
+    rdfs:subClassOf :OTModifyDeviceProgramState ;
+    :definition "Command that places the controller in a mode capable of reprogramming logic. This may or may not stop the program." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTProgramServiceEvent a owl:Class ;
+    rdfs:label "OT Program Service Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProgramService ] .
+
+:OTProtocolMessage a owl:Class ;
+    rdfs:label "OT Protocol Message" ;
+    rdfs:subClassOf :Command ;
+    :definition "Packets generated by an operational technology protocol contain an OT protocol message" .
+
+:OTReadDeviceConfigurationData a owl:Class ;
+    rdfs:label "OT Read Device Configuration Data" ;
+    rdfs:subClassOf :OTGetData ;
+    rdfs:comment """BACnet/IP: READ_BROADCAST_TABLE
+BACnet/IP: READ_FOREIGN_DEVICE_TABLE """,
+        """DNP3: Secure Authentication Version
+DNP3: Device Manufacturer Hardware Version
+DNP3: Device Manufacturer Name
+DNP3: Device Manufacturer Product Name and Model
+DNP3: Device Manufacturer Software Version
+DNP3: Device Serial Number
+DNP3: User-Assigned Device Name
+DNP3: User-Assigned ID Code or Number
+DNP3: User-Assigned Location Name""",
+        """GEMS: GetConfig
+GEMS: GetConfigList""",
+        """Modbus/TCP: REPORT_SLAVE_ID
+Modbus/TCP: READ_DEVICE_IDENTIFICATION
+Modbus/TCP: REPORT_LOCAL_ADDRESS """ ;
+    :definition "OT command that requests configuration or identification data of a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTReadDeviceConfigurationDataEvent a owl:Class ;
+    rdfs:label "OT Read Device Configuration Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadDeviceConfigurationData ] .
+
+:OTReadDeviceData a owl:Class ;
+    rdfs:label "OT Read Device Data" ;
+    rdfs:subClassOf :OTGetData ;
+    rdfs:comment """Modbus/TCP: DIAGNOSTICS
+DNP3: Non-Specific All Attributes Request
+DNP3: List of Attribute Variations""" ;
+    :definition "OT command that requests configuration or status details of a remote device. " ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTReadDeviceDataEvent a owl:Class ;
+    rdfs:label "OT Read Device Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadDeviceData ] .
+
+:OTReadDeviceMemory a owl:Class ;
+    rdfs:label "OT Read Device Memory" ;
+    rdfs:subClassOf :OTGetData ;
+    :definition "Reads the contents of the specified number of consecutive memory area." .
+
+:OTReadDeviceMemoryEvent a owl:Class ;
+    rdfs:label "OT Read Device Memory Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadDeviceMemory ] .
+
+:OTReadDeviceStatus a owl:Class ;
+    rdfs:label "OT Read Device Status" ;
+    rdfs:subClassOf :OTGetData ;
+    rdfs:comment """BACnet/IP: I_HAVE
+BACnet/IP: WHO_HAS
+BACnet/IP: GET_ENROLLMENT_SUMMARY
+BACnet/IP: GET_EVENT_INFORMATION
+BACnet/IP: LIFE_SAFETY_OPERATION
+""" ;
+    :definition "OT command that requests device hardware, state, or parameter status data." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTReadDeviceStatusEvent a owl:Class ;
+    rdfs:label "OT Read Device Status Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadDeviceStatus ] .
+
+:OTReadFile a owl:Class ;
+    rdfs:label "OT Read File" ;
+    rdfs:subClassOf :OTReadDeviceMemory ;
+    rdfs:comment "BACnet/IP: ATOMIC_READ_FILE ",
+        """DNP3: GET_FILE_INFO
+DNP3: OPEN_FILE
+DNP3: ABORT_FILE
+DNP3: CLOSE_FILE
+DNP3: AUTHENTICATE_FILE""",
+        "Modbus/TCP: READ_FILE_RECORD " ;
+    :definition "Reads the contents of a specified  file stored in the file device connected to the PC." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTReadFileEvent a owl:Class ;
+    rdfs:label "OT Read File Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadFile ] .
+
+:OTReadSetValue a owl:Class ;
+    rdfs:label "OT Read Set Value" ;
+    rdfs:subClassOf :OTReadDeviceMemory ;
+    rdfs:comment """BACnet/IP: READ_PROPERTY
+BACnet/IP: READ_PROPERTY_CONDITIONAL
+BACnet/IP: READ_PROPERTY_MULTIPLE
+BACnet/IP: READ_RANGE
+BACnet/IP: REGISTER_FOREIGN_DEVICE """,
+        """DNP3: Number of Analog Input Points
+DNP3: Number of Analog Outputs
+DNP3: Number of Binary Input Points
+DNP3: Number of Binary Outputs
+DNP3: Number of Counter Points
+DNP3: Number of Double-Bit Binary Input Points
+DNP3: Number of Master-Defined Data Set Properties
+DNP3: Number of Master-Defined Data Sets
+DNP3: Number of Outstation-Defined Data Set Properties
+DNP3: Number of Outstation-Defined Data Sets
+DNP3: Number of Security Statistics per Association
+DNP3: Maximum Analog Input Index
+DNP3: Maximum Analog Output Index
+DNP3: Maximum Binary Input Index
+DNP3: Maximum Binary Output Index
+DNP3: Maximum Counter Index
+DNP3: Maximum Double-Bit Binary Index
+DNP3: Maximum Number of Binary Output Objects per Request
+DNP3: Maximum Receive Fragment Size
+DNP3: Maximum Transmit Fragment Size""",
+        "GEMS: GetTargets",
+        """Modbus/TCP: READ_COILS
+Modbus/TCP: READ_DISCRETE_INPUTS
+Modbus/TCP: READ_FIFO_QUEUE
+Modbus/TCP: READ_HOLDING_REGISTERS
+Modbus/TCP: READ_INPUT_REGISTERS
+Modbus/TCP: READ_WRITE_MULTIPLE_REGISTERS""" ;
+    :definition "Reads the contents of the specified number of consecutive parameter areawords starting from the specified word." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTReadSetValueEvent a owl:Class ;
+    rdfs:label "OT Read Set Value Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadSetValue ] .
+
+:OTRemoteService a owl:Class ;
+    rdfs:label "OT Remote Service" ;
+    rdfs:subClassOf :OTModifyDeviceProgramState ;
+    :definition "Command that places the controller in a mode capable of receiving read/write communication from a networked entity." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL ;
+    :synonym "Remote Mode" .
+
+:OTRemoteServiceEvent a owl:Class ;
+    rdfs:label "OT Remote Service Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTRemoteService ] .
+
+:OTRestartDevice a owl:Class ;
+    rdfs:label "OT Restart Device" ;
+    rdfs:subClassOf :OTModifyDevicePower ;
+    rdfs:comment "BACnet/IP: REINITIALIZE_DEVICE",
+        """DNP3: COLD_RESTART
+DNP3: WARM_RESTART """ ;
+    :definition "Modifies the power state of a device causing to to shut down and then reboot." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTRestartDeviceEvent a owl:Class ;
+    rdfs:label "OT Restart Device Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTRestartDevice ] .
+
 :OTSensor a owl:Class ;
     rdfs:label "OT Sensor" ;
-    rdfs:subClassOf :Sensor ;
+    rdfs:subClassOf :Sensor,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :ClientComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :RFTransmitter ],
+        [ a owl:Restriction ;
+            owl:onProperty :writes ;
+            owl:someValuesFrom :OTProcessVariable ] ;
     rdfs:comment "Components of the sensor include a sensing element and may include a power source, display, housing, communication interface or signal processor." ;
     rdfs:isDefinedBy <https://csrc.nist.rip/glossary/term/sensor> ;
     :definition "An OT Sensor is an industrial-grade sensing device engineered for operational technology (OT) environments (e.g. SCADA, ICS). It measures physical variables—such as pressure, temperature, or flow—under demanding conditions, converting them into reliable signals for real-time monitoring and process control loops." ;
     rdfs:seeAlso <https://emerson.com/en-us/catalog/rosemount-sku-3051-coplanar-pressure-transmitter>,
         <https://www.emerson.com/en-us/catalog/rosemount-sku-708-wireless-acoustic-transmitter>,
         <https://www.omega.com/en-us/pressure-measurement/pressure-gauges/c/analog-pressure-gauges>,
-        <https://www.vega.com/en-us/products/product-catalog/level/radar> ;
-    skos:example "Level sensors, pressure sensors, temperature sensors, and flow measurement devices." .
+        <https://www.vega.com/en-us/products/product-catalog/level/radar> .
+
+:OTServiceStatus a owl:Class ;
+    rdfs:label "OT Service Status" ;
+    rdfs:subClassOf :OTReadDeviceStatus ;
+    rdfs:comment """Modbus/TCP: GET_COMM_EVENT_COUNTER
+Modbus/TCP: GET_COMM_EVENT_LOG """ ;
+    :definition "OT command that requests the state or service status of a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTServiceStatusEvent a owl:Class ;
+    rdfs:label "OT Service Status Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTServiceStatus ] .
+
+:OTStartService a owl:Class ;
+    rdfs:label "OT Start Service" ;
+    rdfs:subClassOf :OTModifyDeviceProgramState ;
+    rdfs:comment """DNP3: INITIALIZE_APPL
+DNP3: START_APPL""" ;
+    :definition "Command that tells the device to start or resume a service/program." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTStartServiceEvent a owl:Class ;
+    rdfs:label "OT Start Service Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTStartService ] .
+
+:OTStopService a owl:Class ;
+    rdfs:label "OT Stop Service" ;
+    rdfs:subClassOf :OTModifyDeviceProgramState ;
+    rdfs:comment "DNP3: STOP_APPL" ;
+    :definition "Command that tells the device to stop a service/program." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTStopServiceEvent a owl:Class ;
+    rdfs:label "OT Stop Service Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTStopService ] .
+
+:OTUpdateDeviceFirmware a owl:Class ;
+    rdfs:label "OT Update Device" ;
+    rdfs:subClassOf :OTModifyDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OTModifyDeviceData,
+                :OTModifyDeviceProcessData,
+                :OTModifyDeviceProgramState ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :OTModifyDevicePower ] ;
+    rdfs:comment """Modbus/TCP: FIRMWARE_REPLACEMENT
+""" ;
+    :definition "Commands the target device to update its firmware, often requiring the halt of application/program processes and monitoring,  taking the device offline temporarily." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTUpdateDeviceFirmwareEvent a owl:Class ;
+    rdfs:label "OT Update Device Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTUpdateDeviceFirmware ] .
+
+:OTUploadData a owl:Class ;
+    rdfs:label "OT Upload Data" ;
+    rdfs:subClassOf :OTModifyDeviceData ;
+    :definition "OT command that uploads data to a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTUploadDataEvent a owl:Class ;
+    rdfs:label "OT Upload Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTUploadData ] .
+
+:OTUploadDeviceProcessData a owl:Class ;
+    rdfs:label "OT Upload Device Process Data" ;
+    rdfs:subClassOf :OTModifyDeviceProcessData ;
+    :definition "OT command that uploads process data to a remote device." ;
+    :kb-reference :Reference-DNP3UserandReferenceManual,
+        :Reference-MODBUSApplicationProtocol,
+        :Reference-OTStack,
+        :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTUploadDeviceProcessDataEvent a owl:Class ;
+    rdfs:label "OT Upload Device Process Data Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTUploadDeviceProcessData ] .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
@@ -18381,6 +19382,12 @@ Example RPC Protocols:
         :Reference-SMBWriteRequest-NamedPipes_MITRE ;
     :synonym "RPC Protocol Analysis" .
 
+:RuntimeVariable a owl:Class ;
+    rdfs:label "Runtime Variable" ;
+    rdfs:subClassOf :DigitalInformationBearer ;
+    :definition "A runtime variable is an abstract storage location paired with an associated symbolic name, which contains some known or unknown quantity of data or object referred to as a value, which can change during the execution of a computer program." ;
+    rdfs:seeAlso <https://dbpedia.org/page/Variable_(computer_science)> .
+
 :SARSA a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "SARSA" ;
@@ -20117,6 +21124,14 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "System Password Database" ;
     rdfs:subClassOf :PasswordDatabase ;
     :definition "A password database used by a system service or process to authenticate users (e.g., Security Account Manager)" .
+
+:SystemPlatformVariable a owl:Class ;
+    rdfs:label "System Platform Variable" ;
+    rdfs:subClassOf :RuntimeVariable ;
+    :definition "Runtime variables  which may consist of memory usage, internal temperature, operating mode, clock time, scan time, hardware status, etc." ;
+    rdfs:seeAlso <https://literature.rockwellautomation.com/idc/groups/literature/documents/pm/1756-pm015_-en-p.pdf>,
+        <https://www.nrc.gov/docs/ml0932/ml093290422.pdf>;
+    :synonym "System Properties", "System Data", "Configuration Resource" .
 
 :SystemServiceSoftware a owl:Class ;
     rdfs:label "System Service Software" ;
@@ -28817,6 +29832,16 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:onProperty :modifies ;
             owl:someValuesFrom :MemoryBlock ] .
 
+:WriteProtectSwitch a owl:Class ;
+    rdfs:label "Write Protect Switch" ;
+    rdfs:subClassOf :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :restrict ;
+            owl:someValuesFrom :Storage ] ;
+    :definition "A physical device used to restrict configuration of a device." ;
+    rdfs:seeAlso <https://web-material3.yokogawa.com/FGP-110__5_.us.pdf>,
+        "NIST SP 800-82r3, Appendix F, SC-51 Hardware-Based Protection" .
+
 :ZeroClientComputer a owl:Class ;
     rdfs:label "Zero Client Computer" ;
     rdfs:subClassOf :ThinClientComputer ;
@@ -30594,6 +31619,15 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-reference-of :ContainerImageAnalysis ;
     :kb-reference-title "Kubernetes Hardening Guide" .
 
+:Reference-CPGChecklist a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - CISA CPG Checklist" ;
+    :has-link "https://www.cisa.gov/resources-tools/resources/cisa-cpg-checklist"^^xsd:anyURI ;
+    :kb-abstract "This document is to be used in tandem with the CPGs to help prioritize and track your organization's implementation." ;
+    :kb-author "CISA" ;
+    :kb-reference-of :ChangeDefaultPassword ;
+    :kb-reference-title "CISA CPG Checklist" .
+
 :Reference-CreateRemoteProcessViaWMIC_MITRE_Other a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2016-03-002: Create Remote Process via WMIC - MITRE" ;
@@ -30911,6 +31945,47 @@ This behavior can be detected by looking for thread creations across processes, 
     :kb-reference-of :SystemCallAnalysis ;
     :kb-reference-title "CAR-2013-10-002: DLL Injection via Load Library" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-DNP3UserandReferenceManual a owl:NamedIndividual,
+        :UserManualReference ;
+    rdfs:label "Reference - DNP3 User and Reference Manual" ;
+    :has-link "https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf"^^xsd:anyURI ;
+    :kb-abstract "The manual details implementation of the Distributed Network Protocol (DNP3) on SCADAPack controllers. The manual describes the functionality of SCADAPack controllers under certain DNP network topologies and fully details each DNP configuration parameter available on SCADAPack controllers. Although we continuously add tidbits of relevant information, especially when explaining each SCADAPack parameter in the overall scheme of the DNP3 concept, this manual does not serve as a complete DNP3 Technical Reference guide." ;
+    :kb-author "Control Microsystems Inc. " ;
+    :kb-reference-of :OTAbortService,
+        :OTChangeData,
+        :OTChangeDeviceProcessData,
+        :OTCreateData,
+        :OTCreateNewDeviceProcessData,
+        :OTDeleteData,
+        :OTDeleteDeviceProcessData,
+        :OTDeviceAcknowledge,
+        :OTDeviceException,
+        :OTDeviceStatus,
+        :OTDisconnectRemoteConnection,
+        :OTDownloadData,
+        :OTEstablishRemoteConnection,
+        :OTHardwareStatus,
+        :OTIdentifyDevice,
+        :OTModifyDevicePower,
+        :OTModifyDeviceProgramState,
+        :OTParameterStatus,
+        :OTPauseService,
+        :OTProgramService,
+        :OTReadDeviceConfigurationData,
+        :OTReadDeviceData,
+        :OTReadDeviceStatus,
+        :OTReadFile,
+        :OTReadSetValue,
+        :OTRemoteService,
+        :OTRestartDevice,
+        :OTServiceStatus,
+        :OTStartService,
+        :OTStopService,
+        :OTUpdateDeviceFirmware,
+        :OTUploadData,
+        :OTUploadDeviceProcessData ;
+    :kb-reference-title "DNP3 User and Reference Manual" .
 
 :Reference-DNSWhitelist-DNSWL-EmailAuthenticationMethodExtension a owl:NamedIndividual,
         :SpecificationReference ;
@@ -31309,6 +32384,15 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
     :kb-reference-of :ProcessCodeSegmentVerification ;
     :kb-reference-title "Guards for application in software tamperproofing" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-GuidetoOTSecurity a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST SP 800-82R3 Guide to Operational Technology (OT) Security, Section 6.2.1.4.5 Password Authentication " ;
+    :has-link "https://csrc.nist.gov/pubs/sp/800/82/r3/final"^^xsd:anyURI ;
+    :kb-abstract "This document provides guidance on how to secure operational technology (OT) while addressing their unique performance, reliability, and safety requirements. OT encompasses a broad range of programmable systems and devices that interact with the physical environment (or manage devices that interact with the physical environment). These systems and devices detect or cause a direct change through the monitoring and/or control of devices, processes, and events. Examples include industrial control systems, building automation systems, transportation systems, physical access control systems, physical environment monitoring systems, and physical environment measurement systems. The document provides an overview of OT and typical system topologies, identifies common threats and vulnerabilities to these systems, and provides recommended security countermeasures to mitigate the associated risks." ;
+    :kb-author "NIST" ;
+    :kb-reference-of :ChangeDefaultPassword ;
+    :kb-reference-title "Guide to Operational Technology (OT) Security" .
 
 :Reference-GuideToStorageEncryptionTechnologiesForEndUserDevices a :GuidelineReference,
         owl:NamedIndividual ;
@@ -31935,6 +33019,24 @@ Some examples of data inputs:
     :kb-reference-of :OperationalDependencyMapping ;
     :kb-reference-title "Mission Dependency Modeling for Cyber Situational Awareness" .
 
+:Reference-MITREATTACKAuthorizationEnforcement a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - MITRE ATT&CK - Authorization Enforcement " ;
+    :has-link "https://attack.mitre.org/mitigations/M0800/"^^xsd:anyURI ;
+    :kb-abstract "The device or system should restrict read, manipulate, or execute privileges to only authenticated users who require access based on approved security policies. Role-based Access Control (RBAC) schemes can help reduce the overhead of assigning permissions to the large number of devices within an ICS. For example, IEC 62351 provides examples of roles used to support common system operations within the electric power sector [1], while IEEE 1686 defines standard permissions for users of IEDs." ;
+    :kb-author "MITRE" ;
+    :kb-reference-of :OperatingModeRestriction ;
+    :kb-reference-title "MITRE ATT&CK - Authorization Enforcement " .
+
+:Reference-MITREATTACKPasswordPolicies a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - MITRE ATT&CK - Password Policies" ;
+    :has-link "https://attack.mitre.org/mitigations/M0927/"^^xsd:anyURI ;
+    :kb-abstract "Set and enforce secure password policies for accounts.." ;
+    :kb-author "MITRE" ;
+    :kb-reference-of :ChangeDefaultPassword ;
+    :kb-reference-title "MITRE ATT&CK - Password Policies" .
+
 :Reference-MockAttackCybersecurityTrainingSystemAndMethods_WOMBATSECURITYTECHNOLOGIESInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Mock attack cybersecurity training system and methods - WOMBAT SECURITY TECHNOLOGIES Inc" ;
@@ -31946,6 +33048,47 @@ Some examples of data inputs:
     :kb-reference-of :DecoyPublicRelease ;
     :kb-reference-title "Mock attack cybersecurity training system and methods" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-MODBUSApplicationProtocol a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - MODBUS Application Protocol" ;
+    :has-link "https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf"^^xsd:anyURI ;
+    :kb-abstract "Scope of this document MODBUS is an application layer messaging protocol, positioned at level 7 of the OSI model, that provides client/server communication between devices connected on different types of buses or networks." ;
+    :kb-author "Modbus Organization, Inc" ;
+    :kb-reference-of :OTAbortService,
+        :OTChangeData,
+        :OTChangeDeviceProcessData,
+        :OTCreateData,
+        :OTCreateNewDeviceProcessData,
+        :OTDeleteData,
+        :OTDeleteDeviceProcessData,
+        :OTDeviceAcknowledge,
+        :OTDeviceException,
+        :OTDeviceStatus,
+        :OTDisconnectRemoteConnection,
+        :OTDownloadData,
+        :OTEstablishRemoteConnection,
+        :OTHardwareStatus,
+        :OTIdentifyDevice,
+        :OTModifyDevicePower,
+        :OTModifyDeviceProgramState,
+        :OTParameterStatus,
+        :OTPauseService,
+        :OTProgramService,
+        :OTReadDeviceConfigurationData,
+        :OTReadDeviceData,
+        :OTReadDeviceStatus,
+        :OTReadFile,
+        :OTReadSetValue,
+        :OTRemoteService,
+        :OTRestartDevice,
+        :OTServiceStatus,
+        :OTStartService,
+        :OTStopService,
+        :OTUpdateDeviceFirmware,
+        :OTUploadData,
+        :OTUploadDeviceProcessData ;
+    :kb-reference-title "MODBUS Application Protocol" .
 
 :Reference-ModelingUserAccessToComputerResources_DaedalusGroupLLC a owl:NamedIndividual,
         :PatentReference ;
@@ -32153,6 +33296,47 @@ architecture using the Snort NIDS.""" ;
     :has-link "https://github.com/osquery/osquery/blob/d2be385d71f401c85872f00d479df8f499164c5a/osquery/tables/system/windows/users.cpp"^^xsd:anyURI ;
     :kb-reference-title "OS Query Windows User Collection Code" .
 
+:Reference-OTStack a :ExternalKnowledgeBase,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - OT Stack" ;
+    :has-link "TBR"^^xsd:anyURI ;
+    :kb-abstract "TBR" ;
+    :kb-author "MITRE" ;
+    :kb-reference-of :OTAbortService,
+        :OTChangeData,
+        :OTChangeDeviceProcessData,
+        :OTCreateData,
+        :OTCreateNewDeviceProcessData,
+        :OTDeleteData,
+        :OTDeleteDeviceProcessData,
+        :OTDeviceAcknowledge,
+        :OTDeviceException,
+        :OTDeviceStatus,
+        :OTDisconnectRemoteConnection,
+        :OTDownloadData,
+        :OTEstablishRemoteConnection,
+        :OTHardwareStatus,
+        :OTIdentifyDevice,
+        :OTModifyDevicePower,
+        :OTModifyDeviceProgramState,
+        :OTParameterStatus,
+        :OTPauseService,
+        :OTProgramService,
+        :OTReadDeviceConfigurationData,
+        :OTReadDeviceData,
+        :OTReadDeviceStatus,
+        :OTReadFile,
+        :OTReadSetValue,
+        :OTRemoteService,
+        :OTRestartDevice,
+        :OTServiceStatus,
+        :OTStartService,
+        :OTStopService,
+        :OTUpdateDeviceFirmware,
+        :OTUploadData,
+        :OTUploadDeviceProcessData ;
+    :kb-reference-title "OT Stack" .
+
 :Reference-OutlierParentsOfCmd_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2014-11-002: Outlier Parents of Cmd - MITRE" ;
@@ -32196,6 +33380,15 @@ While this analytic does not take the user into account, doing so could generate
     :kb-reference-of :FirmwareVerification ;
     :kb-reference-title "Platform Firmware Resiliency Guidelines" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-PLCKeySwitchMonitoring a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Value of PLC Key Switch Monitoring to Keep Critical Systems More Secure" ;
+    :has-link "https://www.dragos.com/blog/industry-news/value-of-plc-key-switch-monitoring/"^^xsd:anyURI ;
+    :kb-abstract "Programmable Logic Controllers (PLC) and Safety Instrumented Systems (SIS) Controllers have historically included an external switch, generally in the form of a key, to perform maintenance and troubleshooting. The key switch has become commonplace for automation engineers and technicians who maintain and support these systems and understand the importance of the little switch in overall device operation and affects the underlying process." ;
+    :kb-author "DRAGOS" ;
+    :kb-reference-of :OperatingModeMonitoring ;
+    :kb-reference-title "Value of PLC Key Switch Monitoring to Keep Critical Systems More Secure" .
 
 :Reference-PointerAuthenticationOnARMv8.3 a owl:NamedIndividual,
         :SpecificationReference ;
@@ -32319,6 +33512,47 @@ Powershell can be used to hide monitored command line execution such as:
         "No author organizations provided for reference, add one?",
         "No authors provided for reference",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
+
+:Reference-ProgrammersGuidetotheBACnetCommunicationsDLL a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Programmers Guide to the BACnet Communications DLL" ;
+    :has-link "https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf"^^xsd:anyURI ;
+    :kb-abstract "ASHRAE Standard 135- BACnet®--A Data Communication Protocol for Building Automation and Control Networks defines a communications protocol for information exchange between components of a distributed building automation and control system. The proliferation of BACnet enabled heating, ventilating, and air conditioning (HVAC) systems has enabled direct access to HVAC system data. The BACnet communications dynamic linked library (DLL) enables researchers to implement selected BACnet communications, creating an interface for data collection that is easy to use. The ability to access HVAC controllers from a computer is valuable because it allows researchers, designers, or other users to retrieve data directly from the BACnet objects on the controllers. These data could include information on the conditions in the building space served by the equipment, the conditions and status of the equipment, the actions the controller is currently taking, and other values that may be set by internal program logic. These data could then be used for a variety of research purposes, including real-time monitoring of the HVAC system, commissioning, fault detection and diagnostics (FDD), data logging, or other applications. Researchers can integrate the BACnet communications DLL (BCD) into existing tools, create a new tool with the BCD, or use the BCD with common data acquisition and analysis tools." ;
+    :kb-author "NIST" ;
+    :kb-reference-of :OTAbortService,
+        :OTChangeData,
+        :OTChangeDeviceProcessData,
+        :OTCreateData,
+        :OTCreateNewDeviceProcessData,
+        :OTDeleteData,
+        :OTDeleteDeviceProcessData,
+        :OTDeviceAcknowledge,
+        :OTDeviceException,
+        :OTDeviceStatus,
+        :OTDisconnectRemoteConnection,
+        :OTDownloadData,
+        :OTEstablishRemoteConnection,
+        :OTHardwareStatus,
+        :OTIdentifyDevice,
+        :OTModifyDevicePower,
+        :OTModifyDeviceProgramState,
+        :OTParameterStatus,
+        :OTPauseService,
+        :OTProgramService,
+        :OTReadDeviceConfigurationData,
+        :OTReadDeviceData,
+        :OTReadDeviceStatus,
+        :OTReadFile,
+        :OTReadSetValue,
+        :OTRemoteService,
+        :OTRestartDevice,
+        :OTServiceStatus,
+        :OTStartService,
+        :OTStopService,
+        :OTUpdateDeviceFirmware,
+        :OTUploadData,
+        :OTUploadDeviceProcessData ;
+    :kb-reference-title "Programmers Guide to the BACnet Communications DLL" .
 
 :Reference-ProtectedComputingEnvironment_MicrosoftTechnologyLicensingLLC a owl:NamedIndividual,
         :PatentReference ;
@@ -33470,6 +34704,18 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-reference-of :FileIntegrityMonitoring ;
     :kb-reference-title "Reference - Tripwire" .
 
+:Reference-TRITONMalwareRemainsThreattoGlobalCriticalInfrastructureICS a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - TRITON Malware Remains Threat to Global Critical Infrastructure Industrial Control Systems (ICS)" ;
+    :has-link "https://www.ic3.gov/CSA/2022/220325.pdf"^^xsd:anyURI ;
+    :kb-abstract """The FBI is warning that the group responsible for the deployment of TRITON malware against a Middle East-based petrochemical plant's safety instrumented system in 2017, the Russian Central Scientific Research Institute of Chemistry and Mechanics (TsNIIKhM), continues to conduct activity targeting the global energy sector. This warning follows the 24 March 2022 unsealing of a US indictment of a Russian national and TsNIIkhM employee involved in that attack. TRITON was malware designed to cause physical safety systems to cease operating or to operate in an unsafe manner. Its potential impact could be similar to cyberattacks previously attributed to Russia that caused blackouts in Ukraine in 2015 and 2016.
+
+ TRITON malware targeted the Schneider Electric Triconex safety instrumented system (SIS), which is used to initiate safe shutdown procedures in the event of an emergency. TRITON malware affected Triconex Tricon safety controllers by modifying in-memory firmware to add additional programming, potentially leading to damage of a facility, system downtime, and even loss of life should the SIS fail to initiate safe shutdown procedures. Schneider Electric addressed the vulnerability (with the Tricon model 3008 v10.0-10.4) when version 11.3 of the Tricon controller was released in June 2018; however, older versions of the controller remain in use and are vulnerable to a similar attack. As a result, the FBI is alerting the ICS community of continued activity by this group and requests that any indicators of potential compromise be reported to the FBI. """ ;
+    :kb-author "FBI" ;
+    :kb-reference-of :OperatingModeMonitoring,
+        :OperatingModeRestriction ;
+    :kb-reference-title "TRITON Malware Remains Threat to Global Critical Infrastructure Industrial Control Systems (ICS)" .
+
 :Reference-TrustedAttestationProtocolUseCases a owl:NamedIndividual,
         :SpecificationReference ;
     rdfs:label "Reference - Trusted Attestation Protocol Use Cases" ;
@@ -33683,6 +34929,15 @@ Level 2""" ;
     :kb-reference-of :CredentialTransmissionScoping ;
     :kb-reference-title """Web Authentication: An API for accessing Public Key Credentials
 Level 2""" .
+
+:Reference-WhatisHardwareWriteProtect a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - What is Hardware Write Protect?" ;
+    :has-link "https://www.yokogawa.com/us/library/resources/faqs/pressure-what-is-hardware-write-protect/#:~:text=The%20hardware%20write%20protection%20is,Burn%20Out%20(BO)%20switch"^^xsd:anyURI ;
+    :kb-abstract "Transmitters used in safety systems, environmentally sensitive applications, custody transfer, or critical processes need to be secure from tampering or inadvertent changes to their setup that may lead to errors and failures. Yokogawa’s pressure transmitters have the security of a Software Write Protection (Password) and a Hardware Write Protection (Switch) to secure programming changes and physical cover locks to secure the transmitter electronics. These security features can be applied independently or in combination to build the level of security desired." ;
+    :kb-author "YOKOGAWA" ;
+    :kb-reference-of :Hardware-basedWriteProtection ;
+    :kb-reference-title "What is Hardware Write Protect?" .
 
 :Reference-WhatIsNetworkAccessControl a :InternetArticleReference,
         owl:NamedIndividual ;
@@ -33907,4 +35162,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
