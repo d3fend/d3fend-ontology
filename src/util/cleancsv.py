@@ -3,7 +3,7 @@ import csv
 output_csv = []
 level_0 = []
 
-order = ["Model", "Harden", "Detect", "Isolate", "Deceive", "Evict"]
+order = ["Model", "Harden", "Detect", "Isolate", "Deceive", "Evict", "Restore"]
 
 with open("build/d3fend.csv") as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=",")
