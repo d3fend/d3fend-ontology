@@ -4050,10 +4050,7 @@ This admission controller
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Content Excision" ;
-    rdfs:subClassOf :ContentModification,
-        [ a owl:Restriction ;
-            owl:onProperty :excises ;
-            owl:someValuesFrom :Data ] ;
+    rdfs:subClassOf :ContentModification ;
     :definition "Removing specific, potentially malicious, parts of content" ;
     :end-id "D3-CNE" ;
     :kb-article """## How it works
@@ -4097,6 +4094,15 @@ This technique may enhance security by transforming files into safer or normaliz
     rdfs:label "Content Modification" ;
     rdfs:subClassOf :ContentFiltering,
         [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :DigitalMedia ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :FileContentBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :FileMetadata ],
+        [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :File ] ;
     :definition "Modify content that does not comply with policy." ;
@@ -4118,6 +4124,9 @@ When content is found to not comply with it's content policy, it may be transfor
     rdfs:subClassOf :ContentFiltering,
         [ a owl:Restriction ;
             owl:onProperty :quarantines ;
+            owl:someValuesFrom :DatabaseRecord ],
+        [ a owl:Restriction ;
+            owl:onProperty :quarantines ;
             owl:someValuesFrom :File ] ;
     :definition "Transfer content that does not comply with policy to a quarantine zone." ;
     :end-id "D3-CQ" ;
@@ -4130,10 +4139,7 @@ Quarantining serves as a protective measure to isolate potentially harmful files
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Content Rebuild" ;
-    rdfs:subClassOf :ContentModification,
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :File ] ;
+    rdfs:subClassOf :ContentModification ;
     :definition "Rebuild the file according to the spec so any unreferenced components or objects are removed." ;
     :end-id "D3-CNR" ;
     :kb-article """## How it works
@@ -9421,12 +9427,6 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 :D3FENDKBThing a owl:Class ;
     rdfs:label "D3FEND KB Thing" .
 
-:Data a owl:Class ;
-    rdfs:label "Data" ;
-    rdfs:subClassOf :DigitalInformation ;
-    rdfs:isDefinedBy "https://dbpedia.org/page/Data" ;
-    :definition "A collection of discrete values that convey information." .
-
 :DataArtifactServer a owl:Class ;
     rdfs:label "Data Artifact Server" ;
     rdfs:subClassOf :ArtifactServer ;
@@ -9470,6 +9470,12 @@ Some implementations use software hooks to intercept function calls related to d
 
 Some capabilities sanitize queries before permitting them to be transmitted to the database. This incurs risks such altering data in an undesired way or breaking application functionality.""" ;
     :kb-reference :Reference-SystemAndMethodForInternetSecurity_CylanceInc .
+
+:DatabaseRecord a owl:Class ;
+    rdfs:label "Database Record" ;
+    rdfs:subClassOf :Record ;
+    :definition "A single, implicitly structured data item in a table in a database." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Row_(database)" .
 
 :DatabaseServer a owl:Class ;
     rdfs:label "Database Server" ;
@@ -10284,7 +10290,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalMedia a owl:Class ;
     rdfs:label "Digital Media" ;
-    rdfs:subClassOf :Data ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Digital_media" ;
     :definition "Digital media refers to any communication media that operate in conjunction with various encoded machine-readable data formats." .
 
@@ -11554,7 +11560,7 @@ Analyzing a piece of code without it being executed in a sandbox, virtual machin
 
 :FileContentBlockData a owl:Class ;
     rdfs:label "File Content Block Data" ;
-    rdfs:subClassOf :Data ;
+    rdfs:subClassOf :DigitalInformation ;
     :definition "The actual content or main data within a file or data block." .
 
 :FileContentBlockMetadata a owl:Class ;
@@ -11871,7 +11877,7 @@ Many file formats use magic numbers to identify a file format or protocol. Verif
 
 :FileMetadata a owl:Class ;
     rdfs:label "File Metadata" ;
-    rdfs:subClassOf :Metadata ;
+    rdfs:subClassOf :MetadataContent ;
     :definition "Information that describes and provides context about a file's content, structure, and attributes." .
 
 :FileMetadataConsistencyValidation a :FileMetadataConsistencyValidation,
@@ -12003,7 +12009,7 @@ File format specifications often define expected values for specific fields. A c
 :FileSystemMetadata a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "File System Metadata" ;
-    rdfs:subClassOf :Metadata ;
+    rdfs:subClassOf :MetadataContent ;
     :definition "Metadata about the files and directories in a file system.  For example file name, file length, time modified, group and user ids, and other file attributes." ;
     rdfs:seeAlso <http://dbpedia.org/resource/File_system#Metadata> .
 
@@ -15277,11 +15283,11 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     :definition "A message transfer agent or mail transfer agent (MTA) or mail relay is software that transfers electronic mail messages from one computer to another using a client-server application architecture. An MTA implements both the client (sending) and server (receiving) portions of the Simple Mail Transfer Protocol." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Message_transfer_agent> .
 
-:Metadata a owl:Class ;
-    rdfs:label "Metadata" ;
-    rdfs:subClassOf :Data ;
+:MetadataContent a owl:Class ;
+    rdfs:label "Metadata Content" ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Metadata> ;
-    :definition "Metadata is \"data [information] that provides information about other data\". Three distinct types of metadata exist: structural metadata, descriptive metadata, and administrative metadata. Structural metadata is data about the containers of data. For instance a \"book\" contains data, and data about the book is metadata about that container of data. Descriptive metadata uses individual instances of application data or the data content." ;
+    :definition "Metadata Content is the actual information values which describe other information." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/metadata> .
 
 :Microcode a owl:Class ;
@@ -17708,9 +17714,7 @@ DNP3: START_APPL""" ;
     rdfs:subClassOf :OTModifyDevice,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :OTModifyDeviceData,
-                :OTModifyDeviceProcessData,
-                :OTModifyDeviceProgramState ],
+            owl:someValuesFrom :OTModifyDeviceProgramState ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :OTModifyDevicePower ] ;
@@ -20740,7 +20744,8 @@ If the threshold for detecting a stack anomaly is low, it may not detect a retur
 :ShimDatabase a owl:Class ;
     rdfs:label "Shim Database" ;
     rdfs:subClassOf :ApplicationConfigurationDatabase ;
-    :definition "A application configuration database that contains or points to software shims (e.g., for backward compatibility, patches, etc.)" .
+    :definition "A application configuration database that contains or points to software shims (e.g., for backward compatibility, patches, etc.)" ;
+    :synonym "Microsoft Shim Database File" .
 
 :ShortcutFile a owl:Class ;
     rdfs:label "Shortcut File" ;
@@ -30598,7 +30603,7 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:label "Write Protect Switch" ;
     rdfs:subClassOf :HardwareDevice,
         [ a owl:Restriction ;
-            owl:onProperty :restrict ;
+            owl:onProperty :restricts ;
             owl:someValuesFrom :Storage ] ;
     :definition "A physical device used to restrict configuration of a device." ;
     rdfs:seeAlso "NIST SP 800-82r3, Appendix F, SC-51 Hardware-Based Protection",
