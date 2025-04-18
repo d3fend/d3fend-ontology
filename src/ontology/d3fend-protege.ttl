@@ -140,6 +140,11 @@
     rdfs:subPropertyOf :associated-with,
         :hardens .
 
+:connected-to a owl:ObjectProperty ;
+    rdfs:label "connected-to" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x connected-to y: The subject x shares a direct physical or logical link with object y such that communication is possible between them without intermediate routing." .
+
 :connects a owl:ObjectProperty ;
     rdfs:label "connects" ;
     rdfs:subPropertyOf :associated-with ;
@@ -493,6 +498,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     rdfs:range :DigitalArtifact ;
     :definition "x hides y: A technique or operation x conceals the digital artifact y." .
+
+:hosts-connection-to a owl:ObjectProperty ;
+    rdfs:label "hosts-connection-to" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :connected-to ;
+    :definition "x hosts-connection-to y: The subject x provides the medium, interface, or infrastructure to which object y is directly connected." .
 
 :identified-by a owl:ObjectProperty ;
     rdfs:label "identified-by" ;
@@ -1000,6 +1011,17 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:seeAlso <http://dbpedia.org/resource/Reading_(computer)>,
         <http://wordnet-rdf.princeton.edu/id/00629157-v> .
 
+:received-by a owl:ObjectProperty ;
+    rdfs:label "received-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :receives ;
+    :definition "x received-by y: The subject x has been acquired from a communication medium by object y." .
+
+:receives a owl:ObjectProperty ;
+    rdfs:label "receives" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x receives y: The subject x acquires object y from a communication medium and transfers y into its local context for storage or processing." .
+
 :recorded-in a owl:ObjectProperty ;
     rdfs:label "recorded-in" ;
     rdfs:subPropertyOf :associated-with ;
@@ -1113,6 +1135,18 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x terminates y: The technique x brings to an end or halt to some activity y." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00354493-v> ;
     :synonym "aborts" .
+
+:transmits a owl:ObjectProperty ;
+    rdfs:label "transmits" ;
+    skos:altLabel "sends" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x transmits y: The subject x actively emits object y onto a communication medium, rendering y observable and available for reception on that medium." .
+
+:transmitted-by a owl:ObjectProperty ;
+    rdfs:label "transmitted-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :transmits ;
+    :definition "x transmitted-by y: The subject x has been placed on a communication medium through the act of transmission performed by object y." .
 
 :unloads a owl:ObjectProperty ;
     rdfs:label "unloads" ;
@@ -3052,6 +3086,50 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
     rdfs:subClassOf :CollaborativeSoftware ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Business_communication> ;
     :definition "Client software to enable the process of sharing information between employees within and outside a company.  Business communication encompasses topics such as marketing, brand management, customer relations, consumer behavior, advertising, public relations, corporate communication, community engagement, reputation management, interpersonal communication, employee engagement, and event management. It is closely related to the fields of professional communication and technical communication." .
+
+:BusMessage a owl:Class ;
+    rdfs:label "Bus Message" ;
+    rdfs:subClassOf :DigitalMessage ;
+    :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
+
+:BusNetwork a owl:Class ;
+    rdfs:label "Bus Network" ;
+    skos:altLabel "Bus",
+        "Data Highway" ;
+    rdfs:subClassOf :Network ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Bus_(computing)> ;
+    :definition "An electronic communication system that links multiple components through one shared transmission medium, together with the interface hardware and link-layer signalling that govern access to that medium." .
+
+:BusNetworkFrame a owl:Class ;
+    rdfs:label "Bus Network Frame" ;
+    skos:altLabel "Bus Frame" ;
+    rdfs:subClassOf :NetworkFrame,
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :BusNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :BusMessage ] ;
+    :definition "A network frame whose layout and timing follow a bus protocol, allowing data to be exchanged across the shared bus medium." .
+
+:BusNetworkNode a owl:Class ;
+    rdfs:label "Bus Network Node" ;
+    rdfs:subClassOf :Host,
+        [ a owl:Restriction ;
+            owl:onProperty :connected-to ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :transmits ;
+            owl:someValuesFrom :BusNetworkTraffic ] ;
+    :definition "A device or logical endpoint whose interface is directly connected to a bus and exchanges data over the shared medium using the protocol implemented on that interface." .
+
+:BusNetworkTraffic a owl:Class ;
+    rdfs:label "Bus Network Traffic" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
+    :definition "The ordered flow of frames, structured by a bus protocol, that traverses the shared bus medium during operation." .
 
 :ByteSequenceEmulation a :ByteSequenceEmulation,
         owl:Class,
@@ -10292,6 +10370,18 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:isDefinedBy "https://dbpedia.org/page/Digital_media" ;
     :definition "Digital media refers to any communication media that operate in conjunction with various encoded machine-readable data formats." .
 
+:DigitalMessage a owl:Class ;
+    rdfs:label "Digital Message" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :NetworkFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :NetworkPacket ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Message_(computing)> ;
+    :definition "A discrete unit of digital communication created by a sender for one or more intended recipients. Encoded in an application-layer format, a digital message conveys semantics such as commands, data, or status and is transported inside lower-layer containers like network frames or packets." .
+
 :DigitalMultimedia a owl:Class ;
     rdfs:label "Digital Multimedia" ;
     rdfs:subClassOf :DigitalMedia ;
@@ -15647,6 +15737,16 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
             owl:someValuesFrom :NetworkFlow ] ;
     :definition "Monitors network traffic and produces summaries of data flows traversing the network." .
 
+:NetworkFrame a owl:Class ;
+    rdfs:label "Network Frame" ;
+    skos:altLabel "Frame" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :DigitalMessage ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Frame_(networking)> ;
+    :definition "A finite, self-delimited sequence of bits exchanged as one unit over a single data link. Formed by link-layer encapsulation, a frame typically begins with synchronization and control fields, carries a payload, ends with an integrity check, and is bounded from adjacent frames by explicit timing or delimiter symbols." .
+
 :NetworkInitScriptFileResource a owl:Class ;
     rdfs:label "Network Init Script File Resource" ;
     rdfs:subClassOf :InitScript,
@@ -15745,7 +15845,7 @@ Administrators collect information on network nodes in their architecture using 
     :synonym "System Discovery",
         "System Inventorying" .
 
-:NetworkPackets a owl:Class ;
+:NetworkPacket a owl:Class ;
     rdfs:label "Network Packet" ;
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_packet> ;
@@ -15845,7 +15945,7 @@ Network Resource Access Control involves managing and regulating access to resou
     rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkPackets ],
+            owl:someValuesFrom :NetworkPacket ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DomainName ],
@@ -17916,7 +18016,7 @@ The OWL languages are characterized by formal semantics. They are built upon the
     rdfs:subClassOf :File,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkPackets ] ;
+            owl:someValuesFrom :NetworkPacket ] ;
     :definition "A file which contains raw representations of collected packets." .
 
 :PacketLog a owl:Class ;
@@ -29666,7 +29766,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:label "User to User Message" ;
     skos:altLabel "Personal Message",
         "Private Message" ;
-    rdfs:subClassOf :DigitalInformationBearer,
+    rdfs:subClassOf :DigitalMessage,
         [ a owl:Restriction ;
             owl:onProperty :has-recipient ;
             owl:someValuesFrom :UserAccount ],
@@ -32225,7 +32325,7 @@ There are several sub-techniques, but this analytic focuses on Match Legitimate 
 :Reference-CarvingContiguousandFragmentedFilesWithFastObjectValidation a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Carving Contiguous and Fragmented Files with Fast Object Validation" ;
-    :has-link "https://www.sciencedirect.com/science/article/pii/S1742287607000369?viewFullText=true#sec4" ;
+    :has-link "https://www.sciencedirect.com/science/article/pii/S1742287607000369?viewFullText=true#sec4"^^xsd:anyURI ;
     :kb-abstract "“File carving” reconstructs files based on their content, rather than using metadata that points to the content. Carving is widely used for forensics and data recovery, but no file carvers can automatically reassemble fragmented files. We survey files from more than 300 hard drives acquired on the secondary market and show that the ability to reassemble fragmented files is an important requirement for forensic work. Next we analyze the file carving problem, arguing that rapid, accurate carving is best performed by a multi-tier decision problem that seeks to quickly validate or discard candidate byte strings – “objects” – from the media to be carved. Validators for the JPEG, Microsoft OLE (MSOLE) and ZIP file formats are discussed. Finally, we show how high speed validators can be used to reassemble fragmented files." ;
     :kb-author "Simson L. Garfinkel" ;
     :kb-reference-of :FileContentDecompressionChecking,
@@ -32950,7 +33050,7 @@ If a process is conducting a traversal of the directory and accessing files acco
 :Reference-FileSecurityUsingFileFormatValidation_OPSWATInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - File Security Using File Format Validation - OPSWAT Inc" ;
-    :has-link "https://patentimages.storage.googleapis.com/ba/10/83/968a6345eee505/US20200104494A1.pdf" ;
+    :has-link "https://patentimages.storage.googleapis.com/ba/10/83/968a6345eee505/US20200104494A1.pdf"^^xsd:anyURI ;
     :kb-abstract "A method for securely validating the file format type including receiving a file having a file format type, a header and a content block. The header has a header block with a description representing attributes of the actual content in the file . The content block has leading bytes representing attributes of the actual content, and actual content. Data is parsed from the description of the header block, the leading bytes and the actual content. Data from the description is compared to the data from the leading bytes, data from the leading bytes is compared to the data from the actual content, and data from the description is compared to the data from the actual content. The file format type is validated and trustable when the data from the description, the data from the leading bytes and the data from the actual content are consistent with one another." ;
     :kb-author "Benjamin Czarny, Yiyi Miao, Jianpeng Mo" ;
     :kb-organization "OPSWAT, Inc." ;
@@ -33136,7 +33236,7 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
 :Reference-GatheringEvidenceModel-DrivenSoftwareEngineeringinAutomatedDigitalForensics a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Gathering Evidence: Model-Driven Software Engineering in Automated Digital Forensics" ;
-    :has-link "https://pure.uva.nl/ws/files/1739225/132135_thesis.pdf" ;
+    :has-link "https://pure.uva.nl/ws/files/1739225/132135_thesis.pdf"^^xsd:anyURI ;
     :kb-author "van den Bos, J." ;
     :kb-reference-of :FileContentDecompressionChecking,
         :FileInternalStructureVerification,
@@ -33467,7 +33567,7 @@ This patent describes ensuring that a driver associated with the agent is initia
 :Reference-IntroductoryComputerForensics a :BookReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Introductory Computer Forensics" ;
-    :has-link "https://core.ac.uk/download/pdf/326762883.pdf" ;
+    :has-link "https://core.ac.uk/download/pdf/326762883.pdf"^^xsd:anyURI ;
     :kb-author "Xiaodong Lin" ;
     :kb-reference-of :FileMetadataValueVerification ;
     :kb-reference-title "Introductory Computer Forensics" .
@@ -33785,7 +33885,7 @@ Some examples of data inputs:
 :Reference-MethodForContentDisarmandReconstruction_OPSWATInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Method For Content Disarm and Reconstruction - OPSWAT Inc" ;
-    :has-link "https://patentimages.storage.googleapis.com/a9/40/78/713c8deb2c4c7a/US20190268352A1.pdf" ;
+    :has-link "https://patentimages.storage.googleapis.com/a9/40/78/713c8deb2c4c7a/US20190268352A1.pdf"^^xsd:anyURI ;
     :kb-abstract "A Content Disarm and Reconstruction ( CDR ) method is disclosed including a computer receiving an input file hav ing a file format configured with a structured storage. The computer disassembles the structured storage into at least one subfile . Each subfile is a stream subfile . For each subfile , the computer identifies an item in the stream subfile . The computer analyzes the item in the stream subfile for an unwanted behavior by determining an acceptability of the unwanted behavior , distinguishing a visibility of the item , and recognizing a necessity of the item . The computer , based on a result of the analyzing step , processes the item in the stream subfile resulting in a processed subfile . The computer assembles the processed subfiles into an output file having the same file format as the file format as the input file ." ;
     :kb-author "Taeil Goh, Vinh Nguyen Xuan Lam, Nhut Minh Ngo, Dung Huu Nguyen" ;
     :kb-organization "OPSWAT, Inc." ;
@@ -35984,4 +36084,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
