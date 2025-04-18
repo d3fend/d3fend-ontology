@@ -3346,7 +3346,7 @@ Considerations:
         [ a owl:Restriction ;
             owl:onProperty :hardens ;
             owl:someValuesFrom :OTController ],
-         [ a owl:Restriction ;
+        [ a owl:Restriction ;
             owl:onProperty :strengthens ;
             owl:someValuesFrom :Password ],
         [ a owl:Restriction ;
@@ -3354,7 +3354,7 @@ Considerations:
             owl:someValuesFrom :UserAccount ] ;
     :definition "Changing the default password means replacing the factory-set credentials with a strong, unique password before the device is deployed, preventing unauthorized access." ;
     :kb-article """## How it works
-Change the default password as soon as a new device is received. The default credentials are normally documented in an instruction manual that is either packaged with the device, published online through official means, or published online through unofficial means. 
+Change the default password as soon as a new device is received. The default credentials are normally documented in an instruction manual that is either packaged with the device, published online through official means, or published online through unofficial means.
 
 ## Considerations
 * These should be changed before a device is brought online so that an adversary cannot take advantage of these default credentials.
@@ -15319,7 +15319,7 @@ Administrators collect information on network nodes in their architecture using 
     :synonym "System Discovery",
         "System Inventorying" .
 
-:NetworkPackets a owl:Class ;
+:NetworkPacket a owl:Class ;
     rdfs:label "Network Packet" ;
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_packet> ;
@@ -15419,7 +15419,7 @@ Network Resource Access Control involves managing and regulating access to resou
     rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkPackets ],
+            owl:someValuesFrom :NetworkPacket ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DomainName ],
@@ -15843,6 +15843,7 @@ Additionally, after the code file is printed, it could be recovered from the sys
     rdfs:subClassOf :SystemPlatformVariable ;
     :definition "The Operating Mode designates the specific, selectable state of an OT controller that delineates its operational behavior and governs access to engineering functions, commonly including Program, Run, Remote, Test, or Stop." ;
     :synonym "Keyswitch Position" .
+
 :OperatingModeMonitoring a owl:Class ;
     rdfs:label "Operating Mode Monitoring" ;
     rdfs:subClassOf :PlatformMonitoring,
@@ -15872,7 +15873,7 @@ Many OT Controllers use key switches to change the controller into different mod
 
 The key switch should be left in the appropriate key switch position, e.g., run or remote during normal operations.
 
-Implement a key management procedure to include removing the physical key from the key switch when not in use.""" ;   
+Implement a key management procedure to include removing the physical key from the key switch when not in use.""" ;
     :kb-reference :Reference-MITREATTACKAuthorizationEnforcement,
         :Reference-TRITONMalwareRemainsThreattoGlobalCriticalInfrastructureICS .
 
@@ -16611,13 +16612,6 @@ Modbus/TCP: WRITE_SINGLE_REGISTER_EXCEPTION """ ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTDeviceException ] .
 
-:OTModifyDevicePowerEvent a owl:Class ;
-    rdfs:label "OT Device Power Event" ;
-    rdfs:subClassOf :OTCommandEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTModifyDevicePower ] .
-
 :OTDeviceStatus a owl:Class ;
     rdfs:label "OT Device Status" ;
     rdfs:subClassOf :OTInformationalMessage ;
@@ -16708,14 +16702,16 @@ BACnet/IP: DEVICE_COMMUNICATION_CONTROL """,
     rdfs:label "OT Engineering Workstation" ;
     rdfs:subClassOf :ClientComputer,
         [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :OTEngineeringSoftware ] ,
-        [ a owl:Restriction ;
             owl:onProperty :communicates-with ;
-            owl:someValuesFrom :OTController ] ;
+            owl:someValuesFrom :OTController ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :OTEngineeringSoftware ] ;
     rdfs:isDefinedBy "https://attack.mitre.org/assets/A0001/" ;
     :definition "An Engineering Workstation (EWS) is used to perform various maintenance, configuration, or diagnostics functions for a control system. The EWS will likely require dedicated application software to interface with various devices (e.g., RTUs, PLCs), and may be used to transfer data or files between the control system devices and other networks." ;
-    :synonym "EWS", "Workstation", "Transient Cyber Asset" .
+    :synonym "EWS",
+        "Transient Cyber Asset",
+        "Workstation" .
 
 :OTEstablishRemoteConnection a owl:Class ;
     rdfs:label "OT Establish Remote Connection" ;
@@ -16742,7 +16738,7 @@ BACnet/IP: BVLC_RESULT""",
 :OTEvent a owl:Class ;
     rdfs:label "OT Event" ;
     rdfs:subClassOf :DigitalEvent ;
-    :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information.".
+    :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information." .
 
 :OTGetData a owl:Class ;
     rdfs:label "OT Get Data" ;
@@ -16852,7 +16848,8 @@ DNP3: AUTHENTICATE_RESP""" ;
     :definition "Keyswitch or mode switch is the mechanism for changing the operating mode of an OT controller or device." ;
     rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en>,
         <https://www.dragos.com/blog/industry-news/value-of-plc-key-switch-monitoring/> ;
-    :synonym "Mode Switch", "Programming Key Switch" .
+    :synonym "Mode Switch",
+        "Programming Key Switch" .
 
 :OTModifyDevice a owl:Class ;
     rdfs:label "OT Modify Device" ;
@@ -16886,6 +16883,13 @@ DNP3: AUTHENTICATE_RESP""" ;
         :Reference-MODBUSApplicationProtocol,
         :Reference-OTStack,
         :Reference-ProgrammersGuidetotheBACnetCommunicationsDLL .
+
+:OTModifyDevicePowerEvent a owl:Class ;
+    rdfs:label "OT Device Power Event" ;
+    rdfs:subClassOf :OTCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDevicePower ] .
 
 :OTModifyDeviceProcessData a owl:Class ;
     rdfs:label "OT Modify Device Process Data" ;
@@ -16979,9 +16983,9 @@ Modbus/TCP: WRITE_SINGLE_REGISTER """ ;
 :OTProcessVariable a owl:Class ;
     rdfs:label "OT Process Variable" ;
     rdfs:subClassOf :OTLogicVariable ;
-    :definition "Process variables are the current actual measurement of the physical characteristics of a system. Common process variables include but are not limited to Temperature, Pressure, Level, and Flow. ";
-    skos:example "If the current temperature in a home is 82 degrees Fahrenheit, the process variable is 82 degrees." ;
-    rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> .
+    :definition "Process variables are the current actual measurement of the physical characteristics of a system. Common process variables include but are not limited to Temperature, Pressure, Level, and Flow. " ;
+    rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> ;
+    skos:example "If the current temperature in a home is 82 degrees Fahrenheit, the process variable is 82 degrees." .
 
 :OTProgramService a owl:Class ;
     rdfs:label "OT Program Service" ;
@@ -21358,8 +21362,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :RuntimeVariable ;
     :definition "Runtime variables  which may consist of memory usage, internal temperature, operating mode, clock time, scan time, hardware status, etc." ;
     rdfs:seeAlso <https://literature.rockwellautomation.com/idc/groups/literature/documents/pm/1756-pm015_-en-p.pdf>,
-        <https://www.nrc.gov/docs/ml0932/ml093290422.pdf>;
-    :synonym "System Properties", "System Data", "Configuration Resource" .
+        <https://www.nrc.gov/docs/ml0932/ml093290422.pdf> ;
+    :synonym "Configuration Resource",
+        "System Data",
+        "System Properties" .
 
 :SystemServiceSoftware a owl:Class ;
     rdfs:label "System Service Software" ;
@@ -30136,8 +30142,8 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:onProperty :restrict ;
             owl:someValuesFrom :Storage ] ;
     :definition "A physical device used to restrict configuration of a device." ;
-    rdfs:seeAlso <https://web-material3.yokogawa.com/FGP-110__5_.us.pdf>,
-        "NIST SP 800-82r3, Appendix F, SC-51 Hardware-Based Protection" .
+    rdfs:seeAlso "NIST SP 800-82r3, Appendix F, SC-51 Hardware-Based Protection",
+        <https://web-material3.yokogawa.com/FGP-110__5_.us.pdf> .
 
 :ZeroClientComputer a owl:Class ;
     rdfs:label "Zero Client Computer" ;
