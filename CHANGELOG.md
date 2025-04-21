@@ -1,4 +1,25 @@
-# D3FEND Change Log
+# D3FEND Ontology Change Log
+
+## Version - 1.1.0 - 2025-04-21
+
+ - Added initial precedence relationships between digital events. (#380)
+ - Added initial set of OT commands, events, and countermeasures. (#386)
+ - Added Bus Network concepts. (#392)
+ - Added missing tactic to CSV cleaning script. (#382)
+ - README.md now states that POSIX is required to build a distribution. (#349)
+ - Updated definitions to distinguish D3-LFAM and D3-LFP. (#367)
+ - Updated CI pipeline because of github changes.
+ - Updated D3-FE, extended and revised references. (#366)
+ - Added NIST identifier to title of new references.
+ - Extended and revised KB article for D3-FE.
+ - Resolved malformed URL for has-link assertion. (#347)
+ - Fix IRI formatting to be proper style. (#294)
+ - Corrected assertion: A d3f:TertiaryStorage device is a d3f:MemoryBlock. (#346)
+ - Defined inversse relationship: d3f:recorded-in should be owl:inverseOf d3f:records. (#343)
+ - Added Content Disarm and Reconstruct techniques. (#381)
+ - Added taxonomy for data and data-hardening techniques. (#259)
+ - Added risk properties: risk-impact and risk-likelihood. (#369)
+ - Added definitions for offensive tactics. (#352)
 
 ## Version - 1.0.0 - 2024-12-20
 
