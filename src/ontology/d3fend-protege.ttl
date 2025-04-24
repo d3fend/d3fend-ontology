@@ -20211,7 +20211,8 @@ List of known unauthorized script files or regular expression patterns must be k
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Computer_data_storage#Secondary_storage> .
 
 :SecretsVault :definition "A vault is an encrypted software container that holds sensitive information (secrets) for users/services whilst not in use, thereby protecting the secrets more effectively by centralizing them and preventing \"secret sprawl\" (when developers intentionally or unintentionally hard code secrets across various locations that end up being the target of credential harvesting by attackers, such as Git repositories). Note that although secrets often are credentials for accounts they could be various other kinds of information, such as IP addresses or configuration variables." ;
-    :kb-article """## How it works
+    :d3fend-id "D3-SV" ;
+	:kb-article """## How it works
 Vaults are typically encrypted at rest and while running in memory on a server first require authentication by the user/service before retrieving the secret. Although vaulting is not a new concept it has become increasingly more common in PAM tools to protect the accounts that privileged administrators on networks use to access endpoints and perform privileged work; keeping account credentials within a vault allows for the passwords to be automatically rotated between sessions so that the users themselves do not know the password, increasing security and mitigating misuse.
 
 ## Considerations
@@ -20222,6 +20223,54 @@ Vaults are typically encrypted at rest and while running in memory on a server f
 - The decryption keys for a vault should be stored securely such as in a software or hardward HSM or via Shamir's secret sharing""" ;
     :synonym "Hardware Security Module" ;
     rdfs:label "Secrets Vault" .
+
+:SecretsVault rdf:type owl:NamedIndividual ,
+                       :SecretsVault ;
+              :kb-reference :Reference-CredentialVaultEncryption ,
+                            :Reference-DevopsSecretsVault ,
+                            :Reference-SharedSecretVaultForApplicationsWithSingleSignOn ,
+                            :Reference-TheCyberarkDigitalVault ,
+                            :Reference-WhatIsVault ;
+              :d3fend-id "D3-SV" .
+			  
+:SecretsVault rdf:type owl:Class ;
+              rdfs:subClassOf :PlatformHardening ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :encrypts ;
+                                owl:someValuesFrom :Credential
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :encrypts ;
+                                owl:someValuesFrom :DigitalInformation
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hardens ;
+                                owl:someValuesFrom :PrivilegedUserAccount
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hardens ;
+                                owl:someValuesFrom :ServiceAccount
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hardens ;
+                                owl:someValuesFrom :UserAccount
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :may-be-accessed-by ;
+                                owl:someValuesFrom :ServiceAccount
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :may-be-accessed-by ;
+                                owl:someValuesFrom :UserAccount
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :may-be-associated-with ;
+                                owl:someValuesFrom :PasswordManager
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :may-contain ;
+                                owl:someValuesFrom :File
+                              ] .
 
 :SecurityEvent a owl:Class ;
     rdfs:label "Security Event" ;
