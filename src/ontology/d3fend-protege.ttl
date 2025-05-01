@@ -1470,30 +1470,6 @@ skos:example a owl:AnnotationProperty .
     rdfs:label "expectation-rating" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
 
-:risk-impact a owl:DatatypeProperty ;
-    rdfs:label "risk-impact" ;
-    rdfs:subPropertyOf :d3fend-data-property ;
-    :definition "Risk impact rating, expressed on a numeric scale from 1 (lowest impact) to 5 (highest impact) in the context of a 5x5 risk matrix. Impact is used here as a synonym for consequence, another popular term used in risk analysis." ;
-    rdfs:isDefinedBy <https://www.cto.mil/wp-content/uploads/2024/05/RIO-2023-2-2.pdf> ;
-    rdfs:range [
-        a rdfs:Datatype ;
-        owl:onDatatype xsd:integer ;
-        owl:withRestrictions (
-            [ xsd:minInclusive 1 ]
-            [ xsd:maxInclusive 5 ] ) ] .
-
-:risk-likelihood a owl:DatatypeProperty ;
-    rdfs:label "risk-likelihood" ;
-    rdfs:subPropertyOf :d3fend-data-property ;
-    :definition "Risk likelihood rating, expressed on a numeric scale from 1 (lowest likelihood) to 5 (highest likelihood) in the context of a 5x5 risk matrix." ;
-    rdfs:isDefinedBy <https://www.cto.mil/wp-content/uploads/2024/05/RIO-2023-2-2.pdf> ;
-    rdfs:range [
-        a rdfs:Datatype ;
-        owl:onDatatype xsd:integer ;
-        owl:withRestrictions (
-            [ xsd:minInclusive 1 ]
-            [ xsd:maxInclusive 5 ] ) ] .
-
 :has-link a owl:DatatypeProperty ;
     rdfs:label "has-link" ;
     rdfs:subPropertyOf :d3fend-kb-data-property ;
@@ -1572,6 +1548,28 @@ skos:example a owl:AnnotationProperty .
         owl:FunctionalProperty ;
     rdfs:label "rating" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
+
+:risk-impact a owl:DatatypeProperty ;
+    rdfs:label "risk-impact" ;
+    rdfs:subPropertyOf :d3fend-data-property ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:integer ;
+            owl:withRestrictions (
+                    [ xsd:maxInclusive 5 ]
+                    [ xsd:minInclusive 1 ] ) ] ;
+    rdfs:isDefinedBy <https://www.cto.mil/wp-content/uploads/2024/05/RIO-2023-2-2.pdf> ;
+    :definition "Risk impact rating, expressed on a numeric scale from 1 (lowest impact) to 5 (highest impact) in the context of a 5x5 risk matrix. Impact is used here as a synonym for consequence, another popular term used in risk analysis." .
+
+:risk-likelihood a owl:DatatypeProperty ;
+    rdfs:label "risk-likelihood" ;
+    rdfs:subPropertyOf :d3fend-data-property ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:integer ;
+            owl:withRestrictions (
+                    [ xsd:maxInclusive 5 ]
+                    [ xsd:minInclusive 1 ] ) ] ;
+    rdfs:isDefinedBy <https://www.cto.mil/wp-content/uploads/2024/05/RIO-2023-2-2.pdf> ;
+    :definition "Risk likelihood rating, expressed on a numeric scale from 1 (lowest likelihood) to 5 (highest likelihood) in the context of a 5x5 risk matrix." .
 
 :stage a owl:DatatypeProperty,
         owl:FunctionalProperty ;
@@ -17899,6 +17897,18 @@ The OWL languages are characterized by formal semantics. They are built upon the
 1. Web Ontology Language. (2023, April 23). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Web_Ontology_Language)""" ;
     :synonym "Web Ontology Language" .
 
+:PackageURL a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Package URL" ;
+    skos:altLabel "purl" ;
+    rdfs:subClassOf :URL,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :SoftwarePackage ] ;
+    rdfs:isDefinedBy <https://github.com/package-url/purl-spec/blob/main/PURL-SPECIFICATION.rst> ;
+    :definition "A package URL, or purl, is a URL used to identify a software package in a mostly universal and uniform way across programming languages, package managers, packaging conventions, tools, APIs and databases." ;
+    rdfs:seeAlso <https://github.com/package-url/purl-spec> .
+
 :PacketCaptureFile a owl:Class ;
     rdfs:label "Packet Capture File" ;
     rdfs:subClassOf :File,
@@ -28738,7 +28748,7 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Initial Access" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
-    :definition """The adversary is trying to get into your network. 
+    :definition """The adversary is trying to get into your network.
 
 Initial Access consists of techniques that use various entry vectors to gain their initial foothold within a network. Techniques used to gain a foothold include targeted spearphishing and exploiting weaknesses on public-facing web servers. Footholds gained through initial access may allow for continued access, like valid accounts and use of external remote services, or may be limited-use due to changing passwords.""" ;
     :display-order 1 .
@@ -28749,7 +28759,7 @@ Initial Access consists of techniques that use various entry vectors to gain the
     rdfs:label "Execution" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
-    :definition """The adversary is trying to run malicious code. 
+    :definition """The adversary is trying to run malicious code.
 
 Execution consists of techniques that result in adversary-controlled code running on a local or remote system. Techniques that run malicious code are often paired with techniques from all other tactics to achieve broader goals, like exploring a network or stealing data. For example, an adversary might use a remote access tool to run a PowerShell script that does Remote System Discovery.""" ;
     :display-order 2 .
@@ -28760,8 +28770,8 @@ Execution consists of techniques that result in adversary-controlled code runnin
     rdfs:label "Persistence" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
-    :definition """The adversary is trying to maintain their foothold. 
-    
+    :definition """The adversary is trying to maintain their foothold.
+
 Persistence consists of techniques that adversaries use to keep access to systems across restarts, changed credentials, and other interruptions that could cut off their access. Techniques used for persistence include any access, action, or configuration changes that let them maintain their foothold on systems, such as replacing or hijacking legitimate code or adding startup code.""" ;
     :display-order 3 .
 
@@ -35922,4 +35932,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
