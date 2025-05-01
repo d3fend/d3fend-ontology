@@ -164,36 +164,14 @@ reports/default-robot-report.txt:	build/d3fend-full.owl ## Generate d3fend-full-
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/custom-report-profile.txt \
 		--fail-on none > reports/default-robot-report.txt
-
-	@if ! grep -q "Violations:" reports/default-robot-report.txt; then \
-		echo "default-robot-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/default-robot-report.txt; \
-	else \
-		echo "default-robot-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/default-robot-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
-	
+
 
 # Note: At present some definitions are d3f:definition; most are defacto rdfs:comment
 reports/missing-d3fend-definition-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/missing-d3fend-definition-profile.txt \
 		--fail-on none > reports/missing-d3fend-definition-report.txt
-
-	@if ! grep -q "Violations:" reports/missing-d3fend-definition-report.txt; then \
-		echo "missing-d3fend-definition-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/missing-d3fend-definition-report.txt; \
-	else \
-		echo "missing-d3fend-definition-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/missing-d3fend-definition-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
 
 # Regression test, should not happen again.
@@ -201,83 +179,28 @@ reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-fu
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/bogus-direct-subclassing-of-tactic-technique-profile.txt \
 		--fail-on ERROR > reports/bogus-direct-subclassing-of-tactic-technique-report.txt
-
-	@if ! grep -q "Violations:" reports/bogus-direct-subclassing-of-tactic-technique-report.txt; then \
-		echo "bogus-direct-subclassing-of-tactic-technique-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/bogus-direct-subclassing-of-tactic-technique-report.txt;\
-	else \
-		echo "bogus-direct-subclassing-of-tactic-technique-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/bogus-direct-subclassing-of-tactic-technique-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
 
 reports/missing-attack-id-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/missing-attack-id-profile.txt \
 		--fail-on none > reports/missing-attack-id-report.txt
-
-	@if ! grep -q "Violations:" reports/missing-attack-id-report.txt; then \
-		echo "missing-attack-id-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/missing-attack-id-report.txt;\
-	else \
-		echo "missing-attack-id-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/missing-attack-id-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
 
 reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/inconsistent-iri-profile.txt \
 		--fail-on none > reports/inconsistent-iri-report.txt
-
-	@if ! grep -q "Violations:" reports/inconsistent-iri-report.txt; then \
-		echo "inconsistent-iri-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/inconsistent-iri-report.txt;\
-	else \
-		echo "inconsistent-iri-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/inconsistent-iri-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
 
 reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
 		--profile src/queries/unallowed-thing-profile.txt \
 		--fail-on ERROR > reports/unallowed-thing-report.txt
-
-	@if ! grep -q "Violations:" reports/unallowed-thing-report.txt; then \
-		echo "unallowed-thing-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/unallowed-thing-report.txt;\
-	else \
-		echo "unallowed-thing-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/unallowed-thing-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
 
 reports/missing-off-tech-artifacts-report.txt:	build/d3fend-public.owl
 	./bin/robot query --format tsv -i build/d3fend-public.owl --query src/queries/missing-off-tech-artifacts.rq reports/missing-off-tech-artifacts-report.txt
-
-	@if ! grep -q "Violations:" reports/missing-off-tech-artifacts-report.txt; then \
-		echo "missing-off-tech-artifacts-report" >> reports/report-summary.txt; \
-		echo "No Violations" >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-		rm reports/missing-off-tech-artifacts-report.txt;\
-	else \
-		echo "missing-off-tech-artifacts-report" >> reports/report-summary.txt; \
-		grep "Violations:" reports/missing-off-tech-artifacts-report.txt >> reports/report-summary.txt; \
-		echo -e "" >> reports/report-summary.txt; \
-	fi
 	$(END)
 
 builddir:
@@ -441,11 +364,44 @@ reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-defi
 	$(END)
 
 
-report-summary: 
-	make clean
-	@echo -e "Report Summary\n" >> reports/report-summary.txt
-	make reports
+REPORT_FILES = default-robot-report.txt \
+               missing-d3fend-definition-report.txt \
+               bogus-direct-subclassing-of-tactic-technique-report.txt \
+               missing-attack-id-report.txt \
+               inconsistent-iri-report.txt \
+               missing-off-tech-artifacts-report.txt
 
+
+report-summary:
+	@echo "Error | Warn | Info | Report File" > reports/report-summary.txt
+	@echo "------|------|------|-------------" >> reports/report-summary.txt
+	@> reports/temp-summary.txt
+	@for file in $(REPORT_FILES); do \
+		error_count=$$(grep -c "ERROR" reports/$$file); \
+		warn_count=$$(grep -c "WARN" reports/$$file); \
+		info_count=$$(grep -c "INFO" reports/$$file); \
+		printf "%5s | %5s | %5s | %-20s\n" "$$error_count" "$$warn_count" "$$info_count" "reports/$$file" >> reports/temp-summary.txt; \
+	done
+	@sort -k1,1nr -k2,2nr -k3,3nr reports/temp-summary.txt >> reports/report-summary.txt
+	@rm reports/temp-summary.txt
+
+	# Add logic to list reports not covered by REPORT_FILES
+	@echo "" >> reports/report-summary.txt
+	@echo "" >> reports/report-summary.txt
+	@MISSING_REPORTS=""; \
+	for file in $$(ls reports/); do \
+		if [ "$$file" != "report-summary.txt" ]; then \
+			if ! echo "$(REPORT_FILES)" | grep -w "$$file" > /dev/null; then \
+				MISSING_REPORTS="$$MISSING_REPORTS reports/$$file"; \
+			fi; \
+		fi; \
+	done; \
+	if [ -n "$$MISSING_REPORTS" ]; then \
+		echo "Reports not included in the summary:" >> reports/report-summary.txt; \
+		for file in $$MISSING_REPORTS; do \
+			echo "$$file" >> reports/report-summary.txt; \
+		done; \
+	fi
 
 distdir:
 	mkdir -p dist/public dist/private
