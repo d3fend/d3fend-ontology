@@ -1,25 +1,49 @@
 # ocsf
 
-## TODO Needs significant update 
-
-There have been significant changes to queries and Makefile.  Current
-sections only still reflect parts of steps.  For the passing moment
-RTF Code (RTFC).
+Updated and aligned to 1.4.0 (but incomplete)
  
-## Note: 
+## Notes: 
 
-Currently the Makefile has two make targets ocsf and ocsf-by-query,
-that both accomplish same outcome.  Some form of the latter will
-likely be retained.
+To run Makefile and handle enumeration matching parts of
+erestriction.rqg under development, you'll need this jar local:
+
+wget https://repo1.maven.org/maven2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar
+
+Or get a version of sparql-generate-2.1.0.jar that actually has v2.9.0
+of json-path bundled, which the one easily DL'd does not, it is at
+v2.4.0.
 
 ## Building
 The extension is generated using SPARQL-Generate.
 
-## Queries
+## Queries (listed in order of execution)
 
-### metaschema.rqg (optional)
-The metaschema contains JSON Schema for each OCSF concept. This can be
-used for validation, though at the moment it is just used for queries.
+### base.rqg
+Handles base classes and top level alignments to D3FEND classes.
+
+### categories.rqg
+Handles category classes of OCSF for completeness. May not be essential.
+
+### events.rqg
+Events are declared subclasses of d3f:DigitalEvent that are related to
+OCSF attributes. Restrictions are added later.
+
+### event.rqg
+This SPARQL-Generate function should take a source event in JSON
+and construct an owl:Class definition for it.
+
+### objects.rqg
+Objects are collections of contextually related attributes in OCSF
+that represent an entity. These object classes types should be mapped
+to equivalent classes in D3FEND wherever appropriate. 
+
+### object.rqg
+This SPARQL-Generate function should take a source object in JSON and
+construct an owl:Class definition for it. Restrictions are added
+later.
+
+### superclasses.rqg
+Creates subClassOf assertions to tie clasases together
 
 ### dictionary.rqg
 The attribute dictionary contains all available OCSF attributes.
@@ -33,37 +57,25 @@ restrictions on what properties are relevant to them.
 If the attribute is a owl:DatatypeProperty then its rdfs:range should
 be generated with the OCSF Datatype and when the class is known.
 
-### events.rqg
-Events are declared subclasses of d3f:DigitalEvent that are related to
-OCSF attributes. Restrictions are added for each related attribute.
+### erestrictions.rqg
+With all the event classes in place creates restrictions based
+on the related attributes as properties created by dictionary.rqg
 
-### objects.rqg
-Objects are collections of contextually related attributes in OCSF
-that represent an entity. These object classes types should be mapped
-to equivalent classes in D3FEND wherever appropriate. 
+### orestrictions.rqg
+With all the object classes in place creates restrictions based
+on the related attributes as properties created by dictionary.rqg
 
-### attribute.rqg
-This SPARQL-Generate function should take a source attribute in JSON
-and construct an owl:DatatypeProperty or owl:ObjectProperty based on
-the known constraints declared in OCSF via the attribute dictionary.
-
-### type.rqg
+### type.rqg (currently offline)
 This SPARQL-Generate function should take a source type in JSON
 and construct an rdfs:Datatype definition for it.
 
-### event.rqg
-This SPARQL-Generate function should take a source event in JSON
-and construct an owl:Class definition for it with restrictions based
-on the related attributes.
-
-### object.rqg
-This SPARQL-Generate function should take a source object in JSON
-and construct an owl:Class definition for it with restrictions based
-on the related attributes.
-
-### jsonschema.rqg
+### jsonschema.rqg (currently offline)
 This SPARQL-Generate function should take a source object in JSON
 Schema and construct a basic JSON Schema in RDF class representing it.
+
+### mappings.rqg (offline)
+Generates a relative handful of mappings annotated in OCSF; some are
+semantic matches.
 
 ## Output (Goal)
 Example outputs used to steer the generation toward useful RDF constructs.
@@ -93,6 +105,16 @@ ocsf:port a owl:DatatypeProperty;
 
 ```
 ### todo
+
+There have been significant changes to queries and Makefile to improve
+the overall SPARQL-Generate and make it create an OWL 2 DL
+representation of OCSF, this is still far from complete.  Current
+sections only still reflect parts of steps.  For the passing moment
+RTF Code (RTFC).
+
+The queries for type.rqg and jsonschema.rqg will need to be
+reintegrated.
+
 How to represent that an ocsf:attack can be related to a
 d3f:OffensiveTactic, d3f:OffensiveTechnique, etc. The sub-techniques
 are represented by subclasses of the top level offensive techniques
@@ -118,8 +140,9 @@ ocsf:attack rdfs:range d3f:ATTACKThing .
 
 ## Bugs
 
-* Generating multiples of the same restriction -- should this be
-  filtered with another query?
+* Fixed in this version by ordering of steps: 
+  Generating multiples of the same restriction
+  -- should this be filtered with another query?
 
 ``` turtle
 rdfs:subClassOf      [ rdf:type            owl:Restriction;

@@ -52,23 +52,36 @@ GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
               rdfs:range ?range .
 
     # Extract the enumeration list from JSON
-    # BIND( fun:JSONPath( ?attributes, "$.{attributeName}.enum") AS ?enums )
     BIND( fun:JSONPath( ?attributes, "$." + ?attributeName + ".enum") AS ?enum_object )
 
-    # All sorts of variations of key extraction using JSONPath dont' work
-    #BIND( fun:JSONPath( ?enum_object, "$.keys()") AS ?enum_keys )
-    #BIND( fun:JSONPath( ?enum_object, "$~") AS ?enum_keys )
-    # This should work "JSONPath Plus": $.attributes.activity_id.enum.*~
-    #BIND( fun:JSONPath( ?enum_object, "$.*~") AS ?enum_keys )
+    # SPARQL-Geneterate Uses Jayway JsonPath @
+    # https://github.com/json-path/JsonPath, the Jayway JsonPath
+    # Evaluator should work to pull caption/description pairs in a
+    # list (need caption string for class naming and descrption for
+    # definition construction.) And it does in web sandbox:
+    #
+    # Using ocsf 1.4.0 json from ocsf-schema/events/network/file_activity.json:
+    # https://jsonpath.fly.dev/ tool with pattern: "$.attributes.activity_id.enum.*~" on data from file_activity.json seems to work
+    # In code here, but not in tool, this pattern: "$.attributes.activity_id.enum.keys()" works.
+    #
+    # Tool online problme noted here: https://github.com/json-path/JsonPath/issues/779
+    #
+    # The online web tool is 2.9.0-SNAPSHOT 2023-04-29 02:25:36 (and json-path-2.9.0 is latest release)
+    #
+    # /!\ But unpacking the actual sparql-generate-2.1.0.jar file has manifest with json-path 2.4.0 /!\
+    #
+    # With the right lib pre-pended
+    # This works "JSONPath Plus": $.attributes.activity_id.enum.*~
+    BIND( fun:JSONPath( ?enum_object, "$.keys()") AS ?enum_keys )
 
-    BIND(
-         IF (
-	     BOUND(?enum_object),
-	     CONCAT("DEBUG1: ", ?attributeName, " | ", STR(?range), " | ", STR(?enum_object)),
-	     CONCAT("DEBUG1: ", ?attributeName, " | ", STR(?range))
-	 )
-         AS ?debug_comment1
-    )	 
+    # BIND(
+    #      IF (
+    # 	     BOUND(?enum_object),
+    # 	     CONCAT("DEBUG1: ", ?attributeName, " | ", STR(?range), " | ", STR(?enum_object)),
+    # 	     CONCAT("DEBUG1: ", ?attributeName, " | ", STR(?range))
+    # 	 )
+    #      AS ?debug_comment1
+    # )	 
     BIND(
          IF (
 	     BOUND(?enum_keys),
@@ -76,19 +89,18 @@ GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
 	     "DEBUG2 No keys extracted."
 	 )
          AS ?debug_comment2
-    )	 
-       
+    )
+    
     # Ensure the enumeration list is bound
-    # FILTER( BOUND(?enum_keys) )
+    FILTER( BOUND(?enum_keys) ) # Should filter No keys extracted
 
-    # Add OCSF implicit values (0 and 99) to the enumeration list
-    # BIND(iter:ListConcat(?enum_list, "0,99") AS ?full_enum_list)
+    # TODO Enumerate over the keys
 
-    # Construct the RDF list for owl:oneOf
-    # BIND(iter:RDFList(?full_enum_list) AS ?rdf_List)
+    # TODO Construct the RDF list for owl:oneOf
+    # Something like: BIND(iter:RDFList(?full_enum_list) AS ?rdf_List)
   } .
 
-#   ######
+#   ###### TODO
 #   # Generate owl:qualifiedCardinality restrictions for required data properties with type but no enum
 #   GENERATE {
 #     ?this rdfs:subClassOf [ a owl:Restriction ;
@@ -108,7 +120,7 @@ GENERATE <https://schema.ocsf.io/1.4.0/erestriction> ( ?source ) {
 #     FILTER( !BOUND(?enum_list) )
 #   }
 
-#   ######
+#   ###### TODO
 #   # Generate someValuesFrom restrictions for non-mandatory, non-enumerated data properties
 #   GENERATE {
 #     ?this rdfs:subClassOf [ a owl:Restriction ;

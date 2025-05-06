@@ -9,6 +9,7 @@ BASE_IRI=file://$(shell pwd)/downloads/$(OCSF_DOWNLOAD_VER)/
 # Install sparql-generate jar
 install-sparql-generate:
 	wget https://github.com/sparql-generate/sparql-generate/releases/download/2.1.0/sparql-generate-2.1.0.jar
+	wget https://repo1.maven.org/maven2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar
 
 # Put in the bin/jar directory
 install-deps: install-sparql-generate
@@ -98,10 +99,16 @@ dictionary: classes
 	java -jar sparql-generate-2.1.0.jar -q dictionary.rqg -o dataset/ocsf.ttl --append-output
 	pipenv run ttlfmt dataset/ocsf.ttl
 
+# Patched latest json-path-2.9.0.jar lib to handle enum matching
+# Unpatched the baked-in json-path library doesn't handle some enum expressions, needs latest json-path (v2.9.0) lib and logic parallel to erestrictions
+# This is temp hack to demonstrate TODO, but fetch lib here
+# wget https://repo1.maven.org/maven2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar
 erestrictions: dictionary
-	java -jar sparql-generate-2.1.0.jar -q erestrictions.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
+	java -cp json-path-2.9.0.jar:sparql-generate-2.1.0.jar fr.mines_stetienne.ci.sparql_generate.cli.SPARQLExtCli -q erestrictions.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
+# java -jar sparql-generate-2.1.0.jar -q erestrictions.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
 	pipenv run ttlfmt dataset/ocsf.ttl
 
+# TODO Complete
 orestrictions: dictionary
 	java -jar sparql-generate-2.1.0.jar -q orestrictions.rqg -o dataset/ocsf.ttl --append-output --base $(BASE_IRI)
 	pipenv run ttlfmt dataset/ocsf.ttl
@@ -109,8 +116,13 @@ orestrictions: dictionary
 # Add all restrictions
 restrictions: orestrictions erestrictions
 
+# TODO Offline/Inop while working through restrictions
+# equivalentClasses:
+# 	java -jar sparql-generate-2.1.0.jar -q mappings.rqg -o mappings/d3fend-ocsf-mappings.ttl
+
+# ocsf: base categories events objects superclasses dictionary restrictions equivalentClasses
 ocsf: base categories events objects superclasses dictionary restrictions
-# 	pipenv run ttlfmt dataset/ocsf.ttl
+	pipenv run ttlfmt dataset/ocsf.ttl
 
 # # WILL HANDLE VIA OTHER PROPERTIES, OR EXTERNAL MAPPINGS
 # # equivalentClasses:
@@ -120,9 +132,9 @@ ocsf: base categories events objects superclasses dictionary restrictions
 # Alternate method, may be out of date so check if switch over
 # NOTE: ocsf.rqg is only needed for this alternate walk, but
 # is a lot shorter than chained makefile here.
-ocsf-by-query: 
-	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o dataset/ocsf-by-query.ttl
-	pipenv run ttlfmt dataset/ocsf-by-query.ttl
+# ocsf-by-query: 
+# 	java -jar sparql-generate-2.1.0.jar -q ocsf.rqg -o dataset/ocsf-by-query.ttl
+# 	pipenv run ttlfmt dataset/ocsf-by-query.ttl
 
 clean:
 	find . -type f -name "*.ttl" -exec rm -f {} +
