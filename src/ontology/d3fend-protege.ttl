@@ -3925,7 +3925,7 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     skos:altLabel "Snapshot" ;
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Snapshot_(computer_storage)> ;
-    :definition "In computer systems, a snapshot is the state of a system at a particular point in time. " .
+    :definition "In computer systems, a snapshot is the state of a system at a particular point in time." .
 
 :Condition a owl:Class ;
     rdfs:label "Condition" ;
@@ -16898,17 +16898,30 @@ Operating System Monitoring Techniques have varied implementations including bui
             owl:onProperty :invokes ;
             owl:someValuesFrom :WriteMemory ] .
 
-:OTAbortService a owl:Class ;
-    rdfs:label "OT Abort Service" ;
-    rdfs:subClassOf :OTModifyDeviceProgramState ;
-    :definition "Command that tells the device to abort a service/program." .
+:OTAbortCommand a owl:Class ;
+    rdfs:label "OT Abort Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that tells the device to abort a service/program." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTAbortServiceEvent a owl:Class ;
-    rdfs:label "OT Abort Service Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTAbortCommandEvent a owl:Class ;
+    rdfs:label "OT Abort Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTAbortService ] .
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTAbortCommand ] .
 
 :OTActuator a owl:Class ;
     rdfs:label "OT Actuator" ;
@@ -16916,63 +16929,146 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/actuator> ;
     :definition "An OT actuator is an industrial-grade actuator optimized for operational technology (OT) environments, such as SCADA or process-control systems. It tolerates harsher conditions, meets stricter safety and reliability standards, and integrates seamlessly with ICS protocols to enable real-time mechanical motion or adjustments in production lines and critical infrastructure." .
 
-:OTChangeData a owl:Class ;
-    rdfs:label "OT Change Data" ;
-    rdfs:subClassOf :OTModifyDeviceData ;
-    rdfs:comment """BACnet/IP: ATOMIC_WRITE_FILE
-BACnet/IP: WRITE_BROADCAST_TABLE
-BACnet/IP: WRITE_GROUP  """,
-        """DNP3: WRITE
-DNP3: SAVE_CONFIG
-DNP3: ASSIGN_CLASS
-DNP3: RECORD_CURRENT_TIME """,
-        "GEMS: SaveConfig",
-        "Modbus/TCP: WRITE_FILE_RECORD  " ;
-    :definition "OT command that changes existing data on a remote device." .
+:OTAlarmMessage a owl:Class ;
+    rdfs:label "OT Alarm Message" ;
+    rdfs:subClassOf :OTDiagnosticsMessage ;
+    rdfs:comment """BACnet: acknowledgeAlarm
+BACnet: confirmedEventNotification
+BACnet: getAlarmSummary
+BACnet: unconfirmedEventNotification
+BACnet: lifeSafetyOperation
+BACnet: Abort: 1
+BACnet: Abort: 2
+BACnet: Abort: 3
+BACnet: Abort: 4
+BACnet: Abort: 5
+BACnet: Abort: 6
+BACnet: Abort: 7
+BACnet: Abort: 8
+BACnet: Abort: 9
+BACnet: Abort: 10
+BACnet: Abort: 11
+BACnet: Abort: 12 """,
+        """GE-SRTP: RETURN FAULT TABLE
+GE-SRTP: CLEAR FAULT TABLE""" ;
+    :definition "Report danger, hazards, or serious errors." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTChangeDataEvent a owl:Class ;
-    rdfs:label "OT Change Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTAlarmMessageEvent a owl:Class ;
+    rdfs:label "OT Alarm Message Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTChangeData ] .
+            owl:someValuesFrom :OTAlarmMessage ] .
 
-:OTChangeDeviceProcessData a owl:Class ;
-    rdfs:label "OT Change Device Process Data" ;
-    rdfs:subClassOf :OTModifyDeviceProcessData ;
-    rdfs:comment """BACnet/IP: WRITE_PROPERTY
-BACnet/IP: WRITE_PROPERTY_MULTIPLE
-BACnet/IP: ATOMIC_WRITE_FILE """,
-        """DNP3: INITIALIZE_DATA
-DNP3: ACTIVATE_CONFIG""",
-        """GEMS: LoadConfig
-GEMS: SetConfig""",
-        """Modbus/TCP: WRITE_MULTIPLE_COILS
-Modbus/TCP: MASK_WRITE_REGISTER
-Modbus/TCP: WRITE_MULTIPLE_REGISTERS
-Modbus/TCP: WRITE_SINGLE_COIL
-Modbus/TCP: WRITE_SINGLE_REGISTER
-Modbus/TCP: WRITE_FILE_RECORD """ ;
-    :definition "OT command that changes existing process data on a remote device." .
+:OTChangeControlProgramCommand a owl:Class ;
+    rdfs:label "OT Change Control Program Command" ;
+    rdfs:subClassOf :OTModifyControlProgramCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ] ;
+    rdfs:comment """GE-SRTP: WRITE PROGRAM BLOCK MEMORY
+GE-SRTP: CHANGE PLC CPU PRIVILEGE LEVEL
+GE-SRTP: SET CONTROL ID(CPU ID)
+GE-SRTP: PROGRAM STORE (UPLOAD FROM PLC)
+GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)
+GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
+    :definition "OT command that changes existing process data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTChangeDeviceProcessDataEvent a owl:Class ;
-    rdfs:label "OT Change Device Process Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTChangeControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Change Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTChangeDeviceProcessData ] .
-
-:OTCommand a owl:Class ;
-    rdfs:label "OT Command" ;
-    rdfs:subClassOf :OTProtocolMessage ;
-    :definition "An operational technology event that captures the occurrence of an OT command being issued, executed, or acknowledged, thereby linking a specific command action to its observable impact within a control system." .
-
-:OTCommandEvent a owl:Class ;
-    rdfs:label "OT Command Event" ;
-    rdfs:subClassOf :OTEvent,
+            owl:someValuesFrom :OTChangeControlProgramCommand ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTCommand ] .
+            owl:someValuesFrom :OTControlProgram ] .
+
+:OTChangeDataCommand a owl:Class ;
+    rdfs:label "OT Change Data Command" ;
+    rdfs:subClassOf :OTWriteCommand ;
+    rdfs:comment """BACnet: atomicWriteFile
+BACnet: writeProperty
+BACnet: writePropertyMultiple
+BACnet: write-group """,
+        """CIP: Set Attributes All
+CIP: Set Attribute List
+CIP: Set Attribute Single
+CIP: Set Member""",
+        """GE-SRTP: WRITE SYSTEM MEMORY
+GE-SRTP: WRITE TASK MEMORY """,
+        """Modbus: Write Single Coil
+Modbus: Write Single Register
+Modbus: Write Multiple Coils
+Modbus: Write Multiple Registers
+Modbus: Write File Record
+Modbus: Mask Write Register
+Modbus: Read Write Register""" ;
+    :definition "OT command that modifies existing data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTChangeDataCommandEvent a owl:Class ;
+    rdfs:label "OT Change Data Command Event" ;
+    rdfs:subClassOf :OTWriteCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTChangeDataCommand ] .
+
+:OTConnectionCommand a owl:Class ;
+    rdfs:label "OT Connection Command" ;
+    rdfs:subClassOf :OTNetworkManagementCommand ;
+    rdfs:comment """BACnet: vtOpen
+BACnet: vtClose """,
+        """ENIP: Register Session
+ENIP: Unregister Session""" ;
+    :definition "Establish a network connection with a device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTConnectionCommandEvent a owl:Class ;
+    rdfs:label "OT Connection Command Event" ;
+    rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTConnectionCommand ] .
+
+:OTControlCommand a owl:Class ;
+    rdfs:label "OT Control Command" ;
+    rdfs:subClassOf :OTProcessDataCommand ;
+    rdfs:comment """CIP: Reset
+CIP: Start
+CIP: Stop
+CIP: Create
+CIP: Delete
+CIP: Apply Attributes
+CIP: Restore
+CIP: Save """,
+        "GE-SRTP: PLC SHORT STATUS REQUEST" ;
+    :definition "Command and control the managed process." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTControlCommandEvent a owl:Class ;
+    rdfs:label "OT Control Command Event" ;
+    rdfs:subClassOf :OTProcessDataCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlCommand ] .
 
 :OTController a owl:Class ;
     rdfs:label "OT Controller" ;
@@ -17018,177 +17114,306 @@ Modbus/TCP: WRITE_FILE_RECORD """ ;
     rdfs:isDefinedBy "https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en" ;
     :definition "A control variable is the measurement of the physical condition of the device that influences the Process Variables. For example, if the Set Point of a temperature control system for a residential dwelling is 72 degrees, and the Process Variable is 82 degrees, the Control Variable for the air conditioner should be 'on.'" .
 
-:OTCreateData a owl:Class ;
-    rdfs:label "OT Create Data" ;
-    rdfs:subClassOf :OTModifyDeviceData ;
-    rdfs:comment "BACnet/IP: ADD_LIST_ELEMENT ",
-        """DNP3: FREEZE_AT_TIME
-DNP3: FREEZE_CLEAR
-DNP3: IMMED_FREEZE""" ;
-    :definition "OT command that creates data on a remote device." .
+:OTCreateDataCommand a owl:Class ;
+    rdfs:label "OT Create Data Command" ;
+    rdfs:subClassOf :OTWriteCommand ;
+    rdfs:comment """BACnet: addListElement
+BACnet: createObject""",
+        "CIP: Insert Member" ;
+    :definition "OT command that creates data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTCreateDataEvent a owl:Class ;
-    rdfs:label "OT Create Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTCreateDataCommandEvent a owl:Class ;
+    rdfs:label "OT Create Data Command Event" ;
+    rdfs:subClassOf :OTWriteCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTCreateData ] .
+            owl:someValuesFrom :OTCreateDataCommand ] .
 
-:OTCreateNewDeviceProcessData a owl:Class ;
-    rdfs:label "OT Create New Device Process Data" ;
-    rdfs:subClassOf :OTModifyDeviceProcessData ;
-    rdfs:comment "BACnet/IP: CREATE_OBJECT " ;
-    :definition "OT command that creates process data on a remote device." .
+:OTCreateNewControlProgramCommand a owl:Class ;
+    rdfs:label "OT Create New Control Program Command" ;
+    rdfs:subClassOf :OTModifyControlProgramCommand ;
+    rdfs:comment """GE-SRTP: WRITE PROGRAM BLOCK MEMORY
+GE-SRTP: SET CONTROL ID(CPU ID)
+GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)
+GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
+    :definition "OT command that creates process data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTCreateNewDeviceProcessDataEvent a owl:Class ;
-    rdfs:label "OT Create New Device Process Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTCreateNewControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Create New Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTCreateNewDeviceProcessData ] .
-
-:OTDeleteData a owl:Class ;
-    rdfs:label "OT Delete Data" ;
-    rdfs:subClassOf :OTModifyDeviceData ;
-    rdfs:comment """BACnet/IP: REMOVE_LIST_ELEMENT
-BACnet/IP: DELETE_FOREIGN_DEVICE_TABLE_ENTRY """,
-        "DNP3: DELETE_FILE" ;
-    :definition "OT command that removes existing data on a remote device." .
-
-:OTDeleteDataEvent a owl:Class ;
-    rdfs:label "OT Delete Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OTControlProgram ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDeleteData ] .
+            owl:someValuesFrom :OTCreateNewControlProgramCommand ] .
 
-:OTDeleteDeviceProcessData a owl:Class ;
-    rdfs:label "OT Delete Device Process Data" ;
-    rdfs:subClassOf :OTModifyDeviceProcessData ;
-    rdfs:comment "BACnet/IP: DELETE_OBJECT " ;
-    :definition "OT command that removes existing process data on a remote device." .
+:OTDebugCommand a owl:Class ;
+    rdfs:label "OT Debug Command" ;
+    rdfs:subClassOf :OTDiagnosticsMessage ;
+    rdfs:comment """BACnet: getEnrollmentSummary
+BACnet: confirmed-audit-notification
+BACnet: audit-log-query
+BACnet: unconfirmed-audit-notification """,
+        """Modbus: Get Comm. Event Log
+Modbus: Return Query Data
+Modbus: Clear Counters
+Modbus: Get Comm. Event Counters""" ;
+    :definition "Investigate or analyze the current state of the system." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTDeleteDeviceProcessDataEvent a owl:Class ;
-    rdfs:label "OT Delete Device Process Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTDebugCommandEvent a owl:Class ;
+    rdfs:label "OT Debug Command Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDeleteDeviceProcessData ] .
+            owl:someValuesFrom :OTDebugCommand ] .
 
-:OTDeviceAcknowledge a owl:Class ;
-    rdfs:label "OT Device Acknowledge" ;
-    rdfs:subClassOf :OTInformationalMessage ;
-    rdfs:comment """BACnet/IP: ACKNOWLEDGE_ALARM
-DNP3: ACK
-DNP3: RESPONSE""" ;
-    :definition "A device's acknowledgment of a message, not being a response." .
+:OTDeleteControlProgramCommand a owl:Class ;
+    rdfs:label "OT Delete Control Program Command" ;
+    rdfs:subClassOf :OTModifyControlProgramCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ] ;
+    :definition "OT command that removes existing process data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTDeviceAcknowledgeEvent a owl:Class ;
-    rdfs:label "OT Device Acknowledge Event" ;
-    rdfs:subClassOf :OTInformationalMessageEvent,
+:OTDeleteControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Delete Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDeviceAcknowledge ] .
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeleteControlProgramCommand ] .
+
+:OTDeleteDataCommand a owl:Class ;
+    rdfs:label "OT Delete Data Command" ;
+    rdfs:subClassOf :OTWriteCommand ;
+    rdfs:comment """BACnet: removeListElement
+BACnet: deleteObject""" ;
+    :definition "OT command that removes data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTDeleteDataCommandEvent a owl:Class ;
+    rdfs:label "OT Delete Data Command Event" ;
+    rdfs:subClassOf :OTWriteCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeleteDataCommand ] .
+
+:OTDeviceConfigurationCommand a owl:Class ;
+    rdfs:label "OT Device Configuration Command" ;
+    rdfs:subClassOf :OTDeviceManagementMessage ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        """GE-SRTP: READ PROGRAM MEMORY
+GE-SRTP: WRITE PROGRAM BLOCK MEMORY
+GE-SRTP: CHANGE PLC CPU PRIVILEGE LEVEL
+GE-SRTP: SET CONTROL ID(CPU ID)
+GE-SRTP: SET PLC (RUN VS STOP)
+GE-SRTP: PROGRAM STORE (UPLOAD FROM PLC)
+GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)
+GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
+    :definition "Configure or administer managed devices." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTDeviceConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Device Configuration Command Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceConfigurationCommand ] .
+
+:OTDeviceDescriptionMessage a owl:Class ;
+    rdfs:label "OT Device Description Message" ;
+    rdfs:subClassOf :OTDeviceManagementMessage ;
+    rdfs:comment """ENIP: List Services
+ENIP: List Interfaces """,
+        """GE-SRTP: RETURN CONTROL PROGRAM NAMES
+GE-SRTP: RETURN CONTROLLER TYPE AND ID INFORMATION""" ;
+    :definition "Describe features, abilities, or performance of system components." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTDeviceDescriptionMessageEvent a owl:Class ;
+    rdfs:label "OT Device Description Message Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceDescriptionMessage ] .
 
 :OTDeviceException a owl:Class ;
-    rdfs:label "OT Device Exception" ;
-    rdfs:subClassOf :OTInformationalMessage ;
-    rdfs:comment """BACnet/IP: UNCONFIRMED_EVENT_NOTIFICATION
-BACnet/IP: CONFIRMED_EVENT_NOTIFICATION """,
-        """DNP3: Support for Analog Input Events
-DNP3: Support for Analog Output Events
-DNP3: Support for Binary Input Events
-DNP3: Support for Binary Output Events
-DNP3: Support for Counter Events
-DNP3: Support for Double-Bit Binary Events
-DNP3: Support for Frozen Analog Inputs
-DNP3: Support for Frozen Counter Events
-DNP3: Support for Frozen Counters
-DNP3: Identification of Support for User-Specific Attributes""",
-        "GEMS: ErrorResponse",
-        """Modbus/TCP: MASK_WRITE_REGISTER_EXCEPTION
-Modbus/TCP: READ_COILS_EXCEPTION
-Modbus/TCP: READ_DISCRETE_INPUTS_EXCEPTION
-Modbus/TCP: READ_EXCEPTION_STATUS_EXCEPTION
-Modbus/TCP: READ_FIFO_QUEUE_EXCEPTION
-Modbus/TCP: READ_FILE_RECORD_EXCEPTION
-Modbus/TCP: READ_HOLDING_REGISTERS_EXCEPTION
-Modbus/TCP: READ_INPUT_REGISTERS_EXCEPTION
-Modbus/TCP: READ_WRITE_MULTIPLE_REGISTERS_EXCEPTION
-Modbus/TCP: WRITE_FILE_RECORD_EXCEPTION
-Modbus/TCP: WRITE_MULTIPLE_COILS_EXCEPTION
-Modbus/TCP: WRITE_MULTIPLE_REGISTERS_EXCEPTION
-Modbus/TCP: WRITE_SINGLE_COIL_EXCEPTION
-Modbus/TCP: WRITE_SINGLE_REGISTER_EXCEPTION """ ;
-    :definition "Response to a message when the incoming message cannot be parsed correctly, or another exception is raised in the message’s execution or request." .
+    rdfs:label "OT Exception Message" ;
+    rdfs:subClassOf :OTDiagnosticsMessage ;
+    rdfs:comment """BACnet: Reject: 1
+BACnet: Reject: 2
+BACnet: Reject: 3
+BACnet: Reject: 4
+BACnet: Reject: 5
+BACnet: Reject: 6
+BACnet: Reject: 7
+BACnet: Reject: 8
+BACnet: Reject: 9
+BACnet: Reject: 10 """,
+        """Modbus: Read Exception Status
+Modbus: Exception: Illegal Function
+Modbus: Exception: Illegal Data Address
+Modbus: Exception: Illegal Data Value
+Modbus: Exception: Slave Device Failure
+Modbus: Exception: Acknowledge
+Modbus: Exception: Slave Device Busy
+Modbus: Exception: Memory Parity Error
+Modbus: Exception: Gateway Path Unavailable
+Modbus: Exception: Gateway Target Device Failed to Respond""" ;
+    :definition "An unknown or anomalous condition occurred in the system." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
 :OTDeviceExceptionEvent a owl:Class ;
-    rdfs:label "OT Device Exception Event" ;
-    rdfs:subClassOf :OTInformationalMessageEvent,
+    rdfs:label "OT Exception Message Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTDeviceException ] .
 
-:OTDeviceStatus a owl:Class ;
-    rdfs:label "OT Device Status" ;
-    rdfs:subClassOf :OTInformationalMessage ;
-    rdfs:comment """BACnet/IP: SUBSCRIBE_COV
-BACnet/IP: SUBSCRIBE_COV_PROPERTY
-BACnet/IP: UNCONFIRMED_COV_NOTIFICATION
-BACnet/IP: UNCONFIRMED_COV_NOTIFICATION_MULTIPLE
-BACnet/IP: CONFIRMED_COV_NOTIFICATION
-BACnet/IP: VT_DATA
-BACnet/IP: CONFIRMED_TEXT_MESSAGE
-BACnet/IP: UNCONFIRMED_TEXT_MESSAGE
-BACnet/IP: CONFIRMED_PRIVATE_TRANSFER
-BACnet/IP: UNCONFIRMED_PRIVATE_TRANSFER
-BACnet/IP: UTC_TIME_SYNCHRONIZATION """,
-        """DNP3: DISABLE_UNSOLICITED
-DNP3: ENABLE_UNSOLICITED
-DNP3: DELAY_MEASURE
-DNP3: Local Timing Accuracy
-DNP3: DNP3 Subset and Conformance
-DNP3: Duration of Time Accuracy
-DNP3: CONFIRM
-DNP3: CONFIRMED_USER_DATA""",
-        """GEMS: PingMessage
-GEMS: AsyncStatus""" ;
-    :definition "A subscribed device status update message containing configuration, or I/O data." .
+:OTDeviceFirmwareCommand a owl:Class ;
+    rdfs:label "OT Firmware Command" ;
+    rdfs:subClassOf :OTDeviceManagementMessage ;
+    :definition "Interact with the software responsible for low-level control of the system." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTDeviceStatusEvent a owl:Class ;
-    rdfs:label "OT Device Status Event" ;
-    rdfs:subClassOf :OTInformationalMessageEvent,
+:OTDeviceFirmwareCommandEvent a owl:Class ;
+    rdfs:label "OT Firmware Command Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDeviceStatus ] .
+            owl:someValuesFrom :OTDeviceFirmwareCommand ] .
 
-:OTDisconnectRemoteConnection a owl:Class ;
-    rdfs:label "OT Disconnect Remote Connection" ;
-    rdfs:subClassOf :OTManageRemoteConnection ;
-    rdfs:comment """BACnet/IP: VT_CLOSE
-BACnet/IP: DEVICE_COMMUNICATION_CONTROL """,
-        "GEMS: Disconnect",
-        "Modbus/TCP: RESET_COMM_LINK " ;
-    :definition "The Disconnect Request message is sent to the message receiver to indicate that the transmitter is terminating its TCP socket." .
+:OTDeviceIdentificationMessage a owl:Class ;
+    rdfs:label "OT Device Identification Message" ;
+    rdfs:subClassOf :OTDeviceManagementMessage ;
+    rdfs:comment """BACnet: i-Am
+BACnet: i-Have
+BACnet: who-Has
+BACnet: who-Is """,
+        "ENIP: List Identity ",
+        """Modbus: Read Device Identification
+Modbus: Report Slave ID""" ;
+    :definition "Identify devices on the network." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTDisconnectRemoteConnectionEvent a owl:Class ;
-    rdfs:label "OT Disconnect Remote Connection Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTDeviceIdentificationMessageEvent a owl:Class ;
+    rdfs:label "OT Device Identification Message Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDisconnectRemoteConnection ] .
+            owl:someValuesFrom :OTDeviceIdentificationMessage ] .
 
-:OTDownloadData a owl:Class ;
-    rdfs:label "OT Download Data" ;
-    rdfs:subClassOf :OTGetData ;
-    :definition "Copies a file from one file device to another file device connected to the same PC." .
+:OTDeviceManagementMessage a owl:Class ;
+    rdfs:label "OT Device Management Message" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "Manage devices and their configurations." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTDownloadDataEvent a owl:Class ;
-    rdfs:label "OT Download Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTDeviceManagementMessageEvent a owl:Class ;
+    rdfs:label "OT Device Management Message Event" ;
+    rdfs:subClassOf :OTEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDownloadData ] .
+            owl:someValuesFrom :OTDeviceManagementMessage ] .
+
+:OTDiagnosticsMessage a owl:Class ;
+    rdfs:label "OT Diagnostics Message" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "Relay error, exception, alarm, or log information." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTDiagnosticsMessageEvent a owl:Class ;
+    rdfs:label "OT Diagnostics Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDiagnosticsMessage ] .
+
+:OTDisconnectRemoteConnectionCommand a owl:Class ;
+    rdfs:label "OT Disconnect Remote Connection Command" ;
+    rdfs:subClassOf :OTConnectionCommand ;
+    :definition "The Disconnect Request message is sent to the message receiver to indicate that the transmitter is terminating its TCP socket." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTDisconnectRemoteConnectionCommandEvent a owl:Class ;
+    rdfs:label "OT Disconnect Remote Connection Command Event" ;
+    rdfs:subClassOf :OTConnectionCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDisconnectRemoteConnectionCommand ] .
+
+:OTDownloadControlProgramCommand a owl:Class ;
+    rdfs:label "OT Download Control Program Command" ;
+    rdfs:subClassOf :OTModifyControlProgramCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ] ;
+    rdfs:comment """GE-SRTP: PROGRAM STORE (UPLOAD FROM PLC)
+GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)""" ;
+    :definition "OT command that loads process data onto a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://attack.mitre.org/techniques/T0843/>,
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> ;
+    :synonym "OT Program Download" .
+
+:OTDownloadControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Download Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDownloadControlProgramCommand ] .
 
 :OTEmbeddedComputer a owl:Class ;
     rdfs:label "OT Embedded Computer" ;
@@ -17218,86 +17443,55 @@ BACnet/IP: DEVICE_COMMUNICATION_CONTROL """,
         "Transient Cyber Asset",
         "Workstation" .
 
-:OTEstablishRemoteConnection a owl:Class ;
-    rdfs:label "OT Establish Remote Connection" ;
-    rdfs:subClassOf :OTManageRemoteConnection ;
-    rdfs:comment """BACnet/IP: VT_OPEN
-BACnet/IP: DEVICE_COMMUNICATION_CONTROL
-BACnet/IP: SECURE_BVLL
-BACnet/IP: BVLC_RESULT""",
-        "GEMS: ConnectionRequest",
-        "Modbus/TCP: RESET_COMM_LINK: " ;
-    :definition "Used to establish an TCP/IP Connection to the target device." .
+:OTErrorMessage a owl:Class ;
+    rdfs:label "OT Error Message" ;
+    rdfs:subClassOf :OTDiagnosticsMessage ;
+    rdfs:comment """BACnet: Error: 1
+BACnet: Error: 2
+BACnet: Error: 3
+BACnet: Error: 4
+BACnet: Error: 5
+BACnet: Error: 6
+BACnet: Error: 7
+BACnet: Error: 8""" ;
+    :definition "An anticipated, reproducible defect occurred within the system." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTEstablishRemoteConnectionEvent a owl:Class ;
-    rdfs:label "OT Establish Remote Connection Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTErrorMessageEvent a owl:Class ;
+    rdfs:label "OT Error Message Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTEstablishRemoteConnection ] .
+            owl:someValuesFrom :OTErrorMessage ] .
+
+:OTEstablishRemoteConnectionCommand a owl:Class ;
+    rdfs:label "OT Establish Remote Connection Command" ;
+    rdfs:subClassOf :OTConnectionCommand ;
+    :definition " Used to establish an TCP/IP Connection to the target device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTEstablishRemoteConnectionCommandEvent a owl:Class ;
+    rdfs:label "OT Establish Remote Connection Command Event" ;
+    rdfs:subClassOf :OTConnectionCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTEstablishRemoteConnectionCommand ] .
 
 :OTEvent a owl:Class ;
-    rdfs:label "OT Event" ;
-    rdfs:subClassOf :DigitalEvent ;
+    rdfs:label "OT Command Event",
+        "OT Event",
+        [] ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information." .
-
-:OTGetData a owl:Class ;
-    rdfs:label "OT Get Data" ;
-    rdfs:subClassOf :OTCommand ;
-    :definition "Request data from a remote device." .
-
-:OTGetDataEvent a owl:Class ;
-    rdfs:label "OT Get Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTGetData ] .
-
-:OTHardwareStatus a owl:Class ;
-    rdfs:label "OT Hardware Status" ;
-    rdfs:subClassOf :OTReadDeviceStatus ;
-    :definition "OT command that requests the status of the hardware of a remote device." .
-
-:OTHardwareStatusEvent a owl:Class ;
-    rdfs:label "OT Hardware Status Event" ;
-    rdfs:subClassOf :OTCommandEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTHardwareStatus ] .
-
-:OTIdentifyDevice a owl:Class ;
-    rdfs:label "OT Identify Device" ;
-    rdfs:subClassOf :OTManageRemoteConnection ;
-    rdfs:comment """BACnet/IP: I_AM
-BACnet/IP: WHO_IS
-BACnet/IP: AUTHENTICATE
-BACnet/IP: REQUEST_KEY """,
-        """DNP3: LINK_STATUS
-DNP3: REQUEST_LINK_STATUS
-DNP3: RESET_LINK_STATES
-DNP3: TEST_LINK_STATES
-DNP3: AUTHENTICATE_REQ
-DNP3: AUTHENTICATE_RESP""" ;
-    :definition "Request the identification of a remote device." .
-
-:OTIdentifyDeviceEvent a owl:Class ;
-    rdfs:label "OT Identify Device Event" ;
-    rdfs:subClassOf :OTCommandEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTIdentifyDevice ] .
-
-:OTInformationalMessage a owl:Class ;
-    rdfs:label "OT Informational Message" ;
-    rdfs:subClassOf :OTProtocolMessage ;
-    :definition "Messages sent by remote devices not individually initiated by a request." .
-
-:OTInformationalMessageEvent a owl:Class ;
-    rdfs:label "OT Informational Message Event" ;
-    rdfs:subClassOf :OTEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTInformationalMessage ] .
 
 :OTIOModule a owl:Class ;
     rdfs:label "OT I/O Module" ;
@@ -17319,18 +17513,6 @@ DNP3: AUTHENTICATE_RESP""" ;
     rdfs:subClassOf :RuntimeVariable ;
     :definition "A variable which directly affects a program running on an OT controller, involving an OT Process." .
 
-:OTManageRemoteConnection a owl:Class ;
-    rdfs:label "OT Manage Remote Connection" ;
-    rdfs:subClassOf :OTCommand ;
-    :definition "Manage remote connection with a device." .
-
-:OTManageRemoteConnectionEvent a owl:Class ;
-    rdfs:label "OT Manage Remote Connection Event" ;
-    rdfs:subClassOf :OTCommandEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTManageRemoteConnection ] .
-
 :OTModeSwitch a owl:Class ;
     rdfs:label "OT Mode Switch" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -17344,77 +17526,99 @@ DNP3: AUTHENTICATE_RESP""" ;
     :synonym "Mode Switch",
         "Programming Key Switch" .
 
-:OTModifyDevice a owl:Class ;
-    rdfs:label "OT Modify Device" ;
-    rdfs:subClassOf :OTCommand ;
-    :definition "Modify the power, memory, configuration, or process data of a remote device." .
+:OTModifyControlProgramCommand a owl:Class ;
+    rdfs:label "OT Modify Control Program Command" ;
+    rdfs:subClassOf :OTModifyDeviceConfigurationCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ] ;
+    rdfs:comment """GE-SRTP: WRITE PROGRAM BLOCK MEMORY
+GE-SRTP: CHANGE PLC CPU PRIVILEGE LEVEL
+GE-SRTP: SET CONTROL ID(CPU ID)
+GE-SRTP: PROGRAM STORE (UPLOAD FROM PLC)
+GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)
+GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
+    :definition "OT command that adds, removes, or changes, process data on a remote device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTModifyDeviceData a owl:Class ;
-    rdfs:label "OT Modify Device Data" ;
-    rdfs:subClassOf :OTModifyDevice ;
-    :definition "OT command that modifies the data stored on a remote device." .
-
-:OTModifyDeviceDataEvent a owl:Class ;
-    rdfs:label "OT Modify Device Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTModifyControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Modify Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceConfigurationCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTModifyDeviceData ] .
-
-:OTModifyDeviceEvent a owl:Class ;
-    rdfs:label "OT Modify Device Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OTControlProgram ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTModifyDevice ] .
+            owl:someValuesFrom :OTModifyControlProgramCommand ] .
 
-:OTModifyDevicePower a owl:Class ;
-    rdfs:label "OT Modify Device Power" ;
-    rdfs:subClassOf :OTModifyDevice ;
-    :definition "Modifies the power state of a device." .
+:OTModifyDeviceConfigurationCommand a owl:Class ;
+    rdfs:label "OT Modify Device Configuration Command" ;
+    rdfs:subClassOf :OTDeviceConfigurationCommand ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        """GE-SRTP: WRITE PROGRAM BLOCK MEMORY
+GE-SRTP: CHANGE PLC CPU PRIVILEGE LEVEL
+GE-SRTP: SET CONTROL ID(CPU ID)
+GE-SRTP: SET PLC (RUN VS STOP)
+GE-SRTP: PROGRAM STORE (UPLOAD FROM PLC)
+GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)
+GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
+    :definition "Modify device configuration." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTModifyDevicePowerEvent a owl:Class ;
-    rdfs:label "OT Device Power Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTModifyDeviceConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Modify Device Configuration Command Event" ;
+    rdfs:subClassOf :OTDeviceConfigurationCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTModifyDevicePower ] .
+            owl:someValuesFrom :OTModifyDeviceConfigurationCommand ] .
 
-:OTModifyDeviceProcessData a owl:Class ;
-    rdfs:label "OT Modify Device Process Data" ;
-    rdfs:subClassOf :OTModifyDevice ;
-    :definition "OT command that modifies the process data of a remote device, such as variables." .
+:OTModifyDeviceOperatingModeCommand a owl:Class ;
+    rdfs:label "OT Modify Device Operating Mode Command" ;
+    rdfs:subClassOf :OTModifyDeviceConfigurationCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Modifies the running state of an application or program on a device." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTModifyDeviceProcessDataEvent a owl:Class ;
-    rdfs:label "OT Modify Device Process Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTModifyDeviceOperatingModeCommandEvent a owl:Class ;
+    rdfs:label "OT Modify Device Operating Mode Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceConfigurationCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTModifyDeviceProcessData ] .
-
-:OTModifyDeviceProgramState a owl:Class ;
-    rdfs:label "OT Modify Device Program State" ;
-    rdfs:subClassOf :OTModifyDevice ;
-    rdfs:comment """BACnet/IP: WRITE_PROPERTY
-BACnet/IP: WRITE_PROPERTY_MULTIPLE """,
-        """DNP3: SELECT
-DNP3: OPERATE
-DNP3: DIRECT_OPERATE
-DNP3: DIRECT_OPERATE_NR""",
-        "GEMS: Directive",
-        """Modbus/TCP: WRITE_MULTIPLE_COILS
-Modbus/TCP: MASK_WRITE_REGISTER
-Modbus/TCP: WRITE_MULTIPLE_REGISTERS
-Modbus/TCP: WRITE_SINGLE_COIL
-Modbus/TCP: WRITE_SINGLE_REGISTER """ ;
-    :definition "Modifies the running state of an application or program on a device." .
-
-:OTModifyDeviceProgramStateEvent a owl:Class ;
-    rdfs:label "OT Modify Device Program State Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTModifyDeviceProgramState ] .
+            owl:someValuesFrom :OTModifyDeviceOperatingModeCommand ] .
+
+:OTNetworkManagementCommand a owl:Class ;
+    rdfs:label "OT Network Management Command" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "Manage message routing or network connection mechanisms." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTNetworkManagementCommandEvent a owl:Class ;
+    rdfs:label "OT Network Management Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTNetworkManagementCommand ] .
 
 :OTNetworkTraffic a owl:Class ;
     rdfs:label "OT Network Traffic" ;
@@ -17424,31 +17628,30 @@ Modbus/TCP: WRITE_SINGLE_REGISTER """ ;
             owl:someValuesFrom :OTProtocolMessage ] ;
     :definition "Network traffic generated by operational technology devices, e.g. programmable logic controllers" .
 
-:OTParameterStatus a owl:Class ;
-    rdfs:label "OT Parameter Status" ;
-    rdfs:subClassOf :OTReadDeviceStatus ;
-    rdfs:comment "BACnet/IP: GET_ALARM_SUMMARY",
-        "Modbus/TCP: READ_EXCEPTION_STATUS " ;
-    :definition "OT command that requests parameter status data of a remote device often in an ASCII or boolean list." .
+:OTPauseCommand a owl:Class ;
+    rdfs:label "OT Pause Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that tells the device to pause a service/program." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTParameterStatusEvent a owl:Class ;
-    rdfs:label "OT Parameter Status Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTPauseCommandEvent a owl:Class ;
+    rdfs:label "OT Pause Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTParameterStatus ] .
-
-:OTPauseService a owl:Class ;
-    rdfs:label "OT Pause Service" ;
-    rdfs:subClassOf :OTModifyDeviceProgramState ;
-    :definition "Command that tells the device to safely pause a service/program." .
-
-:OTPauseServiceEvent a owl:Class ;
-    rdfs:label "OT Pause Service Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTPauseService ] .
+            owl:someValuesFrom :OTPauseCommand ] .
 
 :OTPowerSupply a owl:Class ;
     rdfs:label "OT Power Supply" ;
@@ -17457,6 +17660,22 @@ Modbus/TCP: WRITE_SINGLE_REGISTER """ ;
     rdfs:seeAlso <https://ieeexplore.ieee.org/servlet/opac?punumber=4116785> ;
     skos:example "Phoenix Contact QUINT, Eaton PSG, and many controller-branded power supplies." .
 
+:OTProcessDataCommand a owl:Class ;
+    rdfs:label "OT Process Data Command" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "Manage data associated with a controlled process." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTProcessDataCommandEvent a owl:Class ;
+    rdfs:label "OT Process Data Command Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProcessDataCommand ] .
+
 :OTProcessVariable a owl:Class ;
     rdfs:label "OT Process Variable" ;
     rdfs:subClassOf :OTLogicVariable ;
@@ -17464,185 +17683,255 @@ Modbus/TCP: WRITE_SINGLE_REGISTER """ ;
     rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> ;
     skos:example "If the current temperature in a home is 82 degrees Fahrenheit, the process variable is 82 degrees." .
 
-:OTProgramService a owl:Class ;
-    rdfs:label "OT Program Service" ;
-    rdfs:subClassOf :OTModifyDeviceProgramState ;
-    :definition "Command that places the controller in a mode capable of reprogramming logic. This may or may not stop the program." .
+:OTProgramModeCommand a owl:Class ;
+    rdfs:label "OT Program Mode Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that places the controller in a mode capable of reprogramming logic. This may or may not stop the program." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTProgramServiceEvent a owl:Class ;
-    rdfs:label "OT Program Service Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTProgramModeCommandEvent a owl:Class ;
+    rdfs:label "OT Program Mode Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTProgramService ] .
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProgramModeCommand ] .
+
+:OTProprietaryMessage a owl:Class ;
+    rdfs:label "OT Proprietary Message" ;
+    rdfs:subClassOf :OTProtocolMessage ;
+    :definition "Vendor specific and may not be publicly documented, or values left for device specific configuration." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTProprietaryMessageEvent a owl:Class ;
+    rdfs:label "OT Proprietary Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProprietaryMessage ] .
 
 :OTProtocolMessage a owl:Class ;
     rdfs:label "OT Protocol Message" ;
-    rdfs:subClassOf :Command ;
+    rdfs:subClassOf :DigitalMessage ;
     :definition "Packets generated by an operational technology protocol contain an OT protocol message" .
 
-:OTReadDeviceConfigurationData a owl:Class ;
-    rdfs:label "OT Read Device Configuration Data" ;
-    rdfs:subClassOf :OTGetData ;
-    rdfs:comment """BACnet/IP: READ_BROADCAST_TABLE
-BACnet/IP: READ_FOREIGN_DEVICE_TABLE """,
-        """DNP3: Secure Authentication Version
-DNP3: Device Manufacturer Hardware Version
-DNP3: Device Manufacturer Name
-DNP3: Device Manufacturer Product Name and Model
-DNP3: Device Manufacturer Software Version
-DNP3: Device Serial Number
-DNP3: User-Assigned Device Name
-DNP3: User-Assigned ID Code or Number
-DNP3: User-Assigned Location Name""",
-        """GEMS: GetConfig
-GEMS: GetConfigList""",
-        """Modbus/TCP: REPORT_SLAVE_ID
-Modbus/TCP: READ_DEVICE_IDENTIFICATION
-Modbus/TCP: REPORT_LOCAL_ADDRESS """ ;
-    :definition "OT command that requests configuration or identification data of a remote device." .
+:OTReadCommand a owl:Class ;
+    rdfs:label "OT Read Command" ;
+    rdfs:subClassOf :OTProcessDataCommand ;
+    rdfs:comment """BACnet: confirmedCOVNotification
+BACnet: subscribeCOV
+BACnet: atomicReadFile
+BACnet: readProperty
+BACnet: readPropertyConditional
+BACnet: readPropertyMultiple
+BACnet: unconfirmedCOVNotification
+BACnet: readRange
+BACnet: subscribeCOVProperty
+BACnet: getEventInformation
+BACnet: subscribe-cov-property-multiple
+BACnet: confirmed-cov-notification-multiple
+BACnet: unconfirmed-cov-notification-multiple """,
+        """CIP: Get Attributes All
+CIP: Get Attribute List
+CIP: Get Attribute Single
+CIP: Find Next Object Instance
+CIP: Get Member """,
+        """GE-SRTP: READ SYSTEM MEMORY
+GE-SRTP: READ TASK MEMORY """,
+        """Modbus: Read Coils
+Modbus: Read Discrete Inputs
+Modbus: Read Holding Registers
+Modbus: Read Input Registers
+Modbus: Read File Record
+Modbus: Read FIFO Queue""" ;
+    :definition "Read or retrieve data." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTReadDeviceConfigurationDataEvent a owl:Class ;
-    rdfs:label "OT Read Device Configuration Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTReadCommandEvent a owl:Class ;
+    rdfs:label "OT Read Command Event" ;
+    rdfs:subClassOf :OTProcessDataCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTReadDeviceConfigurationData ] .
+            owl:someValuesFrom :OTReadCommand ] .
 
-:OTReadDeviceData a owl:Class ;
-    rdfs:label "OT Read Device Data" ;
-    rdfs:subClassOf :OTGetData ;
-    rdfs:comment """Modbus/TCP: DIAGNOSTICS
-DNP3: Non-Specific All Attributes Request
-DNP3: List of Attribute Variations""" ;
-    :definition "OT command that requests configuration or status details of a remote device. " .
+:OTReadDeviceConfigurationDataCommand a owl:Class ;
+    rdfs:label "OT Read Device Configuration Command" ;
+    rdfs:subClassOf :OTDeviceConfigurationCommand ;
+    rdfs:comment "BACnet: deviceCommunicationControl",
+        "GE-SRTP: READ PROGRAM MEMORY" ;
+    :definition "Read device configuration." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTReadDeviceDataEvent a owl:Class ;
-    rdfs:label "OT Read Device Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTReadDeviceConfigurationDataCommandEvent a owl:Class ;
+    rdfs:label "OT Read Device Configuration Command Event" ;
+    rdfs:subClassOf :OTDeviceConfigurationCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTReadDeviceData ] .
+            owl:someValuesFrom :OTReadDeviceConfigurationDataCommand ] .
 
-:OTReadDeviceMemory a owl:Class ;
-    rdfs:label "OT Read Device Memory" ;
-    rdfs:subClassOf :OTGetData ;
-    :definition "Reads the contents of the specified number of consecutive memory area." .
+:OTReadFileCommand a owl:Class ;
+    rdfs:label "OT Read File Command" ;
+    rdfs:subClassOf :OTReadCommand ;
+    rdfs:comment "BACnet: atomicReadFile",
+        "Modbus: Read File Record" ;
+    :definition "Reads data in specified chuncks or the contents of a specified file stored in the file device connected to the PC." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTReadDeviceMemoryEvent a owl:Class ;
-    rdfs:label "OT Read Device Memory Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTReadFileCommandEvent a owl:Class ;
+    rdfs:label "OT Read File Command Event" ;
+    rdfs:subClassOf :OTReadCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTReadDeviceMemory ] .
+            owl:someValuesFrom :OTReadFileCommand ] .
 
-:OTReadDeviceStatus a owl:Class ;
-    rdfs:label "OT Read Device Status" ;
-    rdfs:subClassOf :OTGetData ;
-    rdfs:comment """BACnet/IP: I_HAVE
-BACnet/IP: WHO_HAS
-BACnet/IP: GET_ENROLLMENT_SUMMARY
-BACnet/IP: GET_EVENT_INFORMATION
-BACnet/IP: LIFE_SAFETY_OPERATION
-""" ;
-    :definition "OT command that requests device hardware, state, or parameter status data." .
+:OTReadSetValueCommand a owl:Class ;
+    rdfs:label "OT Read Value Command" ;
+    rdfs:subClassOf :OTReadCommand ;
+    rdfs:comment """BACnet: confirmedCOVNotification
+BACnet: subscribeCOV
+BACnet: readProperty
+BACnet: readPropertyConditional
+BACnet: readPropertyMultiple
+BACnet: unconfirmedCOVNotification
+BACnet: readRange
+BACnet: subscribeCOVProperty
+BACnet: getEventInformation
+BACnet: subscribe-cov-property-multiple
+BACnet: confirmed-cov-notification-multiple
+BACnet: unconfirmed-cov-notification-multiple """,
+        """CIP: Get Attributes All
+CIP: Get Attribute List
+CIP: Get Attribute Single
+CIP: Find Next Object Instance
+CIP: Get Member """,
+        """GE-SRTP: READ SYSTEM MEMORY
+GE-SRTP: READ TASK MEMORY """,
+        """Modbus: Read Coils
+Modbus: Read Discrete Inputs
+Modbus: Read Holding Registers
+Modbus: Read Input Registers
+Modbus: Read FIFO Queue""" ;
+    :definition "Reads the contents of the specified number of consecutive parameter areawords starting from the specified word." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTReadDeviceStatusEvent a owl:Class ;
-    rdfs:label "OT Read Device Status Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTReadSetValueCommandEvent a owl:Class ;
+    rdfs:label "OT Read Value Command Event" ;
+    rdfs:subClassOf :OTReadCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTReadDeviceStatus ] .
+            owl:someValuesFrom :OTReadSetValueCommand ] .
 
-:OTReadFile a owl:Class ;
-    rdfs:label "OT Read File" ;
-    rdfs:subClassOf :OTReadDeviceMemory ;
-    rdfs:comment "BACnet/IP: ATOMIC_READ_FILE ",
-        """DNP3: GET_FILE_INFO
-DNP3: OPEN_FILE
-DNP3: ABORT_FILE
-DNP3: CLOSE_FILE
-DNP3: AUTHENTICATE_FILE""",
-        "Modbus/TCP: READ_FILE_RECORD " ;
-    :definition "Reads the contents of a specified  file stored in the file device connected to the PC." .
+:OTReadTimeCommand a owl:Class ;
+    rdfs:label "OT Read Time Command" ;
+    rdfs:subClassOf :OTTimeCommand ;
+    rdfs:comment "example" ;
+    :definition "Read timing mechanisms." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTReadFileEvent a owl:Class ;
-    rdfs:label "OT Read File Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTReadTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Read Time Command Event" ;
+    rdfs:subClassOf :OTTimeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTReadFile ] .
+            owl:someValuesFrom :OTReadTimeCommand ] .
 
-:OTReadSetValue a owl:Class ;
-    rdfs:label "OT Read Set Value" ;
-    rdfs:subClassOf :OTReadDeviceMemory ;
-    rdfs:comment """BACnet/IP: READ_PROPERTY
-BACnet/IP: READ_PROPERTY_CONDITIONAL
-BACnet/IP: READ_PROPERTY_MULTIPLE
-BACnet/IP: READ_RANGE
-BACnet/IP: REGISTER_FOREIGN_DEVICE """,
-        """DNP3: Number of Analog Input Points
-DNP3: Number of Analog Outputs
-DNP3: Number of Binary Input Points
-DNP3: Number of Binary Outputs
-DNP3: Number of Counter Points
-DNP3: Number of Double-Bit Binary Input Points
-DNP3: Number of Master-Defined Data Set Properties
-DNP3: Number of Master-Defined Data Sets
-DNP3: Number of Outstation-Defined Data Set Properties
-DNP3: Number of Outstation-Defined Data Sets
-DNP3: Number of Security Statistics per Association
-DNP3: Maximum Analog Input Index
-DNP3: Maximum Analog Output Index
-DNP3: Maximum Binary Input Index
-DNP3: Maximum Binary Output Index
-DNP3: Maximum Counter Index
-DNP3: Maximum Double-Bit Binary Index
-DNP3: Maximum Number of Binary Output Objects per Request
-DNP3: Maximum Receive Fragment Size
-DNP3: Maximum Transmit Fragment Size""",
-        "GEMS: GetTargets",
-        """Modbus/TCP: READ_COILS
-Modbus/TCP: READ_DISCRETE_INPUTS
-Modbus/TCP: READ_FIFO_QUEUE
-Modbus/TCP: READ_HOLDING_REGISTERS
-Modbus/TCP: READ_INPUT_REGISTERS
-Modbus/TCP: READ_WRITE_MULTIPLE_REGISTERS""" ;
-    :definition "Reads the contents of the specified number of consecutive parameter areawords starting from the specified word." .
+:OTRemoteModeCommand a owl:Class ;
+    rdfs:label "OT Remote Mode Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that places the controller in a mode capable of receiving read/write communication from a networked entity." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTReadSetValueEvent a owl:Class ;
-    rdfs:label "OT Read Set Value Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTRemoteModeCommandEvent a owl:Class ;
+    rdfs:label "OT Remote Mode Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTReadSetValue ] .
-
-:OTRemoteService a owl:Class ;
-    rdfs:label "OT Remote Service" ;
-    rdfs:subClassOf :OTModifyDeviceProgramState ;
-    :definition "Command that places the controller in a mode capable of receiving read/write communication from a networked entity." .
-
-:OTRemoteServiceEvent a owl:Class ;
-    rdfs:label "OT Remote Service Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTRemoteService ] .
+            owl:someValuesFrom :OTRemoteModeCommand ] .
 
-:OTRestartDevice a owl:Class ;
-    rdfs:label "OT Restart Device" ;
-    rdfs:subClassOf :OTModifyDevicePower ;
-    rdfs:comment "BACnet/IP: REINITIALIZE_DEVICE",
-        """DNP3: COLD_RESTART
-DNP3: WARM_RESTART """ ;
-    :definition "Modifies the power state of a device causing to to shut down and then reboot." .
+:OTRunCommand a owl:Class ;
+    rdfs:label "OT Run Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that tells the device to start or resume a service/program." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTRestartDeviceEvent a owl:Class ;
-    rdfs:label "OT Restart Device Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTRunCommandEvent a owl:Class ;
+    rdfs:label "OT Run Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTRestartDevice ] .
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTRunCommand ] .
+
+:OTSecurityCommand a owl:Class ;
+    rdfs:label "OT Security Command" ;
+    rdfs:subClassOf :OTNetworkManagementCommand ;
+    rdfs:comment """BACnet: authenticate
+BACnet: requestKey """,
+        "GE-SRTP: PROGRAMMER LOGON" ;
+    :definition "Ensure confidentiality, integrity, or availability of system information." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTSecurityCommandEvent a owl:Class ;
+    rdfs:label "OT Security Command Event" ;
+    rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTSecurityCommand ] .
 
 :OTSensor a owl:Class ;
     rdfs:label "OT Sensor" ;
@@ -17664,90 +17953,165 @@ DNP3: WARM_RESTART """ ;
         <https://www.omega.com/en-us/pressure-measurement/pressure-gauges/c/analog-pressure-gauges>,
         <https://www.vega.com/en-us/products/product-catalog/level/radar> .
 
-:OTServiceStatus a owl:Class ;
-    rdfs:label "OT Service Status" ;
-    rdfs:subClassOf :OTReadDeviceStatus ;
-    rdfs:comment """Modbus/TCP: GET_COMM_EVENT_COUNTER
-Modbus/TCP: GET_COMM_EVENT_LOG """ ;
-    :definition "OT command that requests the state or service status of a remote device." .
+:OTSetTimeCommand a owl:Class ;
+    rdfs:label "OT Set Time Command" ;
+    rdfs:subClassOf :OTTimeCommand ;
+    rdfs:comment "example" ;
+    :definition "Set timing mechanisms." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTServiceStatusEvent a owl:Class ;
-    rdfs:label "OT Service Status Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTSetTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Set Time Command Event" ;
+    rdfs:subClassOf :OTTimeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTServiceStatus ] .
+            owl:someValuesFrom :OTSetTimeCommand ] .
 
-:OTStartService a owl:Class ;
-    rdfs:label "OT Start Service" ;
-    rdfs:subClassOf :OTModifyDeviceProgramState ;
-    rdfs:comment """DNP3: INITIALIZE_APPL
-DNP3: START_APPL""" ;
-    :definition "Command that tells the device to start or resume a service/program." .
+:OTStopCommand a owl:Class ;
+    rdfs:label "OT Stop Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that tells the device to stop a service/program." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTStartServiceEvent a owl:Class ;
-    rdfs:label "OT Start Service Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTStopCommandEvent a owl:Class ;
+    rdfs:label "OT Stop Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTStartService ] .
-
-:OTStopService a owl:Class ;
-    rdfs:label "OT Stop Service" ;
-    rdfs:subClassOf :OTModifyDeviceProgramState ;
-    rdfs:comment "DNP3: STOP_APPL" ;
-    :definition "Command that tells the device to stop a service/program." .
-
-:OTStopServiceEvent a owl:Class ;
-    rdfs:label "OT Stop Service Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTStopService ] .
+            owl:someValuesFrom :OTStopCommand ] .
 
-:OTUpdateDeviceFirmware a owl:Class ;
-    rdfs:label "OT Update Device" ;
-    rdfs:subClassOf :OTModifyDevice,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :OTModifyDeviceProgramState ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :OTModifyDevicePower ] ;
-    rdfs:comment """Modbus/TCP: FIRMWARE_REPLACEMENT
-""" ;
-    :definition "Commands the target device to update its firmware, often requiring the halt of application/program processes and monitoring,  taking the device offline temporarily." .
+:OTSyncronizeTimeCommand a owl:Class ;
+    rdfs:label "OT Syncronize Time Command" ;
+    rdfs:subClassOf :OTTimeCommand ;
+    rdfs:comment "example" ;
+    :definition "Used to align timing mechanisms." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTUpdateDeviceFirmwareEvent a owl:Class ;
-    rdfs:label "OT Update Device Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTSyncronizeTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Syncronize Time Command Event" ;
+    rdfs:subClassOf :OTTimeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTUpdateDeviceFirmware ] .
+            owl:someValuesFrom :OTSyncronizeTimeCommand ] .
 
-:OTUploadData a owl:Class ;
-    rdfs:label "OT Upload Data" ;
-    rdfs:subClassOf :OTModifyDeviceData ;
-    :definition "OT command that uploads data to a remote device." .
+:OTTestCommand a owl:Class ;
+    rdfs:label "OT Test Command" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
+    rdfs:comment """BACnet: deviceCommunicationControl
+BACnet: reinitializeDevice """,
+        "GE-SRTP: SET PLC (RUN VS STOP)" ;
+    :definition "Command that tells the device to run a program in Test mode." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
 
-:OTUploadDataEvent a owl:Class ;
-    rdfs:label "OT Upload Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+:OTTestCommandEvent a owl:Class ;
+    rdfs:label "OT Test Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTUploadData ] .
-
-:OTUploadDeviceProcessData a owl:Class ;
-    rdfs:label "OT Upload Device Process Data" ;
-    rdfs:subClassOf :OTModifyDeviceProcessData ;
-    :definition "OT command that uploads process data to a remote device." .
-
-:OTUploadDeviceProcessDataEvent a owl:Class ;
-    rdfs:label "OT Upload Device Process Data Event" ;
-    rdfs:subClassOf :OTCommandEvent,
+            owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTUploadDeviceProcessData ] .
+            owl:someValuesFrom :OTTestCommand ] .
+
+:OTTimeCommand a owl:Class ;
+    rdfs:label "OT Time Command" ;
+    rdfs:subClassOf :OTDeviceManagementMessage ;
+    rdfs:comment """BACnet: timeSynchronization
+BACnet: utcTimeSynchronization """,
+        """GE-SRTP: SET PLC TIME/DATE
+GE-SRTP: RETURN PLC TIME/DATE""" ;
+    :definition "Read, set, or calculate timing mechanisms." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Time Command Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTTimeCommand ] .
+
+:OTTransportConfigurationCommand a owl:Class ;
+    rdfs:label "OT Transport Configuration Command" ;
+    rdfs:subClassOf :OTNetworkManagementCommand ;
+    rdfs:comment "Modbus: Encapsulated Interface Transport" ;
+    :definition "Configure transport settings for a communication channel." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTTransportConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Transport Configuration Command Event" ;
+    rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTTransportConfigurationCommand ] .
+
+:OTWriteCommand a owl:Class ;
+    rdfs:label "OT Write Command" ;
+    rdfs:subClassOf :OTProcessDataCommand ;
+    rdfs:comment """BACnet: atomicWriteFile
+BACnet: addListElement
+BACnet: removeListElement
+BACnet: createObject
+BACnet: deleteObject
+BACnet: writeProperty
+BACnet: writePropertyMultiple
+BACnet: write-group """,
+        """CIP: Set Attributes All
+CIP: Set Attribute List
+CIP: Set Attribute Single
+CIP: Set Member
+CIP: Insert Member
+CIP: Remove Member """,
+        """GE-SRTP: WRITE SYSTEM MEMORY
+GE-SRTP: WRITE TASK MEMORY """,
+        """Modbus: Write Single Coil
+Modbus: Write Single Register
+Modbus: Write Multiple Coils
+Modbus: Write Multiple Registers
+Modbus: Write File Record
+Modbus: Mask Write Register
+Modbus: Read Write Register""" ;
+    :definition "Write or store data." ;
+    rdfs:seeAlso "The MITRE Corporation OT Stack",
+        <https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf>,
+        <https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf>,
+        <https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf> .
+
+:OTWriteCommandEvent a owl:Class ;
+    rdfs:label "OT Write Command Event" ;
+    rdfs:subClassOf :OTProcessDataCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTWriteCommand ] .
 
 :OutboundInternetDNSLookupTraffic a owl:Class ;
     rdfs:label "Outbound Internet DNS Lookup Traffic" ;
@@ -21899,19 +22263,19 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetNetworkTraffic ] ;
     :attack-id "T1001" ;
-    :definition "Adversaries may obfuscate command and control traffic to make it more difficult to detect.(Citation: Bitdefender FunnyDream Campaign November 2020) Command and control (C2) communications are hidden (but not necessarily encrypted) in an attempt to make the content more difficult to discover or decipher and to make the communication less conspicuous and hide commands from being seen. This encompasses many methods, such as adding junk data to protocol traffic, using steganography, or impersonating legitimate protocols. " .
+    :definition "Adversaries may obfuscate command and control traffic to make it more difficult to detect.(Citation: Bitdefender FunnyDream Campaign November 2020) Command and control (C2) communications are hidden (but not necessarily encrypted) in an attempt to make the content more difficult to discover or decipher and to make the communication less conspicuous and hide commands from being seen. This encompasses many methods, such as adding junk data to protocol traffic, using steganography, or impersonating legitimate protocols." .
 
 :T1001.001 a owl:Class ;
     rdfs:label "Junk Data" ;
     rdfs:subClassOf :T1001 ;
     :attack-id "T1001.001" ;
-    :definition "Adversaries may add junk data to protocols used for command and control to make detection more difficult.(Citation: FireEye SUNBURST Backdoor December 2020) By adding random or meaningless data to the protocols used for command and control, adversaries can prevent trivial methods for decoding, deciphering, or otherwise analyzing the traffic. Examples may include appending/prepending data with junk characters or writing junk characters between significant characters. " .
+    :definition "Adversaries may add junk data to protocols used for command and control to make detection more difficult.(Citation: FireEye SUNBURST Backdoor December 2020) By adding random or meaningless data to the protocols used for command and control, adversaries can prevent trivial methods for decoding, deciphering, or otherwise analyzing the traffic. Examples may include appending/prepending data with junk characters or writing junk characters between significant characters." .
 
 :T1001.002 a owl:Class ;
     rdfs:label "Steganography" ;
     rdfs:subClassOf :T1001 ;
     :attack-id "T1001.002" ;
-    :definition "Adversaries may use steganographic techniques to hide command and control traffic to make detection efforts more difficult. Steganographic techniques can be used to hide data in digital messages that are transferred between systems. This hidden information can be used for command and control of compromised systems. In some cases, the passing of files embedded using steganography, such as image or document files, can be used for command and control. " .
+    :definition "Adversaries may use steganographic techniques to hide command and control traffic to make detection efforts more difficult. Steganographic techniques can be used to hide data in digital messages that are transferred between systems. This hidden information can be used for command and control of compromised systems. In some cases, the passing of files embedded using steganography, such as image or document files, can be used for command and control." .
 
 :T1001.003 a owl:Class ;
     rdfs:label "Protocol or Service Impersonation" ;
@@ -22309,7 +22673,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Cloud Services" ;
     rdfs:subClassOf :T1021 ;
     :attack-id "T1021.007" ;
-    :definition "Adversaries may log into accessible cloud services within a compromised environment using [Valid Accounts](https://attack.mitre.org/techniques/T1078) that are synchronized with or federated to on-premises user identities. The adversary may then perform management actions or access cloud-hosted resources as the logged-on user. " .
+    :definition "Adversaries may log into accessible cloud services within a compromised environment using [Valid Accounts](https://attack.mitre.org/techniques/T1078) that are synchronized with or federated to on-premises user identities. The adversary may then perform management actions or access cloud-hosted resources as the logged-on user." .
 
 :T1021.008 a owl:Class ;
     rdfs:label "Direct Cloud VM Connections" ;
@@ -22351,7 +22715,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :RemovableMediaDevice ] ;
     :attack-id "T1025" ;
-    :definition "Adversaries may search connected removable media on computers they have compromised to find files of interest. Sensitive data can be collected from any removable media (optical disk drive, USB memory, etc.) connected to the compromised system prior to Exfiltration. Interactive command shells may be in use, and common functionality within [cmd](https://attack.mitre.org/software/S0106) may be used to gather information. " .
+    :definition "Adversaries may search connected removable media on computers they have compromised to find files of interest. Sensitive data can be collected from any removable media (optical disk drive, USB memory, etc.) connected to the compromised system prior to Exfiltration. Interactive command shells may be in use, and common functionality within [cmd](https://attack.mitre.org/software/S0106) may be used to gather information." .
 
 :T1026 a owl:Class ;
     owl:deprecated true ;
@@ -22365,7 +22729,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Obfuscated Files or Information" ;
     rdfs:subClassOf :DefenseEvasionTechnique ;
     :attack-id "T1027" ;
-    :definition "Adversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit. This is common behavior that can be used across different platforms and the network to evade defenses. " .
+    :definition "Adversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit. This is common behavior that can be used across different platforms and the network to evade defenses." .
 
 :T1027.001 a owl:Class ;
     rdfs:label "Binary Padding" ;
@@ -22374,7 +22738,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :ExecutableBinary ] ;
     :attack-id "T1027.001" ;
-    :definition "Adversaries may use binary padding to add junk data and change the on-disk representation of malware. This can be done without affecting the functionality or behavior of a binary, but can increase the size of the binary beyond what some security tools are capable of handling due to file size limitations. " .
+    :definition "Adversaries may use binary padding to add junk data and change the on-disk representation of malware. This can be done without affecting the functionality or behavior of a binary, but can increase the size of the binary beyond what some security tools are capable of handling due to file size limitations." .
 
 :T1027.002 a owl:Class ;
     rdfs:label "Software Packing" ;
@@ -22453,7 +22817,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "LNK Icon Smuggling" ;
     rdfs:subClassOf :T1027 ;
     :attack-id "T1027.012" ;
-    :definition "Adversaries may smuggle commands to download malicious payloads past content filters by hiding them within otherwise seemingly benign windows shortcut files. Windows shortcut files (.LNK) include many metadata fields, including an icon location field (also known as the `IconEnvironmentDataBlock`) designed to specify the path to an icon file that is to be displayed for the LNK file within a host directory. " .
+    :definition "Adversaries may smuggle commands to download malicious payloads past content filters by hiding them within otherwise seemingly benign windows shortcut files. Windows shortcut files (.LNK) include many metadata fields, including an icon location field (also known as the `IconEnvironmentDataBlock`) designed to specify the path to an icon file that is to be displayed for the LNK file within a host directory." .
 
 :T1027.013 a owl:Class ;
     rdfs:label "Encrypted/Encoded File" ;
@@ -22634,7 +22998,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Masquerade File Type" ;
     rdfs:subClassOf :T1036 ;
     :attack-id "T1036.008" ;
-    :definition "Adversaries may masquerade malicious payloads as legitimate files through changes to the payload's formatting, including the file’s signature, extension, and contents. Various file types have a typical standard format, including how they are encoded and organized. For example, a file’s signature (also known as header or magic bytes) is the beginning bytes of a file and is often used to identify the file’s type. For example, the header of a JPEG file,  is <code> 0xFF 0xD8</code> and the file extension is either `.JPE`, `.JPEG` or `.JPG`. " .
+    :definition "Adversaries may masquerade malicious payloads as legitimate files through changes to the payload's formatting, including the file’s signature, extension, and contents. Various file types have a typical standard format, including how they are encoded and organized. For example, a file’s signature (also known as header or magic bytes) is the beginning bytes of a file and is often used to identify the file’s type. For example, the header of a JPEG file,  is <code> 0xFF 0xD8</code> and the file extension is either `.JPE`, `.JPEG` or `.JPG`." .
 
 :T1036.009 a owl:Class ;
     rdfs:label "Break Process Trees" ;
@@ -22813,7 +23177,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetEncryptedTraffic ] ;
     :attack-id "T1048.001" ;
-    :definition "Adversaries may steal data by exfiltrating it over a symmetrically encrypted network protocol other than that of the existing command and control channel. The data may also be sent to an alternate network location from the main command and control server. " .
+    :definition "Adversaries may steal data by exfiltrating it over a symmetrically encrypted network protocol other than that of the existing command and control channel. The data may also be sent to an alternate network location from the main command and control server." .
 
 :T1048.002 a owl:Class ;
     rdfs:label "Exfiltration Over Asymmetric Encrypted Non-C2 Protocol" ;
@@ -22825,7 +23189,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetEncryptedTraffic ] ;
     :attack-id "T1048.002" ;
-    :definition "Adversaries may steal data by exfiltrating it over an asymmetrically encrypted network protocol other than that of the existing command and control channel. The data may also be sent to an alternate network location from the main command and control server. " .
+    :definition "Adversaries may steal data by exfiltrating it over an asymmetrically encrypted network protocol other than that of the existing command and control channel. The data may also be sent to an alternate network location from the main command and control server." .
 
 :T1048.003 a owl:Class ;
     rdfs:label "Exfiltration Over Unencrypted Non-C2 Protocol" ;
@@ -22843,7 +23207,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-invoke ;
             owl:someValuesFrom :GetOpenSockets ] ;
     :attack-id "T1049" ;
-    :definition "Adversaries may attempt to get a listing of network connections to or from the compromised system they are currently accessing or from remote systems by querying for information over the network. " .
+    :definition "Adversaries may attempt to get a listing of network connections to or from the compromised system they are currently accessing or from remote systems by querying for information over the network." .
 
 :T1050 a owl:Class ;
     owl:deprecated true ;
@@ -22925,7 +23289,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :PropertyListFile ] ;
     rdfs:comment "This technique is deprecated due to the inaccurate usage. The report cited did not provide technical detail as to how the malware interacted directly with launchd rather than going through known services. Other system services are used to interact with launchd rather than launchd being used by itself. " ;
     :attack-id "T1053.004" ;
-    :definition "This technique is deprecated due to the inaccurate usage. The report cited did not provide technical detail as to how the malware interacted directly with launchd rather than going through known services. Other system services are used to interact with launchd rather than launchd being used by itself. " .
+    :definition "This technique is deprecated due to the inaccurate usage. The report cited did not provide technical detail as to how the malware interacted directly with launchd rather than going through known services. Other system services are used to interact with launchd rather than launchd being used by itself." .
 
 :T1053.005 a owl:Class ;
     rdfs:label "Scheduled Task" ;
@@ -22962,7 +23326,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DefenseEvasionTechnique,
         :PrivilegeEscalationTechnique ;
     :attack-id "T1055" ;
-    :definition "Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges. Process injection is a method of executing arbitrary code in the address space of a separate live process. Running code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges. Execution via process injection may also evade detection from security products since the execution is masked under a legitimate process. " .
+    :definition "Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges. Process injection is a method of executing arbitrary code in the address space of a separate live process. Running code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges. Execution via process injection may also evade detection from security products since the execution is masked under a legitimate process." .
 
 :T1055.001 a owl:Class ;
     rdfs:label "Dynamic-link Library Injection" ;
@@ -22986,7 +23350,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-add ;
             owl:someValuesFrom :ObjectFile ] ;
     :attack-id "T1055.002" ;
-    :definition "Adversaries may inject portable executables (PE) into processes in order to evade process-based defenses as well as possibly elevate privileges. PE injection is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject portable executables (PE) into processes in order to evade process-based defenses as well as possibly elevate privileges. PE injection is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.003 a owl:Class ;
     rdfs:label "Thread Execution Hijacking" ;
@@ -22998,7 +23362,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-add ;
             owl:someValuesFrom :ExecutableBinary ] ;
     :attack-id "T1055.003" ;
-    :definition "Adversaries may inject malicious code into hijacked processes in order to evade process-based defenses as well as possibly elevate privileges. Thread Execution Hijacking is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into hijacked processes in order to evade process-based defenses as well as possibly elevate privileges. Thread Execution Hijacking is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.004 a owl:Class ;
     rdfs:label "Asynchronous Procedure Call" ;
@@ -23007,7 +23371,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-invoke ;
             owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T1055.004" ;
-    :definition "Adversaries may inject malicious code into processes via the asynchronous procedure call (APC) queue in order to evade process-based defenses as well as possibly elevate privileges. APC injection is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into processes via the asynchronous procedure call (APC) queue in order to evade process-based defenses as well as possibly elevate privileges. APC injection is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.005 a owl:Class ;
     rdfs:label "Thread Local Storage" ;
@@ -23016,7 +23380,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :invokes ;
             owl:someValuesFrom :SystemCall ] ;
     :attack-id "T1055.005" ;
-    :definition "Adversaries may inject malicious code into processes via thread local storage (TLS) callbacks in order to evade process-based defenses as well as possibly elevate privileges. TLS callback injection is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into processes via thread local storage (TLS) callbacks in order to evade process-based defenses as well as possibly elevate privileges. TLS callback injection is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.008 a owl:Class ;
     rdfs:label "Ptrace System Calls" ;
@@ -23025,7 +23389,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :invokes ;
             owl:someValuesFrom :SystemCall ] ;
     :attack-id "T1055.008" ;
-    :definition "Adversaries may inject malicious code into processes via ptrace (process trace) system calls in order to evade process-based defenses as well as possibly elevate privileges. Ptrace system call injection is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into processes via ptrace (process trace) system calls in order to evade process-based defenses as well as possibly elevate privileges. Ptrace system call injection is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.009 a owl:Class ;
     rdfs:label "Proc Memory" ;
@@ -23037,13 +23401,13 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-modify ;
             owl:someValuesFrom :OperatingSystemFile ] ;
     :attack-id "T1055.009" ;
-    :definition "Adversaries may inject malicious code into processes via the /proc filesystem in order to evade process-based defenses as well as possibly elevate privileges. Proc memory injection is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into processes via the /proc filesystem in order to evade process-based defenses as well as possibly elevate privileges. Proc memory injection is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.011 a owl:Class ;
     rdfs:label "Extra Window Memory Injection" ;
     rdfs:subClassOf :T1055 ;
     :attack-id "T1055.011" ;
-    :definition "Adversaries may inject malicious code into process via Extra Window Memory (EWM) in order to evade process-based defenses as well as possibly elevate privileges. EWM injection is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into process via Extra Window Memory (EWM) in order to evade process-based defenses as well as possibly elevate privileges. EWM injection is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.012 a owl:Class ;
     rdfs:label "Process Hollowing" ;
@@ -23061,7 +23425,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T1055.013" ;
-    :definition "Adversaries may inject malicious code into process via process doppelgänging in order to evade process-based defenses as well as possibly elevate privileges. Process doppelgänging is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into process via process doppelgänging in order to evade process-based defenses as well as possibly elevate privileges. Process doppelgänging is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.014 a owl:Class ;
     rdfs:label "VDSO Hijacking" ;
@@ -23073,7 +23437,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :invokes ;
             owl:someValuesFrom :SystemCall ] ;
     :attack-id "T1055.014" ;
-    :definition "Adversaries may inject malicious code into processes via VDSO hijacking in order to evade process-based defenses as well as possibly elevate privileges. Virtual dynamic shared object (vdso) hijacking is a method of executing arbitrary code in the address space of a separate live process. " .
+    :definition "Adversaries may inject malicious code into processes via VDSO hijacking in order to evade process-based defenses as well as possibly elevate privileges. Virtual dynamic shared object (vdso) hijacking is a method of executing arbitrary code in the address space of a separate live process." .
 
 :T1055.015 a owl:Class ;
     rdfs:label "ListPlanting" ;
@@ -23203,7 +23567,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Device CLI" ;
     rdfs:subClassOf :T1059 ;
     :attack-id "T1059.008" ;
-    :definition "Adversaries may abuse scripting or built-in command line interpreters (CLI) on network devices to execute malicious command and payloads. The CLI is the primary means through which users and administrators interact with the device in order to view system information, modify device operations, or perform diagnostic and administrative functions. CLIs typically contain various permission levels required for different commands. " .
+    :definition "Adversaries may abuse scripting or built-in command line interpreters (CLI) on network devices to execute malicious command and payloads. The CLI is the primary means through which users and administrators interact with the device in order to view system information, modify device operations, or perform diagnostic and administrative functions. CLIs typically contain various permission levels required for different commands." .
 
 :T1059.009 a owl:Class ;
     rdfs:label "Cloud API" ;
@@ -23405,7 +23769,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Clear Mailbox Data" ;
     rdfs:subClassOf :T1070 ;
     :attack-id "T1070.008" ;
-    :definition "Adversaries may modify mail and mail application data to remove evidence of their activity. Email applications allow users and other programs to export and delete mailbox data via command line tools or use of APIs. Mail application data can be emails, email metadata, or logs generated by the application or operating system, such as export requests. " .
+    :definition "Adversaries may modify mail and mail application data to remove evidence of their activity. Email applications allow users and other programs to export and delete mailbox data via command line tools or use of APIs. Mail application data can be emails, email metadata, or logs generated by the application or operating system, such as export requests." .
 
 :T1070.009 a owl:Class ;
     rdfs:label "Clear Persistence" ;
@@ -23442,7 +23806,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetWebTraffic ] ;
     :attack-id "T1071.001" ;
-    :definition "Adversaries may communicate using application layer protocols associated with web traffic to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. " .
+    :definition "Adversaries may communicate using application layer protocols associated with web traffic to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server." .
 
 :T1071.002 a owl:Class ;
     rdfs:label "File Transfer Protocols" ;
@@ -23451,7 +23815,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetFileTransferTraffic ] ;
     :attack-id "T1071.002" ;
-    :definition "Adversaries may communicate using application layer protocols associated with transferring files to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. " .
+    :definition "Adversaries may communicate using application layer protocols associated with transferring files to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server." .
 
 :T1071.003 a owl:Class ;
     rdfs:label "Mail Protocols" ;
@@ -23460,7 +23824,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetMailTraffic ] ;
     :attack-id "T1071.003" ;
-    :definition "Adversaries may communicate using application layer protocols associated with electronic mail delivery to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. " .
+    :definition "Adversaries may communicate using application layer protocols associated with electronic mail delivery to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server." .
 
 :T1071.004 a owl:Class ;
     rdfs:label "DNS" ;
@@ -23469,7 +23833,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetDNSLookupTraffic ] ;
     :attack-id "T1071.004" ;
-    :definition "Adversaries may communicate using the Domain Name System (DNS) application layer protocol to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server. " .
+    :definition "Adversaries may communicate using the Domain Name System (DNS) application layer protocol to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server." .
 
 :T1071.005 a owl:Class ;
     rdfs:label "Publish/Subscribe Protocols" ;
@@ -23865,7 +24229,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :UserAccount ] ;
     :attack-id "T1098" ;
-    :definition "Adversaries may manipulate accounts to maintain and/or elevate access to victim systems. Account manipulation may consist of any action that preserves or modifies adversary access to a compromised account, such as modifying credentials or permission groups.(Citation: FireEye SMOKEDHAM June 2021) These actions could also include account activity designed to subvert security policies, such as performing iterative password updates to bypass password duration policies and preserve the life of compromised credentials. " .
+    :definition "Adversaries may manipulate accounts to maintain and/or elevate access to victim systems. Account manipulation may consist of any action that preserves or modifies adversary access to a compromised account, such as modifying credentials or permission groups.(Citation: FireEye SMOKEDHAM June 2021) These actions could also include account activity designed to subvert security policies, such as performing iterative password updates to bypass password duration policies and preserve the life of compromised credentials." .
 
 :T1098.001 a owl:Class ;
     rdfs:label "Additional Cloud Credentials" ;
@@ -23886,7 +24250,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :DomainUserAccount ] ;
     :attack-id "T1098.002" ;
-    :definition "Adversaries may grant additional permission levels to maintain persistent access to an adversary-controlled email account. " .
+    :definition "Adversaries may grant additional permission levels to maintain persistent access to an adversary-controlled email account." .
 
 :T1098.003 a owl:Class ;
     rdfs:label "Additional Cloud Roles" ;
@@ -23968,7 +24332,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Bidirectional Communication" ;
     rdfs:subClassOf :T1102 ;
     :attack-id "T1102.002" ;
-    :definition "Adversaries may use an existing, legitimate external Web service as a means for sending commands to and receiving output from a compromised system over the Web service channel. Compromised systems may leverage popular websites and social media to host command and control (C2) instructions. Those infected systems can then send the output from those commands back over that Web service channel. The return traffic may occur in a variety of ways, depending on the Web service being utilized. For example, the return traffic may take the form of the compromised system posting a comment on a forum, issuing a pull request to development project, updating a document hosted on a Web service, or by sending a Tweet. " .
+    :definition "Adversaries may use an existing, legitimate external Web service as a means for sending commands to and receiving output from a compromised system over the Web service channel. Compromised systems may leverage popular websites and social media to host command and control (C2) instructions. Those infected systems can then send the output from those commands back over that Web service channel. The return traffic may occur in a variety of ways, depending on the Web service being utilized. For example, the return traffic may take the form of the compromised system posting a comment on a forum, issuing a pull request to development project, updating a document hosted on a Web service, or by sending a Tweet." .
 
 :T1102.003 a owl:Class ;
     rdfs:label "One-Way Communication" ;
@@ -24111,7 +24475,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-access ;
             owl:someValuesFrom :SecurityToken ] ;
     :attack-id "T1111" ;
-    :definition "Adversaries may target multi-factor authentication (MFA) mechanisms, (i.e., smart cards, token generators, etc.) to gain access to credentials that can be used to access systems, services, and network resources. Use of MFA is recommended and provides a higher level of security than usernames and passwords alone, but organizations should be aware of techniques that could be used to intercept and bypass these security mechanisms. " .
+    :definition "Adversaries may target multi-factor authentication (MFA) mechanisms, (i.e., smart cards, token generators, etc.) to gain access to credentials that can be used to access systems, services, and network resources. Use of MFA is recommended and provides a higher level of security than usernames and passwords alone, but organizations should be aware of techniques that could be used to intercept and bypass these security mechanisms." .
 
 :T1112 a owl:Class ;
     rdfs:label "Modify Registry" ;
@@ -24141,7 +24505,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :Resource ] ;
     :attack-id "T1114" ;
-    :definition "Adversaries may target user email to collect sensitive information. Emails may contain sensitive data, including trade secrets or personal information, that can prove valuable to adversaries. Adversaries can collect or forward email from mail servers or clients. " .
+    :definition "Adversaries may target user email to collect sensitive information. Emails may contain sensitive data, including trade secrets or personal information, that can prove valuable to adversaries. Adversaries can collect or forward email from mail servers or clients." .
 
 :T1114.001 a owl:Class ;
     rdfs:label "Local Email Collection" ;
@@ -24177,7 +24541,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :reads ;
             owl:someValuesFrom :Clipboard ] ;
     :attack-id "T1115" ;
-    :definition "Adversaries may collect data stored in the clipboard from users copying information within or between applications. " .
+    :definition "Adversaries may collect data stored in the clipboard from users copying information within or between applications." .
 
 :T1116 a owl:Class ;
     owl:deprecated true ;
@@ -24216,7 +24580,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :File ] ;
     :attack-id "T1119" ;
     :comment "too generic to model" ;
-    :definition "Once established within a system or network, an adversary may use automated techniques for collecting internal data. Methods for performing this technique could include use of a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) to search for and copy information fitting set criteria such as file type, location, or name at specific time intervals. " .
+    :definition "Once established within a system or network, an adversary may use automated techniques for collecting internal data. Methods for performing this technique could include use of a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) to search for and copy information fitting set criteria such as file type, location, or name at specific time intervals." .
 
 :T1120 a owl:Class ;
     rdfs:label "Peripheral Device Discovery" ;
@@ -24444,7 +24808,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Share Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique ;
     :attack-id "T1135" ;
-    :definition "Adversaries may look for folders and drives shared on remote systems as a means of identifying sources of information to gather as a precursor for Collection and to identify potential systems of interest for Lateral Movement. Networks often contain shared network drives and folders that enable users to access file directories on various systems across a network. " .
+    :definition "Adversaries may look for folders and drives shared on remote systems as a means of identifying sources of information to gather as a precursor for Collection and to identify potential systems of interest for Lateral Movement. Networks often contain shared network drives and folders that enable users to access file directories on various systems across a network." .
 
 :T1136 a owl:Class ;
     rdfs:label "Create Account" ;
@@ -24462,7 +24826,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :creates ;
             owl:someValuesFrom :LocalUserAccount ] ;
     :attack-id "T1136.001" ;
-    :definition "Adversaries may create a local account to maintain access to victim systems. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service. " .
+    :definition "Adversaries may create a local account to maintain access to victim systems. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service." .
 
 :T1136.002 a owl:Class ;
     rdfs:label "Domain Account" ;
@@ -25386,7 +25750,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :Resource ] ;
     :attack-id "T1213" ;
-    :definition "Adversaries may leverage information repositories to mine valuable information. Information repositories are tools that allow for storage of information, typically to facilitate collaboration or information sharing between users, and can store a wide variety of data that may aid adversaries in further objectives, or direct access to the target information. Adversaries may also abuse external sharing features to share sensitive documents with recipients outside of the organization. " .
+    :definition "Adversaries may leverage information repositories to mine valuable information. Information repositories are tools that allow for storage of information, typically to facilitate collaboration or information sharing between users, and can store a wide variety of data that may aid adversaries in further objectives, or direct access to the target information. Adversaries may also abuse external sharing features to share sensitive documents with recipients outside of the organization." .
 
 :T1213.001 a owl:Class ;
     rdfs:label "Confluence" ;
@@ -25777,7 +26141,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Defacement" ;
     rdfs:subClassOf :ImpactTechnique ;
     :attack-id "T1491" ;
-    :definition "Adversaries may modify visual content available internally or externally to an enterprise network, thus affecting the integrity of the original content. Reasons for [Defacement](https://attack.mitre.org/techniques/T1491) include delivering messaging, intimidation, or claiming (possibly false) credit for an intrusion. Disturbing or offensive images may be used as a part of [Defacement](https://attack.mitre.org/techniques/T1491) in order to cause user discomfort, or to pressure compliance with accompanying messages. " .
+    :definition "Adversaries may modify visual content available internally or externally to an enterprise network, thus affecting the integrity of the original content. Reasons for [Defacement](https://attack.mitre.org/techniques/T1491) include delivering messaging, intimidation, or claiming (possibly false) credit for an intrusion. Disturbing or offensive images may be used as a part of [Defacement](https://attack.mitre.org/techniques/T1491) in order to cause user discomfort, or to pressure compliance with accompanying messages." .
 
 :T1491.001 a owl:Class ;
     rdfs:label "Internal Defacement" ;
@@ -25834,7 +26198,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Resource Hijacking" ;
     rdfs:subClassOf :ImpactTechnique ;
     :attack-id "T1496" ;
-    :definition "Adversaries may leverage the resources of co-opted systems to complete resource-intensive tasks, which may impact system and/or hosted service availability. " .
+    :definition "Adversaries may leverage the resources of co-opted systems to complete resource-intensive tasks, which may impact system and/or hosted service availability." .
 
 :T1496.001 a owl:Class ;
     rdfs:label "Compute Hijacking" ;
@@ -26022,7 +26386,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :MailServer ] ;
     :attack-id "T1505.002" ;
-    :definition "Adversaries may abuse Microsoft transport agents to establish persistent access to systems. Microsoft Exchange transport agents can operate on email messages passing through the transport pipeline to perform various tasks such as filtering spam, filtering malicious attachments, journaling, or adding a corporate signature to the end of all outgoing emails.(Citation: Microsoft TransportAgent Jun 2016)(Citation: ESET LightNeuron May 2019) Transport agents can be written by application developers and then compiled to .NET assemblies that are subsequently registered with the Exchange server. Transport agents will be invoked during a specified stage of email processing and carry out developer defined tasks. " .
+    :definition "Adversaries may abuse Microsoft transport agents to establish persistent access to systems. Microsoft Exchange transport agents can operate on email messages passing through the transport pipeline to perform various tasks such as filtering spam, filtering malicious attachments, journaling, or adding a corporate signature to the end of all outgoing emails.(Citation: Microsoft TransportAgent Jun 2016)(Citation: ESET LightNeuron May 2019) Transport agents can be written by application developers and then compiled to .NET assemblies that are subsequently registered with the Exchange server. Transport agents will be invoked during a specified stage of email processing and carry out developer defined tasks." .
 
 :T1505.003 a owl:Class ;
     rdfs:label "Web Shell" ;
@@ -26383,7 +26747,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :UserInitConfigurationFile ] ;
     :attack-id "T1546.004" ;
-    :definition "Adversaries may establish persistence through executing malicious commands triggered by a user’s shell. User [Unix Shell](https://attack.mitre.org/techniques/T1059/004)s execute several configuration scripts at different points throughout the session based on events. For example, when a user opens a command-line interface or remotely logs in (such as via SSH) a login shell is initiated. The login shell executes scripts from the system (<code>/etc</code>) and the user’s home directory (<code>~/</code>) to configure the environment. All login shells on a system use /etc/profile when initiated. These configuration scripts run at the permission level of their directory and are often used to set environment variables, create aliases, and customize the user’s environment. When the shell exits or terminates, additional shell scripts are executed to ensure the shell exits appropriately. " .
+    :definition "Adversaries may establish persistence through executing malicious commands triggered by a user’s shell. User [Unix Shell](https://attack.mitre.org/techniques/T1059/004)s execute several configuration scripts at different points throughout the session based on events. For example, when a user opens a command-line interface or remotely logs in (such as via SSH) a login shell is initiated. The login shell executes scripts from the system (<code>/etc</code>) and the user’s home directory (<code>~/</code>) to configure the environment. All login shells on a system use /etc/profile when initiated. These configuration scripts run at the permission level of their directory and are often used to set environment variables, create aliases, and customize the user’s environment. When the shell exits or terminates, additional shell scripts are executed to ensure the shell exits appropriately." .
 
 :T1546.005 a owl:Class ;
     rdfs:label "Trap" ;
@@ -26738,13 +27102,13 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :invokes ;
             owl:someValuesFrom :SystemCall ] ;
     :attack-id "T1548.004" ;
-    :definition "Adversaries may leverage the <code>AuthorizationExecuteWithPrivileges</code> API to escalate privileges by prompting the user for credentials.(Citation: AppleDocs AuthorizationExecuteWithPrivileges) The purpose of this API is to give application developers an easy way to perform operations with root privileges, such as for application installation or updating. This API does not validate that the program requesting root privileges comes from a reputable source or has been maliciously modified. " .
+    :definition "Adversaries may leverage the <code>AuthorizationExecuteWithPrivileges</code> API to escalate privileges by prompting the user for credentials.(Citation: AppleDocs AuthorizationExecuteWithPrivileges) The purpose of this API is to give application developers an easy way to perform operations with root privileges, such as for application installation or updating. This API does not validate that the program requesting root privileges comes from a reputable source or has been maliciously modified." .
 
 :T1548.005 a owl:Class ;
     rdfs:label "Temporary Elevated Cloud Access" ;
     rdfs:subClassOf :T1548 ;
     :attack-id "T1548.005" ;
-    :definition "Adversaries may abuse permission configurations that allow them to gain temporarily elevated access to cloud resources. Many cloud environments allow administrators to grant user or service accounts permission to request just-in-time access to roles, impersonate other accounts, pass roles onto resources and services, or otherwise gain short-term access to a set of privileges that may be distinct from their own. " .
+    :definition "Adversaries may abuse permission configurations that allow them to gain temporarily elevated access to cloud resources. Many cloud environments allow administrators to grant user or service accounts permission to request just-in-time access to roles, impersonate other accounts, pass roles onto resources and services, or otherwise gain short-term access to a set of privileges that may be distinct from their own." .
 
 :T1548.006 a owl:Class ;
     rdfs:label "TCC Manipulation" ;
@@ -26760,7 +27124,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :AuthenticationService ] ;
     :attack-id "T1550" ;
-    :definition "Adversaries may use alternate authentication material, such as password hashes, Kerberos tickets, and application access tokens, in order to move laterally within an environment and bypass normal system access controls. " .
+    :definition "Adversaries may use alternate authentication material, such as password hashes, Kerberos tickets, and application access tokens, in order to move laterally within an environment and bypass normal system access controls." .
 
 :T1550.001 a owl:Class ;
     rdfs:label "Application Access Token" ;
@@ -26847,7 +27211,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :PrivateKey ] ;
     :attack-id "T1552.004" ;
-    :definition "Adversaries may search for private key certificate files on compromised systems for insecurely stored credentials. Private cryptographic keys and certificates are used for authentication, encryption/decryption, and digital signatures.(Citation: Wikipedia Public Key Crypto) Common key and certificate file extensions include: .key, .pgp, .gpg, .ppk., .p12, .pem, .pfx, .cer, .p7b, .asc. " .
+    :definition "Adversaries may search for private key certificate files on compromised systems for insecurely stored credentials. Private cryptographic keys and certificates are used for authentication, encryption/decryption, and digital signatures.(Citation: Wikipedia Public Key Crypto) Common key and certificate file extensions include: .key, .pgp, .gpg, .ppk., .p12, .pem, .pfx, .cer, .p7b, .asc." .
 
 :T1552.005 a owl:Class ;
     rdfs:label "Cloud Instance Metadata API" ;
@@ -26931,7 +27295,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Code Signing Policy Modification" ;
     rdfs:subClassOf :T1553 ;
     :attack-id "T1553.006" ;
-    :definition "Adversaries may modify code signing policies to enable execution of unsigned or self-signed code. Code signing provides a level of authenticity on a program from a developer and a guarantee that the program has not been tampered with. Security controls can include enforcement mechanisms to ensure that only valid, signed code can be run on an operating system. " .
+    :definition "Adversaries may modify code signing policies to enable execution of unsigned or self-signed code. Code signing provides a level of authenticity on a program from a developer and a guarantee that the program has not been tampered with. Security controls can include enforcement mechanisms to ensure that only valid, signed code can be run on an operating system." .
 
 :T1554 a owl:Class ;
     rdfs:label "Compromise Host Software Binary" ;
@@ -26961,7 +27325,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :MacOSKeychain ] ;
     :attack-id "T1555.001" ;
-    :definition "Adversaries may acquire credentials from Keychain. Keychain (or Keychain Services) is the macOS credential management system that stores account names, passwords, private keys, certificates, sensitive application data, payment data, and secure notes. There are three types of Keychains: Login Keychain, System Keychain, and Local Items (iCloud) Keychain. The default Keychain is the Login Keychain, which stores user passwords and information. The System Keychain stores items accessed by the operating system, such as items shared among users on a host. The Local Items (iCloud) Keychain is used for items synced with Apple’s iCloud service. " .
+    :definition "Adversaries may acquire credentials from Keychain. Keychain (or Keychain Services) is the macOS credential management system that stores account names, passwords, private keys, certificates, sensitive application data, payment data, and secure notes. There are three types of Keychains: Login Keychain, System Keychain, and Local Items (iCloud) Keychain. The default Keychain is the Login Keychain, which stores user passwords and information. The System Keychain stores items accessed by the operating system, such as items shared among users on a host. The Local Items (iCloud) Keychain is used for items synced with Apple’s iCloud service." .
 
 :T1555.002 a owl:Class ;
     rdfs:label "Securityd Memory" ;
@@ -27019,7 +27383,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Domain Controller Authentication" ;
     rdfs:subClassOf :T1556 ;
     :attack-id "T1556.001" ;
-    :definition "Adversaries may patch the authentication process on a domain controller to bypass the typical authentication mechanisms and enable access to accounts. " .
+    :definition "Adversaries may patch the authentication process on a domain controller to bypass the typical authentication mechanisms and enable access to accounts." .
 
 :T1556.002 a owl:Class ;
     rdfs:label "Password Filter DLL" ;
@@ -27031,7 +27395,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :SystemConfigurationDatabaseRecord ] ;
     :attack-id "T1556.002" ;
-    :definition "Adversaries may register malicious password filter dynamic link libraries (DLLs) into the authentication process to acquire user credentials as they are validated. " .
+    :definition "Adversaries may register malicious password filter dynamic link libraries (DLLs) into the authentication process to acquire user credentials as they are validated." .
 
 :T1556.003 a owl:Class ;
     rdfs:label "Pluggable Authentication Modules" ;
@@ -27098,7 +27462,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :IntranetMulticastNetworkTraffic ] ;
     :attack-id "T1557.001" ;
-    :definition "By responding to LLMNR/NBT-NS network traffic, adversaries may spoof an authoritative source for name resolution to force communication with an adversary controlled system. This activity may be used to collect or relay authentication materials. " .
+    :definition "By responding to LLMNR/NBT-NS network traffic, adversaries may spoof an authoritative source for name resolution to force communication with an adversary controlled system. This activity may be used to collect or relay authentication materials." .
 
 :T1557.002 a owl:Class ;
     rdfs:label "ARP Cache Poisoning" ;
@@ -27177,7 +27541,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :injects ;
             owl:someValuesFrom :InterprocessCommunication ] ;
     :attack-id "T1559" ;
-    :definition "Adversaries may abuse inter-process communication (IPC) mechanisms for local code or command execution. IPC is typically used by processes to share data, communicate with each other, or synchronize execution. IPC is also commonly used to avoid situations such as deadlocks, which occurs when processes are stuck in a cyclic waiting pattern. " .
+    :definition "Adversaries may abuse inter-process communication (IPC) mechanisms for local code or command execution. IPC is typically used by processes to share data, communicate with each other, or synchronize execution. IPC is also commonly used to avoid situations such as deadlocks, which occurs when processes are stuck in a cyclic waiting pattern." .
 
 :T1559.001 a owl:Class ;
     rdfs:label "Component Object Model" ;
@@ -27270,7 +27634,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :may-modify ;
             owl:someValuesFrom :PartitionTable ] ;
     :attack-id "T1561.002" ;
-    :definition "Adversaries may corrupt or wipe the disk data structures on a hard drive necessary to boot a system; targeting specific critical systems or in large numbers in a network to interrupt availability to system and network resources. " .
+    :definition "Adversaries may corrupt or wipe the disk data structures on a hard drive necessary to boot a system; targeting specific critical systems or in large numbers in a network to interrupt availability to system and network resources." .
 
 :T1562 a owl:Class ;
     rdfs:label "Impair Defenses" ;
@@ -27312,7 +27676,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :ProcessEnvironmentVariable ] ;
     :attack-id "T1562.003" ;
-    :definition "Adversaries may impair command history logging to hide commands they run on a compromised system. Various command interpreters keep track of the commands users type in their terminal so that users can retrace what they've done. " .
+    :definition "Adversaries may impair command history logging to hide commands they run on a compromised system. Various command interpreters keep track of the commands users type in their terminal so that users can retrace what they've done." .
 
 :T1562.004 a owl:Class ;
     rdfs:label "Disable or Modify System Firewall" ;
@@ -27333,7 +27697,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Disable or Modify Cloud Firewall" ;
     rdfs:subClassOf :T1562 ;
     :attack-id "T1562.007" ;
-    :definition "Adversaries may disable or modify a firewall within a cloud environment to bypass controls that limit access to cloud resources. Cloud firewalls are separate from system firewalls that are described in [Disable or Modify System Firewall](https://attack.mitre.org/techniques/T1562/004). " .
+    :definition "Adversaries may disable or modify a firewall within a cloud environment to bypass controls that limit access to cloud resources. Cloud firewalls are separate from system firewalls that are described in [Disable or Modify System Firewall](https://attack.mitre.org/techniques/T1562/004)." .
 
 :T1562.008 a owl:Class ;
     rdfs:label "Disable or Modify Cloud Logs" ;
@@ -27363,7 +27727,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :LegacySystem ] ;
     :attack-id "T1562.010" ;
-    :definition "Adversaries may downgrade or use a version of system features that may be outdated, vulnerable, and/or does not support updated security controls. Downgrade attacks typically take advantage of a system’s backward compatibility to force it into less secure modes of operation. " .
+    :definition "Adversaries may downgrade or use a version of system features that may be outdated, vulnerable, and/or does not support updated security controls. Downgrade attacks typically take advantage of a system’s backward compatibility to force it into less secure modes of operation." .
 
 :T1562.011 a owl:Class ;
     rdfs:label "Spoof Security Alerting" ;
@@ -27429,7 +27793,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :modifies ;
             owl:someValuesFrom :UserInitConfigurationFile ] ;
     :attack-id "T1564.002" ;
-    :definition "Adversaries may use hidden users to hide the presence of user accounts they create or modify. Administrators may want to hide users when there are many user accounts on a given system or if they want to hide their administrative or other management accounts from other users. " .
+    :definition "Adversaries may use hidden users to hide the presence of user accounts they create or modify. Administrators may want to hide users when there are many user accounts on a given system or if they want to hide their administrative or other management accounts from other users." .
 
 :T1564.003 a owl:Class ;
     rdfs:label "Hidden Window" ;
@@ -27530,7 +27894,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Ignore Process Interrupts" ;
     rdfs:subClassOf :T1564 ;
     :attack-id "T1564.011" ;
-    :definition "Adversaries may evade defensive mechanisms by executing commands that hide from process interrupt signals. Many operating systems use signals to deliver messages to control process behavior. Command interpreters often include specific commands/flags that ignore errors and other hangups, such as when the user of the active session logs off.(Citation: Linux Signal Man)  These interrupt signals may also be used by defensive tools and/or analysts to pause or terminate specified running processes. " .
+    :definition "Adversaries may evade defensive mechanisms by executing commands that hide from process interrupt signals. Many operating systems use signals to deliver messages to control process behavior. Command interpreters often include specific commands/flags that ignore errors and other hangups, such as when the user of the active session logs off.(Citation: Linux Signal Man)  These interrupt signals may also be used by defensive tools and/or analysts to pause or terminate specified running processes." .
 
 :T1564.012 a owl:Class ;
     rdfs:label "File/Path Exclusions" ;
@@ -27614,7 +27978,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :URL ] ;
     :attack-id "T1566.003" ;
-    :definition "Adversaries may send spearphishing messages via third-party services in an attempt to gain access to victim systems. Spearphishing via service is a specific variant of spearphishing. It is different from other forms of spearphishing in that it employs the use of third party services rather than directly via enterprise email channels. " .
+    :definition "Adversaries may send spearphishing messages via third-party services in an attempt to gain access to victim systems. Spearphishing via service is a specific variant of spearphishing. It is different from other forms of spearphishing in that it employs the use of third party services rather than directly via enterprise email channels." .
 
 :T1566.004 a owl:Class ;
     rdfs:label "Spearphishing Voice" ;
@@ -27662,7 +28026,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Exfiltration Over Webhook" ;
     rdfs:subClassOf :T1567 ;
     :attack-id "T1567.004" ;
-    :definition "Adversaries may exfiltrate data to a webhook endpoint rather than over their primary command and control channel. Webhooks are simple mechanisms for allowing a server to push data over HTTP/S to a client without the need for the client to continuously poll the server.(Citation: RedHat Webhooks) Many public and commercial services, such as Discord, Slack, and `webhook.site`, support the creation of webhook endpoints that can be used by other services, such as Github, Jira, or Trello.(Citation: Discord Intro to Webhooks) When changes happen in the linked services (such as pushing a repository update or modifying a ticket), these services will automatically post the data to the webhook endpoint for use by the consuming application. " .
+    :definition "Adversaries may exfiltrate data to a webhook endpoint rather than over their primary command and control channel. Webhooks are simple mechanisms for allowing a server to push data over HTTP/S to a client without the need for the client to continuously poll the server.(Citation: RedHat Webhooks) Many public and commercial services, such as Discord, Slack, and `webhook.site`, support the creation of webhook endpoints that can be used by other services, such as Github, Jira, or Trello.(Citation: Discord Intro to Webhooks) When changes happen in the linked services (such as pushing a repository update or modifying a ticket), these services will automatically post the data to the webhook endpoint for use by the consuming application." .
 
 :T1568 a owl:Class ;
     rdfs:label "Dynamic Resolution" ;
@@ -27734,7 +28098,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundInternetNetworkTraffic ] ;
     :attack-id "T1572" ;
-    :definition "Adversaries may tunnel network communications to and from a victim system within a separate protocol to avoid detection/network filtering and/or enable access to otherwise unreachable systems. Tunneling involves explicitly encapsulating a protocol within another. This behavior may conceal malicious traffic by blending in with existing traffic and/or provide an outer layer of encryption (similar to a VPN). Tunneling could also enable routing of network packets that would otherwise not reach their intended destination, such as SMB, RDP, or other traffic that would be filtered by network appliances or not routed over the Internet. " .
+    :definition "Adversaries may tunnel network communications to and from a victim system within a separate protocol to avoid detection/network filtering and/or enable access to otherwise unreachable systems. Tunneling involves explicitly encapsulating a protocol within another. This behavior may conceal malicious traffic by blending in with existing traffic and/or provide an outer layer of encryption (similar to a VPN). Tunneling could also enable routing of network packets that would otherwise not reach their intended destination, such as SMB, RDP, or other traffic that would be filtered by network appliances or not routed over the Internet." .
 
 :T1573 a owl:Class ;
     rdfs:label "Encrypted Channel" ;
@@ -27836,7 +28200,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :creates ;
             owl:someValuesFrom :ExecutableFile ] ;
     :attack-id "T1574.007" ;
-    :definition "Adversaries may execute their own malicious payloads by hijacking environment variables used to load libraries. The PATH environment variable contains a list of directories (User and System) that the OS searches sequentially through in search of the binary that was called from a script or the command line. " .
+    :definition "Adversaries may execute their own malicious payloads by hijacking environment variables used to load libraries. The PATH environment variable contains a list of directories (User and System) that the OS searches sequentially through in search of the binary that was called from a script or the command line." .
 
 :T1574.008 a owl:Class ;
     rdfs:label "Path Interception by Search Order Hijacking" ;
@@ -27993,7 +28357,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Malvertising" ;
     rdfs:subClassOf :T1583 ;
     :attack-id "T1583.008" ;
-    :definition "Adversaries may purchase online advertisements that can be abused to distribute malware to victims. Ads can be purchased to plant as well as favorably position artifacts in specific locations  online, such as prominently placed within search engine results. These ads may make it more difficult for users to distinguish between actual search results and advertisements.(Citation: spamhaus-malvertising) Purchased ads may also target specific audiences using the advertising network’s capabilities, potentially further taking advantage of the trust inherently given to search engines and popular websites. " .
+    :definition "Adversaries may purchase online advertisements that can be abused to distribute malware to victims. Ads can be purchased to plant as well as favorably position artifacts in specific locations  online, such as prominently placed within search engine results. These ads may make it more difficult for users to distinguish between actual search results and advertisements.(Citation: spamhaus-malvertising) Purchased ads may also target specific audiences using the advertising network’s capabilities, potentially further taking advantage of the trust inherently given to search engines and popular websites." .
 
 :T1584 a owl:Class ;
     rdfs:label "Compromise Infrastructure" ;
@@ -28041,7 +28405,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Serverless" ;
     rdfs:subClassOf :T1584 ;
     :attack-id "T1584.007" ;
-    :definition "Adversaries may compromise serverless cloud infrastructure, such as Cloudflare Workers or AWS Lambda functions, that can be used during targeting. By utilizing serverless infrastructure, adversaries can make it more difficult to attribute infrastructure used during operations back to them. " .
+    :definition "Adversaries may compromise serverless cloud infrastructure, such as Cloudflare Workers or AWS Lambda functions, that can be used during targeting. By utilizing serverless infrastructure, adversaries can make it more difficult to attribute infrastructure used during operations back to them." .
 
 :T1584.008 a owl:Class ;
     rdfs:label "Network Devices" ;
@@ -28077,13 +28441,13 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Compromise Accounts" ;
     rdfs:subClassOf :ResourceDevelopmentTechnique ;
     :attack-id "T1586" ;
-    :definition "Adversaries may compromise accounts with services that can be used during targeting. For operations incorporating social engineering, the utilization of an online persona may be important. Rather than creating and cultivating accounts (i.e. [Establish Accounts](https://attack.mitre.org/techniques/T1585)), adversaries may compromise existing accounts. Utilizing an existing persona may engender a level of trust in a potential victim if they have a relationship, or knowledge of, the compromised persona. " .
+    :definition "Adversaries may compromise accounts with services that can be used during targeting. For operations incorporating social engineering, the utilization of an online persona may be important. Rather than creating and cultivating accounts (i.e. [Establish Accounts](https://attack.mitre.org/techniques/T1585)), adversaries may compromise existing accounts. Utilizing an existing persona may engender a level of trust in a potential victim if they have a relationship, or knowledge of, the compromised persona." .
 
 :T1586.001 a owl:Class ;
     rdfs:label "Social Media Accounts" ;
     rdfs:subClassOf :T1586 ;
     :attack-id "T1586.001" ;
-    :definition "Adversaries may compromise social media accounts that can be used during targeting. For operations incorporating social engineering, the utilization of an online persona may be important. Rather than creating and cultivating social media profiles (i.e. [Social Media Accounts](https://attack.mitre.org/techniques/T1585/001)), adversaries may compromise existing social media accounts. Utilizing an existing persona may engender a level of trust in a potential victim if they have a relationship, or knowledge of, the compromised persona. " .
+    :definition "Adversaries may compromise social media accounts that can be used during targeting. For operations incorporating social engineering, the utilization of an online persona may be important. Rather than creating and cultivating social media profiles (i.e. [Social Media Accounts](https://attack.mitre.org/techniques/T1585/001)), adversaries may compromise existing social media accounts. Utilizing an existing persona may engender a level of trust in a potential victim if they have a relationship, or knowledge of, the compromised persona." .
 
 :T1586.002 a owl:Class ;
     rdfs:label "Email Accounts" ;
@@ -28557,7 +28921,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Link Target" ;
     rdfs:subClassOf :T1608 ;
     :attack-id "T1608.005" ;
-    :definition "Adversaries may put in place resources that are referenced by a link that can be used during targeting. An adversary may rely upon a user clicking a malicious link in order to divulge information (including credentials) or to gain execution, as in [Malicious Link](https://attack.mitre.org/techniques/T1204/001). Links can be used for spearphishing, such as sending an email accompanied by social engineering text to coax the user to actively click or copy and paste a URL into a browser. Prior to a phish for information (as in [Spearphishing Link](https://attack.mitre.org/techniques/T1598/003)) or a phish to gain initial access to a system (as in [Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)), an adversary must set up the resources for a link target for the spearphishing link. " .
+    :definition "Adversaries may put in place resources that are referenced by a link that can be used during targeting. An adversary may rely upon a user clicking a malicious link in order to divulge information (including credentials) or to gain execution, as in [Malicious Link](https://attack.mitre.org/techniques/T1204/001). Links can be used for spearphishing, such as sending an email accompanied by social engineering text to coax the user to actively click or copy and paste a URL into a browser. Prior to a phish for information (as in [Spearphishing Link](https://attack.mitre.org/techniques/T1598/003)) or a phish to gain initial access to a system (as in [Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)), an adversary must set up the resources for a link target for the spearphishing link." .
 
 :T1608.006 a owl:Class ;
     rdfs:label "SEO Poisoning" ;
@@ -28664,7 +29028,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Serverless Execution" ;
     rdfs:subClassOf :ExecutionTechnique ;
     :attack-id "T1648" ;
-    :definition "Adversaries may abuse serverless computing, integration, and automation services to execute arbitrary code in cloud environments. Many cloud providers offer a variety of serverless resources, including compute engines, application integration services, and web servers. " .
+    :definition "Adversaries may abuse serverless computing, integration, and automation services to execute arbitrary code in cloud environments. Many cloud providers offer a variety of serverless resources, including compute engines, application integration services, and web servers." .
 
 :T1649 a owl:Class ;
     rdfs:label "Steal or Forge Authentication Certificates" ;
@@ -28706,7 +29070,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Impersonation" ;
     rdfs:subClassOf :DefenseEvasionTechnique ;
     :attack-id "T1656" ;
-    :definition "Adversaries may impersonate a trusted person or organization in order to persuade and trick a target into performing some action on their behalf. For example, adversaries may communicate with victims (via [Phishing for Information](https://attack.mitre.org/techniques/T1598), [Phishing](https://attack.mitre.org/techniques/T1566), or [Internal Spearphishing](https://attack.mitre.org/techniques/T1534)) while impersonating a known sender such as an executive, colleague, or third-party vendor. Established trust can then be leveraged to accomplish an adversary’s ultimate goals, possibly against multiple victims. " .
+    :definition "Adversaries may impersonate a trusted person or organization in order to persuade and trick a target into performing some action on their behalf. For example, adversaries may communicate with victims (via [Phishing for Information](https://attack.mitre.org/techniques/T1598), [Phishing](https://attack.mitre.org/techniques/T1566), or [Internal Spearphishing](https://attack.mitre.org/techniques/T1534)) while impersonating a known sender such as an executive, colleague, or third-party vendor. Established trust can then be leveraged to accomplish an adversary’s ultimate goals, possibly against multiple victims." .
 
 :T1657 a owl:Class ;
     rdfs:label "Financial Theft" ;
@@ -35932,4 +36296,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
