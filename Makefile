@@ -3,7 +3,7 @@ MAKEFLAGS += --silent
 SHELL=/bin/bash
 
 D3FEND_VERSION ?=1.1.0
-D3FEND_RELEASE_DATE ?="2024-12-20T00:42:42.042Z"
+D3FEND_RELEASE_DATE ?="2025-04-21T00:12:00.000Z"
 
 ATTACK_VERSION ?= 16.0
 
@@ -165,6 +165,7 @@ reports/default-robot-report.txt:	build/d3fend-full.owl ## Generate d3fend-full-
 		--profile src/queries/custom-report-profile.txt \
 		--fail-on none > reports/default-robot-report.txt
 	$(END)
+
 
 # Note: At present some definitions are d3f:definition; most are defacto rdfs:comment
 reports/missing-d3fend-definition-report.txt:	build/d3fend-full.owl
@@ -361,6 +362,46 @@ reportsdir:
 
 reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
+
+
+REPORT_FILES = default-robot-report.txt \
+               missing-d3fend-definition-report.txt \
+               bogus-direct-subclassing-of-tactic-technique-report.txt \
+               missing-attack-id-report.txt \
+               inconsistent-iri-report.txt \
+               missing-off-tech-artifacts-report.txt
+
+
+report-summary:
+	@echo "Error | Warn | Info | Report File" > reports/report-summary.txt
+	@echo "------|------|------|-------------" >> reports/report-summary.txt
+	@> reports/temp-summary.txt
+	@for file in $(REPORT_FILES); do \
+		error_count=$$(grep -c "ERROR" reports/$$file); \
+		warn_count=$$(grep -c "WARN" reports/$$file); \
+		info_count=$$(grep -c "INFO" reports/$$file); \
+		printf "%5s | %5s | %5s | %-20s\n" "$$error_count" "$$warn_count" "$$info_count" "reports/$$file" >> reports/temp-summary.txt; \
+	done
+	@sort -k1,1nr -k2,2nr -k3,3nr reports/temp-summary.txt >> reports/report-summary.txt
+	@rm reports/temp-summary.txt
+
+	# Add logic to list reports not covered by REPORT_FILES
+	@echo "" >> reports/report-summary.txt
+	@echo "" >> reports/report-summary.txt
+	@MISSING_REPORTS=""; \
+	for file in $$(ls reports/); do \
+		if [ "$$file" != "report-summary.txt" ]; then \
+			if ! echo "$(REPORT_FILES)" | grep -w "$$file" > /dev/null; then \
+				MISSING_REPORTS="$$MISSING_REPORTS reports/$$file"; \
+			fi; \
+		fi; \
+	done; \
+	if [ -n "$$MISSING_REPORTS" ]; then \
+		echo "Reports not included in the summary:" >> reports/report-summary.txt; \
+		for file in $$MISSING_REPORTS; do \
+			echo "$$file" >> reports/report-summary.txt; \
+		done; \
+	fi
 
 distdir:
 	mkdir -p dist/public dist/private

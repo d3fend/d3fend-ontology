@@ -8,8 +8,15 @@ PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
 
 SELECT DISTINCT ?entity ?property ?packed_label
 WHERE {
-     VALUES ?top_class { d3f:ATTACKThing d3f:D3FENDThing d3f:D3FENDAnalysisThing }
+     VALUES ?top_class { d3f:D3FENDCore d3f:D3FENDKBThing }
      ?entity rdfs:subClassOf* ?top_class .
+     MINUS {
+         { ?entity rdfs:subClassOf* d3f:OffensiveTactic }
+         UNION
+         { ?entity rdfs:subClassOf* d3f:Weakness }
+         UNION
+         { ?entity rdfs:subClassOf* d3f:OSAPIFunction }
+     }
      BIND(rdfs:label AS ?property)
      ?entity ?property ?value .
      BIND(REPLACE(?value, " ", "") AS ?packed_label)
