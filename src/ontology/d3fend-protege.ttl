@@ -140,6 +140,11 @@
     rdfs:subPropertyOf :associated-with,
         :hardens .
 
+:connected-to a owl:ObjectProperty ;
+    rdfs:label "connected-to" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x connected-to y: The subject x shares a direct physical or logical link with object y such that communication is possible between them without intermediate routing." .
+
 :connects a owl:ObjectProperty ;
     rdfs:label "connects" ;
     rdfs:subPropertyOf :associated-with ;
@@ -336,7 +341,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :erases a owl:ObjectProperty ;
     rdfs:label "erases" ;
     rdfs:subPropertyOf :associated-with ;
-    :description "x erases y: A technique x removes recorded data from storage device y creating space for new data." .
+    :definition "x erases y: A technique x removes recorded data from storage device y creating space for new data." .
 
 :evaluated-by a owl:ObjectProperty ;
     rdfs:label "evaluated-by" ;
@@ -1126,6 +1131,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00354493-v> ;
     :synonym "aborts" .
 
+:transmits a owl:ObjectProperty ;
+    rdfs:label "transmits" ;
+    skos:altLabel "sends" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x transmits y: The subject x actively emits object y onto a communication medium, rendering y observable and available for reception on that medium." .
+
 :unloads a owl:ObjectProperty ;
     rdfs:label "unloads" ;
     rdfs:subPropertyOf :evicts ;
@@ -1551,6 +1562,28 @@ skos:example a owl:AnnotationProperty .
         owl:FunctionalProperty ;
     rdfs:label "rating" ;
     rdfs:subPropertyOf :d3fend-catalog-data-property .
+
+:risk-impact a owl:DatatypeProperty ;
+    rdfs:label "risk-impact" ;
+    rdfs:subPropertyOf :d3fend-data-property ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:integer ;
+            owl:withRestrictions (
+                    [ xsd:maxInclusive 5 ]
+                    [ xsd:minInclusive 1 ] ) ] ;
+    rdfs:isDefinedBy <https://www.cto.mil/wp-content/uploads/2024/05/RIO-2023-2-2.pdf> ;
+    :definition "Risk impact rating, expressed on a numeric scale from 1 (lowest impact) to 5 (highest impact) in the context of a 5x5 risk matrix. Impact is used here as a synonym for consequence, another popular term used in risk analysis." .
+
+:risk-likelihood a owl:DatatypeProperty ;
+    rdfs:label "risk-likelihood" ;
+    rdfs:subPropertyOf :d3fend-data-property ;
+    rdfs:range [ a rdfs:Datatype ;
+            owl:onDatatype xsd:integer ;
+            owl:withRestrictions (
+                    [ xsd:maxInclusive 5 ]
+                    [ xsd:minInclusive 1 ] ) ] ;
+    rdfs:isDefinedBy <https://www.cto.mil/wp-content/uploads/2024/05/RIO-2023-2-2.pdf> ;
+    :definition "Risk likelihood rating, expressed on a numeric scale from 1 (lowest likelihood) to 5 (highest likelihood) in the context of a 5x5 risk matrix." .
 
 :stage a owl:DatatypeProperty,
         owl:FunctionalProperty ;
@@ -2533,6 +2566,11 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
     rdfs:label "ATTACK Enterprise Thing" ;
     rdfs:subClassOf :ATTACKThing .
 
+:Attacker a owl:Class ;
+    rdfs:label "Attacker" ;
+    rdfs:subClassOf :Agent ;
+    :definition "An agent that attempts to exploit vulnerabilities to gain unauthorized access to data or systems." .
+
 :ATTACKMergedThing a owl:Class ;
     rdfs:label "ATTACK Merged Thing" ;
     rdfs:subClassOf :ATTACKThing .
@@ -3104,6 +3142,50 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
     rdfs:subClassOf :CollaborativeSoftware ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Business_communication> ;
     :definition "Client software to enable the process of sharing information between employees within and outside a company.  Business communication encompasses topics such as marketing, brand management, customer relations, consumer behavior, advertising, public relations, corporate communication, community engagement, reputation management, interpersonal communication, employee engagement, and event management. It is closely related to the fields of professional communication and technical communication." .
+
+:BusMessage a owl:Class ;
+    rdfs:label "Bus Message" ;
+    rdfs:subClassOf :DigitalMessage ;
+    :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
+
+:BusNetwork a owl:Class ;
+    rdfs:label "Bus Network" ;
+    skos:altLabel "Bus",
+        "Data Highway" ;
+    rdfs:subClassOf :Network ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Bus_(computing)> ;
+    :definition "An electronic communication system that links multiple components through one shared transmission medium, together with the interface hardware and link-layer signalling that govern access to that medium." .
+
+:BusNetworkFrame a owl:Class ;
+    rdfs:label "Bus Network Frame" ;
+    skos:altLabel "Bus Frame" ;
+    rdfs:subClassOf :NetworkFrame,
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :BusNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :BusMessage ] ;
+    :definition "A network frame whose layout and timing follow a bus protocol, allowing data to be exchanged across the shared bus medium." .
+
+:BusNetworkNode a owl:Class ;
+    rdfs:label "Bus Network Node" ;
+    rdfs:subClassOf :Host,
+        [ a owl:Restriction ;
+            owl:onProperty :connected-to ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :transmits ;
+            owl:someValuesFrom :BusNetworkTraffic ] ;
+    :definition "A device or logical endpoint whose interface is directly connected to a bus and exchanges data over the shared medium using the protocol implemented on that interface." .
+
+:BusNetworkTraffic a owl:Class ;
+    rdfs:label "Bus Network Traffic" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
+    :definition "The ordered flow of frames, structured by a bus protocol, that traverses the shared bus medium during operation." .
 
 :ByteSequenceEmulation a :ByteSequenceEmulation,
         owl:Class,
@@ -4124,6 +4206,7 @@ This admission controller
         [ a owl:Restriction ;
             owl:onProperty :excises ;
             owl:someValuesFrom :Data ] ;
+    :d3fend-id "D3-CNE" ;
     :definition "Removing specific, potentially malicious, parts of content" ;
     :end-id "D3-CNE" ;
     :kb-article """## How it works
@@ -4140,11 +4223,21 @@ If malicious or unecessary elements is discovered within the content, or if a sp
             owl:onProperty :enables ;
             owl:someValuesFrom :Isolate ],
         [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Isolate ],
+        [ a owl:Restriction ;
+            owl:onProperty :enforces ;
+            owl:someValuesFrom :ContentPolicy ],
+        [ a owl:Restriction ;
             owl:onProperty :enforces ;
             owl:someValuesFrom :ContentPolicy ],
         [ a owl:Restriction ;
             owl:onProperty :filters ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-CF" ;
     :definition "Content Filtering techniques aid in the process of analyzing an input file for malicious or erroneous content and outputing a sanitized version." ;
     :end-id "D3-CF" ;
     :kb-reference :Reference-MethodForContentDisarmandReconstruction_OPSWATInc .
@@ -4154,6 +4247,7 @@ If malicious or unecessary elements is discovered within the content, or if a sp
         owl:NamedIndividual ;
     rdfs:label "Content Format Conversion" ;
     rdfs:subClassOf :ContentModification ;
+    :d3fend-id "D3-CFC" ;
     :definition "Content format conversion is mechanical transformation from one format to another which may be normalization or specifically flattening." ;
     :end-id "D3-CFC" ;
     :kb-article """## How it works
@@ -4167,8 +4261,21 @@ This technique may enhance security by transforming files into safer or normaliz
     rdfs:label "Content Modification" ;
     rdfs:subClassOf :ContentFiltering,
         [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :DigitalMedia ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :FileContentBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :FileMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-CM" ;
     :definition "Modify content that does not comply with policy." ;
     :end-id "D3-CM" ;
     :kb-article """## How it works
@@ -4188,7 +4295,14 @@ When content is found to not comply with it's content policy, it may be transfor
     rdfs:subClassOf :ContentFiltering,
         [ a owl:Restriction ;
             owl:onProperty :quarantines ;
+            owl:someValuesFrom :DatabaseRecord ],
+        [ a owl:Restriction ;
+            owl:onProperty :quarantines ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :quarantines ;
             owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-CQ" ;
     :definition "Transfer content that does not comply with policy to a quarantine zone." ;
     :end-id "D3-CQ" ;
     :kb-article """## How it works
@@ -4204,6 +4318,7 @@ Quarantining serves as a protective measure to isolate potentially harmful files
         [ a owl:Restriction ;
             owl:onProperty :creates ;
             owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-CNR" ;
     :definition "Rebuild the file according to the spec so any unreferenced components or objects are removed." ;
     :end-id "D3-CNR" ;
     :kb-article """## How it works
@@ -4217,6 +4332,7 @@ If inputted content is divided up into components for further scrutiny, the comp
         owl:NamedIndividual ;
     rdfs:label "Content Substitution" ;
     rdfs:subClassOf :ContentModification ;
+    :d3fend-id "D3-CNS" ;
     :definition "Modifies specific digital content information by replacing it with something else." ;
     :end-id "D3-CNS" ;
     :kb-article """## How it works
@@ -4229,6 +4345,7 @@ If malicious or unecessary elements is discovered within the content, or if a sp
         owl:NamedIndividual ;
     rdfs:label "Content Validation" ;
     rdfs:subClassOf :ContentFiltering ;
+    :d3fend-id "D3-CV" ;
     :definition "Verify and validate contents complies with policy" ;
     :end-id "D3-CV" ;
     :kb-article """## How it works
@@ -9541,6 +9658,12 @@ Some implementations use software hooks to intercept function calls related to d
 Some capabilities sanitize queries before permitting them to be transmitted to the database. This incurs risks such altering data in an undesired way or breaking application functionality.""" ;
     :kb-reference :Reference-SystemAndMethodForInternetSecurity_CylanceInc .
 
+:DatabaseRecord a owl:Class ;
+    rdfs:label "Database Record" ;
+    rdfs:subClassOf :Record ;
+    :definition "A single, implicitly structured data item in a table in a database." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Row_(database)" .
+
 :DatabaseServer a owl:Class ;
     rdfs:label "Database Server" ;
     skos:altLabel "Network Database Resource" ;
@@ -10354,7 +10477,6 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
             owl:someValuesFrom :Identifier ] ;
     rdfs:comment "Variously describes or designates.  Designation is not compete or definite without context.  The representation generally can be identified by a unique identifier, though this may be private information." ;
     :definition "The unique representation of a subject engaged in an online transaction. A digital identity is always unique in the context of a digital service, but does not necessarily need to uniquely identify the subject in all contexts. In other words, accessing a digital service may not mean that the subject's real-life identity is known.  Note: There is no single, widely accepted definition for this term and context is important. This definition is specific to online transactions." ;
-    :kb-reference :Reference-CNNSI-4009 ;
     rdfs:seeAlso <https://pages.nist.gov/800-63-3/sp800-63-3.html> .
 
 :DigitalImage a owl:Class ;
@@ -10373,9 +10495,15 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalMedia a owl:Class ;
     rdfs:label "Digital Media" ;
-    rdfs:subClassOf :Data ;
+    rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Digital_media" ;
     :definition "Digital media refers to any communication media that operate in conjunction with various encoded machine-readable data formats." .
+
+:DigitalMessage a owl:Class ;
+    rdfs:label "Digital Message" ;
+    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Message_(computing)> ;
+    :definition "A discrete unit of digital communication created by a sender for one or more intended recipients. Encoded in an application-layer format, a digital message conveys semantics such as commands, data, or status and is transported inside lower-layer containers like network frames or packets." .
 
 :DigitalMultimedia a owl:Class ;
     rdfs:label "Digital Multimedia" ;
@@ -11671,7 +11799,7 @@ Analyzing a piece of code without it being executed in a sandbox, virtual machin
 
 :FileContentBlockData a owl:Class ;
     rdfs:label "File Content Block Data" ;
-    rdfs:subClassOf :Data ;
+    rdfs:subClassOf :DigitalInformation ;
     :definition "The actual content or main data within a file or data block." .
 
 :FileContentBlockMetadata a owl:Class ;
@@ -11687,8 +11815,8 @@ Analyzing a piece of code without it being executed in a sandbox, virtual machin
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
             owl:someValuesFrom :FileContentBlockData ] ;
+    :d3fend-id "D3-FCDC" ;
     :definition "Checking if compressed or encoded data sections can be successfully decompressed or decoded. Can follow with further analysis with semantic knowledge" ;
-    :end-id "D3-FCDC" ;
     :kb-article """## How it works
 
 Some file formats such as JPEGs include encoded or compressed sections. This technique verfies that those expected sections are present and can be properly decoded according to the spec.""" ;
@@ -11968,7 +12096,11 @@ Files can change constantly due to the non-static nature of a computer system. F
     rdfs:subClassOf :FileFormatVerification,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileContentBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
             owl:someValuesFrom :FileContentBlock ] ;
+    :d3fend-id "D3-FISV" ;
     :definition "The process of checking specific static values within a file, such as file signatures or magic numbers, to ensure they match the expected values defined by the file format specification." ;
     :end-id "D3-FISV" ;
     :kb-article """## How it works
@@ -11989,7 +12121,11 @@ File format specifications often define expected values for specific fields. A c
     rdfs:subClassOf :FileMetadataValueVerification,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileMagicBytes ],
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
             owl:someValuesFrom :FileMagicBytes ] ;
+    :d3fend-id "D3-FMBV" ;
     :definition "Utilizing the magic number to verify the file" ;
     :end-id "D3-FMBV" ;
     :kb-article """## How it works
@@ -12013,7 +12149,14 @@ Many file formats use magic numbers to identify a file format or protocol. Verif
             owl:someValuesFrom :FileContentBlockData ],
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileContentBlockData ],
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
             owl:someValuesFrom :FileMetadata ] ;
+    :d3fend-id "D3-FMCV" ;
     :definition "The process of validating the consistency between a file's metadata and its actual content, ensuring that elements like declared lengths, pointers, and checksums accurately describe the file's content." ;
     :end-id "D3-FMCV" ;
     :kb-article """## How it works
@@ -12031,7 +12174,14 @@ This technique involves validating the consistency between a file's metadata and
             owl:someValuesFrom :FileFooterBlock ],
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileFooterBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :FileHeaderBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
             owl:someValuesFrom :FileHeaderBlock ] ;
+    :d3fend-id "D3-FMVV" ;
     :definition "The process of checking specific static values within a file, such as file signatures or magic numbers, to ensure they match the expected values defined by the file format specification." ;
     :description """## How it works
 
@@ -13712,6 +13862,14 @@ If an attacker manages to stop the processes used to log an attack without setti
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Internet Article" .
 
+:InternetBasedAttacker a owl:Class ;
+    rdfs:label "Internet-based Attacker" ;
+    rdfs:subClassOf :RemoteAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WideAreaNetwork ] ;
+    :definition "A remote attacker who leverages the internet to conduct attacks, such as through phishing, malware, or direct network attacks." .
+
 :InternetDNSLookup a owl:Class ;
     rdfs:label "Internet DNS Lookup" ;
     rdfs:subClassOf :DNSLookup ;
@@ -14850,11 +15008,25 @@ Newer system call.""" .
     rdfs:isDefinedBy <http://dbpedia.org/resource/Local_area_network> ;
     :definition "A local area network (LAN) is a computer network that interconnects computers within a limited area such as a residence, school, laboratory, university campus or office building and has its network equipment and interconnects locally managed. Ethernet and Wi-Fi are the two most common transmission technologies in use for local area networks. Historical technologies include ARCNET, Token ring, and AppleTalk." .
 
+:LocalAreaNetworkAttacker a owl:Class ;
+    rdfs:label "Local Area Network Attacker" ;
+    rdfs:subClassOf :LocalAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :LocalAreaNetwork ] ;
+    :definition "An attacker who exploits vulnerabilities within the same local area network." ;
+    :synonym "LAN Attacker" .
+
 :LocalAreaNetworkTraffic a owl:Class ;
     rdfs:label "Local Area Network Traffic" ;
     rdfs:subClassOf :IntranetNetworkTraffic ;
     :definition "Intranet local area network (LAN) traffic is network traffic that does not cross a given network's boundaries; where that network is defined as a LAN." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Intranet> .
+
+:LocalAttacker a owl:Class ;
+    rdfs:label "Local Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An attacker who is physically near or on the premises of the target network or systems." .
 
 :LocalAuthenticationService a owl:Class ;
     rdfs:label "Local Authentication Service" ;
@@ -15482,7 +15654,7 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     rdfs:label "Metadata" ;
     rdfs:subClassOf :Data ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Metadata> ;
-    :definition "Metadata is \"data [information] that provides information about other data\". Three distinct types of metadata exist: structural metadata, descriptive metadata, and administrative metadata. Structural metadata is data about the containers of data. For instance a \"book\" contains data, and data about the book is metadata about that container of data. Descriptive metadata uses individual instances of application data or the data content." ;
+    :definition "Metadata is information which describes aspects of other information." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/metadata> .
 
 :Microcode a owl:Class ;
@@ -15850,6 +16022,13 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
             owl:someValuesFrom :NetworkFlow ] ;
     :definition "Monitors network traffic and produces summaries of data flows traversing the network." .
 
+:NetworkFrame a owl:Class ;
+    rdfs:label "Network Frame" ;
+    skos:altLabel "Frame" ;
+    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Frame_(networking)> ;
+    :definition "A finite, self-delimited sequence of bits exchanged as one unit over a single data link. Formed by link-layer encapsulation, a frame typically begins with synchronization and control fields, carries a payload, ends with an integrity check, and is bounded from adjacent frames by explicit timing or delimiter symbols." .
+
 :NetworkInitScriptFileResource a owl:Class ;
     rdfs:label "Network Init Script File Resource" ;
     rdfs:subClassOf :InitScript,
@@ -15948,7 +16127,7 @@ Administrators collect information on network nodes in their architecture using 
     :synonym "System Discovery",
         "System Inventorying" .
 
-:NetworkPackets a owl:Class ;
+:NetworkPacket a owl:Class ;
     rdfs:label "Network Packet" ;
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_packet> ;
@@ -16048,7 +16227,7 @@ Network Resource Access Control involves managing and regulating access to resou
     rdfs:subClassOf :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkPackets ],
+            owl:someValuesFrom :NetworkPacket ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DomainName ],
@@ -17983,9 +18162,24 @@ The OWL languages are characterized by formal semantics. They are built upon the
 1. Web Ontology Language. (2023, April 23). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Web_Ontology_Language)""" ;
     :synonym "Web Ontology Language" .
 
+:PackageURL a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Package URL" ;
+    skos:altLabel "purl" ;
+    rdfs:subClassOf :URL,
+        [ a owl:Restriction ;
+            owl:onProperty :identifies ;
+            owl:someValuesFrom :SoftwarePackage ] ;
+    rdfs:isDefinedBy <https://github.com/package-url/purl-spec/blob/main/PURL-SPECIFICATION.rst> ;
+    :definition "A package URL, or purl, is a URL used to identify a software package in a mostly universal and uniform way across programming languages, package managers, packaging conventions, tools, APIs and databases." ;
+    rdfs:seeAlso <https://github.com/package-url/purl-spec> .
+
 :PacketCaptureFile a owl:Class ;
     rdfs:label "Packet Capture File" ;
     rdfs:subClassOf :File,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :NetworkPacket ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :NetworkPackets ] ;
@@ -18361,6 +18555,17 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
         [ a owl:Restriction ;
             owl:onProperty :has-location ;
             owl:someValuesFrom :PhysicalLocation ] .
+
+:PhysicalAttacker a owl:Class ;
+    rdfs:label "Physical Attacker" ;
+    rdfs:subClassOf :LocalAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :ComputerPlatform ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "An attacker who is physically close enough to interact with the system directly, such as through physical access to devices." .
 
 :PhysicalLink a owl:Class ;
     rdfs:label "Physical Link" ;
@@ -19648,6 +19853,11 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
     :kb-reference :Reference-MaliciousRelayDetectionOnNetworks_VECTRANETWORKSInc ;
     :synonym "Relay Network Detection" .
 
+:RemoteAttacker a owl:Class ;
+    rdfs:label "Remote Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An attacker who exploits systems without being physically present near the target, often over the internet." .
+
 :RemoteAuthenticationService a owl:Class ;
     rdfs:label "Remote Authentication Service" ;
     rdfs:subClassOf :AuthenticationService,
@@ -20854,7 +21064,8 @@ If the threshold for detecting a stack anomaly is low, it may not detect a retur
 :ShimDatabase a owl:Class ;
     rdfs:label "Shim Database" ;
     rdfs:subClassOf :ApplicationConfigurationDatabase ;
-    :definition "A application configuration database that contains or points to software shims (e.g., for backward compatibility, patches, etc.)" .
+    :definition "A application configuration database that contains or points to software shims (e.g., for backward compatibility, patches, etc.)" ;
+    :synonym "Microsoft Shim Database File" .
 
 :ShortcutFile a owl:Class ;
     rdfs:label "Shortcut File" ;
@@ -21527,6 +21738,14 @@ Parsons, L., Haque, E., & Liu, H. (2004). Subspace Clustering for High Dimension
     :definition "Supervised learning establishes a relationship between the known input and output variables to conduct a predictive analysis." ;
     :kb-article """## References
 Supervised learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Supervised_learning).""" .
+
+:SupplyChainAttacker a owl:Class ;
+    rdfs:label "Supply Chain Attacker" ;
+    rdfs:subClassOf :Attacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Software ] ;
+    :definition "An attacker who exploits vulnerabilities in the supply chain to compromise systems or data." .
 
 :SupportVectorMachineClassification a owl:Class,
         owl:NamedIndividual ;
@@ -28876,6 +29095,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Initial Access" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to get into your network.
+
+Initial Access consists of techniques that use various entry vectors to gain their initial foothold within a network. Techniques used to gain a foothold include targeted spearphishing and exploiting weaknesses on public-facing web servers. Footholds gained through initial access may allow for continued access, like valid accounts and use of external remote services, or may be limited-use due to changing passwords.""" ;
     :display-order 1 .
 
 :TA0002 a :OffensiveTactic,
@@ -28884,6 +29106,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Execution" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to run malicious code.
+
+Execution consists of techniques that result in adversary-controlled code running on a local or remote system. Techniques that run malicious code are often paired with techniques from all other tactics to achieve broader goals, like exploring a network or stealing data. For example, an adversary might use a remote access tool to run a PowerShell script that does Remote System Discovery.""" ;
     :display-order 2 .
 
 :TA0003 a :OffensiveTactic,
@@ -28892,6 +29117,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Persistence" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to maintain their foothold.
+
+Persistence consists of techniques that adversaries use to keep access to systems across restarts, changed credentials, and other interruptions that could cut off their access. Techniques used for persistence include any access, action, or configuration changes that let them maintain their foothold on systems, such as replacing or hijacking legitimate code or adding startup code.""" ;
     :display-order 3 .
 
 :TA0004 a :OffensiveTactic,
@@ -28900,6 +29128,16 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Privilege Escalation" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to gain higher-level permissions.
+
+Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities. Examples of elevated access include:
+
+SYSTEM/root level
+local administrator
+user account with admin-like access
+user accounts with access to specific system or perform specific function
+
+These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.""" ;
     :display-order 4 .
 
 :TA0005 a :OffensiveTactic,
@@ -28908,6 +29146,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Defense Evasion" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to avoid being detected.
+
+Defense Evasion consists of techniques that adversaries use to avoid detection throughout their compromise. Techniques used for defense evasion include uninstalling/disabling security software or obfuscating/encrypting data and scripts. Adversaries also leverage and abuse trusted processes to hide and masquerade their malware. Other tactics' techniques are cross-listed here when those techniques include the added benefit of subverting defenses.""" ;
     :display-order 5 .
 
 :TA0006 a :OffensiveTactic,
@@ -28916,6 +29157,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Credential Access" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to steal account names and passwords.
+
+Credential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals.""" ;
     :display-order 6 .
 
 :TA0007 a :OffensiveTactic,
@@ -28924,6 +29168,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Discovery" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to figure out your environment.
+
+Discovery consists of techniques an adversary may use to gain knowledge about the system and internal network. These techniques help adversaries observe the environment and orient themselves before deciding how to act. They also allow adversaries to explore what they can control and what's around their entry point in order to discover how it could benefit their current objective. Native operating system tools are often used toward this post-compromise information-gathering objective.""" ;
     :display-order 7 .
 
 :TA0008 a :OffensiveTactic,
@@ -28932,6 +29179,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Lateral Movement" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to move through your environment.
+
+Lateral Movement consists of techniques that adversaries use to enter and control remote systems on a network. Following through on their primary objective often requires exploring the network to find their target and subsequently gaining access to it. Reaching their objective often involves pivoting through multiple systems and accounts to gain. Adversaries might install their own remote access tools to accomplish Lateral Movement or use legitimate credentials with native network and operating system tools, which may be stealthier.""" ;
     :display-order 8 .
 
 :TA0009 a :OffensiveTactic,
@@ -28940,6 +29190,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Collection" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to gather data of interest to their goal.
+
+Collection consists of techniques adversaries may use to gather information and the sources information is collected from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting data is to either steal (exfiltrate) the data or to use the data to gain more information about the target environment. Common target sources include various drive types, browsers, audio, video, and email. Common collection methods include capturing screenshots and keyboard input.""" ;
     :display-order 9 .
 
 :TA0010 a :OffensiveTactic,
@@ -28948,6 +29201,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Exfiltration" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to steal data.
+
+Exfiltration consists of techniques that adversaries may use to steal data from your network. Once they've collected data, adversaries often package it to avoid detection while removing it. This can include compression and encryption. Techniques for getting data out of a target network typically include transferring it over their command and control channel or an alternate channel and may also include putting size limits on the transmission.""" ;
     :display-order 11 .
 
 :TA0011 a :OffensiveTactic,
@@ -28956,6 +29212,9 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Command And Control" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to communicate with compromised systems to control them.
+
+Command and Control consists of techniques that adversaries may use to communicate with systems under their control within a victim network. Adversaries commonly attempt to mimic normal, expected traffic to avoid detection. There are many ways an adversary can establish command and control with various levels of stealth depending on the victim's network structure and defenses.""" ;
     :display-order 10 .
 
 :TA0040 a :OffensiveTactic,
@@ -28964,18 +29223,27 @@ Wikipedia. (n.d.). T-distributed stochastic neighbor embedding. [Link](https://e
     rdfs:label "Impact" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to manipulate, interrupt, or destroy your systems and data.
+
+Impact consists of techniques that adversaries use to disrupt availability or compromise integrity by manipulating business and operational processes. Techniques used for impact can include destroying or tampering with data. In some cases, business processes can look fine, but may have been altered to benefit the adversaries' goals. These techniques might be used by adversaries to follow through on their end goal or to provide cover for a confidentiality breach.""" ;
     :display-order 12 .
 
 :TA0042 a owl:Class ;
     rdfs:label "Resource Development" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to establish resources they can use to support operations.
+
+Resource Development consists of techniques that involve adversaries creating, purchasing, or compromising/stealing resources that can be used to support targeting. Such resources include infrastructure, accounts, or capabilities. These resources can be leveraged by the adversary to aid in other phases of the adversary lifecycle, such as using purchased domains to support Command and Control, email accounts for phishing as a part of Initial Access, or stealing code signing certificates to help with Defense Evasion.""" ;
     :display-order 0 .
 
 :TA0043 a owl:Class ;
     rdfs:label "Reconnaissance" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
+    :definition """The adversary is trying to gather information they can use to plan future operations.
+
+Reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. Such information may include details of the victim organization, infrastructure, or staff/personnel. This information can be leveraged by the adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute Initial Access, to scope and prioritize post-compromise objectives, or to drive and lead further Reconnaissance efforts.""" ;
     :display-order -1 .
 
 :Table a owl:Class ;
@@ -29294,6 +29562,19 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
 Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Central_tendency)""" ;
     :synonym "Truncated mean" .
 
+:TrustedAdministratorAttacker a owl:Class ;
+    rdfs:label "Trusted Administrator Attacker" ;
+    rdfs:subClassOf :TrustedAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PrivilegedUserAccount ] ;
+    :definition "A trusted attacker who misuses administrative access to execute attacks, often with elevated privileges." .
+
+:TrustedAttacker a owl:Class ;
+    rdfs:label "Trusted Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An individual who exploits their authorized access to conduct unauthorized actions, either intentionally or through negligence." .
+
 :TrustedLibrary a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Trusted Library" ;
@@ -29313,6 +29594,20 @@ Using a trusted library can reduce the chances of introducing errors compared to
 
 Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
     :kb-reference :Reference-LeverageSecurityFrameworksLibraries_OWASP .
+
+:TrustedUserAttacker a owl:Class ;
+    rdfs:label "Trusted User Attacker" ;
+    rdfs:subClassOf :TrustedAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DefaultUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DomainUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :LocalUserAccount ] ;
+    :definition "A trusted attacker who abuses regular user-level access privileges to compromise systems or data." .
 
 :TrustStore a owl:Class ;
     rdfs:label "Trust Store" ;
@@ -29833,7 +30128,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:label "User to User Message" ;
     skos:altLabel "Personal Message",
         "Private Message" ;
-    rdfs:subClassOf :DigitalInformationBearer,
+    rdfs:subClassOf :DigitalMessage,
         [ a owl:Restriction ;
             owl:onProperty :has-recipient ;
             owl:someValuesFrom :UserAccount ],
@@ -30741,6 +31036,20 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:isDefinedBy <http://dbpedia.org/resource/Wireless_access_point> ;
     :definition "In computer networking, a wireless access point (WAP), or more generally just access point (AP), is a networking hardware device that allows other Wi-Fi devices to connect to a wired network. The AP usually connects to a router (via a wired network) as a standalone device, but it can also be an integral component of the router itself. An AP is differentiated from a hotspot which is a physical location where Wi-Fi access is available." .
 
+:WirelessAttacker a owl:Class ;
+    rdfs:label "Wireless Attacker" ;
+    rdfs:subClassOf :RemoteAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PhysicalLink ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WirelessAccessPoint ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WirelessRouter ] ;
+    :definition "An attacker who targets wireless communication methods, like Wi-Fi, without needing physical access to the premises." .
+
 :WirelessRouter a owl:Class ;
     rdfs:label "Wireless Router" ;
     rdfs:subClassOf :Router,
@@ -30768,7 +31077,7 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:label "Write Protect Switch" ;
     rdfs:subClassOf :HardwareDevice,
         [ a owl:Restriction ;
-            owl:onProperty :restrict ;
+            owl:onProperty :restricts ;
             owl:someValuesFrom :Storage ] ;
     :definition "A physical device used to restrict configuration of a device." ;
     rdfs:seeAlso "NIST SP 800-82r3, Appendix F, SC-51 Hardware-Based Protection",
@@ -32392,7 +32701,7 @@ There are several sub-techniques, but this analytic focuses on Match Legitimate 
 :Reference-CarvingContiguousandFragmentedFilesWithFastObjectValidation a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Carving Contiguous and Fragmented Files with Fast Object Validation" ;
-    :has-link "https://www.sciencedirect.com/science/article/pii/S1742287607000369?viewFullText=true#sec4" ;
+    :has-link "https://www.sciencedirect.com/science/article/pii/S1742287607000369?viewFullText=true#sec4"^^xsd:anyURI ;
     :kb-abstract "“File carving” reconstructs files based on their content, rather than using metadata that points to the content. Carving is widely used for forensics and data recovery, but no file carvers can automatically reassemble fragmented files. We survey files from more than 300 hard drives acquired on the secondary market and show that the ability to reassemble fragmented files is an important requirement for forensic work. Next we analyze the file carving problem, arguing that rapid, accurate carving is best performed by a multi-tier decision problem that seeks to quickly validate or discard candidate byte strings – “objects” – from the media to be carved. Validators for the JPEG, Microsoft OLE (MSOLE) and ZIP file formats are discussed. Finally, we show how high speed validators can be used to reassemble fragmented files." ;
     :kb-author "Simson L. Garfinkel" ;
     :kb-reference-of :FileContentDecompressionChecking,
@@ -32890,47 +33199,6 @@ This behavior can be detected by looking for thread creations across processes, 
     :kb-reference-title "CAR-2013-10-002: DLL Injection via Load Library" ;
     :todo "MITRE Analysis was not found" .
 
-:Reference-DNP3UserandReferenceManual a owl:NamedIndividual,
-        :UserManualReference ;
-    rdfs:label "Reference - DNP3 User and Reference Manual" ;
-    :has-link "https://icscsi.org/library/Documents/ICS_Protocols/Control%20Microsystems%20-%20DNP3%20User%20and%20Reference%20Manual.pdf"^^xsd:anyURI ;
-    :kb-abstract "The manual details implementation of the Distributed Network Protocol (DNP3) on SCADAPack controllers. The manual describes the functionality of SCADAPack controllers under certain DNP network topologies and fully details each DNP configuration parameter available on SCADAPack controllers. Although we continuously add tidbits of relevant information, especially when explaining each SCADAPack parameter in the overall scheme of the DNP3 concept, this manual does not serve as a complete DNP3 Technical Reference guide." ;
-    :kb-author "Control Microsystems Inc. " ;
-    :kb-reference-of :OTAbortService,
-        :OTChangeData,
-        :OTChangeDeviceProcessData,
-        :OTCreateData,
-        :OTCreateNewDeviceProcessData,
-        :OTDeleteData,
-        :OTDeleteDeviceProcessData,
-        :OTDeviceAcknowledge,
-        :OTDeviceException,
-        :OTDeviceStatus,
-        :OTDisconnectRemoteConnection,
-        :OTDownloadData,
-        :OTEstablishRemoteConnection,
-        :OTHardwareStatus,
-        :OTIdentifyDevice,
-        :OTModifyDevicePower,
-        :OTModifyDeviceProgramState,
-        :OTParameterStatus,
-        :OTPauseService,
-        :OTProgramService,
-        :OTReadDeviceConfigurationData,
-        :OTReadDeviceData,
-        :OTReadDeviceStatus,
-        :OTReadFile,
-        :OTReadSetValue,
-        :OTRemoteService,
-        :OTRestartDevice,
-        :OTServiceStatus,
-        :OTStartService,
-        :OTStopService,
-        :OTUpdateDeviceFirmware,
-        :OTUploadData,
-        :OTUploadDeviceProcessData ;
-    :kb-reference-title "DNP3 User and Reference Manual" .
-
 :Reference-DNSWhitelist-DNSWL-EmailAuthenticationMethodExtension a owl:NamedIndividual,
         :SpecificationReference ;
     rdfs:label "Reference - DNS Whitelist (DNSWL) Email Authentication Method Extension" ;
@@ -33117,7 +33385,7 @@ If a process is conducting a traversal of the directory and accessing files acco
 :Reference-FileSecurityUsingFileFormatValidation_OPSWATInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - File Security Using File Format Validation - OPSWAT Inc" ;
-    :has-link "https://patentimages.storage.googleapis.com/ba/10/83/968a6345eee505/US20200104494A1.pdf" ;
+    :has-link "https://patentimages.storage.googleapis.com/ba/10/83/968a6345eee505/US20200104494A1.pdf"^^xsd:anyURI ;
     :kb-abstract "A method for securely validating the file format type including receiving a file having a file format type, a header and a content block. The header has a header block with a description representing attributes of the actual content in the file . The content block has leading bytes representing attributes of the actual content, and actual content. Data is parsed from the description of the header block, the leading bytes and the actual content. Data from the description is compared to the data from the leading bytes, data from the leading bytes is compared to the data from the actual content, and data from the description is compared to the data from the actual content. The file format type is validated and trustable when the data from the description, the data from the leading bytes and the data from the actual content are consistent with one another." ;
     :kb-author "Benjamin Czarny, Yiyi Miao, Jianpeng Mo" ;
     :kb-organization "OPSWAT, Inc." ;
@@ -33303,7 +33571,7 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
 :Reference-GatheringEvidenceModel-DrivenSoftwareEngineeringinAutomatedDigitalForensics a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Gathering Evidence: Model-Driven Software Engineering in Automated Digital Forensics" ;
-    :has-link "https://pure.uva.nl/ws/files/1739225/132135_thesis.pdf" ;
+    :has-link "https://pure.uva.nl/ws/files/1739225/132135_thesis.pdf"^^xsd:anyURI ;
     :kb-author "van den Bos, J." ;
     :kb-reference-of :FileContentDecompressionChecking,
         :FileInternalStructureVerification,
@@ -33634,7 +33902,7 @@ This patent describes ensuring that a driver associated with the agent is initia
 :Reference-IntroductoryComputerForensics a :BookReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Introductory Computer Forensics" ;
-    :has-link "https://core.ac.uk/download/pdf/326762883.pdf" ;
+    :has-link "https://core.ac.uk/download/pdf/326762883.pdf"^^xsd:anyURI ;
     :kb-author "Xiaodong Lin" ;
     :kb-reference-of :FileMetadataValueVerification ;
     :kb-reference-title "Introductory Computer Forensics" .
@@ -33952,7 +34220,7 @@ Some examples of data inputs:
 :Reference-MethodForContentDisarmandReconstruction_OPSWATInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Method For Content Disarm and Reconstruction - OPSWAT Inc" ;
-    :has-link "https://patentimages.storage.googleapis.com/a9/40/78/713c8deb2c4c7a/US20190268352A1.pdf" ;
+    :has-link "https://patentimages.storage.googleapis.com/a9/40/78/713c8deb2c4c7a/US20190268352A1.pdf"^^xsd:anyURI ;
     :kb-abstract "A Content Disarm and Reconstruction ( CDR ) method is disclosed including a computer receiving an input file hav ing a file format configured with a structured storage. The computer disassembles the structured storage into at least one subfile . Each subfile is a stream subfile . For each subfile , the computer identifies an item in the stream subfile . The computer analyzes the item in the stream subfile for an unwanted behavior by determining an acceptability of the unwanted behavior , distinguishing a visibility of the item , and recognizing a necessity of the item . The computer , based on a result of the analyzing step , processes the item in the stream subfile resulting in a processed subfile . The computer assembles the processed subfiles into an output file having the same file format as the file format as the input file ." ;
     :kb-author "Taeil Goh, Vinh Nguyen Xuan Lam, Nhut Minh Ngo, Dung Huu Nguyen" ;
     :kb-organization "OPSWAT, Inc." ;
@@ -34037,47 +34305,6 @@ Some examples of data inputs:
     :kb-reference-of :DecoyPublicRelease ;
     :kb-reference-title "Mock attack cybersecurity training system and methods" ;
     :todo "MITRE Analysis was not found" .
-
-:Reference-MODBUSApplicationProtocol a owl:NamedIndividual,
-        :SpecificationReference ;
-    rdfs:label "Reference - MODBUS Application Protocol" ;
-    :has-link "https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf"^^xsd:anyURI ;
-    :kb-abstract "Scope of this document MODBUS is an application layer messaging protocol, positioned at level 7 of the OSI model, that provides client/server communication between devices connected on different types of buses or networks." ;
-    :kb-author "Modbus Organization, Inc" ;
-    :kb-reference-of :OTAbortService,
-        :OTChangeData,
-        :OTChangeDeviceProcessData,
-        :OTCreateData,
-        :OTCreateNewDeviceProcessData,
-        :OTDeleteData,
-        :OTDeleteDeviceProcessData,
-        :OTDeviceAcknowledge,
-        :OTDeviceException,
-        :OTDeviceStatus,
-        :OTDisconnectRemoteConnection,
-        :OTDownloadData,
-        :OTEstablishRemoteConnection,
-        :OTHardwareStatus,
-        :OTIdentifyDevice,
-        :OTModifyDevicePower,
-        :OTModifyDeviceProgramState,
-        :OTParameterStatus,
-        :OTPauseService,
-        :OTProgramService,
-        :OTReadDeviceConfigurationData,
-        :OTReadDeviceData,
-        :OTReadDeviceStatus,
-        :OTReadFile,
-        :OTReadSetValue,
-        :OTRemoteService,
-        :OTRestartDevice,
-        :OTServiceStatus,
-        :OTStartService,
-        :OTStopService,
-        :OTUpdateDeviceFirmware,
-        :OTUploadData,
-        :OTUploadDeviceProcessData ;
-    :kb-reference-title "MODBUS Application Protocol" .
 
 :Reference-ModelingUserAccessToComputerResources_DaedalusGroupLLC a owl:NamedIndividual,
         :PatentReference ;
@@ -34285,47 +34512,6 @@ architecture using the Snort NIDS.""" ;
     :has-link "https://github.com/osquery/osquery/blob/d2be385d71f401c85872f00d479df8f499164c5a/osquery/tables/system/windows/users.cpp"^^xsd:anyURI ;
     :kb-reference-title "OS Query Windows User Collection Code" .
 
-:Reference-OTStack a :ExternalKnowledgeBase,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - OT Stack" ;
-    :has-link "TBR"^^xsd:anyURI ;
-    :kb-abstract "TBR" ;
-    :kb-author "MITRE" ;
-    :kb-reference-of :OTAbortService,
-        :OTChangeData,
-        :OTChangeDeviceProcessData,
-        :OTCreateData,
-        :OTCreateNewDeviceProcessData,
-        :OTDeleteData,
-        :OTDeleteDeviceProcessData,
-        :OTDeviceAcknowledge,
-        :OTDeviceException,
-        :OTDeviceStatus,
-        :OTDisconnectRemoteConnection,
-        :OTDownloadData,
-        :OTEstablishRemoteConnection,
-        :OTHardwareStatus,
-        :OTIdentifyDevice,
-        :OTModifyDevicePower,
-        :OTModifyDeviceProgramState,
-        :OTParameterStatus,
-        :OTPauseService,
-        :OTProgramService,
-        :OTReadDeviceConfigurationData,
-        :OTReadDeviceData,
-        :OTReadDeviceStatus,
-        :OTReadFile,
-        :OTReadSetValue,
-        :OTRemoteService,
-        :OTRestartDevice,
-        :OTServiceStatus,
-        :OTStartService,
-        :OTStopService,
-        :OTUpdateDeviceFirmware,
-        :OTUploadData,
-        :OTUploadDeviceProcessData ;
-    :kb-reference-title "OT Stack" .
-
 :Reference-OutlierParentsOfCmd_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2014-11-002: Outlier Parents of Cmd - MITRE" ;
@@ -34501,47 +34687,6 @@ Powershell can be used to hide monitored command line execution such as:
         "No author organizations provided for reference, add one?",
         "No authors provided for reference",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
-
-:Reference-ProgrammersGuidetotheBACnetCommunicationsDLL a :GuidelineReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Programmers Guide to the BACnet Communications DLL" ;
-    :has-link "https://nvlpubs.nist.gov/nistpubs/TechnicalNotes/NIST.TN.2023.pdf"^^xsd:anyURI ;
-    :kb-abstract "ASHRAE Standard 135- BACnet®--A Data Communication Protocol for Building Automation and Control Networks defines a communications protocol for information exchange between components of a distributed building automation and control system. The proliferation of BACnet enabled heating, ventilating, and air conditioning (HVAC) systems has enabled direct access to HVAC system data. The BACnet communications dynamic linked library (DLL) enables researchers to implement selected BACnet communications, creating an interface for data collection that is easy to use. The ability to access HVAC controllers from a computer is valuable because it allows researchers, designers, or other users to retrieve data directly from the BACnet objects on the controllers. These data could include information on the conditions in the building space served by the equipment, the conditions and status of the equipment, the actions the controller is currently taking, and other values that may be set by internal program logic. These data could then be used for a variety of research purposes, including real-time monitoring of the HVAC system, commissioning, fault detection and diagnostics (FDD), data logging, or other applications. Researchers can integrate the BACnet communications DLL (BCD) into existing tools, create a new tool with the BCD, or use the BCD with common data acquisition and analysis tools." ;
-    :kb-author "NIST" ;
-    :kb-reference-of :OTAbortService,
-        :OTChangeData,
-        :OTChangeDeviceProcessData,
-        :OTCreateData,
-        :OTCreateNewDeviceProcessData,
-        :OTDeleteData,
-        :OTDeleteDeviceProcessData,
-        :OTDeviceAcknowledge,
-        :OTDeviceException,
-        :OTDeviceStatus,
-        :OTDisconnectRemoteConnection,
-        :OTDownloadData,
-        :OTEstablishRemoteConnection,
-        :OTHardwareStatus,
-        :OTIdentifyDevice,
-        :OTModifyDevicePower,
-        :OTModifyDeviceProgramState,
-        :OTParameterStatus,
-        :OTPauseService,
-        :OTProgramService,
-        :OTReadDeviceConfigurationData,
-        :OTReadDeviceData,
-        :OTReadDeviceStatus,
-        :OTReadFile,
-        :OTReadSetValue,
-        :OTRemoteService,
-        :OTRestartDevice,
-        :OTServiceStatus,
-        :OTStartService,
-        :OTStopService,
-        :OTUpdateDeviceFirmware,
-        :OTUploadData,
-        :OTUploadDeviceProcessData ;
-    :kb-reference-title "Programmers Guide to the BACnet Communications DLL" .
 
 :Reference-ProtectedComputingEnvironment_MicrosoftTechnologyLicensingLLC a owl:NamedIndividual,
         :PatentReference ;
