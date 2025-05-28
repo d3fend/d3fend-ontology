@@ -4,6 +4,8 @@ prefixes:
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   rdfs: http://www.w3.org/2000/01/rdf-schema#
   owl: http://www.w3.org/2002/07/owl#
+  grel: http://users.ugent.be/~bjdmeest/function/grel.ttl#
+
 sources:
   cwe-pillar-source:
     access: "cwec_latest.xml"
@@ -17,18 +19,28 @@ sources:
     access: "./cwec_latest.xml"
     referenceFormulation: xpath
     iterator: "/Weakness_Catalog/Weaknesses/Weakness/Related_Weaknesses/Related_Weakness[@Nature = 'ChildOf' and @View_ID='1000']"
+
 mappings:
   Pillar:
     sources: cwe-pillar-source
     s: d3f:CWE-$(./@ID)
     po:
       - [rdfs:subClassOf, d3f:Weakness~iri]
+
   Weakness:
     sources: cwe-source
     s: d3f:CWE-$(./@ID)
     po:
       - [d3f:cwe-id, "CWE-$(./@ID)"]
       - [rdfs:label, "$(./@Name)"]
+      - p: d3f:definition
+        o:
+          function: grel:string_replace
+          parameters:
+            - [grel:valueParameter, $(Description)]
+            - [grel:p_string_find, "/\\s+/"]
+            - [grel:p_string_replace, " "]
+
   RelatedWeakness:
     sources: cwe-rel-source
     s: d3f:CWE-$(./../../@ID)
