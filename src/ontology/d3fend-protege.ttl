@@ -3869,7 +3869,19 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 
 :Command a owl:Class ;
     rdfs:label "Command" ;
-    rdfs:subClassOf :DigitalInformation ;
+    rdfs:subClassOf :DigitalInformation,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :CommandHistoryLog ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ExecutableFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :OSAPIFunction ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Command_(computing)> ;
     :definition "In computing, a command is a directive to a computer program acting as an interpreter of some kind, in order to perform a specific task. Most commonly a command is either a directive to some kind of command-line interface, such as a shell, or an event in a graphical user interface triggered by the user selecting an option in a menu." .
 
@@ -9581,7 +9593,10 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 
 :DatabaseQuery a owl:Class ;
     rdfs:label "Database Query" ;
-    rdfs:subClassOf :Command ;
+    rdfs:subClassOf :Command,
+        [ a owl:Restriction ;
+            owl:onProperty :queries ;
+            owl:someValuesFrom :Database ] ;
     :definition "A specific query expressed in SQL, SPARQL, or similar language against a database." .
 
 :DatabaseQueryStringAnalysis a :DatabaseQueryStringAnalysis,
@@ -19055,7 +19070,10 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
 
 :PrivateKey a owl:Class ;
     rdfs:label "Private Key" ;
-    rdfs:subClassOf :AsymmetricKey ;
+    rdfs:subClassOf :AsymmetricKey,
+        [ a owl:Restriction ;
+            owl:onProperty :associated-with ;
+            owl:someValuesFrom :PublicKey ] ;
     :definition "A private key can be used to decrypt messages encrypted using the corresponding public key, or used to sign a message that can be authenticated with the corresponding public key." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Public-key_cryptography> .
 
@@ -19741,7 +19759,13 @@ Proxy-based Web Server Access Mediation involves controlling access to web serve
 
 :PublicKey a owl:Class ;
     rdfs:label "Public Key" ;
-    rdfs:subClassOf :AsymmetricKey ;
+    rdfs:subClassOf :AsymmetricKey,
+        [ a owl:Restriction ;
+            owl:onProperty :associated-with ;
+            owl:someValuesFrom :PrivateKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :contained-by ;
+            owl:someValuesFrom :Certificate ] ;
     :definition "A public key can be disseminated widely as part of an asymmetric cryptography framework and be used to encrypt messages to send to the public key's owner or to authenticate signed messages from that sender." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Public-key_cryptography> .
 
@@ -20069,7 +20093,10 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 
 :RemoteCommand a owl:Class ;
     rdfs:label "Remote Command" ;
-    rdfs:subClassOf :Command ;
+    rdfs:subClassOf :Command,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :definition "A remote command is a command sent from one computer to another to be executed on the remote computer.  One example of this, is through a command-line interface (CLI) like using Invoke-Command from PowerShell or a command sent through an ssh session. This class generalizes to all means of sending a command through an established protocol to control capabilities on a remote computer." .
 
 :RemoteDatabaseQuery a owl:Class ;
@@ -30205,7 +30232,10 @@ Geolocation data for each user logon attempt is collected and used to create a b
 :UserInterface a owl:Class ;
     rdfs:label "User Interface" ;
     skos:altLabel "UI" ;
-    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :interprets ;
+            owl:someValuesFrom :Command ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/User_interface> ;
     :definition "The user interface (UI), in the industrial design field of human-machine interaction, is the space where interactions between humans and machines occur. The goal of this interaction is to allow effective operation and control of the machine from the human end, whilst the machine simultaneously feeds back information that aids the operators' decision-making process. Examples of this broad concept of user interfaces include the interactive aspects of computer operating systems, hand tools, heavy machinery operator controls, and process controls. The design considerations applicable when creating user interfaces are related to or involve such disciplines as ergonomics and psychology." .
 
