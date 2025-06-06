@@ -548,7 +548,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :initiates a owl:ObjectProperty ;
     rdfs:label "initiates" ;
-    rdfs:subPropertyOf :associated-with ;
+    rdfs:subPropertyOf :may-initiate ;
     :definition "x initiates y: The entity or action x starts or triggers entity or function y, bringing it into action." .
 
 :injects a owl:ObjectProperty ;
@@ -742,6 +742,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-be-associated-with ;
     owl:inverseOf :may-modify .
 
+:may-be-preceded-by a owl:ObjectProperty ;
+    rdfs:label :may-be-preceded-by ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x preceded-by y: The event or action x occurs after event or action y in time." .
+
 :may-be-tactically-associated-with a owl:ObjectProperty ;
     rdfs:label "may-be-tactically-associated-with" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -816,6 +821,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:domain :Artifact ;
     rdfs:range :Weakness .
 
+:may-initiate a owl:ObjectProperty ;
+    rdfs:label "may-initiate" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x initiates y: The entity or action x starts or triggers entity or function y, bringing it into action." .
+
 :may-interpret a owl:ObjectProperty ;
     rdfs:label "may-interpret" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -840,6 +850,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "may-modify" ;
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "x may-modify y: They entity x may modify the thing y; that is, 'x modifies y' may be true." .
+
+:may-precede a owl:ObjectProperty ;
+    rdfs:label "may-precede" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x precedes y: The event or action x occurs before event or action y in time." .
 
 :may-produce a owl:ObjectProperty ;
     rdfs:label "may-produce" ;
@@ -962,14 +977,14 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :preceded-by a owl:ObjectProperty ;
     rdfs:label "preceded-by" ;
-    rdfs:subPropertyOf :associated-with ;
+    rdfs:subPropertyOf :may-be-preceded-by ;
     owl:inverseOf :precedes ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000062> ;
     :definition "x preceded-by y: The event or action x occurs after event or action y in time." .
 
 :precedes a owl:ObjectProperty ;
     rdfs:label "precedes" ;
-    rdfs:subPropertyOf :associated-with ;
+    rdfs:subPropertyOf :may-precede ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000063> ;
     :definition "x precedes y: The event or action x occurs before event or action y in time." .
 
@@ -2286,13 +2301,25 @@ Hardening an application's configuration involves analyzing not only the applica
     rdfs:label "Application Deletion Event" ;
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :Application ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-initiate ;
+            owl:someValuesFrom :FileDeletionEvent ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
-            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+            owl:someValuesFrom :ApplicationInstallationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationStopEvent ] ;
     :definition "An event capturing the removal of an application from a system, ensuring its binaries, configuration files, and registry entries are deleted or deactivated." .
 
 :ApplicationDisableEvent a owl:Class ;
     rdfs:label "Application Disable Event" ;
     rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :Application ],
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :ApplicationEnableEvent ] ;
@@ -2302,8 +2329,14 @@ Hardening an application's configuration involves analyzing not only the applica
     rdfs:label "Application Enable Event" ;
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Application ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
-            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+            owl:someValuesFrom :ApplicationInstallationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationDisableEvent ] ;
     :definition "An event representing the enabling of an application, allowing it to be started or accessed when required." .
 
 :ApplicationEvent a owl:Class ;
@@ -2333,7 +2366,25 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
 
 :ApplicationInstallationEvent a owl:Class ;
     rdfs:label "Application Installation Event" ;
-    rdfs:subClassOf :ApplicationEvent ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :FileCreationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :installs ;
+            owl:someValuesFrom :Application ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationDeletionEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationEnableEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationStartEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationUpdateEvent ] ;
     :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
 
 :ApplicationInstaller a owl:Class ;
@@ -2407,6 +2458,12 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:label "Application Start Event" ;
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :Application ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-preceded-by ;
+            owl:someValuesFrom :ApplicationStopEvent ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :ApplicationInstallationEvent ] ;
     :definition "An event where an application transitions from an inactive state to an active state, initializing its resources and becoming operational for user interaction or automated processes." .
@@ -2415,8 +2472,17 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:label "Application Stop Event" ;
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
+            owl:onProperty :may-be-preceded-by ;
+            owl:someValuesFrom :ApplicationRestartEvent ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
-            owl:someValuesFrom :ApplicationStartEvent ] ;
+            owl:someValuesFrom :ApplicationStartEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationDeletionEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :terminates ;
+            owl:someValuesFrom :Application ] ;
     :definition "An event capturing the cessation of an application’s operations, transitioning it to an inactive state and releasing any allocated resources." .
 
 :ApplicationUpdateEvent a owl:Class ;
@@ -2424,7 +2490,10 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
-            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+            owl:someValuesFrom :ApplicationInstallationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :updates ;
+            owl:someValuesFrom :Application ] ;
     :definition "An event describing changes made to an application, such as updates, reconfigurations, or patch installations, while maintaining its presence on the system." .
 
 :ApproximateStringMatching a owl:Class,
@@ -22222,7 +22291,16 @@ System service applications may originate from the operating system installation
 :ServiceDeletionEvent a owl:Class ;
     rdfs:label "Service Deletion Event" ;
     rdfs:subClassOf :ApplicationDeletionEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :ServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStopEvent ] ;
     :definition "An event capturing the uninstallation or deregistration of a service application, ensuring it is no longer operational or available to clients." .
 
 :ServiceDependency a owl:Class ;
@@ -22255,13 +22333,28 @@ The organization collects and models architectural information about the service
 :ServiceDisableEvent a owl:Class ;
     rdfs:label "Service Disable Event" ;
     rdfs:subClassOf :ApplicationDisableEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :ServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceEnableEvent ] ;
     :definition "An event capturing the deactivation of a service application, preventing it from being started or accessed until re-enabled." .
 
 :ServiceEnableEvent a owl:Class ;
     rdfs:label "Service Enable Event" ;
     rdfs:subClassOf :ApplicationEnableEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :ServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceDisableEvent ] ;
     :definition "An event representing the activation of a service application, allowing it to start and provide its background or networked functionality." .
 
 :ServiceEvent a owl:Class ;
@@ -22275,7 +22368,22 @@ The organization collects and models architectural information about the service
 :ServiceInstallationEvent a owl:Class ;
     rdfs:label "Service Installation Event" ;
     rdfs:subClassOf :ApplicationInstallationEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :installs ;
+            owl:someValuesFrom :ServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceDeletionEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceEnableEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceStartEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceUpdateEvent ] ;
     :definition "An event representing the installation or registration of a service application within the system, enabling it to provide background or reusable functionality." .
 
 :ServiceProvider a owl:Class ;
@@ -22286,25 +22394,58 @@ The organization collects and models architectural information about the service
 :ServiceRestartEvent a owl:Class ;
     rdfs:label "Service Restart Event" ;
     rdfs:subClassOf :ApplicationRestartEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStopEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceStartEvent ] ;
     :definition "An event describing the sequential stopping and starting of a service application to refresh its state, apply updates, or resolve operational issues." .
 
 :ServiceStartEvent a owl:Class ;
     rdfs:label "Service Start Event" ;
     rdfs:subClassOf :ApplicationStartEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :ServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-preceded-by ;
+            owl:someValuesFrom :ServiceStopEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
     :definition "An event representing the initiation of a service application, transitioning it from an inactive state to an active state, enabling its background or networked operations." .
 
 :ServiceStopEvent a owl:Class ;
     rdfs:label "Service Stop Event" ;
     rdfs:subClassOf :ApplicationStopEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-preceded-by ;
+            owl:someValuesFrom :ServiceRestartEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStartEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceDeletionEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :terminates ;
+            owl:someValuesFrom :ServiceApplication ] ;
     :definition "An event capturing the cessation of a service application’s operations, transitioning it to an inactive state while ceasing its functionality to clients or dependent systems." .
 
 :ServiceUpdateEvent a owl:Class ;
     rdfs:label "Service Update Event" ;
     rdfs:subClassOf :ApplicationUpdateEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :updates ;
+            owl:someValuesFrom :ServiceApplication ] ;
     :definition "An event describing changes made to a service application, such as updates, reconfigurations, or patch installations, ensuring its continued availability and functionality." .
 
 :Session a owl:Class ;
@@ -37670,4 +37811,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
