@@ -19996,6 +19996,57 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     rdfs:seeAlso <https://dbpedia.org/resource/Physical_layer> ;
     :synonym "Layer-1 Link" .
 
+:PhysicalLinkConnectEvent a owl:Class ;
+    rdfs:label "Physical Link Connect Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :PhysicalLinkUpEvent ] ;
+    :definition "The medium is attached or the port is enabled, establishing electrical or optical continuity so that link negotiation can begin." .
+
+:PhysicalLinkDisableEvent a owl:Class ;
+    rdfs:label "Physical Link Disable Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkUpEvent ] ;
+    :definition "An administrator issues a shutdown or disable command, forcing the link out of service regardless of signal status." .
+
+:PhysicalLinkDisconnectEvent a owl:Class ;
+    rdfs:label "Physical Link Disconnect Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkDownEvent ] ;
+    :definition "The transmission medium is removed or power is cut, physically breaking the path between the two interfaces." .
+
+:PhysicalLinkDownEvent a owl:Class ;
+    rdfs:label "Physical Link Down Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkUpEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :PhysicalLinkDisconnectEvent ] ;
+    :definition "Carrier or negotiation is lost, or the port is shut, rendering the link non-operational while the medium remains connected." .
+
+:PhysicalLinkErrorDisableEvent a owl:Class ;
+    rdfs:label "Physical Link Error Disable Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkDownEvent ] ;
+    :definition "The device automatically disables the link in response to fault conditions such as excessive faults or signal degradation." .
+
+:PhysicalLinkEvent a owl:Class ;
+    rdfs:label "Physical Link Event" ;
+    rdfs:subClassOf :NetworkDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :PhysicalLink ] ;
+    :definition "A discrete event that changes either the presence of the transmission medium or the operational state of a single-hop layer-1 link between two network nodes." .
+
 :PhysicalLinkMapping a owl:Class,
         owl:NamedIndividual,
         :PhysicalLinkMapping ;
@@ -20012,6 +20063,17 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     :kb-reference :Reference-LibreNMSDocsNetworkMapExtension ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Network_topology#Links> ;
     :synonym "Layer 1 Mapping" .
+
+:PhysicalLinkUpEvent a owl:Class ;
+    rdfs:label "Physical Link Up Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkConnectEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :PhysicalLinkDownEvent ] ;
+    :definition "Auto-negotiation and signal detection complete; carrier is present and the link can forward frames." .
 
 :PhysicalLocation a owl:Class ;
     rdfs:label "Physical Location" ;
@@ -36143,7 +36205,7 @@ Powershell can be used to hide monitored command line execution such as:
 :Reference-ReachabilityGraphBasedSafeRemediationsforSecuirytofOnPremiseAndCloudComputingEnvironments a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Reachability graph-based safe remediations for security of on-premise and cloud computing environments" ;
-    :has-link "https://patentimages.storage.googleapis.com/23/c1/a5/d78b3d4f275070/US11637861.pdf" ;
+    :has-link "https://patentimages.storage.googleapis.com/23/c1/a5/d78b3d4f275070/US11637861.pdf"^^xsd:anyURI ;
     :kb-abstract "A method for securing a networked computer system executing an application includes identifying a vulnerable computer resource in the networked computer system, determining all computer resources in the networked computer system that are accessible from, or are accessed by, the vulnerable computer resource, and prioritizing implementation of a remediation action to secure the vulnerable computer resource if a vulnerability path extends from the vulnerable computer resource to a critical computer resource that contains sensitive information. The remediation action to secure the vulnerable computer resource is a safe remediation action that does not impact availability of the application executing on the networked computer system." ;
     :kb-author "Siddharth Sukumar Burle, Ajoy Kumar, Manish Jain" ;
     :kb-reference-of :NetworkVulnerabilityAssessment ;
@@ -36905,7 +36967,7 @@ and deploy decoy physical or virtual endpoints.""" ;
 :Reference-SystemAndMethodForStrategicAntiMalwareMonitoring a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - System and method for strategic anti-malware monitoring - Tenable" ;
-    :has-link "https://patentimages.storage.googleapis.com/d9/02/31/3a28fefc73661d/US20230362189A1.pdf" ;
+    :has-link "https://patentimages.storage.googleapis.com/d9/02/31/3a28fefc73661d/US20230362189A1.pdf"^^xsd:anyURI ;
     :kb-abstract "The system and method described herein may leverage active network scanning and passive network monitoring to provide strategic anti-malware monitoring in a network. In particular, the system and method described herein may remotely connect to managed hosts in a network to compute hashes or other signatures associated with processes running thereon and suspicious files hosted thereon, wherein the hashes may communicated to a cloud database that aggregates all known virus or malware signatures that various anti-virus vendors have catalogued to detect malware infections without requiring the hosts to have a local or resident anti-virus agent. Furthermore, running processes and file system activity may be monitored in the network to further detect malware infections. Additionally, the network scanning and network monitoring may be used to detect hosts that may potentially be participating in an active botnet or hosting botnet content and audit anti-virus strategies deployed in the network." ;
     :kb-author "Marcus J. Ranum, Ron Gula" ;
     :kb-organization "Tenable Inc" ;
