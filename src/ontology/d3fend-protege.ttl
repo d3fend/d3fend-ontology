@@ -742,11 +742,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-be-associated-with ;
     owl:inverseOf :may-modify .
 
-:may-be-preceded-by a owl:ObjectProperty ;
-    rdfs:label :may-be-preceded-by ;
-    rdfs:subPropertyOf :associated-with ;
-    :definition "x preceded-by y: The event or action x may occur after event or action y in time." .
-
 :may-be-tactically-associated-with a owl:ObjectProperty ;
     rdfs:label "may-be-tactically-associated-with" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -845,11 +840,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "may-modify" ;
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "x may-modify y: They entity x may modify the thing y; that is, 'x modifies y' may be true." .
-
-:may-precede a owl:ObjectProperty ;
-    rdfs:label "may-precede" ;
-    rdfs:subPropertyOf :associated-with ;
-    :definition "x precedes y: The event or action x may occur before event or action y in time." .
 
 :may-produce a owl:ObjectProperty ;
     rdfs:label "may-produce" ;
@@ -972,14 +962,14 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :preceded-by a owl:ObjectProperty ;
     rdfs:label "preceded-by" ;
-    rdfs:subPropertyOf :may-be-preceded-by ;
+    rdfs:subPropertyOf :associated-with ;
     owl:inverseOf :precedes ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000062> ;
     :definition "x preceded-by y: The event or action x occurs after event or action y in time." .
 
 :precedes a owl:ObjectProperty ;
     rdfs:label "precedes" ;
-    rdfs:subPropertyOf :may-precede ;
+    rdfs:subPropertyOf :associated-with ;
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000063> ;
     :definition "x precedes y: The event or action x occurs before event or action y in time." .
 
@@ -2299,12 +2289,6 @@ Hardening an application's configuration involves analyzing not only the applica
     rdfs:label "Application Deletion Event" ;
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :ApplicationStopEvent ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-precede ;
-            owl:someValuesFrom :FileDeletionEvent ],
-        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :ApplicationInstallationEvent ] ;
     :definition "An event capturing the removal of an application from a system, ensuring its binaries, configuration files, and registry entries are deleted or deactivated." .
@@ -2355,10 +2339,7 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :ApplicationEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :SoftwareDeploymentTool ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-precede ;
-            owl:someValuesFrom :FileCreationEvent ] ;
+            owl:someValuesFrom :SoftwareDeploymentTool ] ;
     :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
 
 :ApplicationInstaller a owl:Class ;
@@ -2439,9 +2420,6 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
 :ApplicationStopEvent a owl:Class ;
     rdfs:label "Application Stop Event" ;
     rdfs:subClassOf :ApplicationEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :ApplicationRestartEvent ],
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :ApplicationStartEvent ] ;
@@ -12486,10 +12464,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 
 :EventLogDeleteEvent a owl:Class ;
     rdfs:label "Event Log Delete Event" ;
-    rdfs:subClassOf :EventLogEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :may-precede ;
-            owl:someValuesFrom :FileDeletionEvent ] ;
+    rdfs:subClassOf :EventLogEvent ;
     :definition "An event where the event log database, file, or cache is deleted from the system, removing the log's historical records." .
 
 :EventLogDisableEvent a owl:Class ;
@@ -16429,10 +16404,7 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
 
 :MemoryAllocationEvent a owl:Class ;
     rdfs:label "Memory Allocation Event" ;
-    rdfs:subClassOf :MemoryEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :KernelModuleLoadEvent ] ;
+    rdfs:subClassOf :MemoryEvent ;
     :definition "An event representing the allocation of memory resources to a process, providing it with the capacity to store data or execute instructions." .
 
 :MemoryAllocationFunction a owl:Class ;
@@ -18347,13 +18319,7 @@ GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
             owl:someValuesFrom :OTChangeControlProgramCommand ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTControlProgram ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :OTCreateNewControlProgramCommandEvent ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :OTDownloadControlProgramCommandEvent ] ;
+            owl:someValuesFrom :OTControlProgram ] ;
     :definition "Commands a remote device to modify an existing control program." .
 
 :OTChangeDataCommand a owl:Class ;
@@ -18570,13 +18536,7 @@ Modbus: Get Comm. Event Counters""" ;
             owl:someValuesFrom :OTControlProgram ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDeleteControlProgramCommand ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :OTCreateNewControlProgramCommandEvent ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :OTDownloadControlProgramCommandEvent ] ;
+            owl:someValuesFrom :OTDeleteControlProgramCommand ] ;
     :definition "Commands a remote device to remove an existing control program." .
 
 :OTDeleteDataCommand a owl:Class ;
@@ -19972,18 +19932,12 @@ Changes in firmware hash values may indicate that the firmware has been tampered
 
 :PermissionGrantingEvent a owl:Class ;
     rdfs:label "Permission Granting Event" ;
-    rdfs:subClassOf :AccessControlAdministrationEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :AssignPrivilegesToGroupEvent ] ;
+    rdfs:subClassOf :AccessControlAdministrationEvent ;
     :definition "An administrative event where authorization is given, allowing a subject to perform specific operations on a protected resource, effectuating a policy decision to allow access rights." .
 
 :PermissionRevokingEvent a owl:Class ;
     rdfs:label "Permission Revoking Event" ;
-    rdfs:subClassOf :AccessControlAdministrationEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :RevokePrivilegesFromGroupEvent ] ;
+    rdfs:subClassOf :AccessControlAdministrationEvent ;
     :definition "An administrative event entailing the withdrawal of previously granted access rights, reconfiguring permissions to prevent a subject from performing specific actions on a resource, in accordance with updated access policies." .
 
 :PersistenceTechnique a owl:Class ;
@@ -22313,9 +22267,6 @@ System service applications may originate from the operating system installation
     rdfs:subClassOf :ApplicationDeletionEvent,
         :ServiceEvent,
         [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :ServiceStopEvent ],
-        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :ServiceInstallationEvent ] ;
     :definition "An event capturing the uninstallation or deregistration of a service application, ensuring it is no longer operational or available to clients." .
@@ -22409,9 +22360,6 @@ The organization collects and models architectural information about the service
     rdfs:label "Service Stop Event" ;
     rdfs:subClassOf :ApplicationStopEvent,
         :ServiceEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-preceded-by ;
-            owl:someValuesFrom :ServiceRestartEvent ],
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :ServiceStartEvent ] ;
