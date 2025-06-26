@@ -1984,6 +1984,9 @@ GeeksforGeeks. (n.d.). Adaptive Resonance Theory (ART). [Link](https://www.geeks
     rdfs:label "Add User to Group Event" ;
     rdfs:subClassOf :GroupManagementEvent,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :GroupCreationEvent ],
         [ a owl:Restriction ;
@@ -2346,7 +2349,10 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
 
 :ApplicationInstallationEvent a owl:Class ;
     rdfs:label "Application Installation Event" ;
-    rdfs:subClassOf :ApplicationEvent ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SoftwareDeploymentTool ] ;
     :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
 
 :ApplicationInstaller a owl:Class ;
@@ -2543,6 +2549,7 @@ ANN Classification. [Link](http://uc-r.github.io/ann_classification).""" .
 :AssignPrivilegesToGroupEvent a owl:Class ;
     rdfs:label "Assign Privileges to Group Event" ;
     rdfs:subClassOf :GroupManagementEvent,
+        :PermissionGrantingEvent,
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :GroupCreationEvent ] ;
@@ -12865,6 +12872,9 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
     rdfs:label "File Access Event" ;
     rdfs:subClassOf :FileEvent,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FilePathOpenFunction ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :FileCreationEvent ] ;
     :definition "An event where a file is accessed for operations such as reading, opening, or inspecting its contents or metadata, without necessarily modifying its state." .
@@ -13028,10 +13038,7 @@ Rules, often called signatures, are used for both generic and targeted malware d
 
 :FileDeletionEvent a owl:Class ;
     rdfs:label "File Deletion Event" ;
-    rdfs:subClassOf :FileEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :preceded-by ;
-            owl:someValuesFrom :FileCreationEvent ] ;
+    rdfs:subClassOf :FileEvent ;
     :definition "An event where a file is permanently removed from the file system or storage medium, potentially triggering actions related to data retention or recovery." .
 
 :FileEncryption a :FileEncryption,
@@ -15554,7 +15561,10 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
 
 :KernelModuleLoadEvent a owl:Class ;
     rdfs:label "Kernel Module Load Event" ;
-    rdfs:subClassOf :KernelModuleEvent ;
+    rdfs:subClassOf :KernelModuleEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
     :definition "An event representing the loading of a kernel module, such as a device driver or dynamically linked extension, into the operating system kernel to extend or modify its capabilities." .
 
 :KernelModuleUnloadEvent a owl:Class ;
@@ -15562,7 +15572,10 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     rdfs:subClassOf :KernelModuleEvent,
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
-            owl:someValuesFrom :KernelModuleLoadEvent ] ;
+            owl:someValuesFrom :KernelModuleLoadEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :MemoryDeletionEvent ] ;
     :definition "An event representing the removal of a kernel module from the operating system kernel, deallocating resources and potentially altering system functionality." .
 
 :KernelProcessTable a owl:Class ;
@@ -16485,6 +16498,9 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
     rdfs:label "Memory Deletion Event" ;
     rdfs:subClassOf :MemoryEvent,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryFreeFunction ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :MemoryAllocationEvent ] ;
     :definition "An event marking the release or deallocation of memory resources, reclaiming them for reuse within the system." .
@@ -16583,6 +16599,9 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
 :MemoryReadEvent a owl:Class ;
     rdfs:label "Memory Read Event" ;
     rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :RawMemoryAccessFunction ],
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :MemoryAllocationEvent ] ;
@@ -18271,7 +18290,10 @@ BACnet: reinitializeDevice """,
             owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTAbortCommand ] .
+            owl:someValuesFrom :OTAbortCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTRunCommandEvent ] .
 
 :OTActuator a owl:Class ;
     rdfs:label "OT Actuator" ;
@@ -18390,6 +18412,9 @@ ENIP: Unregister Session""" ;
 :OTConnectionCommandEvent a owl:Class ;
     rdfs:label "OT Connection Command Event" ;
     rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTConnectionCommand ] ;
@@ -18740,7 +18765,10 @@ Modbus: Report Slave ID""" ;
     rdfs:subClassOf :OTConnectionCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTDisconnectRemoteConnectionCommand ] ;
+            owl:someValuesFrom :OTDisconnectRemoteConnectionCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTEstablishRemoteConnectionCommandEvent ] ;
     :definition "The Disconnect Request message is sent to the message receiver to indicate that the transmitter is terminating its TCP socket." .
 
 :OTDownloadControlProgramCommand a owl:Class ;
@@ -19002,7 +19030,10 @@ BACnet: reinitializeDevice """,
             owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTPauseCommand ] ;
+            owl:someValuesFrom :OTPauseCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTRunCommandEvent ] ;
     :definition "Commands a device to pause a service/program." .
 
 :OTPowerSupply a owl:Class ;
@@ -19247,6 +19278,9 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
             owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
@@ -19355,7 +19389,10 @@ BACnet: reinitializeDevice """,
             owl:someValuesFrom :OperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTStopCommand ] ;
+            owl:someValuesFrom :OTStopCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTRunCommandEvent ] ;
     :definition "Commands a device to stop a service/program." .
 
 :OTSynchronizeTimeCommand a owl:Class ;
@@ -20526,7 +20563,10 @@ False negatives can occur via alteration of the verification logic or source of 
 
 :ProcessCreationEvent a owl:Class ;
     rdfs:label "Process Creation Event" ;
-    rdfs:subClassOf :ProcessEvent ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ProcessStartFunction ] ;
     :definition "An event where a new process is spawned, initializing its execution context and resource allocation." .
 
 :ProcessDataSegment a owl:Class ;
@@ -21192,8 +21232,7 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 
 :RDPTLSHandshakeEvent a owl:Class ;
     rdfs:label "RDP TLS Handshake Event" ;
-    rdfs:subClassOf :RDPEvent,
-        :TCPEvent ;
+    rdfs:subClassOf :RDPEvent ;
     :definition "An event representing the cryptographic exchange of keys and certificates between an RDP client and server to establish a secure communication channel. The handshake ensures encryption, integrity, and authentication for the session." .
 
 :ReadFile a owl:Class ;
@@ -21471,6 +21510,9 @@ Analysis algorithms look for patterns in the network traffic captured from the s
     rdfs:label "Remove User from Group Event" ;
     rdfs:subClassOf :GroupManagementEvent,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :AddUserToGroupEvent ] ;
     :definition "An event where a user is removed from a group, revoking the permissions and privileges associated with the group from the user." .
@@ -21732,6 +21774,7 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
 :RevokePrivilegesFromGroupEvent a owl:Class ;
     rdfs:label "Revoke Privileges from Group Event" ;
     rdfs:subClassOf :GroupManagementEvent,
+        :PermissionRevokingEvent,
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :AssignPrivilegesToGroupEvent ] ;
@@ -22326,7 +22369,10 @@ System service applications may originate from the operating system installation
 :ServiceDeletionEvent a owl:Class ;
     rdfs:label "Service Deletion Event" ;
     rdfs:subClassOf :ApplicationDeletionEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
     :definition "An event capturing the uninstallation or deregistration of a service application, ensuring it is no longer operational or available to clients." .
 
 :ServiceDependency a owl:Class ;
@@ -22359,13 +22405,19 @@ The organization collects and models architectural information about the service
 :ServiceDisableEvent a owl:Class ;
     rdfs:label "Service Disable Event" ;
     rdfs:subClassOf :ApplicationDisableEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceEnableEvent ] ;
     :definition "An event capturing the deactivation of a service application, preventing it from being started or accessed until re-enabled." .
 
 :ServiceEnableEvent a owl:Class ;
     rdfs:label "Service Enable Event" ;
     rdfs:subClassOf :ApplicationEnableEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
     :definition "An event representing the activation of a service application, allowing it to start and provide its background or networked functionality." .
 
 :ServiceEvent a owl:Class ;
@@ -22390,25 +22442,40 @@ The organization collects and models architectural information about the service
 :ServiceRestartEvent a owl:Class ;
     rdfs:label "Service Restart Event" ;
     rdfs:subClassOf :ApplicationRestartEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStopEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceStartEvent ] ;
     :definition "An event describing the sequential stopping and starting of a service application to refresh its state, apply updates, or resolve operational issues." .
 
 :ServiceStartEvent a owl:Class ;
     rdfs:label "Service Start Event" ;
     rdfs:subClassOf :ApplicationStartEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
     :definition "An event representing the initiation of a service application, transitioning it from an inactive state to an active state, enabling its background or networked operations." .
 
 :ServiceStopEvent a owl:Class ;
     rdfs:label "Service Stop Event" ;
     rdfs:subClassOf :ApplicationStopEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStartEvent ] ;
     :definition "An event capturing the cessation of a service application’s operations, transitioning it to an inactive state while ceasing its functionality to clients or dependent systems." .
 
 :ServiceUpdateEvent a owl:Class ;
     rdfs:label "Service Update Event" ;
     rdfs:subClassOf :ApplicationUpdateEvent,
-        :ServiceEvent ;
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
     :definition "An event describing changes made to a service application, such as updates, reconfigurations, or patch installations, ensuring its continued availability and functionality." .
 
 :Session a owl:Class ;
@@ -31360,6 +31427,9 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     rdfs:label "User Account Password Change Event" ;
     rdfs:subClassOf :UserAccountEvent,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Credential ],
+        [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :UserAccountCreationEvent ] ;
     :definition "An event where a user account's password is modified, typically by the user or an administrator." .
@@ -31367,6 +31437,9 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 :UserAccountPasswordResetEvent a owl:Class ;
     rdfs:label "User Account Password Reset Event" ;
     rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Credential ],
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :UserAccountCreationEvent ] ;
@@ -32259,7 +32332,10 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :WindowsRegistryKeyCreationEvent a owl:Class ;
     rdfs:label "Windows Registry Key Creation Event" ;
-    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyImportEvent ] ;
     :definition "An event where a new registry key is added to the Windows Registry, establishing a new hierarchical node for configuration." .
 
 :WindowsRegistryKeyDeletionEvent a owl:Class ;
@@ -37774,4 +37850,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
