@@ -2742,16 +2742,33 @@ This technique covers statistical outliers. Though depending on the complexity o
 
 :AuthenticationServer a owl:Class ;
     rdfs:label "Authentication Server" ;
-    rdfs:subClassOf :Server ;
+    rdfs:subClassOf :Server,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :AuthenticationServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :AuthenticationService ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Authentication_server> ;
     :definition "An authentication server provides a network service that applications use to authenticate the credentials, usually account names and passwords, of their users. When a client submits a valid set of credentials, it receives a cryptographic ticket that it can subsequently use to access various services. Major authentication algorithms include passwords, Kerberos, and public key encryption." .
 
 :AuthenticationService a owl:Class ;
     rdfs:label "Authentication Service" ;
-    rdfs:subClassOf :ServiceApplicationProcess ;
+    rdfs:subClassOf :ServiceApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :Host ] ;
     rdfs:isDefinedBy <https://www.gartner.com/en/information-technology/glossary/authentication-service> ;
     :definition "An authentication service is a mechanism, analogous to the use of passwords on time-sharing systems, for the secure authentication of the identity of network clients by servers and vice versa, without presuming the operating system integrity of either (e.g., Kerberos)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Authentication> .
+
+:AuthenticationServiceApplication a owl:Class ;
+    rdfs:label "Authentication Service Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :AuthenticationService ] ;
+    :definition "A software application designed to verify the identity of users or devices." .
 
 :Authorization a owl:Class ;
     rdfs:label "Authorization" ;
@@ -3756,6 +3773,15 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Clipboard_(computing)> ;
     :definition "The clipboard is a buffer that some operating systems provide for short-term storage and transfer within and between application programs. The clipboard is usually temporary and unnamed, and its contents reside in the computer's RAM. The clipboard is sometimes called the paste buffer. Windows, Linux and macOS support a single clipboard transaction. Each cut or copy overwrites the previous contents. Normally, paste operations copy the contents, leaving the contents available in the clipboard for further pasting." .
+
+:Cloud-basedDatabaseApplication a owl:Class ;
+    rdfs:label "Cloud-based Database Application" ;
+    rdfs:subClassOf :DatabaseServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :provider ;
+            owl:someValuesFrom :CloudServiceProvider ] ;
+    :definition "A database application where the underlying infrastructure is managed by a third-party cloud provider. Examples include DynamoDB, Firestore, and CosmosDB." ;
+    :synonym "Serverless Database Application" .
 
 :CloudConfiguration a owl:Class ;
     rdfs:label "Cloud Configuration" ;
@@ -10802,10 +10828,23 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 
 :Database a owl:Class ;
     rdfs:label "Database" ;
-    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :DatabaseFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :DatabaseRecord ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Database> ;
     :definition "A database is an organized collection of data, generally stored and accessed electronically from a computer system. Where databases are more complex they are often developed using formal design and modeling techniques." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Database> .
+
+:DatabaseApplication a owl:Class ;
+    rdfs:label "Database Application" ;
+    rdfs:subClassOf :Application ;
+    rdfs:isDefinedBy "https://dbpedia.org/page/Database_application" ;
+    :definition "A database application is a computer program whose primary purpose is retrieving information from a computerized database." ;
+    :synonym "Database Management System (DBMS)" .
 
 :DatabaseFile a owl:Class ;
     rdfs:label "Database File" ;
@@ -10814,7 +10853,10 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 
 :DatabaseQuery a owl:Class ;
     rdfs:label "Database Query" ;
-    rdfs:subClassOf :Command ;
+    rdfs:subClassOf :Command,
+        [ a owl:Restriction ;
+            owl:onProperty :queries ;
+            owl:someValuesFrom :Database ] ;
     :definition "A specific query expressed in SQL, SPARQL, or similar language against a database." .
 
 :DatabaseQueryStringAnalysis a :DatabaseQueryStringAnalysis,
@@ -10851,9 +10893,29 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     rdfs:subClassOf :Server,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :Database ] ;
+            owl:someValuesFrom :DatabaseApplication ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Database_server> ;
     :definition "A database server is a server which uses a database application that provides database services to other computer programs or to computers, as defined by the client-server model. Database management systems (DBMSs) frequently provide database-server functionality, and some database management systems (such as MySQL) rely exclusively on the client-server model for database access (while others e.g. SQLite are meant for using as an embedded database). For clarification, a database server is simply a server that maintains services related to clients via database applications." .
+
+:DatabaseService a owl:Class ;
+    rdfs:label "Database Service" ;
+    rdfs:subClassOf :ServiceApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :DatabaseQuery ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :Database ] ;
+    :definition "A database service interacts with a database, either retrieving data through queries or making modifications to its contents." .
+
+:DatabaseServiceApplication a owl:Class ;
+    rdfs:label "Database Service Application" ;
+    rdfs:subClassOf :DatabaseApplication,
+        :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :DatabaseService ] ;
+    :definition "A software application that interacts with a database management system (DBMS) hosted as a separate, standalone service or server." .
 
 :DataDependency a owl:Class ;
     rdfs:label "Data Dependency" ;
@@ -11566,9 +11628,31 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DHCPServer a owl:Class ;
     rdfs:label "DHCP Server" ;
-    rdfs:subClassOf :Server ;
+    rdfs:subClassOf :Server,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :DHCPServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :DHCPService ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Dynamic_Host_Configuration_Protocol> ;
     :definition "A Dynamic Host Configuration Protocol (DHCP) server is a type of server that assigns IP addresses to computers.  DHCP servers are used to assign IP addresses to computers and other devices automatically.  The DHCP server is responsible for assigning the unique IP address to each device." .
+
+:DHCPService a owl:Class ;
+    rdfs:label "DHCP Service" ;
+    rdfs:subClassOf :NetworkService,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :DHCPNetworkTraffic ] ;
+    :definition "A DHCP service assigns IP address and modifies network configurations." .
+
+:DHCPServiceApplication a owl:Class ;
+    rdfs:label "DHCP Service Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :DHCPService ] ;
+    :definition "An application that automates the assignment of IP addresses and other network configuration parameters to devices on a network" .
 
 :DialUpModem a owl:Class ;
     rdfs:label "Dial Up Modem" ;
@@ -12313,6 +12397,17 @@ Email files may propagate through many storage systems across the an organizatio
     rdfs:subClassOf :ClientComputer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Embedded_system> ;
     :definition "An embedded computer is a computer system -- a combination of a computer processor, computer memory, and input/output peripheral devices-that has a dedicated function within a larger mechanical or electrical system. It is embedded as part of a complete device often including electrical or electronic hardware and mechanical parts. Because an embedded system typically controls physical operations of the machine that it is embedded within, it often has real-time computing constraints. Embedded systems control many devices in common use today. Ninety-eight percent of all microprocessors manufactured are used in embedded systems." .
+
+:EmbeddedDatabaseApplication a owl:Class ;
+    rdfs:label "Embedded Database Application" ;
+    rdfs:subClassOf :DatabaseApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :DatabaseQuery ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :Database ] ;
+    :definition "A software application that integrates a database management system (DBMS) directly within its own structure, rather than relying on a separate, standalone database server. Examples include SQLite and Berkeley DB." .
 
 :EmulatedFileAnalysis a :EmulatedFileAnalysis,
         owl:Class,
@@ -13434,7 +13529,10 @@ File format specifications often define expected values for specific fields. A c
         owl:NamedIndividual ;
     rdfs:label "Firewall" ;
     skos:altLabel "Network Firewall" ;
-    rdfs:subClassOf :ComputerNetworkNode ;
+    rdfs:subClassOf :ComputerNetworkNode,
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :definition "In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines. This definition refers to network firewalls." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> .
 
@@ -18446,34 +18544,37 @@ CIP: Save """,
     rdfs:label "OT Controller" ;
     rdfs:subClassOf :OTEmbeddedComputer,
         [ a owl:Restriction ;
-            owl:onProperty :communicates-with ;
-            owl:someValuesFrom :OTIOModule ],
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OTControlProgram ],
         [ a owl:Restriction ;
-            owl:onProperty :controls ;
-            owl:someValuesFrom :OTActuator ],
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :OTSensor ],
+            owl:onProperty :manages ;
+            owl:someValuesFrom :OTControlLogicProcess ],
         [ a owl:Restriction ;
             owl:onProperty :powered-by ;
-            owl:someValuesFrom :OTPowerSupply ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :OTControlProgram ] ;
+            owl:someValuesFrom :OTPowerSupply ] ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
     :definition "An OT Controller is an industrial control device that automatically regulates one or more controlled variables in response to command inputs and real-time feedback signals." .
 
 :OTControlLogicProcess a owl:Class ;
     rdfs:label "OT Control Logic Process" ;
-    rdfs:subClassOf :Process,
+    rdfs:subClassOf :ServiceApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :OTIOModule ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :OTLogicVariable ] ;
+            owl:someValuesFrom :OTLogicVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OTActuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OTSensor ] ;
     :definition "The instructions and algorithms within an OT Controller defined by user programming to interpret inputs, process information, and determine outputs." .
 
 :OTControlProgram a owl:Class ;
     rdfs:label "OT Control Program" ;
-    rdfs:subClassOf :Application,
+    rdfs:subClassOf :ServiceApplication,
         [ a owl:Restriction ;
             owl:onProperty :instructs ;
             owl:someValuesFrom :OTControlLogicProcess ] ;
@@ -21118,7 +21219,8 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
 
 :RadioModem a owl:Class ;
     rdfs:label "Radio Modem" ;
-    rdfs:subClassOf :Modem ;
+    rdfs:subClassOf :Modem,
+        :RFTransceiver ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Modem#Radio> ;
     :definition "A radio modem provides the means to send digital data wirelessly.  Radio modems are used to communicate by direct broadcast satellite, WiFi, WiMax, mobile phones, GPS, Bluetooth and NFC. Modern telecommunications and data networks also make extensive use of radio modems where long distance data links are required. Such systems are an important part of the PSTN, and are also in common use for high-speed computer network links to outlying areas where fiber optic is not economical." .
 
@@ -21785,7 +21887,7 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
 :RFReceiver a owl:Class ;
     rdfs:label "RF Receiver" ;
     rdfs:subClassOf :RFNode ;
-    :definition "An RF Receiver captures and proccesses incoming radio freqency signals." .
+    :definition "An RF Receiver captures and processes incoming radio freqency signals." .
 
 :RFShielding a owl:Class,
         owl:NamedIndividual,
@@ -21805,7 +21907,7 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
 :RFTransmitter a owl:Class ;
     rdfs:label "RF Transmitter" ;
     rdfs:subClassOf :RFNode ;
-    :definition "An RF transmitter generates and sends RF signals." .
+    :definition "An RF Transmitter generates and sends RF signals." .
 
 :ROM a owl:Class ;
     rdfs:label "ROM" ;
