@@ -4387,6 +4387,12 @@ To ensure that content is safe, it's composition must be validated according to 
     :definition "A control correlation identifier (CCI) catalog provides a catalog of CCIs for a given release date." ;
     rdfs:seeAlso <https://public.cyber.mil/stigs/cci/> .
 
+:ControllerUptimeCounter a owl:Class ;
+    rdfs:label "Controller Uptime Counter" ;
+    rdfs:subClassOf :SystemPlatformVariable,
+        :thing ;
+    :definition "Controller Uptime is a system variable that stores the time up running continuously since the last reboot or power cycle." .
+
 :ConvolutionalNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Convolutional Neural Network" ;
@@ -10939,6 +10945,15 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     :synonym "Data Flow Mapping",
         "Information Exchange Mapping" .
 
+:DataHistorian a owl:Class ;
+    rdfs:label "Data Historian " ;
+    rdfs:subClassOf :DatabaseServer,
+        :OTEmbeddedComputer ;
+    :comment "Data historians are often used to support various engineering or business analysis functions and therefore commonly needs access from the corporate network. Data historians often work in a hierarchical paradigm where lower/site level historians collect and store data which is then aggregated into a site/plant level historian. Therefore, data historians often have remote services that can be accessed externally from the ICS network.",
+        "The historian typically utilizes a database to store this data, and commonly provide tools and interfaces to support the analysis of the data." ;
+    :definition "Data historians are systems used to collect and store data, including telemetry, events, alerts, and alarms about the operational process and supporting devices." ;
+    rdfs:seeAlso <https://attack.mitre.org/assets/A0006> .
+
 :DataInventory a :DataInventory,
         owl:Class,
         owl:NamedIndividual ;
@@ -11786,6 +11801,14 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     :kb-article """## References
 O'Reilly Media. (n.d.). Chapter 7. Machine Learning and Security: Protecting Systems with Data and Algorithms. [Link](https://www.oreilly.com/library/view/machine-learning-and/9781492073048/ch07.html)""" .
 
+:DirectionalNetworkLink a owl:Class ;
+    rdfs:label "Directional Network Link" ;
+    rdfs:subClassOf :NetworkIsolation,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :PhysicalDataDiode ] ;
+    :definition "Enforce one-way network communication by preventing two-way communication." .
+
 :Directory a owl:Class ;
     rdfs:label "Directory" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -11820,6 +11843,18 @@ Direct Physical Link Mapping involves a manual process where a network engineer 
     :kb-reference :Reference-NetworkMapping ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Transmission_medium> ;
     :synonym "Manual Physical Link Mapping" .
+
+:DisableRemoteAccess a owl:Class ;
+    rdfs:label "Disable Remote Access" ;
+    rdfs:subClassOf :OperatingModeRestriction,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :InboundTrafficFiltering ] ;
+    :definition "Disable any remote access which is not required." ;
+    :kb-article """## How It Works
+
+This can be done on a Windows machine by unchecking an "allow remote assistance" or checking the "don't allow remote connections" boxes; creating firewall rules to block remote access protocols; uninstalling remote access software; disabling Wi-Fi, Ethernet, Bluetooth, or other connection methods enabling remote access..
+    """ .
 
 :DiscoveryTechnique a owl:Class ;
     rdfs:label "Discovery Technique" ;
@@ -11927,6 +11962,20 @@ Each partition can be managed separately and can have its own file system. Disk 
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Display_server> ;
     :definition "A display server or window server is a program whose primary task is to coordinate the input and output of its clients to and from the rest of the operating system, the hardware, and each other. The display server communicates with its clients over the display server protocol, a communications protocol, which can be network-transparent or simply network-capable. The display server is a key component in any graphical user interface, specifically the windowing system." .
+
+:DistributedControlSystem a owl:Class ;
+    rdfs:label "Distributed Control System" ;
+    rdfs:subClassOf :Network,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :DistributedControlSystemController ] ;
+    :definition "An automation system that incorporates controller hardware and supervisory software in a single system from a single vendor." ;
+    rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> .
+
+:DistributedControlSystemController a owl:Class ;
+    rdfs:label "Distributed Control System Controller" ;
+    rdfs:subClassOf :OTController ;
+    :definition "An OT controller which is part of a network of distributed controllers acting together to control a large industrial process." .
 
 :Distribution-basedClustering a owl:Class,
         owl:NamedIndividual ;
@@ -12997,7 +13046,8 @@ Certain file access actions may not be statistically different from authorized a
     :definition "File Analysis is an analytic process to determine a file's status. For example: virus, trojan, benign, malicious, trusted, unauthorized, sensitive, etc." ;
     :enables :Detect ;
     :kb-article """## Technique Overview
-Some techniques use file signatures or file metadata to compare against historical collections of malware. Files may also be compared against a source of ground truth such as cryptographic signatures. Examining files for potential malware using pattern matching against file contents/file behavior. Binary code may be dissembled and analyzed for predictive malware behavior, such as API call signatures. Analysis might occur within a protected environment such as a sandbox or live system.""" .
+Some techniques use file signatures or file metadata to compare against historical collections of malware. Files may also be compared against a source of ground truth such as cryptographic signatures. Examining files for potential malware using pattern matching against file contents/file behavior. Binary code may be dissembled and analyzed for predictive malware behavior, such as API call signatures. Analysis might occur within a protected environment such as a sandbox or live system.""" ;
+    :synonym "Antivirus" .
 
 :FileCarving a :FileCarving,
         owl:Class,
@@ -14545,6 +14595,20 @@ Host shutdown can either be initiated in the physical presence of the device usi
     rdfs:seeAlso :Firmware,
         <http://dbpedia.org/resource/Human_interface_device> .
 
+:HumanMachineInterface a owl:Class ;
+    rdfs:label "HumanMachineInterface" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :UserInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :Software ] ;
+    :comment "An HMI can take various forms, including a dedicated screen or control panel integrated with a specific device/controller, or a customizable software GUI application running on a standard operating system (e.g., MS Windows) that interfaces with a control/SCADA server." ;
+    :definition "Human-Machine Interfaces (HMIs) are systems used by an operator to monitor the real-time status of an operational process and to perform necessary control functions, including the adjustment of device parameters." ;
+    rdfs:seeAlso <https://attack.mitre.org/assets/A0002> ;
+    :synonym "HMI" .
+
 :Hybrid-basedTransferLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Hybrid-based Transfer Learning" ;
@@ -14795,7 +14859,10 @@ Scalability as volume of attacks increase; single servers may not have the memor
     rdfs:subClassOf :NetworkTrafficFiltering,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :InboundNetworkTraffic ] ;
+            owl:someValuesFrom :InboundNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Firewall ] ;
     :d3fend-id "D3-ITF" ;
     :definition "Restricting network traffic originating from untrusted networks destined towards a private host or enclave." ;
     :kb-article """## How it works
@@ -18565,6 +18632,12 @@ CIP: Save """,
             owl:onProperty :contains ;
             owl:someValuesFrom :OTControlProgram ],
         [ a owl:Restriction ;
+            owl:onProperty :has ;
+            owl:someValuesFrom :MemoryBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :has ;
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
             owl:onProperty :manages ;
             owl:someValuesFrom :OTControlLogicProcess ],
         [ a owl:Restriction ;
@@ -18598,6 +18671,17 @@ CIP: Save """,
             owl:someValuesFrom :OTControlLogicProcess ] ;
     :definition "The file stored in controller memory that is used to operate the controller." ;
     :synonym "OT Project File" .
+
+:OTControlProgramModificationDetection a owl:Class ;
+    rdfs:label "OT ControlProgram Modification Detection" ;
+    rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :detects ;
+            owl:someValuesFrom :OTModifyControlProgramCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OTNetworkTraffic ] ;
+    :definition "The detection of remote control program modification activities." .
 
 :OTControlVariable a owl:Class ;
     rdfs:label "OT Control Variable" ;
@@ -18915,7 +18999,8 @@ GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)""" ;
 
 :OTEmbeddedComputer a owl:Class ;
     rdfs:label "OT Embedded Computer" ;
-    rdfs:subClassOf :EmbeddedComputer ;
+    rdfs:subClassOf :EmbeddedComputer,
+        :HardwareDevice ;
     :definition "A ruggedized computational device, embedded in industrial control systems, designed to handle real-time tasks and environmental stressors common in OT." .
 
 :OTEngineeringSoftware a owl:Class ;
@@ -18931,7 +19016,16 @@ GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)""" ;
     rdfs:subClassOf :ClientComputer,
         [ a owl:Restriction ;
             owl:onProperty :communicates-with ;
+            owl:someValuesFrom :DistributedControlSystemController ],
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
             owl:someValuesFrom :OTController ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :RemoteSession ],
+        [ a owl:Restriction ;
+            owl:onProperty :Produces ;
+            owl:someValuesFrom :OTNetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :runs ;
             owl:someValuesFrom :OTEngineeringSoftware ] ;
@@ -18988,6 +19082,14 @@ BACnet: Error: 8""" ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTProtocolMessage ] ;
     :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information." .
+
+:OTFirmwareUpdateNetworkTraffic a owl:Class ;
+    rdfs:label "OT Firmware Update Network Traffic" ;
+    rdfs:subClassOf :OTNetworkTraffic,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OTFirmwareCommand ] ;
+    :definition "Operational technology network traffic containing firmware update commands." .
 
 :OTIOModule a owl:Class ;
     rdfs:label "OT I/O Module" ;
@@ -19427,6 +19529,13 @@ BACnet: reinitializeDevice """,
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTRunCommand ] ;
     :definition "Commands a device to start or resume a service/program." .
+
+:OTSafetyInstrumentedSystemController a owl:Class ;
+    rdfs:label "OT Safety Instrumented System Controller" ;
+    rdfs:subClassOf :OTController ;
+    rdfs:isDefinedBy "NIST SP 800-82r3" ;
+    :definition "SIL-certified OT controller that performs safety functions. The overarching SIS is a system that is composed of sensors, logic solvers, and final control elements whose purpose is to take the process to a safe state when predetermined conditions are violated. The SIS controller can be the logic solver of the SIS." ;
+    :synonym "SIS" .
 
 :OTSecurityCommand a owl:Class ;
     rdfs:label "OT Security Command" ;
@@ -20180,6 +20289,16 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
             owl:someValuesFrom :HardwareDevice ] ;
     :definition "An attacker who is physically close enough to interact with the system directly, such as through physical access to devices." .
 
+:PhysicalDataDiode a owl:Class ;
+    rdfs:label "Physical Data Diode" ;
+    rdfs:subClassOf :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :connected-to ;
+            owl:someValuesFrom :Firewall ] ;
+    rdfs:isDefinedBy <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> ;
+    :definition "A device that physically enforces one-way (unidirectional) network communication." ;
+    skos:example <https://owlcyberdefense.com/products/data-diode-products/> .
+
 :PhysicalLink a owl:Class ;
     rdfs:label "Physical Link" ;
     rdfs:subClassOf :Link ;
@@ -20319,6 +20438,14 @@ Platforms includes components such as:
     :enables :Harden ;
     :synonym "Endpoint Hardening",
         "System Hardening" .
+
+:PlatformLogCollection a owl:Class ;
+    rdfs:label "Platform Log Collection" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :records ;
+            owl:someValuesFrom :LogFile ] ;
+    :definition "Enable logging capabilities. These logs should then be aggregated from diverse sources into a central location, making it easier to analyze and correlate events." .
 
 :PlatformMonitoring a owl:Class,
         owl:NamedIndividual,
@@ -21554,6 +21681,19 @@ Remote File Access Mediation focuses on controlling how users or processes acces
     :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5 ;
     :synonym "File Share Access Mediation" .
 
+:RemoteFirmwareUpdateMonitoring a owl:Class ;
+    rdfs:label "Remote Firmware Update Monitoring" ;
+    rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :detects ;
+            owl:someValuesFrom :OTFirmwareCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OTNetworkTraffic ] ;
+    :definition "The continuous observation, logging, and verification of firmware update activities. This process helps detect unauthorized or malicious firmware and to detect any unauthorized attempts to alter device firmware, which could compromise ICS operations." ;
+    rdfs:seeAlso <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r2.pdf>,
+        <https://www.cisa.gov/resources-tools/resources/ics-security-best-practices> .
+
 :RemoteLoginSession a owl:Class ;
     rdfs:label "Remote Login Session" ;
     rdfs:subClassOf :NetworkSession ;
@@ -21615,6 +21755,18 @@ Analysis algorithms look for patterns in the network traffic captured from the s
     :kb-reference :Reference-MethodAndSystemForDetectingExternalControlOfCompromisedHosts_VECTRANETWORKSInc,
         :Reference-RDPConnectionDetection_MITRE,
         :Reference-RemoteDesktopLogon_MITRE .
+
+:RemoteTerminalUnit a owl:Class ;
+    rdfs:label "Remote Terminal Unit" ;
+    rdfs:subClassOf :OTController ;
+    :comment "RTUs are typically responsible for forwarding commands from the control server and the collection of telemetry, events, and alerts from the field devices." ;
+    :definition "A Remote Terminal Unit (RTU) is a device that resides between field devices and control/SCADA servers and supports various communication interfacing and data aggregation functions." ;
+    :kb-article """## How It Works
+
+An RTU can be implemented as a dedicated embedded device, as software platform that runs on a hardened/ruggedized computer, or using a custom application program on a PLC. RTU's are manufactured with specialized communication modules for their remote use case.
+    """ ;
+    rdfs:seeAlso <https://attack.mitre.org/assets/A0004> ;
+    :synonym "RTU" .
 
 :RemovableMediaDevice a owl:Class ;
     rdfs:label "Removable Media Device" ;
@@ -21842,6 +21994,21 @@ This technique analyzes a user's resource accesses by comparing the user's recen
     :d3fend-id "D3-RUAA" ;
     :definition "Restoring a user account's access to resources." ;
     :kb-reference :Reference-CybersecurityIncidentandVulnerabilityResponsePlaybooks .
+
+:RestrictRemoteMode a owl:Class ;
+    rdfs:label "Restrict Remote Mode" ;
+    rdfs:subClassOf :OperatingModeRestriction,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :OTModeSwitch ] ;
+    :definition "Limiting access to a computing device through or from a non-organization-controlled network." ;
+    :kb-article """## How It Works
+
+There are several different methods of achieving remote access restriction. This could include: time-based controls, just-in-time authorization, and deny-by-default controls.
+
+One way to achieve remote access restrictions in OT is by programming logic in the OT Controller to give the Operator authorizing abilities which ensures local control is maintained. In this situation, a remote access modem would be powered on/off using a discrete output from an I/O module of the OT controller.
+    """ ;
+    rdfs:seeAlso "M0800 Authorization Enforcement" .
 
 :ResumeProcess a owl:Class ;
     rdfs:label "Resume Process" ;
@@ -23004,6 +23171,15 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:label "Source Code Reference" ;
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Source Code" .
+
+:SpareHardwareDevice a owl:Class ;
+    rdfs:label "Spare Hardware Device" ;
+    rdfs:subClassOf :Restore,
+        [ a owl:Restriction ;
+            owl:onProperty :restores ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "Maintain one or more spares of essential devices in a ready state." ;
+    rdfs:seeAlso <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r2.pdf> .
 
 :SPARTAThing a owl:Class ;
     rdfs:label "SPARTA Thing" ;
@@ -31779,6 +31955,18 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:isDefinedBy <http://dbpedia.org/resource/Utility_software> ;
     :definition "Utility applications are software applications designed to help to analyze, configure, optimize or maintain a computer. It is used to support the computer infrastructure - in contrast to application software, which is aimed at directly performing tasks that benefit ordinary users. However, utilities often form part of the application systems. For example, a batch job may run user-written code to update a database and may then include a step that runs a utility to back up the database, or a job may run a utility to compress a disk before copying files." .
 
+:ValidateInputs a owl:Class ;
+    rdfs:label "Validate Inputs" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :enforces ;
+            owl:someValuesFrom :RuntimeVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :OTController ] ;
+    :definition "Devices and programs designed to interact with control system parameters should validate the format and content of all user inputs and actions to ensure the values are within intended operational ranges. These values should be evaluated and further enforced through the program logic running on the field controller. If a problematic or invalid input is identified, the programs should either utilize a predetermined safe value or enter a known safe state, while also logging or alerting on the event. " ;
+    rdfs:seeAlso <https://attack.mitre.org/mitigations/M0818> .
+
 :Variability a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Variability" ;
@@ -37966,4 +38154,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
