@@ -10947,11 +10947,22 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
 
 :DataHistorian a owl:Class ;
     rdfs:label "Data Historian " ;
-    rdfs:subClassOf :DatabaseServer,
-        :OTEmbeddedComputer ;
+    rdfs:subClassOf :OTEmbeddedComputer ,
+        [ a owl:Restriction ;
+            owl:onProperty :contains;
+            owl:someValuesFrom :Database ] ;
     :comment "Data historians are often used to support various engineering or business analysis functions and therefore commonly needs access from the corporate network. Data historians often work in a hierarchical paradigm where lower/site level historians collect and store data which is then aggregated into a site/plant level historian. Therefore, data historians often have remote services that can be accessed externally from the ICS network.",
         "The historian typically utilizes a database to store this data, and commonly provide tools and interfaces to support the analysis of the data." ;
     :definition "Data historians are systems used to collect and store data, including telemetry, events, alerts, and alarms about the operational process and supporting devices." ;
+    rdfs:seeAlso <https://attack.mitre.org/assets/A0006> .
+
+:DataHistorianServer a owl:Class ;
+    rdfs:label "Data Historian Server" ;
+    rdfs:subClassOf :DatabaseServer,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :DataHistorian ] ;
+    :definition "A server that hosts a Data Historian. This can be used for preventative maintenance, optimization, root cause analysis, and recovery." ;
     rdfs:seeAlso <https://attack.mitre.org/assets/A0006> .
 
 :DataInventory a :DataInventory,
