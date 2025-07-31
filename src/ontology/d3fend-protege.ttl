@@ -145,6 +145,11 @@
         :hardens ;
     :definition "x configures y: The entity x sets the operational parameters of entity y, determining how y will operate." .
 
+:conforms-to a owl:ObjectProperty ;
+    rdfs:label "conforms-to" ;
+    rdfs:subPropertyOf :implements ;
+    :definition "x conforms-to y: The entity x conforms-to entity y by adhering to the rules, constraints, or schema specified by y." .
+
 :connected-to a owl:ObjectProperty ;
     rdfs:label "connected-to" ;
     rdfs:subPropertyOf :associated-with ;
@@ -323,8 +328,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :encodes a owl:ObjectProperty ;
     rdfs:label "encodes" ;
-    rdfs:subPropertyOf :associated-with ;
-    :definition "x encodes y: Entity x transforms data y to a different form, usually through compression." .
+    rdfs:subPropertyOf :implements ;
+    :definition "x encodes y: The entity x encodes entity y by physically representing or organizing information according to the abstract structure or logical model defined by y." .
 
 :encrypts a owl:ObjectProperty ;
     rdfs:label "encrypts" ;
@@ -538,12 +543,13 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "implemented-by" ;
     rdfs:subPropertyOf :associated-with ;
     owl:inverseOf :implements ;
-    :definition "x implemented-by y: The entity x is realized or brought into operation by entity y." .
+    :definition """x implemented-by y: The entity x puts the plan, design, or specification of y into effect
+.""" .
 
 :implements a owl:ObjectProperty ;
     rdfs:label "implements" ;
     rdfs:subPropertyOf :associated-with ;
-    :definition "x implements y: The entity x realize entity y by putting its design or specification into effect." .
+    :definition "x implements y: The entity x realizes entity y by putting its design or specification into effect." .
 
 :initiates a owl:ObjectProperty ;
     rdfs:label "initiates" ;
@@ -972,11 +978,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000063> ;
     :definition "x precedes y: The event or action x occurs before event or action y in time." .
 
-:prescribed-by a owl:ObjectProperty ;
-    rdfs:label "prescribed-by",
-        "x prescribed-by y: Concrete implementation of entity x is guided or specified by an abstract model entity y." ;
-    rdfs:subPropertyOf :associated-with .
-
 :process-ancestor a owl:ObjectProperty,
         owl:TransitiveProperty ;
     rdfs:label "process-ancestor" ;
@@ -1073,11 +1074,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :semantic-relation ;
     rdfs:isDefinedBy skos:related ;
     :definition "x related y: x has a symmetric associative relation to y." .
-
-:represented-by a owl:ObjectProperty ;
-    rdfs:label "represented-by" ;
-    rdfs:subPropertyOf :associated-with ;
-    :definition "x is represented-by y: The entity x is symbolized, encoded, or expressed in a concrete or physical form in entity y." .
 
 :restores a owl:ObjectProperty ;
     rdfs:label "restores" ;
@@ -3007,10 +3003,7 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
 
 :BinaryTree a owl:Class ;
     rdfs:label "Binary Tree" ;
-    rdfs:subClassOf :TreeStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Table ] ;
+    rdfs:subClassOf :TreeStructure ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Binary_tree> ;
     :definition "A binary tree is a k-ary tree data structure in which each node has at most two children, which are referred to as the left child and the right child." .
 
@@ -11055,11 +11048,8 @@ Datalog generally uses a bottom-up rather than top-down evaluation model. This d
 
 :DataSpecification a owl:Class ;
     rdfs:label "Data Specification" ;
-    rdfs:subClassOf :DigitalInformation,
-        [ a owl:Restriction ;
-            owl:onProperty :represented-by ;
-            owl:someValuesFrom :Data ] ;
-    :definition "A data specification defins the structure, types (simple, compound, abstract), schemas, and rules for data representation, including file format details like encoding and metadata. It serves as a comprehensive blueprint for organizing and exchanging data across systems or formats." .
+    rdfs:subClassOf :DigitalInformation ;
+    :definition "A data specification defines the structure, types (simple, compound, abstract), schemas, and rules for data representation, including file format details like encoding and metadata. It serves as a comprehensive blueprint for organizing and exchanging data across systems or formats." .
 
 :DataStructure a owl:Class ;
     rdfs:label "Data Structure" ;
@@ -11829,7 +11819,10 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DigitalInformation a owl:Class ;
     rdfs:label "Digital Information" ;
-    rdfs:subClassOf :DigitalArtifact ;
+    rdfs:subClassOf :DigitalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Data ] ;
     :definition "Digital information is a broad category of encoded representations in digital form that convey meaning, instructions, or functionality." .
 
 :DigitalInformationBearer a owl:Class ;
@@ -12393,16 +12386,13 @@ Analyzing the interaction of a piece of code with a system while the code is bei
             owl:someValuesFrom :List ],
         [ a owl:Restriction ;
             owl:onProperty :encodes ;
-            owl:someValuesFrom :n-dimensionalArray ],
+            owl:someValuesFrom :NdimensionalArray ],
         [ a owl:Restriction ;
             owl:onProperty :encodes ;
             owl:someValuesFrom :Stack ],
         [ a owl:Restriction ;
             owl:onProperty :encodes ;
-            owl:someValuesFrom :String ],
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Table ] ;
+            owl:someValuesFrom :String ] ;
     :definition "A dynamic array is a data structure that stores elements in contiguous memory locations but allows its size to be resized during runtime." .
 
 :EdgeList a owl:Class ;
@@ -13332,19 +13322,10 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
     rdfs:subClassOf :FileMetadata ;
     :definition "A sequence of bytes used to identify and validate the footer section within a file." .
 
-:FileFormat a owl:Class ;
-    rdfs:label "File Format" ;
-    rdfs:subClassOf :DataStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :FileFormatSpec ] ;
-    rdfs:isDefinedBy <https://dbpedia.org/page/File_format> ;
-    :definition "A file format is a standardized structure or organization of data within a computer file that specifies how information is stored, encoded, and interpreted." .
-
-:FileFormatSpec a owl:Class ;
-    rdfs:label "File Format Spec" ;
+:FileFormatSpecification a owl:Class ;
+    rdfs:label "File Format Specification" ;
     rdfs:subClassOf :DataSpecification ;
-    :definition "A File Format Specification is a detailed description of the structure, encoding, and organization of data within a specific file format. It defines how data is stored, interpreted, and represented, including the arrangement of headers, metadata, content, and any associated rules or constraints." .
+    :definition "A file format specification is a detailed description of the structure, encoding, and organization of data within a specific file format. It defines how data is stored, interpreted, and represented, including the arrangement of headers, metadata, content, and any associated rules or constraints." .
 
 :FileFormatVerification a :FileFormatVerification,
         owl:Class,
@@ -13356,7 +13337,7 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
             owl:someValuesFrom :FileSection ],
         [ a owl:Restriction ;
             owl:onProperty :verifies ;
-            owl:someValuesFrom :FileFormat ] ;
+            owl:someValuesFrom :FormattedFile ] ;
     :d3fend-id "D3-FFV" ;
     :definition "Verifying that a file conforms to its expected format specifications" ;
     :kb-reference :Reference-FileSecurityUsingFileFormatValidation_OPSWATInc .
@@ -13839,6 +13820,15 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
 :Forecasting a owl:Class ;
     rdfs:label "Forecasting" ;
     rdfs:subClassOf :AnalyticalPurpose .
+
+:FormattedFile a owl:Class ;
+    rdfs:label "Formatted File" ;
+    rdfs:subClassOf :DataStructure,
+        [ a owl:Restriction ;
+            owl:onProperty :conforms-to ;
+            owl:someValuesFrom :FileFormatSpecification ] ;
+    :definition "A formatted file is a file whose data is arranged according to a specific file format specification. In other words, a formatted file is an actual file saved in a certain format, like a .docx, .jpg, or .csv file, where the data is laid out following the rules for that format." ;
+    rdfs:seeAlso <https://dbpedia.org/page/File_format> .
 
 :ForwardProxyServer a owl:Class ;
     rdfs:label "Forward Proxy Server" ;
@@ -14405,10 +14395,7 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:someValuesFrom :Map ],
         [ a owl:Restriction ;
             owl:onProperty :encodes ;
-            owl:someValuesFrom :Set ],
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Table ] ;
+            owl:someValuesFrom :Set ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Hash_table> ;
     :definition "A hash table, also known as hash map, is a data structure that implements an associative array or dictionary. It is an abstract data type that maps keys to values." .
 
@@ -16034,10 +16021,7 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
             owl:someValuesFrom :Stack ],
         [ a owl:Restriction ;
             owl:onProperty :encodes ;
-            owl:someValuesFrom :String ],
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Table ] ;
+            owl:someValuesFrom :String ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Linked_list> ;
     :definition "A linked list is a linear collection of data elements whose order is not given by their physical placement in memory." .
 
@@ -17242,12 +17226,6 @@ Yale University Department of Statistics. (1997-98). Linear regression and multi
 Wikipedia. (n.d.). Multivariate statistics. [Link](https://en.wikipedia.org/wiki/Multivariate_statistics)""" ;
     :todo "Looks like there may be lots to add here." .
 
-:n-dimensionalArray a owl:Class ;
-    rdfs:label "n-dimensional Array" ;
-    rdfs:subClassOf :AbstractDataType ;
-    rdfs:isDefinedBy <https://dbpedia.org/page/Array_(data_type)> ;
-    :definition "An array is a data type that represents a collection of elements (values or variables), each selected by one or more indices (identifying keys) that can be computed at run time during program execution." .
-
 :NaiveBayesClassifier a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Naive Bayes Classifier" ;
@@ -17264,6 +17242,12 @@ Naive Bayes. IBM. [Link](https://www.ibm.com/topics/naive-bayes?mhsrc=ibmsearch_
     rdfs:isDefinedBy <https://dbpedia.org/resource/Named_pipe> ;
     :definition "In computing, a named pipe (also known as a FIFO for its behavior) is an extension to the traditional pipe concept on Unix and Unix-like systems, and is one of the methods of inter-process communication (IPC). The concept is also found in OS/2 and Microsoft Windows, although the semantics differ substantially. A traditional pipe is 'unnamed' and lasts only as long as the process. A named pipe, however, can last as long as the system is up, beyond the life of the process. It can be deleted if no longer used. Usually a named pipe appears as a file, and generally processes attach to it for IPC." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Named_pipe> .
+
+:NdimensionalArray a owl:Class ;
+    rdfs:label "N-dimensional Array" ;
+    rdfs:subClassOf :AbstractDataType ;
+    rdfs:isDefinedBy <https://dbpedia.org/page/Array_(data_type)> ;
+    :definition "An array is a data type that represents a collection of elements (values or variables), each selected by one or more indices (identifying keys) that can be computed at run time during program execution." .
 
 :Network a owl:Class ;
     rdfs:label "Network" ;
@@ -23502,7 +23486,7 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
     rdfs:subClassOf :DataStructure,
         [ a owl:Restriction ;
             owl:onProperty :encodes ;
-            owl:someValuesFrom :n-dimensionalArray ] ;
+            owl:someValuesFrom :NdimensionalArray ] ;
     :definition "A static array is a data structure that stores a fixed number of elements in contiguous memory locations." .
 
 :StatisticalMethod a owl:Class,
@@ -31176,12 +31160,6 @@ Resource Development consists of techniques that involve adversaries creating, p
 
 Reconnaissance consists of techniques that involve adversaries actively or passively gathering information that can be used to support targeting. Such information may include details of the victim organization, infrastructure, or staff/personnel. This information can be leveraged by the adversary to aid in other phases of the adversary lifecycle, such as using gathered information to plan and execute Initial Access, to scope and prioritize post-compromise objectives, or to drive and lead further Reconnaissance efforts.""" ;
     :display-order -1 .
-
-:Table a owl:Class ;
-    rdfs:label "Table" ;
-    rdfs:subClassOf :AbstractDataType ;
-    rdfs:isDefinedBy <https://dbpedia.org/page/Table_(information)> ;
-    :definition "A table is an arrangement of information or data, typically in rows and columns, or possibly in a more complex structure." .
 
 :TabletComputer a owl:Class ;
     rdfs:label "Tablet Computer" ;
