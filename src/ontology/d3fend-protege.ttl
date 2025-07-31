@@ -426,6 +426,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
         :d3fend-tactical-verb-property ;
     :definition "x hardens y: The entity x fortifies entity y to reduce its weaknesses so y can better withstand attack or failure." .
 
+:has a owl:ObjectProperty .
+
 :has-account a owl:ObjectProperty ;
     rdfs:label "has-account" ;
     rdfs:subPropertyOf :owns ;
@@ -1006,6 +1008,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     owl:inverseOf :produces ;
     :definition "x produced-by y: The entity x is created by entity y." .
+
+:Produces a owl:ObjectProperty .
 
 :produces a owl:ObjectProperty ;
     rdfs:label "produces" ;
@@ -10945,24 +10949,12 @@ Some capabilities sanitize queries before permitting them to be transmitted to t
     :synonym "Data Flow Mapping",
         "Information Exchange Mapping" .
 
-:DataHistorian a owl:Class ;
-    rdfs:label "Data Historian " ;
-    rdfs:subClassOf :OTEmbeddedComputer ,
-        [ a owl:Restriction ;
-            owl:onProperty :contains;
-            owl:someValuesFrom :Database ] ;
+:DataHistorianServer a owl:Class ;
+    rdfs:label "Data Historian Server" ;
+    rdfs:subClassOf :DatabaseServer ;
     :comment "Data historians are often used to support various engineering or business analysis functions and therefore commonly needs access from the corporate network. Data historians often work in a hierarchical paradigm where lower/site level historians collect and store data which is then aggregated into a site/plant level historian. Therefore, data historians often have remote services that can be accessed externally from the ICS network.",
         "The historian typically utilizes a database to store this data, and commonly provide tools and interfaces to support the analysis of the data." ;
     :definition "Data historians are systems used to collect and store data, including telemetry, events, alerts, and alarms about the operational process and supporting devices." ;
-    rdfs:seeAlso <https://attack.mitre.org/assets/A0006> .
-
-:DataHistorianServer a owl:Class ;
-    rdfs:label "Data Historian Server" ;
-    rdfs:subClassOf :DatabaseServer,
-        [ a owl:Restriction ;
-            owl:onProperty :communicates-with ;
-            owl:someValuesFrom :DataHistorian ] ;
-    :definition "A server that hosts a Data Historian. This can be used for preventative maintenance, optimization, root cause analysis, and recovery." ;
     rdfs:seeAlso <https://attack.mitre.org/assets/A0006> .
 
 :DataInventory a :DataInventory,
@@ -19094,6 +19086,8 @@ BACnet: Error: 8""" ;
             owl:someValuesFrom :OTProtocolMessage ] ;
     :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information." .
 
+:OTFirmwareCommand a owl:Class .
+
 :OTFirmwareUpdateNetworkTraffic a owl:Class ;
     rdfs:label "OT Firmware Update Network Traffic" ;
     rdfs:subClassOf :OTNetworkTraffic,
@@ -23185,7 +23179,10 @@ The goal is for homophones to be encoded to the same representation so that they
 
 :SpareHardwareDevice a owl:Class ;
     rdfs:label "Spare Hardware Device" ;
-    rdfs:subClassOf :Restore,
+    rdfs:subClassOf :RestoreObject,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Restore ],
         [ a owl:Restriction ;
             owl:onProperty :restores ;
             owl:someValuesFrom :HardwareDevice ] ;
@@ -31168,6 +31165,8 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
     rdfs:isDefinedBy <http://dbpedia.org/resource/Thin_client> ;
     :definition "A thin client is a lightweight computer that has been optimized for establishing a remote connection with a server-based computing environment. The server does most of the work, which can include launching software programs, performing calculations, and storing data. This contrasts with a fat client or a conventional personal computer; the former is also intended for working in a client-server model but has significant local processing power, while the latter aims to perform its function mostly locally. Thin clients are shared computers as the thin client's computing resources are provided by a remote server." .
 
+:thing a owl:Class .
+
 :Thread a owl:Class ;
     rdfs:label "Thread" ;
     rdfs:subClassOf :DigitalInformationBearer ;
@@ -31965,18 +31964,6 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:subClassOf :Software ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Utility_software> ;
     :definition "Utility applications are software applications designed to help to analyze, configure, optimize or maintain a computer. It is used to support the computer infrastructure - in contrast to application software, which is aimed at directly performing tasks that benefit ordinary users. However, utilities often form part of the application systems. For example, a batch job may run user-written code to update a database and may then include a step that runs a utility to back up the database, or a job may run a utility to compress a disk before copying files." .
-
-:ValidateInputs a owl:Class ;
-    rdfs:label "Validate Inputs" ;
-    rdfs:subClassOf :PlatformMonitoring,
-        [ a owl:Restriction ;
-            owl:onProperty :enforces ;
-            owl:someValuesFrom :RuntimeVariable ],
-        [ a owl:Restriction ;
-            owl:onProperty :hardens ;
-            owl:someValuesFrom :OTController ] ;
-    :definition "Devices and programs designed to interact with control system parameters should validate the format and content of all user inputs and actions to ensure the values are within intended operational ranges. These values should be evaluated and further enforced through the program logic running on the field controller. If a problematic or invalid input is identified, the programs should either utilize a predetermined safe value or enter a known safe state, while also logging or alerting on the event. " ;
-    rdfs:seeAlso <https://attack.mitre.org/mitigations/M0818> .
 
 :Variability a owl:Class,
         owl:NamedIndividual ;
