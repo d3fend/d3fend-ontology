@@ -16,6 +16,7 @@
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
+  - deploy
 
 build:       # This job runs in the build stage, which runs first.
   stage: build
@@ -29,3 +30,11 @@ test:       # This job runs in the test stage
   stage: test
   script:
     - make install-deps
+
+
+deploy:
+  stage: deploy
+  trigger:
+    project: D3FEND/d3fend-builder
+  variables:
+    ONTOLOGY_REF: $CI_COMMIT_REF_NAME
