@@ -35,7 +35,7 @@
  - Resolved malformed URL for has-link assertion. (#347)
  - Fix IRI formatting to be proper style. (#294)
  - Corrected assertion: A d3f:TertiaryStorage device is a d3f:MemoryBlock. (#346)
- - Defined inversse relationship: d3f:recorded-in should be owl:inverseOf d3f:records. (#343)
+ - Defined inverse relationship: d3f:recorded-in. (#343)
  - Added Content Disarm and Reconstruct techniques. (#381)
  - Added taxonomy for data and data-hardening techniques. (#259)
  - Added risk properties: risk-impact and risk-likelihood. (#369)
