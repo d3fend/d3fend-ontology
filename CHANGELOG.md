@@ -1,5 +1,25 @@
 # D3FEND Ontology Change Log
 
+## Version - 1.2.0 - 2025-08-01
+
+ - Add inbound internet web and encrypted traffic artifacts. (#442)
+ - Introduce initial network node relationships and refactor server and service interactions. (#437)
+ - Remove assertions of owl:topObjectProperty and owl:topDataProperty. (#432)
+ - Rename d3f:CollectorAgent to d3f:NetworkAgent. (#433)
+ - Enhance event taxonomy relationships and add application event associations. (#416)
+ - Add configuration modification events and relate them to application updates. (#419)
+ - Add physical link event definitions. (#420)
+ - Add rdfs:label annotations for signs and signed-by properties. (#418)
+ - Add definitions to terms and apply editorial fixes. (#409)
+ - Update CWE version to 4.17 and add definitions and synonyms for each weakness. (#411)
+ - Update definition for continuous mediation at the top-level class. (#399)
+ - Add 'identity' to D3-AM definition and update access modeling relationships. (#400)
+ - Fix techniques display on the matrix. (#408)
+ - Update OT command and event taxonomy with definition and synonym fixes. (#402)
+ - Add missing d3f:definition to d3f:erases. (#404)
+ - Fix report summary target in Makefile. (#396)
+ - Add d3f:PackageURL to identify software packages. (#401)
+
 ## Version - 1.1.0 - 2025-04-21
 
  - Added initial precedence relationships between digital events. (#380)
