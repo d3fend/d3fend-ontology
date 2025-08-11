@@ -2397,6 +2397,21 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :ApplicationConfiguration ;
     :definition "The current configuration of an application process, stored in memory. It may have been sourced from other types of application configurations, e.g. Application Configuration Files or Application Configuration Database Records." .
 
+:ApplicationProtocolCommandAnalysis a :ApplicationProtocolCommandAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Application Protocol Command Analysis" ;
+    rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :d3fend-id " D3-APCA" ;
+    :definition "Analyzing application protocol level remote commands to detect unauthorized activity." ;
+    :kb-article """## How it works
+This technique requires the ability to parse application layer protocols to understand the commands being sent to a remote service. Signature-based or statistical analysis may be employed to identify unauthorized commands being sent. These commands can be observed by monitoring network traffic or application logs.""" ;
+    :kb-reference :Reference-Methodandapparatusfordetectinganomaliesofaninfrastructureinanetwork,
+        :Reference-Protocolbaseddetectionofsuspiciousnetworktraffic .
+
 :ApplicationRestartEvent a owl:Class ;
     rdfs:label "Application Restart Event" ;
     rdfs:subClassOf :ApplicationEvent,
@@ -21610,6 +21625,24 @@ Remote File Access Mediation focuses on controlling how users or processes acces
     :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5 ;
     :synonym "File Share Access Mediation" .
 
+:RemoteFirmwareUpdateMonitoring a owl:Class,
+        owl:NamedIndividual,
+        :RemoteFirmwareUpdateMonitoring ;
+    rdfs:label "Remote Firmware Update Monitoring" ;
+    rdfs:subClassOf :ApplicationProtocolCommandAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :detects ;
+            owl:someValuesFrom :OTDeviceFirmwareCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OTNetworkTraffic ] ;
+    :d3fend-id "D3-RFUM" ;
+    :definition "Monitoring of remote firmware update commands to identify unauthorized software installations." ;
+    :kb-article """## How it works
+By deploying sensors within the OT environment to passively monitor network traffic, tools can leverage deep packet inspection to identify protocol-specific commands and generate logs of relevant firmware activity. Additionally, these tools may incorporate behavioral and signature-based analysis to enhance detection and alerting capabilities.""" ;
+    :kb-reference :Reference-Methodfordetectinganomaliesintimeseriesdataproducedbydevicesofaninfrastructureinanetwork ;
+    rdfs:seeAlso <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r2.pdf> .
+
 :RemoteLoginSession a owl:Class ;
     rdfs:label "Remote Login Session" ;
     rdfs:subClassOf :NetworkSession ;
@@ -35898,6 +35931,15 @@ ProcDump may be used to dump the memory space of lsass.exe to disk for processin
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
+:Reference-Methodandapparatusfordetectinganomaliesofaninfrastructureinanetwork a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Method and apparatus for detecting anomalies of an infrastructure in a network " ;
+    :has-link "https://patents.google.com/patent/AU2023200991A1/"^^xsd:anyURI ;
+    :kb-abstract "The present invention relates to a method and to an apparatus for detecting anomalies of an infrastructure in a network comprising analysing a data packet (PD) exchanged in a network and identifying the network protocol and all the fields, through a network analyser (101), defining an identified protocol and identified fields of said data packet (PD), and, by means of computerized data processing means (102), extracting identification fields, to identify a device of the infrastructure in the network, matching the identified device with a plurality of predefined standard devices in a predefined devices knowledge database, to recognise a matching device, retrieving one or more allowed fields and one or more allowed protocols of the matching device from the predefined devices knowledge database, comparing the allowed fields and the allowed protocols respectively with the identified fields and the identified protocol, defining at least one critical state of the infrastructure when the identified fields differ from the allowed fields or when the identified protocol differ from the allowed protocols and signalling an anomaly of the infrastructure when at least one of the critical states is identified." ;
+    :kb-organization "Nozomi Networks" ;
+    :kb-reference-of :ApplicationProtocolCommandAnalysis ;
+    :kb-reference-title "Method and apparatus for detecting anomalies of an infrastructure in a network " .
+
 :Reference-MethodAndApparatusForDetectingMaliciousWebsites_EndgameInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Method and Apparatus for Detecting Malicious Websites - Endgame Inc" ;
@@ -36108,6 +36150,15 @@ Some examples of data inputs:
     :kb-reference-title "Method for controlling computer network security" ;
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
+
+:Reference-Methodfordetectinganomaliesintimeseriesdataproducedbydevicesofaninfrastructureinanetwork a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Method for detecting anomalies in time series data produced by devices of an infrastructure in a network" ;
+    :has-link "https://patents.google.com/patent/CA3191230A1/"^^xsd:anyURI ;
+    :kb-abstract "The present invention relates to a method for detecting anomalies in time series data produced by devices of an infrastructure in a network comprising, for each of the devices through computerized data processing means, retrieving a time series data for the device in the network, extracting a plurality of time series samples relating to respective time windows and having a predefined window size and a predefined stride, by sliding the time windows to overlap the time series data, supplying the time series samples as input to a Convolutional Autoencoder to define reconstructed time series values having a predefined percentile intervals, analysing the reconstructed time series values to identify anomalous behaviours of the time series data, signalling an anomaly of the device when at least one anomalous behaviour is identified." ;
+    :kb-organization "Nozomi Networks" ;
+    :kb-reference-of :RemoteFirmwareUpdateMonitoring ;
+    :kb-reference-title "Method for detecting anomalies in time series data produced by devices of an infrastructure in a network" .
 
 :Reference-MethodUsingKernelModeAssistanceForTheDetectionAndRemovalOfThreatsWhichAreActivelyPreventingDetectionAndRemovalFromARunningSystem_SymantecCorporation a owl:NamedIndividual,
         :PatentReference ;
@@ -36590,6 +36641,15 @@ Powershell can be used to hide monitored command line execution such as:
     :has-link "https://patents.google.com/patent/US11477248B2/"^^xsd:anyURI ;
     :kb-reference-of :Application-basedProcessIsolation ;
     :kb-reference-title "Protecting web applications from untrusted endpoints using remote browser isolation" .
+
+:Reference-Protocolbaseddetectionofsuspiciousnetworktraffic a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Protocol based detection of suspicious network traffic " ;
+    :has-link "https://patents.google.com/patent/US10084816B2/"^^xsd:anyURI ;
+    :kb-abstract "Embodiments of the present invention relate to identification of suspicious network traffic indicative of a Botnet and/or an Advanced Persistent Threat (APT) based on network protocol of such traffic. According to one embodiment, a traffic file is received at a network security device that is protecting a private network. The traffic file contains therein network traffic associated with the private network that has been captured and stored. The received traffic file is processed by the network security device to determine whether the network traffic relates to a network protocol that is indicative of existence of a network security threat within the private network. When existence of the network security threat is detected, then the network security device reports details regarding the network security threat." ;
+    :kb-organization "Fortinet" ;
+    :kb-reference-of :ApplicationProtocolCommandAnalysis ;
+    :kb-reference-title "Protocol based detection of suspicious network traffic " .
 
 :Reference-PsSuspend a owl:NamedIndividual,
         :SpecificationReference ;
