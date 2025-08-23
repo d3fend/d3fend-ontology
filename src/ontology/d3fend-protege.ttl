@@ -22198,6 +22198,48 @@ List of known unauthorized script files or regular expression patterns must be k
     :definition "Secondary memory (storage, hard disk) is the computer component holding information that does not need to be accessed quickly and that needs to be retained long-term." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Computer_data_storage#Secondary_storage> .
 
+:SecretsManagement a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Secrets Management" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :ConfigurationResource ],
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :Credential ],
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :CryptographicKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Account ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :PasswordManager ] ;
+    :d3fend-id "D3-SM" ;
+    :definition "Secrets Management is a platform hardening technique that securely encrypts and manages sensitive data (e.g., credentials, cryptographic keys, authentication tokens, and configuration resources) for users and services when not in use. By centralizing secrets, it reduces the risk of unauthorized access and mitigates secret sprawl, a common issue where sensitive information is hardcoded or scattered across multiple locations, such as source code repositories. Secrets Management systems typically enforce access controls, automate secret rotation, and ensure secure storage to protect sensitive data throughout its lifecycle." ;
+    :kb-article """## How it Works
+Secrets Management systems are designed to securely store sensitive data by encrypting it at rest and enforcing authentication and access controls before retrieval. These systems often integrate with privileged access management (PAM) tools to manage credentials for privileged accounts, automatically rotate passwords, and reduce the risk of misuse. Centralizing secrets prevents secret sprawl, where sensitive information is inadvertently exposed in code repositories or other insecure locations. Additionally, Secrets Management systems protect sensitive configuration resources, such as database connection strings, API keys, and cryptographic keys.
+
+While Secrets Management systems often include vaulting mechanisms, vaulting is only one implementation of the broader technique. Vaults are encrypted containers that store secrets securely, but Secrets Management also encompasses other methods of protecting sensitive data, such as runtime memory encryption, ephemeral secrets, and hardware-based secure storage.
+
+## Considerations
+- **Implementation Variability**: Secrets Management techniques vary widely across tools and platforms. While some systems use vaulting mechanisms, others may employ hardware security modules (HSMs), ephemeral secrets, or distributed key management systems. Understanding the strengths and limitations of each approach is critical for effective implementation.
+- **Risk of Misconfiguration**: Misconfigurations, such as improper access controls or failure to back up encryption keys, can lead to security vulnerabilities or lockouts. Regular audits and adherence to best practices are essential to mitigate these risks.
+- **Memory Vulnerabilities**: Secrets decrypted and stored in memory during runtime are more vulnerable to attacks, such as memory scraping or process injection. Using runtime memory encryption or minimizing the time secrets remain in memory can reduce exposure.
+- **Access Control Granularity**: Some Secrets Management systems enforce strict access controls, such as limiting secret access to one user or service at a time. While this enhances security, it may introduce operational constraints in environments requiring concurrent access.
+- **Key Management**: The security of Secrets Management systems depends heavily on the protection of decryption keys. Keys should be stored securely using hardware security modules (HSMs), Shamir's secret sharing, or other robust key management techniques.
+- **Lifecycle Management**: Secrets must be rotated, expired, and revoked as part of their lifecycle. Automating these processes reduces human error and ensures secrets remain secure over time.
+- **Vendor Neutrality**: While specific tools (e.g., HashiCorp Vault, AWS Secrets Manager) are popular implementations, organizations should evaluate solutions based on their unique requirements, such as scalability, integration capabilities, and compliance with security standards.""" ;
+    :kb-reference :Reference-CredentialVaultEncryption,
+        :Reference-DevopsSecretsVault,
+        :Reference-SharedSecretVaultForApplicationsWithSingleSignOn,
+        :Reference-TheCyberarkDigitalVault,
+        :Reference-WhatIsVault ;
+    :synonym "Credential Management",
+        "Privileged Access Management" .
+
 :SecurityEvent a owl:Class ;
     rdfs:label "Security Event" ;
     rdfs:subClassOf :DigitalEvent,
@@ -34750,6 +34792,16 @@ This requires filesystem data to determine whether files have been created.""" ;
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
+:Reference-CredentialVaultEncryption a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Credential Vault Encryption" ;
+    :has-link "https://patents.google.com/patent/US7865943B2" ;
+    :kb-abstract "A number of secondary passwords can be encrypted with a primary password and stored in a credential vault. An encrypted secondary password from the credential vault can be decrypted using the primary password and provided the secondary password to an application. Encrypted secondary passwords can be updated when the primary password changes." ;
+    :kb-author "Don L. Hayler" ;
+    :kb-organization "Oracle International Corp" ;
+    :kb-reference-of :SecretsManagement ;
+    :kb-reference-title "Credential Vault Encryption" .
+
 :Reference-CyberCommandSystemCYCS a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Cyber Command System (CYCS)" ;
@@ -34981,6 +35033,14 @@ This patent includes File Content Signatures because in the case of a script fil
     :kb-organization "K2 Cyber Security Inc" ;
     :kb-reference-of :SystemCallAnalysis ;
     :kb-reference-title "Deterministic method for detecting and blocking of exploits on interpreted code" .
+
+:Reference-DevopsSecretsVault a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Devops Secrets Vault" ;
+    :has-link "https://docs.delinea.com/online-help/devops-secrets-vault/start.htm" ;
+    :kb-organization "Delinea" ;
+    :kb-reference-of :SecretsManagement ;
+    :kb-reference-title "DevOps Secrets Vault" .
 
 :Reference-DigitalIdentityGuidelines800-63-3 a :GuidelineReference,
         owl:NamedIndividual ;
@@ -37026,6 +37086,16 @@ To survive the timeout, adversaries and red teams can create services that direc
         "No authors provided for reference",
         "No URL provided for reference" .
 
+:Reference-SharedSecretVaultForApplicationsWithSingleSignOn a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Shared secret vault for applications with single sign on" ;
+    :has-link "https://patents.google.com/patent/US11288384B2" ;
+    :kb-abstract "Some aspects of the disclosure generally relate to providing single sign on features in mobile applications in a secure environment using a shared vault. An application may prompt a user to provide user entropy such as a passcode (e.g. a password and/or PIN). The application may use the user entropy to decrypt a user-entropy-encrypted vault key. Once the vault key is decrypted, the application may decrypt a vault database of the shared vault. The shared vault may store shared secrets, such as server credentials, and an unlock key. The application may store the unlock key, generate an unlock-key-encrypted vault key, and cause the shared vault to store the unlock-key-encrypted vault key, thereby “unlocking” the vault. The application may then use the unlock key to decrypt the vault database without prompting the user to provide user entropy again." ;
+    :kb-author "Georgy Momchilov" ;
+    :kb-organization "Citrix Systems Inc." ;
+    :kb-reference-of :SecretsManagement ;
+    :kb-reference-title "Shared secret vault for applications with single sign on" .
+
 :Reference-SimultaneousLoginsOnAHost_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2013-02-008: Simultaneous Logins on a Host - MITRE" ;
@@ -37634,6 +37704,14 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-reference-of :StrongPasswordPolicy ;
     :kb-reference-title "Testing Metrics for Password Creation Policies by Attacking Large Sets of Revealed Passwords" .
 
+:Reference-TheCyberarkDigitalVault a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - The CyberArk Digital Vault" ;
+    :has-link "https://www.cyberark.com/resources/product-datasheets/the-cyberark-digital-vault-built-for-security" ;
+    :kb-organization "CyberArk Software Ltd." ;
+    :kb-reference-of :SecretsManagement ;
+    :kb-reference-title "The CyberArk Digital Vault" .
+
 :Reference-ThePyramidOfPain-DavidBianco a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - The Pyramid of Pain - David Bianco" ;
@@ -37955,6 +38033,13 @@ NX stands for No eXecute and XD stands for eXecute Disable. Both are same and is
     :kb-reference-title "What is NX/XD feature?" ;
     :todo "MITRE Analysis was not found",
         "No authors provided for reference" .
+
+:Reference-WhatIsVault a :InternetArticleReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - What is Vault?" ;
+    :has-link "https://developer.hashicorp.com/vault/docs/what-is-vault" ;
+    :kb-reference-of :SecretsManagement ;
+    :kb-reference-title "What is Vault?" .
 
 :Reference-Windows10STIG a :GuidelineReference,
         owl:NamedIndividual ;
