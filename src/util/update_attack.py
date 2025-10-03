@@ -392,7 +392,8 @@ def main(do_counters=True, ATTACK_VERSION="16.1"):
         "label_change": 0,
     }
 
-    for framework in ["enterprise", "mobile", "ics"]:
+    frameworks = ["enterprise"]
+    for framework in frameworks:
         stix_file = f"data/{framework}-attack-{ATTACK_VERSION}.json"
         print(f"\nProcessing {framework} STIX file: {stix_file}")
         src = MemoryStore()
