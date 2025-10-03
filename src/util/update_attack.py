@@ -71,6 +71,7 @@ def get_stix_data(thesrc, graph, framework="enterprise"):
         ]
     )
     superclasses_dict = generate_superclass(query_results, framework)
+    revoked_by_dict = get_revoked_by(thesrc)
     for tech in query_results:
         deprecated = tech.get("x_mitre_deprecated", False)
         revoked = tech.get("revoked", False)
@@ -93,19 +94,26 @@ def get_stix_data(thesrc, graph, framework="enterprise"):
 
         revoked_by_id = ""
         if revoked:
-            revoked_by_dict = get_revoked_by(thesrc)
-            revoked_by = revoked_by_dict[tech["id"]]
-            revoked_by_tech = [
-                obj for obj in query_results if obj.get("id") == revoked_by
-            ][0]
-            revoked_by_id = next(
-                (
-                    ref.get("external_id")
-                    for ref in revoked_by_tech["external_references"]
-                    if ref.get("source_name") == "mitre-attack"
-                ),
-                None,
-            )
+            revoked_by = revoked_by_dict.get(tech["id"])
+            revoked_by_tech = None
+            if revoked_by is not None:
+                # Attempt to fetch the revoking technique from the store; fall back to cached query
+                revoked_by_tech = thesrc.get(revoked_by)
+                if revoked_by_tech is None:
+                    revoked_by_tech = next(
+                        (obj for obj in query_results if obj.get("id") == revoked_by),
+                        None,
+                    )
+
+            if revoked_by_tech is not None:
+                revoked_by_id = next(
+                    (
+                        ref.get("external_id")
+                        for ref in revoked_by_tech["external_references"]
+                        if ref.get("source_name") == "mitre-attack"
+                    ),
+                    None,
+                )
 
         entry = {
             "data": tech,
@@ -124,16 +132,12 @@ def get_stix_data(thesrc, graph, framework="enterprise"):
 
 
 # Adds deprecated annotations to techniques in d3fend graph
-def add_deprecated(graph, tech):
-    tech = tech["data"]
-    attack_id = next(
-        (
-            ref.get("external_id")
-            for ref in tech["external_references"]
-            if ref.get("source_name") == "mitre-attack"
-        ),
-        None,
-    )
+def add_deprecated(graph, tech_entry):
+    tech = tech_entry["data"]
+    attack_id = tech_entry.get("id")
+    if attack_id is None:
+        return 0
+
     attack_uri = URIRef(_XMLNS + attack_id)
     new = 0
 
@@ -144,28 +148,19 @@ def add_deprecated(graph, tech):
             new = 1
             # Add a triple indicating deprecation
             graph.add((attack_uri, owl.deprecated, Literal(True)))
-            graph.add(
-                (
-                    attack_uri,
-                    rdfs.comment,
-                    Literal(tech["description"].strip().split("\n")[0]),
-                )
-            )
+            description = tech.get("description", "").strip().split("\n")[0]
+            if description:
+                graph.add((attack_uri, rdfs.comment, Literal(description)))
     return new
 
 
 # Adds revoked annotations to techniques in d3fend graph
-def add_revoked(graph, tech):
-    revoked_by = tech["revoked_by"]
-    tech = tech["data"]
-    attack_id = next(
-        (
-            ref.get("external_id")
-            for ref in tech["external_references"]
-            if ref.get("source_name") == "mitre-attack"
-        ),
-        None,
-    )
+def add_revoked(graph, tech_entry):
+    revoked_by = tech_entry.get("revoked_by")
+    attack_id = tech_entry.get("id")
+    if attack_id is None:
+        return 0
+
     attack_uri = URIRef(_XMLNS + attack_id)
     new = 0
 
@@ -175,7 +170,8 @@ def add_revoked(graph, tech):
         if revoked_property is None:
             new = 1
             # Add a triple indicating deprecation
-            graph.add((attack_uri, rdfs.seeAlso, d3fend[revoked_by]))
+            if revoked_by:
+                graph.add((attack_uri, rdfs.seeAlso, d3fend[revoked_by]))
             graph.add((attack_uri, owl.deprecated, Literal(True)))
             graph.add(
                 (
