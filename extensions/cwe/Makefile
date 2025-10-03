@@ -4,7 +4,7 @@ install-yarrrml-parser:
 
 # Install yarrml-mapper jar
 install-yarrrml-mapper:
-	wget https://github.com/RMLio/rmlmapper-java/releases/download/v6.1.3/rmlmapper-6.1.3-r367-all.jar
+	wget https://github.com/RMLio/rmlmapper-java/releases/download/v7.3.3/rmlmapper-7.3.3-r374-all.jar
 
 # Put in the bin/jar directory
 install-deps: install-yarrrml-parser install-yarrrml-mapper
@@ -22,7 +22,7 @@ parse-yarrrml: cwe-yarrrml.yaml
 
 # Run mapper on d3fend-protege.ttl; as of 2023-06-19, rmlmapper doesn't have .ttl as serializationformat.
 create-cwe-triples: download-cwe parse-yarrrml
-	java -jar rmlmapper-6.1.3-r367-all.jar -m cwe-rules.rml.ttl --output cwe-all-out.nt
+	java -jar rmlmapper-7.3.3-r374-all.jar -m cwe-rules.rml.ttl --output cwe-all-out.nt
 
 # Run robot to merge to defend-protege.ttl (assume ROBOT in place in bin; test)
 # Use --add-prefix to prevent replacement of dcterms/skos prefixes with ns1, ns2 during robot's merge

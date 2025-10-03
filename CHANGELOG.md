@@ -1,5 +1,46 @@
 # D3FEND Ontology Change Log
 
+## Version - 1.2.0 - 2025-08-01
+
+ - Add inbound internet web and encrypted traffic artifacts. (#442)
+ - Introduce initial network node relationships and refactor server and service interactions. (#437)
+ - Remove assertions of owl:topObjectProperty and owl:topDataProperty. (#432)
+ - Rename d3f:CollectorAgent to d3f:NetworkAgent. (#433)
+ - Enhance event taxonomy relationships and add application event associations. (#416)
+ - Add configuration modification events and relate them to application updates. (#419)
+ - Add physical link event definitions. (#420)
+ - Add rdfs:label annotations for signs and signed-by properties. (#418)
+ - Add definitions to terms and apply editorial fixes. (#409)
+ - Update CWE version to 4.17 and add definitions and synonyms for each weakness. (#411)
+ - Update definition for continuous mediation at the top-level class. (#399)
+ - Add 'identity' to D3-AM definition and update access modeling relationships. (#400)
+ - Fix techniques display on the matrix. (#408)
+ - Update OT command and event taxonomy with definition and synonym fixes. (#402)
+ - Add missing d3f:definition to d3f:erases. (#404)
+ - Fix report summary target in Makefile. (#396)
+ - Add d3f:PackageURL to identify software packages. (#401)
+
+## Version - 1.1.0 - 2025-04-21
+
+ - Added initial precedence relationships between digital events. (#380)
+ - Added initial set of OT commands, events, and countermeasures. (#386)
+ - Added Bus Network concepts. (#392)
+ - Added missing tactic to CSV cleaning script. (#382)
+ - README.md now states that POSIX is required to build a distribution. (#349)
+ - Updated definitions to distinguish D3-LFAM and D3-LFP. (#367)
+ - Updated CI pipeline because of github changes.
+ - Updated D3-FE, extended and revised references. (#366)
+ - Added NIST identifier to title of new references.
+ - Extended and revised KB article for D3-FE.
+ - Resolved malformed URL for has-link assertion. (#347)
+ - Fix IRI formatting to be proper style. (#294)
+ - Corrected assertion: A d3f:TertiaryStorage device is a d3f:MemoryBlock. (#346)
+ - Defined inverse relationship: d3f:recorded-in. (#343)
+ - Added Content Disarm and Reconstruct techniques. (#381)
+ - Added taxonomy for data and data-hardening techniques. (#259)
+ - Added risk properties: risk-impact and risk-likelihood. (#369)
+ - Added definitions for offensive tactics. (#352)
+
 ## Version - 1.0.0 - 2024-12-20
 
  - Define D3FEND Digital Event ontology with deeper OCSF integration. (#326)
