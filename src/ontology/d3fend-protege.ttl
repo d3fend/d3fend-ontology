@@ -583,7 +583,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
-    owl:inverseOf :has-input ;
     :definition "x input-of y: An artifact x is input of an event y iff x participates at the start of y, provides the material or information required for y to begin, and during y either x's state is altered or the information content it bears is realized." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001841> .
 
@@ -957,6 +956,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x obfuscates y: The technique x makes the digital artifact y unclear or obscure.  Typically obfuscation is a way to hide a digital artifact from discovery, use, or both." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Obfuscation_(software)> .
 
+:operates a owl:ObjectProperty .
+
 :originates-from a owl:ObjectProperty ;
     rdfs:label "originates-from" ;
     rdfs:subPropertyOf :associated-with ;
@@ -968,7 +969,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
-    owl:inverseOf :has-output ;
     :definition "x output-of y: An artifact x is output of an event y iff x must be present when y concludes, was absent in the same state when x began, and y counts as complete only when x is available at its end." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001816> .
 
@@ -1436,6 +1436,8 @@ rdfs:seeAlso a owl:AnnotationProperty .
         owl:versionInfo ;
     :definition "x release-date y: The object x has the release-date y." ;
     :todo "remove and place info in versionInfo on ontology annotations header" .
+
+:see-also a owl:AnnotationProperty .
 
 skos:altLabel a owl:AnnotationProperty .
 
@@ -12409,7 +12411,7 @@ Analyzing the interaction of a piece of code with a system while the code is bei
 
 :ElectronicCombinationLockEvent a owl:Class ;
     rdfs:label "Electronic Combination Lock Event" ;
-    rdfs:subClassOf :Event,
+    rdfs:subClassOf :PhysicalAccessEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :ElectronicCombinationLock ] .
@@ -12545,11 +12547,21 @@ Email files may propagate through many storage systems across the an organizatio
     :d3fend-id "D3-EPL" ;
     :definition "Employ a mechanical latching device for securing moveable portions of physical barriers (e.g., doors, gates, drawers) in a secured position." ;
     :kb-article """## How it works
-note - include tamper-proof in KB article
-note - include key managment program
+
+Locks and all associated hardware should be properly installed, operable, and free of substantive indications of tampering.
+
+Records should be maintained concerning maintenance performed, access, and any possible tampering marks or associated incidents.
+
+For locks operated by a physical key, a key management system should be implemented to manage and secure physical keys.
+
+Key locks should provide a high degree of resistance to opening by force and tampering techniques.
+
 ## Considerations
-* consideration""" ;
-    :kb-reference :Reference-reference .
+
+*Consider that locks for specified materials should adhere to relevant regulations.
+*Lock equipment cabinets when not needed for operation or safety; set OT asset keys of devices (e.g., PLCs and safety systems) to the “RUN” position unless otherwise specified. """ ;
+    :kb-reference :Reference-GENERALUSEOFLOCKSINTHEPROTECTIONANDCONTROLOFFACILITIESRADIOACTIVEMATERIALSCLASSIFIEDINFORMATIONCLASSIFIEDMATTERANDSAFEGUARDSINFORMATION,
+        :Reference-GuidetoOTSecurity .
 
 :EmulatedFileAnalysis a :EmulatedFileAnalysis,
         owl:Class,
@@ -20302,6 +20314,10 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     :synonym "Matthews Correlation Coefficient (in machine learning)",
         "MCC" .
 
+:PhysicalAccessEvent a owl:Class ;
+    rdfs:label "Physical Access Event" ;
+    rdfs:subClassOf :DigitalEvent .
+
 :PhysicalAccessMediation a owl:Class,
         owl:NamedIndividual,
         :PhysicalAccessMediation ;
@@ -20358,10 +20374,21 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     :d3fend-id "D3-PEH" ;
     :definition "definition" ;
     :kb-article """## How it works
-note - include tamper-proof in KB article
+
+House operational and safety-critical electronic equipment in a six-sided physical enclosure. Secure devices within locked cabinets or enclosures to prevent unauthorized access, tampering, and environmental damage.
+
+Properly hardened enclosures should be installed and maintained to ensure they are operable and free of tampering. Access to these enclosures is controlled through physical barriers, such as locks and bolts, and may include tamper-evident hardware.
+
+Records should be maintained concerning maintenance performed, access, and any possible tampering marks or associated incidents.
+
 ## Considerations
-* consideration""" ;
-    :kb-reference :Reference-reference .
+
+* Use asset inventory tools to track physical equipment and monitor both people and devices for access control.
+*Consider relevant regulations to ensure enclosures are in compliance.
+
+""" ;
+    :kb-reference :Reference-GENERALUSEOFLOCKSINTHEPROTECTIONANDCONTROLOFFACILITIESRADIOACTIVEMATERIALSCLASSIFIEDINFORMATIONCLASSIFIEDMATTERANDSAFEGUARDSINFORMATION,
+        :Reference-GuidetoOTSecurity .
 
 :PhysicalKey a owl:Class ;
     rdfs:label "Physical Key" ;
@@ -20476,7 +20503,7 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
 :PhysicalLock a owl:Class ;
     rdfs:label "Physical Lock" ;
     rdfs:subClassOf :PhysicalArtifact ;
-    :definition "definition" .
+    :definition "A lock is a mechanical latching device for securing moveable portions of physical barriers in a secured position." .
 
 :Pipe a owl:Class ;
     rdfs:label "Pipe" ;
@@ -35608,6 +35635,22 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
         :FileMetadataConsistencyValidation ;
     :kb-reference-title "Gathering Evidence: Model-Driven Software Engineering in Automated Digital Forensics" .
 
+:Reference-GENERALUSEOFLOCKSINTHEPROTECTIONANDCONTROLOFFACILITIESRADIOACTIVEMATERIALSCLASSIFIEDINFORMATIONCLASSIFIEDMATTERANDSAFEGUARDSINFORMATION a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - REGULATORY GUIDE 5.12 GENERAL USE OF LOCKS IN THE PROTECTION AND CONTROL OF: FACILITIES, RADIOACTIVE MATERIALS, CLASSIFIED INFORMATION, CLASSIFIED MATTER, AND SAFEGUARDS INFORMATION" ;
+    :has-link "https://www.nrc.gov/docs/ML1535/ML15357A411.pdf"^^xsd:anyURI ;
+    :kb-abstract """This regulatory guide (RG) describes methods and procedures that the staff of the U.S. Nuclear
+Regulatory Commission (NRC) considers acceptable for the selection, use, and control of locking
+devices. Locks can be used in the protection of: areas, facilities, certain radioactive materials, and
+specific types of information (e.g., classified matter, National Security Information (NSI), Restricted Data
+(RD), Formerly Restricted Data (FRD), Safeguards Information (SGI)).""" ;
+    :kb-author "U.S. NUCLEAR REGULATORY COMMISSION OFFICE OF NUCLEAR REGULATORY RESEARCH" ;
+    :kb-mitre-analysis " " ;
+    :kb-organization "U.S. NUCLEAR REGULATORY COMMISSION OFFICE OF NUCLEAR REGULATORY RESEARCH" ;
+    :kb-reference-of :EmployPhysicalLock,
+        :PhysicalEnclosureHardening ;
+    :kb-reference-title "REGULATORY GUIDE 5.12 GENERAL USE OF LOCKS IN THE PROTECTION AND CONTROL OF: FACILITIES, RADIOACTIVE MATERIALS, CLASSIFIED INFORMATION, CLASSIFIED MATTER, AND SAFEGUARDS INFORMATION" .
+
 :Reference-GenericRegsvr32_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-04-002: Generic Regsvr32 - MITRE" ;
@@ -35654,7 +35697,9 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
     :has-link "https://csrc.nist.gov/pubs/sp/800/82/r3/final"^^xsd:anyURI ;
     :kb-abstract "This document provides guidance on how to secure operational technology (OT) while addressing their unique performance, reliability, and safety requirements. OT encompasses a broad range of programmable systems and devices that interact with the physical environment (or manage devices that interact with the physical environment). These systems and devices detect or cause a direct change through the monitoring and/or control of devices, processes, and events. Examples include industrial control systems, building automation systems, transportation systems, physical access control systems, physical environment monitoring systems, and physical environment measurement systems. The document provides an overview of OT and typical system topologies, identifies common threats and vulnerabilities to these systems, and provides recommended security countermeasures to mitigate the associated risks." ;
     :kb-author "NIST" ;
-    :kb-reference-of :ChangeDefaultPassword ;
+    :kb-reference-of :ChangeDefaultPassword,
+        :EmployPhysicalLock,
+        :PhysicalEnclosureHardening ;
     :kb-reference-title "Guide to Operational Technology (OT) Security" .
 
 :Reference-GuideToStorageEncryptionTechnologiesForEndUserDevices a :GuidelineReference,
