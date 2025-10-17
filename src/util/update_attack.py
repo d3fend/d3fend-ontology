@@ -136,8 +136,7 @@ def get_stix_data(thesrc, graph, framework="enterprise"):
 
 
 # Adds deprecated annotations to techniques in d3fend graph
-def add_deprecated(graph, tech_entry):
-    tech = tech_entry["data"]
+def add_deprecated(graph, tech_entry, framework):
     attack_id = tech_entry.get("id")
     if attack_id is None:
         return 0
@@ -152,9 +151,9 @@ def add_deprecated(graph, tech_entry):
             new = 1
             # Add a triple indicating deprecation
             graph.add((attack_uri, owl.deprecated, Literal(True)))
-            description = tech.get("description", "").strip().split("\n")[0]
-            if description:
-                graph.add((attack_uri, rdfs.comment, Literal(description)))
+            comment_text = get_deprecated_comment(tech_entry, framework)
+            if comment_text:
+                graph.add((attack_uri, rdfs.comment, Literal(comment_text)))
     return new
 
 
@@ -267,13 +266,9 @@ def add_to_ttl(tech, graph, framework="enterprise"):
         graph.add((attack_uri, RDFS.label, Literal(mod_label)))
         graph.add((attack_uri, d3fend["attack-id"], Literal(attack_id)))
         graph.add((attack_uri, owl.deprecated, Literal(True)))
-        graph.add(
-            (
-                attack_uri,
-                rdfs.comment,
-                Literal(tech["data"]["description"].split("\n")[0]),
-            )
-        )
+        comment_text = get_deprecated_comment(tech, framework)
+        if comment_text:
+            graph.add((attack_uri, rdfs.comment, Literal(comment_text)))
         key = "missing_deprecated"
 
     elif tech["revoked"]:
@@ -330,6 +325,19 @@ def update_definition(graph, tech, framework):
     return new
 
 
+def get_deprecated_comment(tech_entry, _framework):
+    revoked_by = tech_entry.get("revoked_by")
+    if revoked_by:
+        return f"This technique has been revoked by {revoked_by}"
+
+    description = tech_entry["data"].get("description", "")
+    first_line = description.strip().split("\n")[0].strip()
+    if first_line and "deprecated" in first_line.lower():
+        return first_line
+
+    return "This technique has been deprecated."
+
+
 def ensure_superclasses(graph, attack_uri, subclass, framework, subtechnique):
     desired = set()
 
@@ -384,7 +392,7 @@ def update_and_add(graph, data, framework="enterprise"):
                 tech["data"]["x_mitre_is_subtechnique"],
             )
             if tech["deprecated"]:
-                new = add_deprecated(graph, tech)
+                new = add_deprecated(graph, tech, framework)
                 counters["recently_deprecated"] += new
             elif tech["revoked"]:
                 new = add_revoked(graph, tech)
