@@ -14,7 +14,7 @@ shift
 if [ "$#" -gt 0 ]; then
     FRAMEWORKS=("$@")
 else
-    FRAMEWORKS=("enterprise")
+    FRAMEWORKS=("enterprise" "ics" "mobile")
 fi
 
 for framework in "${FRAMEWORKS[@]}"; do

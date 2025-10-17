@@ -518,7 +518,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    frameworks = args.frameworks or ["enterprise"]
+    frameworks = args.frameworks or ["enterprise" "ics" "mobile"]
     invalid = sorted(set(frameworks) - SUPPORTED_FRAMEWORKS)
     if invalid:
         parser.error(
