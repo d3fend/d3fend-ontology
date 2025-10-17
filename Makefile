@@ -133,7 +133,7 @@ download-attack:
 	$(END)
 
 update-attack:
-	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	bash src/util/update_attack.sh $(ATTACK_VERSION) $(FRAMEWORKS)
 	$(END)
 
 download-capec:

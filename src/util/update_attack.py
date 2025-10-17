@@ -1,14 +1,18 @@
-from stix2 import MemoryStore, Filter
-from rdflib import URIRef, Literal, RDF, RDFS, Namespace
-from build import get_graph, _xmlns as _XMLNS
+import argparse
 import string
-import sys
+
+from rdflib import URIRef, Literal, RDF, RDFS, Namespace
+from stix2 import MemoryStore, Filter
+
+from build import get_graph, _xmlns as _XMLNS
 
 
 owl = Namespace("http://www.w3.org/2002/07/owl#")
 rdfs = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
 skos = Namespace("http://www.w3.org/2004/02/skos/core#")
+
+SUPPORTED_FRAMEWORKS = {"enterprise", "ics", "mobile"}
 
 
 def get_framework_labels(original_label, framework):
@@ -219,13 +223,17 @@ def generate_superclass(all_techniques, framework):
         else:
             classes = []
             for obj in tech["kill_chain_phases"]:
-                prefix = "ATTACK" + (
-                    framework.upper() if framework == "ics" else framework.capitalize()
-                )
                 phase_name = string.capwords(obj["phase_name"].replace("-", " "))
-                name = (
-                    prefix + phase_name.replace(" ", "").replace(" ", "") + "Technique"
-                )
+                class_base = phase_name.replace(" ", "") + "Technique"
+                if framework == "enterprise":
+                    name = class_base
+                else:
+                    prefix = "ATTACK" + (
+                        framework.upper()
+                        if framework == "ics"
+                        else framework.capitalize()
+                    )
+                    name = prefix + class_base
                 classes.append(name)
             superclass[attack_id] = classes
 
@@ -252,15 +260,11 @@ def add_to_ttl(tech, graph, framework="enterprise"):
     if pref_label is not None:
         graph.add((attack_uri, skos.prefLabel, Literal(pref_label)))
 
+    ensure_superclasses(graph, attack_uri, subclass, framework, subtechnique)
+
     if tech["deprecated"]:
         graph.add((attack_uri, RDF.type, owl.Class))
         graph.add((attack_uri, RDFS.label, Literal(mod_label)))
-        if subtechnique:
-            graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass]))
-        else:
-            # Handle multiple superclasses
-            for subclass_of in subclass:
-                graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass_of]))
         graph.add((attack_uri, d3fend["attack-id"], Literal(attack_id)))
         graph.add((attack_uri, owl.deprecated, Literal(True)))
         graph.add(
@@ -275,11 +279,6 @@ def add_to_ttl(tech, graph, framework="enterprise"):
     elif tech["revoked"]:
         graph.add((attack_uri, RDF.type, owl.Class))
         graph.add((attack_uri, RDFS.label, Literal(mod_label)))
-        if subtechnique:
-            graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass]))
-        else:
-            for subclass_of in subclass:
-                graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass_of]))
         graph.add((attack_uri, d3fend["attack-id"], Literal(attack_id)))
         graph.add((attack_uri, owl.deprecated, Literal(True)))
         graph.add((attack_uri, rdfs.seeAlso, d3fend[revoked_by]))
@@ -295,11 +294,6 @@ def add_to_ttl(tech, graph, framework="enterprise"):
     else:
         graph.add((attack_uri, RDF.type, owl.Class))
         graph.add((attack_uri, RDFS.label, Literal(mod_label)))
-        if subtechnique:
-            graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass]))
-        else:
-            for subclass_of in subclass:
-                graph.add((attack_uri, RDFS.subClassOf, d3fend[subclass_of]))
         graph.add((attack_uri, d3fend["attack-id"], Literal(attack_id)))
         key = "missing_neither"
     return key
@@ -336,6 +330,31 @@ def update_definition(graph, tech, framework):
     return new
 
 
+def ensure_superclasses(graph, attack_uri, subclass, framework, subtechnique):
+    desired = set()
+
+    if subtechnique:
+        target = d3fend[subclass]
+        desired.add(target)
+    else:
+        for subclass_of in subclass:
+            desired.add(d3fend[subclass_of])
+
+    for target in desired:
+        if (attack_uri, RDFS.subClassOf, target) not in graph:
+            graph.add((attack_uri, RDFS.subClassOf, target))
+
+    if framework == "enterprise":
+        prefix = _XMLNS + "ATTACKEnterprise"
+        for obj in list(graph.objects(attack_uri, RDFS.subClassOf)):
+            if (
+                isinstance(obj, URIRef)
+                and str(obj).startswith(prefix)
+                and obj not in desired
+            ):
+                graph.remove((attack_uri, RDFS.subClassOf, obj))
+
+
 def update_and_add(graph, data, framework="enterprise"):
     # If tech is missing, add it to d3fend-protege.updates.ttl
     # Else, handle if technique has recently become deprecated, revoked, or has an updated label
@@ -356,6 +375,14 @@ def update_and_add(graph, data, framework="enterprise"):
             counters["missing"] += 1
             counters[key] += 1
         else:
+            attack_uri = URIRef(_XMLNS + tech["id"])
+            ensure_superclasses(
+                graph,
+                attack_uri,
+                tech["superclasses"],
+                framework,
+                tech["data"]["x_mitre_is_subtechnique"],
+            )
             if tech["deprecated"]:
                 new = add_deprecated(graph, tech)
                 counters["recently_deprecated"] += new
@@ -363,7 +390,6 @@ def update_and_add(graph, data, framework="enterprise"):
                 new = add_revoked(graph, tech)
                 counters["recently_revoked"] += new
             elif tech["label_change"]:
-                attack_uri = URIRef(_XMLNS + tech["id"])
                 current_label = graph.value(attack_uri, RDFS.label)
                 graph.remove((attack_uri, RDFS.label, current_label))
                 mod_label, pref_label = get_framework_labels(tech["label"], framework)
@@ -376,7 +402,10 @@ def update_and_add(graph, data, framework="enterprise"):
     return counters
 
 
-def main(do_counters=True, ATTACK_VERSION="16.1"):
+def main(attack_version, frameworks=None, do_counters=True):
+
+    if frameworks is None:
+        frameworks = ["enterprise"]
 
     # Load the base D3FEND graph
     d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.updates.ttl")
@@ -392,9 +421,9 @@ def main(do_counters=True, ATTACK_VERSION="16.1"):
         "label_change": 0,
     }
 
-    frameworks = ["enterprise"]
+    framework_results = []
     for framework in frameworks:
-        stix_file = f"data/{framework}-attack-{ATTACK_VERSION}.json"
+        stix_file = f"data/{framework}-attack-{attack_version}.json"
         print(f"\nProcessing {framework} STIX file: {stix_file}")
         src = MemoryStore()
         src.load_from_file(stix_file)
@@ -402,6 +431,7 @@ def main(do_counters=True, ATTACK_VERSION="16.1"):
         counters = update_and_add(d3fend_graph, data, framework)
         for key in total_counters:
             total_counters[key] += counters.get(key, 0)
+        framework_results.append((framework, counters, len(data)))
 
     # Serialize the updated graph
     d3fend_graph.serialize(
@@ -409,30 +439,83 @@ def main(do_counters=True, ATTACK_VERSION="16.1"):
     )
 
     if do_counters:
-        # Print some stats
-        _print("Valid ATT&CK ids found in stix document:", len(data))
-        _print("Valid ATT&CK ids missing from D3FEND graph:", counters["missing"])
-        _print(
-            "Valid Deprecated ATT&CK ids missing from D3FEND graph:",
-            counters["missing_deprecated"],
-        )
-        _print(
-            "Valid Revoked ATT&CK ids missing from D3FEND graph:",
-            counters["missing_revoked"],
-        )
-        _print(
-            "Recently Deprecated ATT&CK ids in D3FEND graph:",
-            counters["recently_deprecated"],
-        )
-        _print(
-            "Recently Revoked ATT&CK ids in D3FEND graph:", counters["recently_revoked"]
-        )
-        _print(
-            "Valid ATT&CK ids in graph that needed label change in graph:",
-            counters["label_change"],
-        )
+        # Print per-framework stats
+        for framework, counters, count in framework_results:
+            _print(f"[{framework}] Valid ATT&CK ids found in stix document: ", count)
+            _print(
+                f"[{framework}] Valid ATT&CK ids missing from D3FEND graph: ",
+                counters["missing"],
+            )
+            _print(
+                f"[{framework}] Valid Deprecated ATT&CK ids missing from D3FEND graph: ",
+                counters["missing_deprecated"],
+            )
+            _print(
+                f"[{framework}] Valid Revoked ATT&CK ids missing from D3FEND graph: ",
+                counters["missing_revoked"],
+            )
+            _print(
+                f"[{framework}] Recently Deprecated ATT&CK ids in D3FEND graph: ",
+                counters["recently_deprecated"],
+            )
+            _print(
+                f"[{framework}] Recently Revoked ATT&CK ids in D3FEND graph: ",
+                counters["recently_revoked"],
+            )
+            _print(
+                f"[{framework}] Valid ATT&CK ids in graph that needed label change in graph: ",
+                counters["label_change"],
+            )
+        if len(frameworks) > 1:
+            _print(
+                "Total Valid ATT&CK ids missing from D3FEND graph: ",
+                total_counters["missing"],
+            )
+            _print(
+                "Total Valid Deprecated ATT&CK ids missing from D3FEND graph: ",
+                total_counters["missing_deprecated"],
+            )
+            _print(
+                "Total Valid Revoked ATT&CK ids missing from D3FEND graph: ",
+                total_counters["missing_revoked"],
+            )
+            _print(
+                "Total Recently Deprecated ATT&CK ids in D3FEND graph: ",
+                total_counters["recently_deprecated"],
+            )
+            _print(
+                "Total Recently Revoked ATT&CK ids in D3FEND graph: ",
+                total_counters["recently_revoked"],
+            )
+            _print(
+                "Total Valid ATT&CK ids in graph that needed label change in graph: ",
+                total_counters["label_change"],
+            )
 
 
 if __name__ == "__main__":
-    version = sys.argv[1]
-    main(do_counters=True, ATTACK_VERSION=version)
+    parser = argparse.ArgumentParser(
+        description=(
+            "Update D3FEND ontology with ATT&CK techniques from the specified frameworks."
+        )
+    )
+    parser.add_argument(
+        "version",
+        help="ATT&CK data version to process (e.g., 17.1).",
+    )
+    parser.add_argument(
+        "frameworks",
+        nargs="*",
+        help="Frameworks to include: enterprise, ics, mobile. Defaults to enterprise.",
+    )
+    args = parser.parse_args()
+
+    frameworks = args.frameworks or ["enterprise"]
+    invalid = sorted(set(frameworks) - SUPPORTED_FRAMEWORKS)
+    if invalid:
+        parser.error(
+            f"Unsupported frameworks: {', '.join(invalid)}. "
+            f"Supported values are: {', '.join(sorted(SUPPORTED_FRAMEWORKS))}."
+        )
+
+    main(attack_version=args.version, frameworks=frameworks, do_counters=True)

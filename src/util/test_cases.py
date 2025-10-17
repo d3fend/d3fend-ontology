@@ -112,18 +112,18 @@ def test_cases(src, g):
         "T1027.005",
     ]
     superclasses = [
-        ["ATTACKEnterpriseExfiltrationTechnique"],
+        ["ExfiltrationTechnique"],
         "T1055",
         "T1053",
-        ["ATTACKEnterpriseExecutionTechnique"],
-        ["ATTACKEnterprisePersistenceTechnique"],
+        ["ExecutionTechnique"],
+        ["PersistenceTechnique"],
         [
-            "ATTACKEnterpriseLateralMovementTechnique",
-            "ATTACKEnterpriseExecutionTechnique",
+            "LateralMovementTechnique",
+            "ExecutionTechnique",
         ],
-        ["ATTACKEnterpriseCommandAndControlTechnique"],
+        ["CommandAndControlTechnique"],
         "T1546",
-        ["ATTACKEnterpriseDefenseEvasionTechnique"],
+        ["DefenseEvasionTechnique"],
         "T1027",
     ]
     labels = [
