@@ -583,7 +583,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
-    owl:inverseOf :has-input ;
     :definition "x input-of y: An artifact x is input of an event y iff x participates at the start of y, provides the material or information required for y to begin, and during y either x's state is altered or the information content it bears is realized." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001841> .
 
@@ -974,7 +973,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
-    owl:inverseOf :has-output ;
     :definition "x output-of y: An artifact x is output of an event y iff x must be present when y concludes, was absent in the same state when x began, and y counts as complete only when x is available at its end." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001816> .
 
@@ -1446,6 +1444,8 @@ rdfs:seeAlso a owl:AnnotationProperty .
 skos:altLabel a owl:AnnotationProperty .
 
 skos:example a owl:AnnotationProperty .
+
+skos:prefLabel a owl:AnnotationProperty .
 
 :synonym a owl:AnnotationProperty ;
     rdfs:label "synonym" ;
@@ -3302,12 +3302,6 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
 IEEE Std 1003.1-2017: A file that refers to a device. A block special file is normally distinguished from a character special file by providing access to the device in a manner such that the hardware characteristics of the device are not visible.""" ;
     rdfs:seeAlso <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_79> .
 
-:BoltedCabinet a owl:Class ;
-    rdfs:label "Bolted Cabinet" ;
-    rdfs:subClassOf :Enclosure ;
-    rdfs:isDefinedBy "IEEE C37.20.2" ;
-    :definition "A bolted cabinet is an enclosure in which access is provided by removing bolts securing the covers or doors, as opposed to using hinges or latches." .
-
 :BookReference a owl:Class ;
     rdfs:label "Book Reference" ;
     rdfs:subClassOf :TechniqueReference ;
@@ -4273,6 +4267,29 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
             owl:onProperty :has-participant ;
             owl:someValuesFrom :Processor ] ;
     :definition "An event capturing the operation, state, or performance of computational hardware, such as CPUs, GPUs, or accelerators. These events reflect processing capacity changes, utilization anomalies, or device health." .
+
+:ComputerCabinet a owl:Class ;
+    rdfs:label "Computer Cabinet" ;
+    rdfs:subClassOf :ComputerEnclosure ;
+    :definition "A computer cabinet houses one or more computers and can range in size and material." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Computer_cabinet",
+        "IEEE C37.20.2" .
+
+:ComputerCase a owl:Class ;
+    rdfs:label "Computer Case" ;
+    rdfs:subClassOf :ComputerEnclosure ;
+    :definition "A computer case is a computer enclosure which encloses a single primary computer." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Computer_case" .
+
+:ComputerEnclosure a owl:Class ;
+    rdfs:label "Computer Enclosure" ;
+    rdfs:subClassOf :PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :PhysicalLock ] ;
+    :definition "A part providing protection of equipment against certain external influences and protects against direct contact." ;
+    rdfs:seeAlso "[IEV 826-03-12]",
+        "https://dbpedia.org/page/Category:Computer_enclosure" .
 
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
@@ -12790,15 +12807,6 @@ Email files may propagate through many storage systems across the an organizatio
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_enclave> ;
     :definition "Network enclaves consist of standalone assets that do not interact with other information systems or networks. A major difference between a DMZ or demilitarized zone and a network enclave is a DMZ allows inbound and outbound traffic access, where firewall boundaries are traversed. In an enclave, firewall boundaries are not traversed. Enclave protection tools can be used to provide protection within specific security domains. These mechanisms are installed as part of an Intranet to connect networks that have similar security requirements." .
 
-:Enclosure a owl:Class ;
-    rdfs:label "Enclosure" ;
-    rdfs:subClassOf :PhysicalArtifact,
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :PhysicalLock ] ;
-    rdfs:isDefinedBy "[IEV 826-03-12]" ;
-    :definition "A part providing protection of equipment against certain external influences and, in any direction, protection against direct contact." .
-
 :EncoderApplication a owl:Class ;
     rdfs:label "Encoder Application" ;
     rdfs:subClassOf :CodecApplication ;
@@ -20578,7 +20586,7 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     rdfs:subClassOf :PlatformHardening,
         [ a owl:Restriction ;
             owl:onProperty :hardens ;
-            owl:someValuesFrom :Enclosure ] ;
+            owl:someValuesFrom :ComputerEnclosure ] ;
     :d3fend-id "D3-PEH" ;
     :definition "definition" ;
     :kb-article """## How it works
@@ -20723,7 +20731,7 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     rdfs:subClassOf :PhysicalAccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :isolates ;
-            owl:someValuesFrom :Enclosure ] ;
+            owl:someValuesFrom :ComputerEnclosure ] ;
     :d3fend-id "D3-EPL" ;
     :definition "Employ a mechanical latching device for securing moveable portions of physical barriers (e.g., doors, gates, drawers) in a secured position." ;
     :kb-article """## How it works
