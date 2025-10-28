@@ -5,7 +5,7 @@ SHELL=/bin/bash
 D3FEND_VERSION ?=1.2.0
 D3FEND_RELEASE_DATE ?="2025-08-01T00:12:00.000Z"
 
-ATTACK_VERSION ?= 17.0
+ATTACK_VERSION ?= 17.1
 
 CAPEC_VERSION := 3.9
 
@@ -129,11 +129,11 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 download-attack:
 	mkdir -p data
 	echo "Version: $(ATTACK_VERSION)"
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/mobile-attack/mobile-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
-	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	bash src/util/update_attack.sh $(ATTACK_VERSION) $(FRAMEWORKS)
 	$(END)
 
 download-capec:
