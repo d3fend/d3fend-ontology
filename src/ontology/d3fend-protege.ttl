@@ -12608,6 +12608,20 @@ This technique does not check for content hosted at the domain.
     :definition "Monitoring the existence of or changes to Domain User Accounts." ;
     :kb-reference :Reference-AuditUserAccountManagement .
 
+:DomainLogicValidation a :DomainLogicValidation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Domain Logic Validation" ;
+    rdfs:subClassOf :SourceCodeHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :Subroutine ] ;
+    :d3fend-id "D3-DLV" ;
+    :definition "Validation of variable state in the context of the domain application." ;
+    :kb-article """## How it works
+Validates the type, value, and/or range of an variable taking into context the current application in the buissness domain.""" ;
+    :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
+
 :DomainName a owl:Class ;
     rdfs:label "Domain Name" ;
     rdfs:subClassOf :Identifier,
@@ -14847,6 +14861,22 @@ Wikipedia. (n.d.). Clustering high-dimensional data. [Link](https://en.wikipedia
 :Histogramming a owl:Class ;
     rdfs:label "Histogramming" ;
     rdfs:subClassOf :Summarizing .
+
+:HMIApplication a owl:Class ;
+    rdfs:label "HMI Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OTControlFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :HMIApplicationProcess ] ;
+    :definition "Application software which runs the main program in an HMI." .
+
+:HMIApplicationProcess a owl:Class ;
+    rdfs:label "HMI Application Process" ;
+    rdfs:subClassOf :Process ;
+    :definition "The instructions within an HMI defined by user programming to interpret visual (and potentially audio) inputs and define visual (and potentially) audio outputs." .
 
 :HomogenousTransferLearning a owl:Class,
         owl:NamedIndividual ;
@@ -18565,6 +18595,23 @@ Operating System Monitoring Techniques have varied implementations including bui
         :Reference-MissionDependencyModelingForCyberSituationalAwareness,
         :Reference-UnifiedArchitectureFrameworkUAF .
 
+:OperationalLogicValidation a :OperationalLogicValidation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Operational Logic Validation" ;
+    rdfs:subClassOf :DomainLogicValidation,
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :OTControlFunction ] ;
+    :d3fend-id "D3-OLV" ;
+    :definition "Validation of variable state in the context of the control logic of the operational application." ;
+    :kb-article """## How it works
+Validates the type, value, and/or range of a variable taking into account the local operational logic and operational state.
+
+For example, if a controller has a restricted range when in a specified state, this may crosscheck the value against the state in addition to a more general range validation. """ ;
+    :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
+
+
 :OperationalProcessMonitoring a :OperationalProcessMonitoring,
         owl:Class,
         owl:NamedIndividual ;
@@ -18614,6 +18661,23 @@ Key steps in operational process security monitoring are:
 """ ;
     :kb-reference :Reference-GuideToOTSecurity ;
     :synonym "Supervisory Control Monitoring" .
+
+:OperationalLogicValidation a :OperationalLogicValidation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Operational Logic Validation" ;
+    rdfs:subClassOf :DomainLogicValidation,
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :OTControlFunction ] ;
+    :d3fend-id "D3-OL" ;
+    :definition "Validation of variable state in the context of the control logic of the operational application." ;
+    :kb-article """## How it works
+Validates the type, value, and/or range of a variable taking into account the local operational logic and operational state. 
+
+For example, if a controller has a restricted range when in a specified state, this may crosscheck the value against the state in addition to a more general range validation. """ ;
+    :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
+
 
 :OperationalRiskAssessment a :OperationalRiskAssessment,
         owl:Class,
@@ -19171,6 +19235,14 @@ CIP: Save """,
             owl:someValuesFrom :OTControlCommand ] ;
     :definition "Command and control the managed process." .
 
+:OTControlFunction a owl:Class ;
+    rdfs:label "OTControlFunction" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTLogicVariable ] ;
+    :definition "A function which accesses OT Control Variables" .
+
 :OTController a owl:Class ;
     rdfs:label "OT Controller" ;
     rdfs:subClassOf :OTEmbeddedComputer,
@@ -19613,7 +19685,13 @@ BACnet: Error: 8""" ;
             owl:someValuesFrom :OutputDevice ] ,
         [ a owl:Restriction ;
             owl:onProperty :reads ;
-            owl:someValuesFrom :OTProcessDataHistorian ] ;
+            owl:someValuesFrom :OTProcessDataHistorian ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :HMIApplication ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTLogicVariable ] ;
     :comment "An HMI can take various forms, including a dedicated screen or control panel integrated with a specific device/controller, or a customizable software GUI application running on a standard operating system (e.g., MS Windows) that interfaces with a control/SCADA server." ;
     :definition "Human-Machine Interfaces (HMIs) are systems used by an operator to monitor the real-time status of an operational process and to perform necessary control functions, including the adjustment of device parameters." ;
     rdfs:seeAlso <https://www.rockwellautomation.com/en-us/products/details.2711P-T12W21D8S.html#documentation> ;
@@ -19811,7 +19889,7 @@ BACnet: reinitializeDevice """,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :TimeSeriesDatabase ] ;
-    rdfs:isDefinedBy <attack.mitre.org/assets/A0006> ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Operational_historian> ;
     :definition "A system used to collect and store data, including telemetry, events, alerts, and alarms about the operational process and supporting devices." .
 
 :OTProcessVariable a owl:Class ;
