@@ -583,7 +583,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
-    owl:inverseOf :has-input ;
     :definition "x input-of y: An artifact x is input of an event y iff x participates at the start of y, provides the material or information required for y to begin, and during y either x's state is altered or the information content it bears is realized." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001841> .
 
@@ -957,6 +956,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x obfuscates y: The technique x makes the digital artifact y unclear or obscure.  Typically obfuscation is a way to hide a digital artifact from discovery, use, or both." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Obfuscation_(software)> .
 
+:operates a owl:ObjectProperty ;
+    rdfs:label "operates" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:isDefinedBy "oewn-01513459-v" ;
+    :definition "x operates y: The entity x enables, activates, or controls the functioning or behavior of object y (operated entity), typically in accordance with the design or intended use of the operated entity." .
+
 :originates-from a owl:ObjectProperty ;
     rdfs:label "originates-from" ;
     rdfs:subPropertyOf :associated-with ;
@@ -968,7 +973,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
-    owl:inverseOf :has-output ;
     :definition "x output-of y: An artifact x is output of an event y iff x must be present when y concludes, was absent in the same state when x began, and y counts as complete only when x is available at its end." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001816> .
 
@@ -1440,6 +1444,8 @@ rdfs:seeAlso a owl:AnnotationProperty .
 skos:altLabel a owl:AnnotationProperty .
 
 skos:example a owl:AnnotationProperty .
+
+skos:prefLabel a owl:AnnotationProperty .
 
 :synonym a owl:AnnotationProperty ;
     rdfs:label "synonym" ;
@@ -4185,6 +4191,16 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
             owl:someValuesFrom :TA0009 ] ;
     :definition "The adversary is trying to gather data of interest to their goal." .
 
+:CombinationLock a owl:Class ;
+    rdfs:label "Combination Lock" ;
+    rdfs:subClassOf :PhysicalLock,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Password ] ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Combination_lock> ;
+    :definition "A combination lock is a type of locking device in which a sequence of symbols, usually numbers, is used to open the lock. " ;
+    rdfs:seeAlso "Federal Specification FL-L-2937" .
+
 :Command a owl:Class ;
     rdfs:label "Command" ;
     rdfs:subClassOf :DigitalInformation ;
@@ -4251,6 +4267,32 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
             owl:onProperty :has-participant ;
             owl:someValuesFrom :Processor ] ;
     :definition "An event capturing the operation, state, or performance of computational hardware, such as CPUs, GPUs, or accelerators. These events reflect processing capacity changes, utilization anomalies, or device health." .
+
+:ComputerCabinet a owl:Class ;
+    rdfs:label "Computer Cabinet" ;
+    rdfs:subClassOf :ComputerEnclosure ;
+    :definition "A computer cabinet houses one or more computers and can range in size and material." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Computer_cabinet",
+        "IEEE C37.20.2" .
+
+:ComputerCase a owl:Class ;
+    rdfs:label "Computer Case" ;
+    rdfs:subClassOf :ComputerEnclosure ;
+    :definition "A computer case is a computer enclosure which encloses a single primary computer." ;
+    rdfs:seeAlso "https://dbpedia.org/page/Computer_case" .
+
+:ComputerEnclosure a owl:Class ;
+    rdfs:label "Computer Enclosure" ;
+    rdfs:subClassOf :PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ComputerPlatform ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :PhysicalLock ] ;
+    :definition "A part providing protection of equipment against certain external influences and protects against direct contact." ;
+    rdfs:seeAlso "[IEV 826-03-12]",
+        "https://dbpedia.org/page/Category:Computer_enclosure" .
 
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
@@ -12614,6 +12656,26 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     :definition "Dynamic program analysis is the analysis of computer software that is performed by executing programs on a real or virtual processor." ;
     :todo "Find better full description; wikipedia entry is too narrow in focus after first sentence and misses a lot of the security aspects" .
 
+:ElectronicCombinationLock a owl:Class ;
+    rdfs:label "Electronic Combination Lock" ;
+    rdfs:subClassOf :CombinationLock,
+        :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Password ] ;
+    rdfs:isDefinedBy "NRC Regulatory Guide 5.12 Rev1" ;
+    :definition "A system comprised of an automatic door closer on the door, an input device, a controlling device, and a lock, usually mechanical, which is released or activated when the correct combination is entered or correct token is presented." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Electronic_lock> .
+
+:ElectronicCombinationLockEvent a owl:Class ;
+    rdfs:label "Electronic Combination Lock Event" ;
+    rdfs:subClassOf :PhysicalAccessAlarmEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ElectronicCombinationLock ] ;
+    rdfs:comment "An event occuring when combination lock's bolt changes position." ;
+    rdfs:seeAlso "NRC Regulatory Guide 5.12 Rev1" .
+
 :Email a owl:Class ;
     rdfs:label "Email" ;
     rdfs:subClassOf :DocumentFile,
@@ -20504,6 +20566,11 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     :synonym "Matthews Correlation Coefficient (in machine learning)",
         "MCC" .
 
+:PhysicalAccessAlarmEvent a owl:Class ;
+    rdfs:label "Physical Access Alarm Event" ;
+    rdfs:subClassOf :DigitalEvent ;
+    rdfs:comment "An event occuring when a physical threshold is crossed." .
+
 :PhysicalAccessMediation a owl:Class,
         owl:NamedIndividual,
         :PhysicalAccessMediation ;
@@ -20548,6 +20615,49 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     rdfs:isDefinedBy <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en> ;
     :definition "A device that physically enforces one-way (unidirectional) network communication." ;
     skos:example <https://owlcyberdefense.com/products/data-diode-products/> .
+
+:PhysicalEnclosureHardening a owl:Class,
+        owl:NamedIndividual,
+        :PhysicalEnclosureHardening ;
+    rdfs:label "Physical Enclosure Hardening" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :ComputerEnclosure ] ;
+    :d3fend-id "D3-PEH" ;
+    :definition "Physical changes to a computer enclosure which reduce the ability for agents or the environment to affect the contained computer system." ;
+    :kb-article """## How it works
+
+System designers or operators make physical changes to a computer enclosure which reduce the ability for agents or the environment to affect the contained computer system. These additions to the enclosure may be of various materials to reduce the effects of heat, gases, vibration, or agent access.
+
+## Considerations
+
+* Use asset inventory tools to track physical equipment and monitor both people and devices for access control.
+* Consider relevant regulations to ensure enclosures are in compliance.
+
+* Properly hardened enclosures should be installed and maintained to ensure they are operable and free of tampering. Access to these enclosures is controlled through physical barriers, such as locks and bolts, and may include tamper-evident hardware.
+
+* Records should be maintained concerning maintenance performed, access, and any possible tampering marks or associated incidents.""" ;
+    :kb-reference :Reference-GeneralUseOfLocksInTheProtectionAndControlOfFacilitiesRadioActiveMaterialsClassifiedInformationClassifiedMatterAndSafeguardsInformation,
+        :Reference-GuidetoOTSecurity .
+
+:PhysicalKey a owl:Class ;
+    rdfs:label "Physical Key" ;
+    rdfs:subClassOf :PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :operates ;
+            owl:someValuesFrom :PhysicalKeyLock ] ;
+    :definition "A physical key is used to operate a lock, typically metal, designed with specific markers that match the internal mechanism of a lock, allowing it to rotate the lock when inserted." .
+
+:PhysicalKeyLock a owl:Class ;
+    rdfs:label "Physical Key Lock" ;
+    rdfs:subClassOf :PhysicalLock,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PhysicalKey ] ;
+    rdfs:isDefinedBy "NRC Regulatory Guide 5.12 Rev1" ;
+    :definition "A mechanical locking device for securing moveable portions of physical barriers (e.g., doors, gates, drawers) in a secured position." ;
+    :synonym "keyed lock" .
 
 :PhysicalLink a owl:Class ;
     rdfs:label "Physical Link" ;
@@ -20643,6 +20753,42 @@ NOTE: not synonymous with data link as a data link can be over a telecommunicati
     rdfs:isDefinedBy <http://dbpedia.org/resource/Location_(geography)> ;
     :definition "The terms location  [here, a physical location] and place in geography are used to identify a point or an area on the Earth's surface or elsewhere. The term location generally implies a higher degree of certainty than place, which often indicates an entity with an ambiguous boundary, relying more on human or social attributes of place identity and sense of place than on geometry. The distinction between space and place is considered a central concern of geography, and has been addressed by scholars such as Yi-Fu Tuan and John Agnew." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/location> .
+
+:PhysicalLock a owl:Class ;
+    rdfs:label "Physical Lock" ;
+    rdfs:subClassOf :PhysicalArtifact ;
+    :definition "A lock is a mechanical latching device for securing moveable portions of physical barriers in a secured position." ;
+    rdfs:seeAlso <https://dbpedia.org/page/Lock_and_key> .
+
+:PhysicalLocking a owl:Class,
+        owl:NamedIndividual,
+        :PhysicalLocking ;
+    rdfs:label "Physical Locking" ;
+    rdfs:subClassOf :PhysicalAccessMediation,
+        [ a owl:Restriction ;
+            owl:onProperty :mediates-access-to ;
+            owl:someValuesFrom :ComputerEnclosure ] ;
+    :d3fend-id "D3-EPL" ;
+    :definition "Employ a mechanical locking device for securing moveable portions of physical barriers (e.g., doors, gates, drawers) in a secured position." ;
+    :kb-article """## How it works
+
+A physical mechanism which has a associated credential which when entered enables the lock bolt to operate, i.e. open or close.
+
+## Considerations
+
+* Consider that locks for specified materials should adhere to relevant regulations.
+
+* Lock equipment cabinets when not needed for operation or safety; set OT asset keys of devices (e.g., PLCs and safety systems) to the “RUN” position unless otherwise specified.
+
+* Locks and all associated hardware should be properly installed, operable, and free of substantive indications of tampering.
+
+* Records should be maintained concerning maintenance performed, access, and any possible tampering marks or associated incidents.
+
+* For locks operated by a physical key, a key management system should be implemented to manage and secure physical keys.
+
+* Key locks should provide a high degree of resistance to opening by force and tampering techniques.""" ;
+    :kb-reference :Reference-GeneralUseOfLocksInTheProtectionAndControlOfFacilitiesRadioActiveMaterialsClassifiedInformationClassifiedMatterAndSafeguardsInformation,
+        :Reference-GuidetoOTSecurity .
 
 :Pipe a owl:Class ;
     rdfs:label "Pipe" ;
@@ -38004,6 +38150,22 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
         :FileMetadataConsistencyValidation ;
     :kb-reference-title "Gathering Evidence: Model-Driven Software Engineering in Automated Digital Forensics" .
 
+:Reference-GeneralUseOfLocksInTheProtectionAndControlOfFacilitiesRadioActiveMaterialsClassifiedInformationClassifiedMatterAndSafeguardsInformation a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - REGULATORY GUIDE 5.12 GENERAL USE OF LOCKS IN THE PROTECTION AND CONTROL OF: FACILITIES, RADIOACTIVE MATERIALS, CLASSIFIED INFORMATION, CLASSIFIED MATTER, AND SAFEGUARDS INFORMATION" ;
+    :has-link "https://www.nrc.gov/docs/ML1535/ML15357A411.pdf"^^xsd:anyURI ;
+    :kb-abstract """This regulatory guide (RG) describes methods and procedures that the staff of the U.S. Nuclear
+Regulatory Commission (NRC) considers acceptable for the selection, use, and control of locking
+devices. Locks can be used in the protection of: areas, facilities, certain radioactive materials, and
+specific types of information (e.g., classified matter, National Security Information (NSI), Restricted Data
+(RD), Formerly Restricted Data (FRD), Safeguards Information (SGI)).""" ;
+    :kb-author "U.S. NUCLEAR REGULATORY COMMISSION OFFICE OF NUCLEAR REGULATORY RESEARCH" ;
+    :kb-mitre-analysis " " ;
+    :kb-organization "U.S. NUCLEAR REGULATORY COMMISSION OFFICE OF NUCLEAR REGULATORY RESEARCH" ;
+    :kb-reference-of :PhysicalEnclosureHardening,
+        :PhysicalLocking ;
+    :kb-reference-title "REGULATORY GUIDE 5.12 GENERAL USE OF LOCKS IN THE PROTECTION AND CONTROL OF: FACILITIES, RADIOACTIVE MATERIALS, CLASSIFIED INFORMATION, CLASSIFIED MATTER, AND SAFEGUARDS INFORMATION" .
+
 :Reference-GenericRegsvr32_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-04-002: Generic Regsvr32 - MITRE" ;
@@ -38050,7 +38212,9 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
     :has-link "https://csrc.nist.gov/pubs/sp/800/82/r3/final"^^xsd:anyURI ;
     :kb-abstract "This document provides guidance on how to secure operational technology (OT) while addressing their unique performance, reliability, and safety requirements. OT encompasses a broad range of programmable systems and devices that interact with the physical environment (or manage devices that interact with the physical environment). These systems and devices detect or cause a direct change through the monitoring and/or control of devices, processes, and events. Examples include industrial control systems, building automation systems, transportation systems, physical access control systems, physical environment monitoring systems, and physical environment measurement systems. The document provides an overview of OT and typical system topologies, identifies common threats and vulnerabilities to these systems, and provides recommended security countermeasures to mitigate the associated risks." ;
     :kb-author "NIST" ;
-    :kb-reference-of :ChangeDefaultPassword ;
+    :kb-reference-of :ChangeDefaultPassword,
+        :PhysicalEnclosureHardening,
+        :PhysicalLocking ;
     :kb-reference-title "Guide to Operational Technology (OT) Security" .
 
 :Reference-GuideToStorageEncryptionTechnologiesForEndUserDevices a :GuidelineReference,
