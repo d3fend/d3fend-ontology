@@ -12067,6 +12067,20 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     :definition "A differential volume snapshot is a point-in-time capture of the files and directories that were changed since the last full snapshot." ;
     rdfs:seeAlso <https://aws.amazon.com/compare/the-difference-between-incremental-differential-and-other-backups/> .
 
+:DigitalAccessBadge a owl:Class ;
+    rdfs:label "Digital Access Badge" ;
+    rdfs:subClassOf :Credential,
+        [ a owl:Restriction ;
+            owl:onProperty :operates ;
+            owl:someValuesFrom :ElectronicCombinationLock ] ;
+    :definition "A credential used to gain entry to an area having automated access control entry points. Example media being magnetic stripe, proximity, barcode, or smart cards are examples." ;
+    rdfs:seeAlso <https://dbpedia.org/page/Access_badge>,
+        <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-116r1.pdf> ;
+    :synonym "CAC",
+        "Common Access Card",
+        "Personal Identity Verification",
+        "PIV" .
+
 :DigitalArtifact a owl:Class ;
     rdfs:label "Digital Artifact" ;
     rdfs:subClassOf :Artifact ;
@@ -12088,6 +12102,12 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:subClassOf :DigitalMultimedia ;
     rdfs:isDefinedBy "https://dbpedia.org/page/Audiovisual" ;
     :definition "Audiovisual (AV) is electronic media possessing both a sound and a visual component." .
+
+:DigitalCamera a owl:Class ;
+    rdfs:label "Digital Camera" ;
+    rdfs:subClassOf :HardwareDevice ;
+    :definition "An optical instrument that can capture an image. A digital camera that captures photographs in digital memory." ;
+    :isDefinedBy <https://dbpedia.org/page/Digital_camera> .
 
 :DigitalDocument a owl:Class ;
     rdfs:label "Digital Document" ;
@@ -17427,6 +17447,19 @@ Model-free (reinforcement learning). Wikipedia. [Link](https://en.wikipedia.org/
 Wikipedia. (n.d.). Moment (mathematics). [Link](https://en.wikipedia.org/wiki/Moment_(mathematics))""" ;
     :todo "Split out the different moments as leaves under moments instead of having them and moments at the same level" .
 
+:MotionDetectedEvent a owl:Class ;
+    rdfs:label "Motion Detected Event" ;
+    rdfs:subClassOf :PhysicalAccessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MotionDetector ] .
+
+:MotionDetector a owl:Class ;
+    rdfs:label "Motion Detector" ;
+    rdfs:subClassOf :HardwareDevice ;
+    :definition "An electrical device that utilizes a sensor to detect nearby motion." ;
+    :isDefinedBy <https://dbpedia.org/page/Motion_detector> .
+
 :MouseInputDevice a owl:Class ;
     rdfs:label "Mouse Input Device" ;
     skos:altLabel "Computer Mouse" ;
@@ -20708,6 +20741,30 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     :kb-reference :Reference-CNNSI-4009 ;
     :synonym "Physical Access Control" .
 
+:PhysicalAccessMonitoring a owl:Class ;
+    rdfs:label "Physical Access Monitoring" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :DigitalCamera ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :ElectronicCombinationLock ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :MotionDetector ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :ProximitySensor ] ;
+    :d3fend-id "D3F-PAMM" ;
+    :definition "Monitoring the physical access of a specified environment through detection, recording, reviewing, and logging of who/what enters and exists areas." ;
+    :kb-article """##How it works
+Physical access monitoring helps prevent unauthorized access and respond to it by utilizing various monitoring controls can including administrative, technical, and physical aspects.
+
+Together they detect and deter unauthorized activity and provide evidence in the case of a forensic investigation.
+""" ;
+    :kb-reference :Reference-NIST-SP-800-53-R5 .
+
 :PhysicalAddress a owl:Class ;
     rdfs:label "Physical Address" ;
     rdfs:subClassOf :MemoryAddress ;
@@ -21848,6 +21905,19 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
     rdfs:label "Provider" ;
     rdfs:subClassOf :Organization ;
     :definition "Providers are entities that intentionally offer, supply, or facilitate goods, services, or resources through actions of their agents." .
+
+:ProximitySensor a owl:Class ;
+    rdfs:label "Proximity Sensor" ;
+    rdfs:subClassOf :HardwareDevice ;
+    :definition "A sensor able to detect the presence of nearby objects without any physical contact." ;
+    :isDefinedBy <https://dbpedia.org/page/Proximity_sensor> .
+
+:ProximitySensorEvent a owl:Class ;
+    rdfs:label "Proximity Sensor Event" ;
+    rdfs:subClassOf :PhysicalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ProximitySensor ] .
 
 :Proxy-basedWebServerAccessMediation a owl:Class,
         owl:NamedIndividual,
@@ -27715,6 +27785,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1125 a owl:Class ;
     rdfs:label "Video Capture" ;
     rdfs:subClassOf :CollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DigitalCamera ],
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :VideoInputDevice ] ;
@@ -39232,6 +39305,15 @@ architecture using the Snort NIDS.""" ;
     :kb-organization "NIST" ;
     :kb-reference-of :OperationalRiskAssessment ;
     :kb-reference-title "NIST RMF Quick Start Guide - Assess Step - Frequently Asked Questions (FAQ)" .
+
+:Reference-NIST-SP-800-53-R5 a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - NIST Special Publication 800-53 Revision 5: Security and Privacy Controls for Information Systems and Organizations" ;
+    :has-link "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf"^^xsd:anyURI ;
+    :kb-abstract "This publication provides a catalog of security and privacy controls for information systems and organizations to protect organizational operations and assets, individuals, other organizations, and the Nation from a diverse set of threats and risks, including hostile attacks, human errors, natural disasters, structural failures, foreign intelligence entities, and privacy risks. The controls are flexible and customizable and implemented as part of an organization-wide process to manage risk. The controls address diverse requirements derived from mission and business needs, laws, executive orders, directives, regulations, policies, standards, and guidelines. Finally, the consolidated control catalog addresses security and privacy from a functionality perspective (i.e., the strength of functions and mechanisms provided by the controls) and from an assurance perspective (i.e., the measure of confidence in the security or privacy capability provided by the controls). Addressing functionality and assurance helps to ensure that information technology products and the systems that rely on those products are sufficiently trustworthy" ;
+    :kb-organization "NIST" ;
+    :kb-reference-of :PhysicalAccessMonitoring ;
+    :kb-reference-title " NIST Special Publication 800-53 Revision 5: Security and Privacy Controls for Information Systems and Organizations" .
 
 :Reference-NIST-Special-Publication-800-37-Revision-2 a :GuidelineReference,
         owl:NamedIndividual ;
