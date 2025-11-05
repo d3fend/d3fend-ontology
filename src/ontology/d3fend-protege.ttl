@@ -2510,8 +2510,8 @@ Keeping track of the controller cycle time by logging it, setting alarms, and co
     :definition "Analyzing application protocol level remote commands to detect unauthorized activity." ;
     :kb-article """## How it works
 This technique requires the ability to parse application layer protocols to understand the commands being sent to a remote service. Signature-based or statistical analysis may be employed to identify unauthorized commands being sent. These commands can be observed by monitoring network traffic or application logs.""" ;
-    :kb-reference :Reference-Methodandapparatusfordetectinganomaliesofaninfrastructureinanetwork,
-        :Reference-Protocolbaseddetectionofsuspiciousnetworktraffic .
+    :kb-reference :Reference-MethodAndApparatusForDetectingAnomaliesOfAnInfrastructureInANetwork,
+        :Reference-ProtocolBasedDetectionOfSuspiciousNetworkTraffic .
 
 :ApplicationRestartEvent a owl:Class ;
     rdfs:label "Application Restart Event" ;
@@ -3909,7 +3909,7 @@ Change the default password as soon as a new device is received. The default cre
 * These should be changed before a device is brought online so that an adversary cannot take advantage of these default credentials.
 * Strong and complex passwords are preferred if the technology allows.""" ;
     :kb-reference :Reference-CPGChecklist,
-        :Reference-GuidetoOTSecurity,
+        :Reference-GuideToOTSecurity,
         :Reference-MITREATTACKPasswordPolicies .
 
 :ChatroomClient a owl:Class ;
@@ -4365,7 +4365,7 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
             owl:someValuesFrom :PhysicalLock ] ;
     :definition "A part providing protection of equipment against certain external influences and protects against direct contact." ;
     rdfs:seeAlso "[IEV 826-03-12]",
-        "https://dbpedia.org/page/Category:Computer_enclosure" .
+        <https://dbpedia.org/page/Category:Computer_enclosure> .
 
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
@@ -5059,7 +5059,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
             owl:someValuesFrom :Credential ] ;
     :d3fend-id "D3-CTS" ;
     :definition "Limiting the transmission of a credential to a scoped set of relying parties." ;
-    :kb-reference :Reference-WebAuthentication_AnAPIForAccessingPublicKeyCredentials%0ALevel2 ;
+    :kb-reference :Reference-WebAuthentication_AnAPIForAccessingPublicKeyCredentialsLevel2 ;
     rdfs:seeAlso <https://pages.nist.gov/TIG-Stage/sp800-63c.html>,
         <https://www.w3.org/TR/webauthn-2/> ;
     :synonym "Phishing Resistant Authentication" .
@@ -11217,6 +11217,22 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 :D3FENDKBThing a owl:Class ;
     rdfs:label "D3FEND KB Thing" .
 
+:DataAquisitionAgent a owl:Class ;
+    rdfs:label "Data Aquisition Agent" ;
+    rdfs:subClassOf :Application ;
+    :definition "A software component which connects to data sources to gather raw, time-stamped data. It often connects to databases or historian gateways for storage and analysis." ;
+    :seeAlso <https://attack.mitre.org/assets/A0009> ;
+    :synonym "Data Gateway; Historian Collector" .
+
+:DataAquisitionUnit a owl:Class ;
+    rdfs:label "Data Aquisition Unit" ;
+    rdfs:subClassOf :HardwareDevice ,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :DataAquisitionAgent ] ;
+    :definition "The hardware component which connects to data sources to gather raw, time-stamped data. It often connects to databases or historian gateways for storage and analysis." ;
+    :seeAlso <https://attack.mitre.org/assets/A0009> .
+
 :DataArtifactServer a owl:Class ;
     rdfs:label "Data Artifact Server" ;
     rdfs:subClassOf :ArtifactServer ;
@@ -12223,7 +12239,7 @@ Using a device such as a data diode, or otherwise enforcing unidirectional (one-
 Unidirectional network link enforcement is a security measure used to separate control and safety systems in operational technology (OT) environments. By employing physical data diodes, this approach ensures one-way communication, allowing information from safety systems to be viewed without permitting any modification or interference, thereby protecting the integrity of the safety system.
 
 """ ;
-    :kb-reference :Reference-Secureone-waydatatransferusingcommunicationinterfacecircuitry .
+    :kb-reference :Reference-SecureOneWayDataTransferUsingCommunicationInterfaceCircuitry .
 
 :Directory a owl:Class ;
     rdfs:label "Directory" ;
@@ -15506,8 +15522,7 @@ Georgian Impact Blog. (n.d.). Transfer Learning Part 1. [Link](https://medium.co
             owl:onProperty :hardens ;
             owl:someValuesFrom :MathematicalFunction ] ;
     :d3fend-id "D3-IRV" ;
-    :definition """Ensuring that an integer is within a valid range.
-""" ;
+    :definition "Ensuring that an integer is within a valid range." ;
     :kb-article """## How it Works
 Integer Range Validation can be done by programmatically checking the value of an integer before or after an operation to determine if the resulting value will be valid.
 Checking the value of an integer to ensure it is in a valid range helps prevent integer overflow, wraparound, and logical errors.
@@ -18550,6 +18565,56 @@ Operating System Monitoring Techniques have varied implementations including bui
         :Reference-MissionDependencyModelingForCyberSituationalAwareness,
         :Reference-UnifiedArchitectureFrameworkUAF .
 
+:OperationalProcessMonitoring a :OperationalProcessMonitoring,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Operational Process Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :OTProcessDataHistorian ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OperatorEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :OTEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :EventLog ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :DigitalEventRecord ],
+        [ a owl:Restriction ;
+            owl:onProperty :undefined ;
+            owl:someValuesFrom :ProcessAnalysis ] ;
+    :d3fend-id "D3-OPM" ;
+    :definition "Monitoring physical parameters and operator actions related to an operational environment." ;
+    :kb-article """##How it works
+
+While some Operational Technology are designed to operate without human intervention, most systems are designed with the ability to monitor and modify the physical process with user input.
+
+This technique detects adversarial risks to operational processes by observing physical events and operator actions and analyzing event logs.
+
+Key steps in operational process security monitoring are:
+
+1. Read logs generated by controllers, and HMIs, through DAU's and DA agents;
+
+2. Produce digital event records;
+
+3. Display the aggregated data to a device such as an HMI or process historian, and write those records to event logs and/or to the OT process data historian for traceability and incident reconstruction.
+
+4. Monitor the procees and detect incidents or indicators of tampering such as:
+- malfunctions
+- unauthorized commands,
+- unsafe setpoint changes,
+- alarm suppression, and
+- anomalous mode transitions;
+
+""" ;
+    :kb-reference :Reference-GuideToOTSecurity ;
+    :synonym "Supervisory Control Monitoring" .
+
 :OperationalRiskAssessment a :OperationalRiskAssessment,
         owl:Class,
         owl:NamedIndividual ;
@@ -18578,6 +18643,16 @@ Operating System Monitoring Techniques have varied implementations including bui
     rdfs:isDefinedBy <http://dbpedia.org/resource/Mainframe_computer> ;
     :definition "Mainframe computers or mainframes (colloquially referred to as \"big iron\") are computers used primarily by large organizations for critical applications; bulk data processing, such as census, industry and consumer statistics, and enterprise resource planning; and transaction processing. They are larger and have more processing power than some other classes of computers: minicomputers, servers, workstations, and personal computers." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Time-sharing> .
+
+:OperatorEvent a owl:Class ;
+    rdfs:label "Operator Event" ;
+    rdfs:subClassOf :Event,
+        [ a owl:Restriction ;
+            owl:onProperty :has-agent ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HMIRuntimeProcess ] .
 
 :OpticalDiscImage a owl:Class ;
     rdfs:label "Optical Disc Image" ;
@@ -19473,7 +19548,7 @@ GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)""" ;
         [ a owl:Restriction ;
             owl:onProperty :runs ;
             owl:someValuesFrom :OTEngineeringSoftware ] ;
-    rdfs:isDefinedBy "https://attack.mitre.org/assets/A0001/" ;
+    rdfs:isDefinedBy <https://attack.mitre.org/assets/A0001> ;
     :definition "An Engineering Workstation (EWS) is used to perform various maintenance, configuration, or diagnostics functions for a control system. The EWS will likely require dedicated application software to interface with various devices (e.g., RTUs, PLCs), and may be used to transfer data or files between the control system devices and other networks." ;
     :synonym "EWS",
         "Transient Cyber Asset",
@@ -19529,8 +19604,16 @@ BACnet: Error: 8""" ;
 
 :OTHumanMachineInterface a owl:Class ;
     rdfs:label "OT Human Machine Interface" ;
-    rdfs:subClassOf :InputDevice,
-        :OTEmbeddedComputer ;
+    rdfs:subClassOf :OTEmbeddedComputer ,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :InputDevice ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OutputDevice ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTProcessDataHistorian ] ;
     :comment "An HMI can take various forms, including a dedicated screen or control panel integrated with a specific device/controller, or a customizable software GUI application running on a standard operating system (e.g., MS Windows) that interfaces with a control/SCADA server." ;
     :definition "Human-Machine Interfaces (HMIs) are systems used by an operator to monitor the real-time status of an operational process and to perform necessary control functions, including the adjustment of device parameters." ;
     rdfs:seeAlso <https://www.rockwellautomation.com/en-us/products/details.2711P-T12W21D8S.html#documentation> ;
@@ -19721,6 +19804,15 @@ BACnet: reinitializeDevice """,
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTProcessDataCommand ] ;
     :definition "Manage data associated with a controlled process." .
+
+:OTProcessDataHistorian a owl:Class ;
+    rdfs:label "OT Process Data Historian" ;
+    rdfs:subClassOf :Application,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :TimeSeriesDatabase ] ;
+    rdfs:isDefinedBy <attack.mitre.org/assets/A0006> ;
+    :definition "A system used to collect and store data, including telemetry, events, alerts, and alarms about the operational process and supporting devices." .
 
 :OTProcessVariable a owl:Class ;
     rdfs:label "OT Process Variable" ;
@@ -20820,7 +20912,7 @@ System designers or operators make physical changes to a computer enclosure whic
 
 * Records should be maintained concerning maintenance performed, access, and any possible tampering marks or associated incidents.""" ;
     :kb-reference :Reference-GeneralUseOfLocksInTheProtectionAndControlOfFacilitiesRadioActiveMaterialsClassifiedInformationClassifiedMatterAndSafeguardsInformation,
-        :Reference-GuidetoOTSecurity .
+        :Reference-GuideToOTSecurity .
 
 :PhysicalKey a owl:Class ;
     rdfs:label "Physical Key" ;
@@ -20972,7 +21064,7 @@ A physical mechanism which has a associated credential which when entered enable
 
 * Key locks should provide a high degree of resistance to opening by force and tampering techniques.""" ;
     :kb-reference :Reference-GeneralUseOfLocksInTheProtectionAndControlOfFacilitiesRadioActiveMaterialsClassifiedInformationClassifiedMatterAndSafeguardsInformation,
-        :Reference-GuidetoOTSecurity .
+        :Reference-GuideToOTSecurity .
 
 :Pipe a owl:Class ;
     rdfs:label "Pipe" ;
@@ -22328,7 +22420,7 @@ Remote File Access Mediation focuses on controlling how users or processes acces
     :definition "Monitoring of remote firmware update commands to identify unauthorized software installations." ;
     :kb-article """## How it works
 By deploying sensors within the OT environment to passively monitor network traffic, tools can leverage deep packet inspection to identify protocol-specific commands and generate logs of relevant firmware activity. Additionally, these tools may incorporate behavioral and signature-based analysis to enhance detection and alerting capabilities.""" ;
-    :kb-reference :Reference-Methodfordetectinganomaliesintimeseriesdataproducedbydevicesofaninfrastructureinanetwork ;
+    :kb-reference :Reference-MethodForDetectingAnomaliesInTimeSeriesDataProducedByDevicesOfAnInfrastructureInANetwork ;
     rdfs:seeAlso <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r2.pdf> .
 
 :RemoteLoginSession a owl:Class ;
@@ -23051,8 +23143,7 @@ Weak supervision. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Weak_supervis
     rdfs:label "Semi-supervised Inductive Learning" ;
     rdfs:subClassOf :Semi-SupervisedLearning ;
     :d3fend-id "D3A-SSIL" ;
-    :definition """The goal of inductive learning is to infer the correct mapping from
-X to Y""" ;
+    :definition "The goal of inductive learning is to infer the correct mapping from X to Y." ;
     :kb-article """## References
 Semi-Supervised Learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Semi-Supervised_Learning#Semi-supervised_learning).
 
@@ -34156,6 +34247,11 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
 Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series)""" ;
     :todo "Lots of time series leaves couls be put here." .
 
+:TimeSeriesDatabase a owl:Class ;
+    rdfs:label "Time Series Database" ;
+    rdfs:subClassOf :Database ;
+    :definition "A specialized database optimized for storing and retrieving time-stamped data." .
+
 :Token-basedAuthentication a owl:Class,
         owl:NamedIndividual,
         :Token-basedAuthentication ;
@@ -38498,7 +38594,7 @@ specific types of information (e.g., classified matter, National Security Inform
     :kb-reference-title "Guards for application in software tamperproofing" ;
     :todo "MITRE Analysis was not found" .
 
-:Reference-GuidetoOTSecurity a :InternetArticleReference,
+:Reference-GuideToOTSecurity a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - NIST SP 800-82R3 Guide to Operational Technology (OT) Security, Section 6.2.1.4.5 Password Authentication " ;
     :has-link "https://csrc.nist.gov/pubs/sp/800/82/r3/final"^^xsd:anyURI ;
@@ -38916,7 +39012,7 @@ ProcDump may be used to dump the memory space of lsass.exe to disk for processin
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
-:Reference-Methodandapparatusfordetectinganomaliesofaninfrastructureinanetwork a owl:NamedIndividual,
+:Reference-MethodAndApparatusForDetectingAnomaliesOfAnInfrastructureInANetwork a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Method and apparatus for detecting anomalies of an infrastructure in a network " ;
     :has-link "https://patents.google.com/patent/AU2023200991A1/"^^xsd:anyURI ;
@@ -39136,7 +39232,7 @@ Some examples of data inputs:
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
-:Reference-Methodfordetectinganomaliesintimeseriesdataproducedbydevicesofaninfrastructureinanetwork a owl:NamedIndividual,
+:Reference-MethodForDetectingAnomaliesInTimeSeriesDataProducedByDevicesOfAnInfrastructureInANetwork a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Method for detecting anomalies in time series data produced by devices of an infrastructure in a network" ;
     :has-link "https://patents.google.com/patent/CA3191230A1/"^^xsd:anyURI ;
@@ -39657,7 +39753,7 @@ Powershell can be used to hide monitored command line execution such as:
     :kb-reference-of :Application-basedProcessIsolation ;
     :kb-reference-title "Protecting web applications from untrusted endpoints using remote browser isolation" .
 
-:Reference-Protocolbaseddetectionofsuspiciousnetworktraffic a owl:NamedIndividual,
+:Reference-ProtocolBasedDetectionOfSuspiciousNetworkTraffic a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Protocol based detection of suspicious network traffic " ;
     :has-link "https://patents.google.com/patent/US10084816B2/"^^xsd:anyURI ;
@@ -40021,7 +40117,7 @@ delivery, up to message rejection.""" ;
     :kb-organization "Internet Engineering Task Force (IETF)" ;
     :kb-reference-title "Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 3.1 Message Specification" .
 
-:Reference-Secureone-waydatatransferusingcommunicationinterfacecircuitry a owl:NamedIndividual,
+:Reference-SecureOneWayDataTransferUsingCommunicationInterfaceCircuitry a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Secure one-way data transfer using communication interface circuitry " ;
     :has-link "https://patents.google.com/patent/US8068415B2"^^xsd:anyURI ;
@@ -41054,7 +41150,7 @@ Could be applied to a number of different types of monitoring depending on what 
         :SoftwareInventory ;
     :kb-reference-title "Web-Based Enterprise Management" .
 
-:Reference-WebAuthentication_AnAPIForAccessingPublicKeyCredentials%0ALevel2 a owl:NamedIndividual,
+:Reference-WebAuthentication_AnAPIForAccessingPublicKeyCredentialsLevel2 a owl:NamedIndividual,
         :SpecificationReference ;
     rdfs:label """Reference - Web Authentication: An API for accessing Public Key Credentials
 Level 2""" ;
