@@ -11226,7 +11226,7 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
 
 :DataAquisitionUnit a owl:Class ;
     rdfs:label "Data Aquisition Unit" ;
-    rdfs:subClassOf :HardwareDevice ,
+    rdfs:subClassOf :HardwareDevice,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DataAquisitionAgent ] ;
@@ -18611,15 +18611,14 @@ Validates the type, value, and/or range of a variable taking into account the lo
 For example, if a controller has a restricted range when in a specified state, this may crosscheck the value against the state in addition to a more general range validation. """ ;
     :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
 
-
 :OperationalProcessMonitoring a :OperationalProcessMonitoring,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Operational Process Monitoring" ;
     rdfs:subClassOf :PlatformMonitoring,
         [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :OTProcessDataHistorian ],
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :EventLog ],
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
             owl:someValuesFrom :OperatorEvent ],
@@ -18627,14 +18626,14 @@ For example, if a controller has a restricted range when in a specified state, t
             owl:onProperty :monitors ;
             owl:someValuesFrom :OTEvent ],
         [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :EventLog ],
-        [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :DigitalEventRecord ],
         [ a owl:Restriction ;
             owl:onProperty :undefined ;
-            owl:someValuesFrom :ProcessAnalysis ] ;
+            owl:someValuesFrom :ProcessAnalysis ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :OTProcessDataHistorian ] ;
     :d3fend-id "D3-OPM" ;
     :definition "Monitoring physical parameters and operator actions related to an operational environment." ;
     :kb-article """##How it works
@@ -18661,23 +18660,6 @@ Key steps in operational process security monitoring are:
 """ ;
     :kb-reference :Reference-GuideToOTSecurity ;
     :synonym "Supervisory Control Monitoring" .
-
-:OperationalLogicValidation a :OperationalLogicValidation,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Operational Logic Validation" ;
-    rdfs:subClassOf :DomainLogicValidation,
-        [ a owl:Restriction ;
-            owl:onProperty :validates ;
-            owl:someValuesFrom :OTControlFunction ] ;
-    :d3fend-id "D3-OL" ;
-    :definition "Validation of variable state in the context of the control logic of the operational application." ;
-    :kb-article """## How it works
-Validates the type, value, and/or range of a variable taking into account the local operational logic and operational state. 
-
-For example, if a controller has a restricted range when in a specified state, this may crosscheck the value against the state in addition to a more general range validation. """ ;
-    :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
-
 
 :OperationalRiskAssessment a :OperationalRiskAssessment,
         owl:Class,
@@ -19676,22 +19658,22 @@ BACnet: Error: 8""" ;
 
 :OTHumanMachineInterface a owl:Class ;
     rdfs:label "OT Human Machine Interface" ;
-    rdfs:subClassOf :OTEmbeddedComputer ,
+    rdfs:subClassOf :OTEmbeddedComputer,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :InputDevice ] ,
+            owl:someValuesFrom :HMIApplication ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :OutputDevice ] ,
-        [ a owl:Restriction ;
-            owl:onProperty :reads ;
-            owl:someValuesFrom :OTProcessDataHistorian ] ,
+            owl:someValuesFrom :InputDevice ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :HMIApplication ] ,
+            owl:someValuesFrom :OutputDevice ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OTLogicVariable ] ;
+            owl:someValuesFrom :OTLogicVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTProcessDataHistorian ] ;
     :comment "An HMI can take various forms, including a dedicated screen or control panel integrated with a specific device/controller, or a customizable software GUI application running on a standard operating system (e.g., MS Windows) that interfaces with a control/SCADA server." ;
     :definition "Human-Machine Interfaces (HMIs) are systems used by an operator to monitor the real-time status of an operational process and to perform necessary control functions, including the adjustment of device parameters." ;
     rdfs:seeAlso <https://www.rockwellautomation.com/en-us/products/details.2711P-T12W21D8S.html#documentation> ;
