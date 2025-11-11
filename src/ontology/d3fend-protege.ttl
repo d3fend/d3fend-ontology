@@ -2443,6 +2443,23 @@ Exploits may, for example, rely on knowledge of addresses in a process's memory,
     rdfs:subClassOf :LogicalLink ;
     :definition "An Application Layer Link is a type of logical link that exists at the application layer of a network or system architecture." .
 
+:ApplicationPerformanceMonitoring a :ApplicationPerformanceMonitoring,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Application Performance Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :ApplicationScanTime ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :SystemApplicationCycleCount ] ;
+    :d3fend-id "D3-APM" ;
+    :definition "Monitoring the count and duration of the application or program cycle." ;
+    :kb-article """## How it works
+Keeping track of the controller cycle time by logging it, setting alarms, and correlating with other events. Changes to cycle time can be indicative of injecting new logic, deleting logic, or system failures.""" ;
+    :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
+
 :ApplicationProcess a owl:Class ;
     rdfs:label "Application Process" ;
     rdfs:subClassOf :UserProcess,
@@ -2487,6 +2504,16 @@ This technique requires the ability to parse application layer protocols to unde
     rdfs:label "Application Rule" ;
     rdfs:subClassOf :ApplicationConfiguration ;
     :definition "A configuration of an application which is used to apply logical or data processing functions to data processed by the application." .
+
+:ApplicationRuntimeVariable a owl:Class ;
+    rdfs:label "Application Runtime Variable " ;
+    rdfs:subClassOf :RuntimeVariable ;
+    :definition "A system variable that tracks aspects of runtime of a system." .
+
+:ApplicationScanTime a owl:Class ;
+    rdfs:label "Application Scan Time" ;
+    rdfs:subClassOf :ApplicationRuntimeVariable ;
+    :definition "A variable that tracks the measured time it takes to begin, run, and complete a select portion of an application's logic." .
 
 :ApplicationShim a owl:Class ;
     rdfs:label "Application Shim" ;
@@ -19891,6 +19918,11 @@ BACnet: reinitializeDevice """,
             owl:someValuesFrom :OTRunCommand ] ;
     :definition "Commands a device to start or resume a service/program." .
 
+:OTScanTime a owl:Class ;
+    rdfs:label "OT Scan Time" ;
+    rdfs:subClassOf :ApplicationScanTime ;
+    :definition "An OT controller system variable that tracks the measured time it takes to read input status, apply logic, and write output values." .
+
 :OTSecurityCommand a owl:Class ;
     rdfs:label "OT Security Command" ;
     rdfs:subClassOf :OTNetworkManagementCommand ;
@@ -24114,6 +24146,13 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
     rdfs:subClassOf :Artifact ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/04384144-n> ;
     :definition "An artifact (instrumentality) that combines interrelated interacting artifacts designed to work as a coherent entity.  [Note that not all digital artifacts are systems nor are all systems digital artifacts.]" .
+
+:SystemApplicationCycleCount a owl:Class ;
+    rdfs:label "System Application Cycle Count" ;
+    rdfs:subClassOf :SystemPlatformVariable ;
+    rdfs:comment "In most controllers this is not a default tag rather something that should be programmed." ;
+    :definition "A system variable that tracks the number of times the controller has completed its main program loop (scan cycle) since startup or last reset." ;
+    :synonym "Controller Cycle Count" .
 
 :SystemCall a owl:Class ;
     rdfs:label "System Call" ;
@@ -39837,8 +39876,8 @@ These practices leverage natively available functionality in the PLC/DCS. Little
 
 To fit the scope of the Top 20 Secure PLC Coding practices list, practices need to involve changes made directly to a PLC.""" ;
     :kb-organization "PLC Security" ;
-    :kb-reference-of :PlatformUptimeMonitoring,
-        :ApplicationCycleMonitoring,
+    :kb-reference-of :ApplicationCycleMonitoring,
+        :PlatformUptimeMonitoring,
         :TimerandCounterFailureMonitoring ;
     :kb-reference-title "Secure PLC Coding Practices: Top 20 List" .
 
