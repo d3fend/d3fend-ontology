@@ -11221,7 +11221,7 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
     rdfs:label "Data Aquisition Agent" ;
     rdfs:subClassOf :Application ;
     :definition "A software component which connects to data sources to gather raw, time-stamped data. It often connects to databases or historian gateways for storage and analysis." ;
-    :seeAlso <https://attack.mitre.org/assets/A0009> ;
+    rdfs:seeAlso <https://attack.mitre.org/assets/A0009> ;
     :synonym "Data Gateway; Historian Collector" .
 
 :DataAquisitionUnit a owl:Class ;
@@ -11231,7 +11231,7 @@ Esri. (n.d.). How CycleGAN Works. [Link](https://developers.arcgis.com/python/gu
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DataAquisitionAgent ] ;
     :definition "The hardware component which connects to data sources to gather raw, time-stamped data. It often connects to databases or historian gateways for storage and analysis." ;
-    :seeAlso <https://attack.mitre.org/assets/A0009> .
+    rdfs:seeAlso <https://attack.mitre.org/assets/A0009> .
 
 :DataArtifactServer a owl:Class ;
     rdfs:label "Data Artifact Server" ;
@@ -12122,8 +12122,8 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 :DigitalCamera a owl:Class ;
     rdfs:label "Digital Camera" ;
     rdfs:subClassOf :HardwareDevice ;
-    :definition "An optical instrument that can capture an image. A digital camera that captures photographs in digital memory." ;
-    :isDefinedBy <https://dbpedia.org/page/Digital_camera> .
+    rdfs:isDefinedBy <https://dbpedia.org/page/Digital_camera> ;
+    :definition "An optical instrument that can capture an image. A digital camera that captures photographs in digital memory." .
 
 :DigitalDocument a owl:Class ;
     rdfs:label "Digital Document" ;
@@ -17494,7 +17494,7 @@ Wikipedia. (n.d.). Moment (mathematics). [Link](https://en.wikipedia.org/wiki/Mo
 
 :MotionDetectedEvent a owl:Class ;
     rdfs:label "Motion Detected Event" ;
-    rdfs:subClassOf :PhysicalAccessEvent,
+    rdfs:subClassOf :PhysicalAccessAlarmEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :MotionDetector ] .
@@ -17502,8 +17502,8 @@ Wikipedia. (n.d.). Moment (mathematics). [Link](https://en.wikipedia.org/wiki/Mo
 :MotionDetector a owl:Class ;
     rdfs:label "Motion Detector" ;
     rdfs:subClassOf :HardwareDevice ;
-    :definition "An electrical device that utilizes a sensor to detect nearby motion." ;
-    :isDefinedBy <https://dbpedia.org/page/Motion_detector> .
+    rdfs:isDefinedBy <https://dbpedia.org/page/Motion_detector> ;
+    :definition "An electrical device that utilizes a sensor to detect nearby motion." .
 
 :MouseInputDevice a owl:Class ;
     rdfs:label "Mouse Input Device" ;
@@ -18037,7 +18037,13 @@ Hosts/users within a computer network are analyzed to identify communities of ho
     rdfs:subClassOf :NetworkIsolation,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :OTProtocolMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
+            owl:someValuesFrom :RemoteCommand ] ;
     :d3fend-id "D3-NTF" ;
     :definition "Restricting network traffic originating from any location." ;
     :kb-reference :Reference-ActiveFirewallSystemAndMethodology_McAfeeLLC,
@@ -18617,21 +18623,6 @@ For example, if a controller has a restricted range when in a specified state, t
     rdfs:label "Operational Process Monitoring" ;
     rdfs:subClassOf :PlatformMonitoring,
         [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :EventLog ],
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :OperatorEvent ],
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :OTEvent ],
-        [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :DigitalEventRecord ],
-        [ a owl:Restriction ;
-            owl:onProperty :undefined ;
-            owl:someValuesFrom :ProcessAnalysis ],
-        [ a owl:Restriction ;
             owl:onProperty :uses ;
             owl:someValuesFrom :OTProcessDataHistorian ] ;
     :d3fend-id "D3-OPM" ;
@@ -18689,16 +18680,6 @@ Key steps in operational process security monitoring are:
     rdfs:isDefinedBy <http://dbpedia.org/resource/Mainframe_computer> ;
     :definition "Mainframe computers or mainframes (colloquially referred to as \"big iron\") are computers used primarily by large organizations for critical applications; bulk data processing, such as census, industry and consumer statistics, and enterprise resource planning; and transaction processing. They are larger and have more processing power than some other classes of computers: minicomputers, servers, workstations, and personal computers." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Time-sharing> .
-
-:OperatorEvent a owl:Class ;
-    rdfs:label "Operator Event" ;
-    rdfs:subClassOf :Event,
-        [ a owl:Restriction ;
-            owl:onProperty :has-agent ;
-            owl:someValuesFrom :User ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :HMIRuntimeProcess ] .
 
 :OpticalDiscImage a owl:Class ;
     rdfs:label "Optical Disc Image" ;
@@ -20291,7 +20272,8 @@ GE-SRTP: RETURN PLC TIME/DATE""" ;
             owl:someValuesFrom :OTTransportConfigurationCommand ] ;
     :definition "Configure transport settings for a communication channel." .
 
-:OTVariableAccessRestriction a owl:Class ;
+:OTVariableAccessRestriction a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "OT Variable Access Restriction" ;
     rdfs:subClassOf :AccessPolicyAdministration,
         [ a owl:Restriction ;
@@ -20893,7 +20875,8 @@ Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Le
     :kb-reference :Reference-CNNSI-4009 ;
     :synonym "Physical Access Control" .
 
-:PhysicalAccessMonitoring a owl:Class ;
+:PhysicalAccessMonitoring a owl:Class,
+        owl:NamedIndividual ;
     rdfs:label "Physical Access Monitoring" ;
     rdfs:subClassOf :DefensiveTechnique,
         [ a owl:Restriction ;
@@ -22061,12 +22044,12 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
 :ProximitySensor a owl:Class ;
     rdfs:label "Proximity Sensor" ;
     rdfs:subClassOf :HardwareDevice ;
-    :definition "A sensor able to detect the presence of nearby objects without any physical contact." ;
-    :isDefinedBy <https://dbpedia.org/page/Proximity_sensor> .
+    rdfs:isDefinedBy <https://dbpedia.org/page/Proximity_sensor> ;
+    :definition "A sensor able to detect the presence of nearby objects without any physical contact." .
 
 :ProximitySensorEvent a owl:Class ;
     rdfs:label "Proximity Sensor Event" ;
-    rdfs:subClassOf :PhysicalEvent,
+    rdfs:subClassOf :PhysicalAccessAlarmEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :ProximitySensor ] .
@@ -34215,6 +34198,8 @@ Reconnaissance consists of techniques that involve adversaries actively or passi
     :definition "A reference used to develop KB articles." ;
     :pref-label "Technique Reference" .
 
+:TelecommunicationsCable a owl:Class .
+
 :TemporalDifferenceLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Temporal Difference Learning" ;
@@ -38665,6 +38650,8 @@ specific types of information (e.g., classified matter, National Security Inform
         :PhysicalLocking,
         :UserGroupPermissions ;
     :kb-reference-title "Guide to Operational Technology (OT) Security" .
+
+:Reference-GuidetoOTSecurity a owl:NamedIndividual .
 
 :Reference-GuideToStorageEncryptionTechnologiesForEndUserDevices a :GuidelineReference,
         owl:NamedIndividual ;
