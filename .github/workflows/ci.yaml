@@ -49,10 +49,20 @@ jobs:
       run:  docker compose run --rm d3fend-ontology make test-jena
     - name: Test Reasoner
       run:  docker compose run --rm d3fend-ontology make test-reasoner
-    - name: Cleanup
-      run: docker compose down && docker compose rm --force
-
-    - uses: actions/upload-artifact@v4
+    - name: Generate Reports
+      run:  docker compose run --rm d3fend-ontology make reports
+    - name: Upload d3fend.ttl
+      if: always()
+      uses: actions/upload-artifact@v4
       with:
         name: d3fend.ttl
         path: dist/public/d3fend.ttl
+    - name: Upload Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: reports
+        path: reports/**
+    - name: Cleanup
+      if: always()
+      run: docker compose down && docker compose rm --force
