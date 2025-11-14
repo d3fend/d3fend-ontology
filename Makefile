@@ -183,7 +183,7 @@ reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-fu
 
 reports/missing-rdfs-label-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
-		--profile src/queries/duplicate- \
+		--profile src/queries/missing-rdfs-label-profile.txt \
 		--fail-on none > reports/missing-rdfs-label-report.txt
 	$(END)
 
