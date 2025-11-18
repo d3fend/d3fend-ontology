@@ -12818,15 +12818,15 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     :definition "Monitoring electronic lock and door hardware states and access events (e.g., locked/unlocked, access granted/denied, door forced/held, tamper) to detect and respond to unauthorized entry." ;
     :kb-article """## How it works
 
-Electronic lock monitoring collects status and events from door controllers, readers (badge/PIV, keypad), and door hardware (door position switch, request-to-exit, bolt/latch, tamper). The physical access control system (PACS) logs access decisions, correlates door-held/forced conditions, and generates alarms for response. Secure, supervised reader links (e.g., OSDP) help detect wiring faults and reduce credential interception. Integration with video systems can pop relevant camera views on lock-related alarms.
+Electronic lock monitoring collects status and events from door controllers, readers (badge/PIV, keypad), and door hardware (door position switch, request-to-exit, bolt/latch, tamper). The physical access control system (PACS) logs access decisions, correlates door-held/forced conditions, and generates alarms for response. Secure, supervised reader links, such as Open Supervised Device Protocol (OSDP), help detect wiring faults and reduce credential interception. Integration with video systems can pop relevant camera views on lock-related alarms.
 
 ## Considerations
 
-* Communications security: prefer encrypted protocols.
-* Harden controllers and isolate network used for access control.
-* Safety/egress: configure fail-safe/fail-secure behavior and emergency release to meet life-safety requirements.
-* Alarm tuning: set thresholds for door-held/forced and retry counts to reduce false alarms while catching misuse.
-* Reliability: supervise inputs, provide backup power, and routinely test door sensors and tamper switches.""" ;
+* Use encrypted, supervised reader-to-controller protocols to protect credentials and detect wiring faults.
+* Harden door controllers and isolate the PACS network to limit the attack surface.
+* Configure fail-safe or fail-secure behavior and emergency release to meet life-safety requirements.
+* Tune alarms for door-held, door-forced, and invalid retries to reduce noise while catching misuse.
+* Supervise inputs, provide backup power, and regularly test door, bolt, and tamper sensors to ensure reliability.""" ;
     :kb-reference :Reference-FIPS-201-3,
         :Reference-NIST-SP800-116r1,
         :Reference-NIST-Special-Publication-800-53-Revision-5,
@@ -17538,10 +17538,10 @@ Motion sensors generate events when movement is detected within their coverage p
 
 ## Considerations
 
-* Placement and coverage: ensure proper height, angle, and line-of-sight; avoid obstructions and reflective surfaces.
-* False alarm control: tune sensitivity/pulse count; consider cross-zoning; account for HVAC airflow and thermal changes.
-* Supervision and tamper: monitor enclosure tamper and periodic test signals (wireless), and check battery/health status.
-* Integration: link motion events to cameras and door sensors for context and faster verification.""" ;
+* Place sensors at appropriate height and angle with clear line of sight, avoiding obstructions or reflective surfaces that can cause missed or false detections.
+* Reduce false alarms by tuning sensitivity and pulse-count, using cross-zoning when needed, and accounting for HVAC airflow or rapid thermal changes.
+* Monitor tamper and supervision signals; for wireless devices, verify periodic check-ins and battery levels; perform regular walk tests to validate coverage.
+* Integrate motion events with cameras and with door position switches and other sensors in the protected area to provide context and faster verification; use motion to trigger recording or bookmarks.""" ;
     :kb-reference :Reference-NIST-Special-Publication-800-53-Revision-5,
         :Reference-Wikipedia-MotionDetector,
         :Reference-Wikipedia-PIRSensor ;
@@ -22101,17 +22101,18 @@ Metadata collection on enterprises can yield large data sets. Storage, indexing,
             owl:onProperty :monitors ;
             owl:someValuesFrom :ProximitySensor ] ;
     :d3fend-id "D3-PSM" ;
-    :definition "Monitoring proximity sensor events indicating presence within a defined range (e.g., RFID/BLE/UWB credentials or assets near readers/zones) to control or audit access and proximity-dependent functions." ;
+    :definition "Monitoring events from proximity sensors that indicate a credential or tagged asset is within the sensor’s read range or a defined zone. Common enabling technologies include RFID, Bluetooth Low Energy (BLE), and Ultra-Wideband (UWB)." ;
     :kb-article """## How it works
 
 Proximity readers and sensors detect credentials or tagged assets within their read field, then report presence and, when applicable, authenticate to a controller for access decisions. Systems may use RSSI, dwell time, or time-of-flight to enforce zones and policies such as anti-passback. Secure, authenticated communication between readers and controllers helps prevent cloning and replay attacks.
 
 ## Considerations
 
-* Range and reliability: reader placement, antenna orientation, and materials (metal/liquid) affect detection accuracy.
-* Security: use cryptographic credentials (e.g., PIV/smartcards), mutual authentication, and encrypted reader links.
-* Privacy: proximity logs can reveal movement patterns; apply minimization, retention limits, and controlled access.
-* Calibration and testing: validate thresholds and zone boundaries; re-test after layout or inventory changes.""" ;
+ * Place readers and align antennas to achieve consistent read ranges; account for materials like metal and liquids that can detune signals.
+* Use cryptographic credentials with mutual authentication and encrypted, supervised reader links to mitigate cloning and relay attacks.
+* Protect privacy by minimizing collected data, limiting retention, and restricting access to proximity logs.
+* Calibrate detection thresholds and zone boundaries; re-test after layout changes or equipment moves.
+* Monitor reader and tag health, including battery status for BLE and UWB tags and supervision signals for wired and wireless devices.""" ;
     :kb-reference :Reference-FIPS-201-3,
         :Reference-NIST-SP800-116r1,
         :Reference-Wikipedia-ProximityCard,
@@ -35279,11 +35280,11 @@ Video surveillance uses digital cameras that stream to a video management system
 
 ## Considerations
 
-* Coverage and placement: field of view, lens selection, lighting, and avoidance of occlusions.
-* Storage and bandwidth: resolution, frame rate, and compression settings sized to retention needs.
-* Cybersecurity: unique credentials, firmware updates, encrypted protocols, and network segmentation for IP cameras.
-* Privacy and legal: signage, retention, access controls, and compliance with local regulations.
-* Reliability: monitor camera/NVR health and plan redundancy/failover where needed.""" ;
+* Plan camera placement and coverage to avoid occlusions and handle challenging lighting; select lenses and mounting to capture entry points and critical areas.
+* Size storage and bandwidth for the intended retention period by choosing appropriate resolution, frame rate, and compression, and monitor capacity over time.
+* Secure cameras and management systems with unique credentials, timely firmware updates, encrypted transport, and network segmentation to limit exposure.
+* Address privacy and legal obligations with visible notice, role-based access to footage, and retention policies aligned with regulations and organizational policy.
+* Monitor system health and build resilience with tamper and heartbeat alerts, recorder failover where needed, and accurate time synchronization for correlation.""" ;
     :kb-reference :Reference-DHS-CCTV-Technology-Handbook,
         :Reference-NIST-Special-Publication-800-53-Revision-5,
         :Reference-ONVIF-ProfileS ;
