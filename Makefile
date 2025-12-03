@@ -9,6 +9,8 @@ ATTACK_VERSION ?= 17.1
 
 CAPEC_VERSION := 3.9
 
+SPARTA_VERSION := 3.1
+
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
@@ -134,6 +136,16 @@ download-attack:
 
 update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION) $(FRAMEWORKS)
+	$(END)
+
+download-sparta:
+	mkdir -p data
+	echo "Version: $(SPARTA_VERSION)"
+	cd data; wget https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json --no-check-certificate -O sparta_data_v$(SPARTA_VERSION).json
+	$(END)
+
+update-sparta:
+	bash src/util/update_sparta.sh $(SPARTA_VERSION)
 	$(END)
 
 download-capec:
