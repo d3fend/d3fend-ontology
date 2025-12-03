@@ -9,6 +9,9 @@ ATTACK_VERSION ?= 17.1
 
 CAPEC_VERSION := 3.9
 
+ATLAS_VERSION := 5.1.1
+ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
+
 JENA_VERSION := 4.5.0
 
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
@@ -145,7 +148,15 @@ download-capec:
 
 update-capec:
 	bash src/util/update_capec.sh $(CAPEC_VERSION)
+
+download-atlas:
+	mkdir -p data
+	echo "Version: $(ATLAS_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/refs/tags/$(ATLAS_NAVIGATOR_DATA_TAG)/dist/stix-atlas.json
 	$(END)
+
+update-atlas:
+	bash src/util/update_atlas.sh $(ATLAS_VERSION)
 
 update-puns:
 	bash src/util/update_puns.sh
