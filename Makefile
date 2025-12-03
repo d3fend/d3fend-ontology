@@ -2,10 +2,10 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=1.1.0
-D3FEND_RELEASE_DATE ?="2025-04-21T00:12:00.000Z"
+D3FEND_VERSION ?=1.2.0
+D3FEND_RELEASE_DATE ?="2025-08-01T00:12:00.000Z"
 
-ATTACK_VERSION ?= 16.0
+ATTACK_VERSION ?= 17.1
 
 CAPEC_VERSION := 3.9
 
@@ -131,11 +131,11 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 download-attack:
 	mkdir -p data
 	echo "Version: $(ATTACK_VERSION)"
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/mobile-attack/mobile-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
-	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	bash src/util/update_attack.sh $(ATTACK_VERSION) $(FRAMEWORKS)
 	$(END)
 
 download-capec:
@@ -176,6 +176,7 @@ reports/default-robot-report.txt:	build/d3fend-full.owl ## Generate d3fend-full-
 		--fail-on none > reports/default-robot-report.txt
 	$(END)
 
+
 # Note: At present some definitions are d3f:definition; most are defacto rdfs:comment
 reports/missing-d3fend-definition-report.txt:	build/d3fend-full.owl
 	./bin/robot report -i build/d3fend-full.owl \
@@ -188,6 +189,18 @@ reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-fu
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/bogus-direct-subclassing-of-tactic-technique-profile.txt \
 		--fail-on ERROR > reports/bogus-direct-subclassing-of-tactic-technique-report.txt
+	$(END)
+
+reports/missing-rdfs-label-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/missing-rdfs-label-profile.txt \
+		--fail-on none > reports/missing-rdfs-label-report.txt
+	$(END)
+
+reports/duplicate-labels.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/duplicate-labels-profile.txt \
+		--fail-on none > reports/duplicate-labels.txt
 	$(END)
 
 reports/missing-attack-id-report.txt:	build/d3fend-full.owl
@@ -369,8 +382,48 @@ reportsdir:
 	mkdir -p reports/
 	$(END)
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
+
+
+REPORT_FILES = default-robot-report.txt \
+               missing-d3fend-definition-report.txt \
+               bogus-direct-subclassing-of-tactic-technique-report.txt \
+               missing-attack-id-report.txt \
+               inconsistent-iri-report.txt \
+               missing-off-tech-artifacts-report.txt
+
+
+report-summary:
+	@echo "Error | Warn | Info | Report File" > reports/report-summary.txt
+	@echo "------|------|------|-------------" >> reports/report-summary.txt
+	@> reports/temp-summary.txt
+	@for file in $(REPORT_FILES); do \
+		error_count=$$(grep -c "ERROR" reports/$$file); \
+		warn_count=$$(grep -c "WARN" reports/$$file); \
+		info_count=$$(grep -c "INFO" reports/$$file); \
+		printf "%5s | %5s | %5s | %-20s\n" "$$error_count" "$$warn_count" "$$info_count" "reports/$$file" >> reports/temp-summary.txt; \
+	done
+	@sort -k1,1nr -k2,2nr -k3,3nr reports/temp-summary.txt >> reports/report-summary.txt
+	@rm reports/temp-summary.txt
+
+	# Add logic to list reports not covered by REPORT_FILES
+	@echo "" >> reports/report-summary.txt
+	@echo "" >> reports/report-summary.txt
+	@MISSING_REPORTS=""; \
+	for file in $$(ls reports/); do \
+		if [ "$$file" != "report-summary.txt" ]; then \
+			if ! echo "$(REPORT_FILES)" | grep -w "$$file" > /dev/null; then \
+				MISSING_REPORTS="$$MISSING_REPORTS reports/$$file"; \
+			fi; \
+		fi; \
+	done; \
+	if [ -n "$$MISSING_REPORTS" ]; then \
+		echo "Reports not included in the summary:" >> reports/report-summary.txt; \
+		for file in $$MISSING_REPORTS; do \
+			echo "$$file" >> reports/report-summary.txt; \
+		done; \
+	fi
 
 distdir:
 	mkdir -p dist/public dist/private
