@@ -17,7 +17,7 @@ else
     echo -e "${GREEN}Using ${atlas} for atlas data \n"
 fi
 
-cp src/ontology/d3fend-protege.ttl src/ontology/d3fend-protege.atlas.ttl
+cp src/ontology/d3fend-protege.ttl src/ontology/d3fend-protege.updates.ttl
 
 pipenv run python src/util/test_cases.py  || exit 1
 
@@ -25,8 +25,8 @@ echo -e "${GREEN}All test cases passed \n"
 
 pipenv run python src/util/update_atlas.py "$ATLAS_VERSION" || exit 1
 
-pipenv run ttlfmt src/ontology/d3fend-protege.atlas.ttl
+pipenv run ttlfmt src/ontology/d3fend-protege.updates.ttl
 
-echo -e "${YELLOW}Created new ontology file with updates here: src/ontology/d3fend-protege.atlas.ttl \n"
+echo -e "${YELLOW}Created new ontology file with updates here: src/ontology/d3fend-protege.updates.ttl \n"
 echo -e "Please manually review and compare to: src/ontology/d3fend-protege.ttl \n"
 echo -e "If changes acceptable, replace files \n"

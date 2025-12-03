@@ -87,8 +87,8 @@ def add_atlas_facts(graph):
     """
     Adds new ATLAS-related classes to the graph:
       - ATLASThing: a subclass of ExternalThreatModelThing
-      - ATLASTactic: a subclass of ATLASThing and Goal, plus a restriction on :enabled-by
-      - ATLASTechnique: a subclass of Action, ATLASThing, Technique, plus a restriction on :enables
+      - ATLASTactic: a subclass of ATLASThing
+      - ATLASTechnique: a subclass of ATLASThing
     """
     # 1. Add ATLASThing
     if (d3fend["ATLASThing"], None, None) not in graph:
@@ -104,20 +104,18 @@ def add_atlas_facts(graph):
         graph.add((d3fend["ATLASTactic"], RDFS.label, Literal("ATLAS Tactic")))
         # Assert that an ATLAS Tactic is a subclass of ATLASThing and Goal
         graph.add((d3fend["ATLASTactic"], RDFS.subClassOf, d3fend["ATLASThing"]))
-        graph.add((d3fend["ATLASTactic"], RDFS.subClassOf, d3fend["Goal"]))
         # Create an anonymous restriction: enabled-by some ATLASTechnique
-        restriction1 = BNode()
-        graph.add((restriction1, RDF.type, owl.Restriction))
-        graph.add((restriction1, owl.onProperty, d3fend["enabled-by"]))
-        graph.add((restriction1, owl.someValuesFrom, d3fend["ATLASTechnique"]))
-        graph.add((d3fend["ATLASTactic"], RDFS.subClassOf, restriction1))
         # Add definition and seeAlso
         graph.add(
             (
                 d3fend["ATLASTactic"],
                 d3fend["definition"],
                 Literal(
-                    "An ATLAS Tactic is a categorical classification of techniques within the MITRE ATLAS™ framework, representing adversarial goals particular to artificial intelligence systems. It also adapts MITRE ATT&CK® Enterprise Matrix tactics by integrating machine learning concepts, thus capturing the unique motives behind actions in AI-specific operations."
+                    "An ATLAS Tactic is a categorical classification of techniques within the "
+                    "MITRE ATLAS™ framework, representing adversarial goals particular to "
+                    "artificial intelligence systems. It also adapts MITRE ATT&CK® Enterprise "
+                    "Matrix tactics by integrating machine learning concepts, thus capturing the "
+                    "unique motives behind actions in AI-specific operations."
                 ),
             )
         )
@@ -133,23 +131,18 @@ def add_atlas_facts(graph):
     if (d3fend["ATLASTechnique"], None, None) not in graph:
         graph.add((d3fend["ATLASTechnique"], RDF.type, owl.Class))
         graph.add((d3fend["ATLASTechnique"], RDFS.label, Literal("ATLAS Technique")))
-        # Assert that an ATLAS Technique is a subclass of Action, ATLASThing, and Technique
-        graph.add((d3fend["ATLASTechnique"], RDFS.subClassOf, d3fend["Action"]))
+        # Assert that an ATLAS Technique is a subclass of ATLASThing
         graph.add((d3fend["ATLASTechnique"], RDFS.subClassOf, d3fend["ATLASThing"]))
-        graph.add((d3fend["ATLASTechnique"], RDFS.subClassOf, d3fend["Technique"]))
-        # Create an anonymous restriction: enables some ATLASTactic
-        restriction2 = BNode()
-        graph.add((restriction2, RDF.type, owl.Restriction))
-        graph.add((restriction2, owl.onProperty, d3fend["enables"]))
-        graph.add((restriction2, owl.someValuesFrom, d3fend["ATLASTactic"]))
-        graph.add((d3fend["ATLASTechnique"], RDFS.subClassOf, restriction2))
         # Add definition and seeAlso
         graph.add(
             (
                 d3fend["ATLASTechnique"],
                 d3fend["definition"],
                 Literal(
-                    "An ATLAS Technique is an action conducted by adversaries to accomplish tactical goals within the context of artificial intelligence systems. These techniques articulate both 'how' adversaries execute these actions to reach their objectives and 'what' outcomes are achieved from these maneuvers."
+                    "An ATLAS Technique is an action conducted by adversaries to accomplish "
+                    "tactical goals within the context of artificial intelligence systems. These "
+                    "techniques articulate both 'how' adversaries execute these actions to reach "
+                    "their objectives and 'what' outcomes are achieved from these maneuvers."
                 ),
             )
         )
@@ -162,34 +155,36 @@ def add_atlas_facts(graph):
         )
 
     # 4. Add ATLASMitigation
-    if (d3fend["ATLASMitigation"], None, None) not in graph:
-        graph.add((d3fend["ATLASMitigation"], RDF.type, owl.Class))
-        graph.add((d3fend["ATLASMitigation"], RDFS.label, Literal("ATLAS Mitigation")))
-        # Declare ATLASMitigation as a subclass of ATLASThing.
-        graph.add((d3fend["ATLASMitigation"], RDFS.subClassOf, d3fend["ATLASThing"]))
-        # Create an anonymous restriction: semantic-relation some DefensiveTechnique.
-        restriction3 = BNode()
-        graph.add((restriction3, RDF.type, owl.Restriction))
-        graph.add((restriction3, owl.onProperty, d3fend["semantic-relation"]))
-        graph.add((restriction3, owl.someValuesFrom, d3fend["DefensiveTechnique"]))
-        graph.add((d3fend["ATLASMitigation"], RDFS.subClassOf, restriction3))
-        # Add definition and seeAlso.
-        graph.add(
-            (
-                d3fend["ATLASMitigation"],
-                d3fend["definition"],
-                Literal(
-                    "ATLAS mitigations represent security concepts and classes of technologies that can be used to prevent a technique or sub-technique from being successfully executed."
-                ),
-            )
-        )
-        graph.add(
-            (
-                d3fend["ATLASMitigation"],
-                RDFS.seeAlso,
-                URIRef("https://atlas.mitre.org/mitigations"),
-            )
-        )
+    # if (d3fend["ATLASMitigation"], None, None) not in graph:
+    #     graph.add((d3fend["ATLASMitigation"], RDF.type, owl.Class))
+    #     graph.add((d3fend["ATLASMitigation"], RDFS.label, Literal("ATLAS Mitigation")))
+    #     # Declare ATLASMitigation as a subclass of ATLASThing.
+    #     graph.add((d3fend["ATLASMitigation"], RDFS.subClassOf, d3fend["ATLASThing"]))
+    #     # Create an anonymous restriction: semantic-relation some DefensiveTechnique.
+    #     restriction3 = BNode()
+    #     graph.add((restriction3, RDF.type, owl.Restriction))
+    #     graph.add((restriction3, owl.onProperty, d3fend["semantic-relation"]))
+    #     graph.add((restriction3, owl.someValuesFrom, d3fend["DefensiveTechnique"]))
+    #     graph.add((d3fend["ATLASMitigation"], RDFS.subClassOf, restriction3))
+    #     # Add definition and seeAlso.
+    #     graph.add(
+    #         (
+    #             d3fend["ATLASMitigation"],
+    #             d3fend["definition"],
+    #             Literal(
+    #                 "ATLAS mitigations represent security concepts and classes of technologies "
+    #                 "that can be used to prevent a technique or sub-technique from being "
+    #                 "successfully executed."
+    #             ),
+    #         )
+    #     )
+    #     graph.add(
+    #         (
+    #             d3fend["ATLASMitigation"],
+    #             RDFS.seeAlso,
+    #             URIRef("https://atlas.mitre.org/mitigations"),
+    #         )
+    #     )
 
 
 # Adds deprecated annotations to techniques in d3fend graph
@@ -330,12 +325,14 @@ def generate_superclass(all_techniques, thesrc):
 # Adds missing techniques to ttl file
 def add_to_ttl(tech, graph):
     # 3 cases:
-    # Not deprecated or revoked: add class, label, atlas-id, subClassOf
-    # Deprecated: add class, label, atlas-id, subclassOf, owl:deprecated true
-    # Revoked: add class, label, atlas-id, subClassOf, owl:deprecated true, rdfs:seeAlso revoked_by_technique
+    # Not deprecated or revoked: add class, label, attack-id, subClassOf
+    # Deprecated: add class, label, attack-id, subclassOf, owl:deprecated true
+    # Revoked: add class, label, attack-id, subClassOf, owl:deprecated true, rdfs:seeAlso revoked_by_technique
     # Have not seen any cases of deprecated & revoked
 
     name = tech["label"]
+    mod_label = name + " - ATLAS"
+    pref_label = name
     atlas_id = tech["id"]
     subclass = tech["superclasses"]
     revoked_by = tech["revoked_by"]
@@ -345,14 +342,15 @@ def add_to_ttl(tech, graph):
 
     if tech["deprecated"]:
         graph.add((atlas_uri, RDF.type, owl.Class))
-        graph.add((atlas_uri, RDFS.label, Literal(name)))
+        graph.add((atlas_uri, RDFS.label, Literal(mod_label)))
+        graph.add((atlas_uri, SKOS.prefLabel, Literal(pref_label)))
         if subtechnique:
             graph.add((atlas_uri, RDFS.subClassOf, d3fend[subclass]))
         else:
             # Handle multiple superclasses
             for subclass_of in subclass:
                 graph.add((atlas_uri, RDFS.subClassOf, d3fend[subclass_of]))
-        graph.add((atlas_uri, d3fend["atlas-id"], Literal(atlas_id)))
+        graph.add((atlas_uri, d3fend["attack-id"], Literal(atlas_id)))
         graph.add((atlas_uri, owl.deprecated, Literal(True)))
         graph.add(
             (
@@ -365,13 +363,14 @@ def add_to_ttl(tech, graph):
 
     elif tech["revoked"]:
         graph.add((atlas_uri, RDF.type, owl.Class))
-        graph.add((atlas_uri, RDFS.label, Literal(name)))
+        graph.add((atlas_uri, RDFS.label, Literal(mod_label)))
+        graph.add((atlas_uri, SKOS.prefLabel, Literal(pref_label)))
         if subtechnique:
             graph.add((atlas_uri, RDFS.subClassOf, d3fend[subclass]))
         else:
             for subclass_of in subclass:
                 graph.add((atlas_uri, RDFS.subClassOf, d3fend[subclass_of]))
-        graph.add((atlas_uri, d3fend["atlas-id"], Literal(atlas_id)))
+        graph.add((atlas_uri, d3fend["attack-id"], Literal(atlas_id)))
         graph.add((atlas_uri, owl.deprecated, Literal(True)))
         graph.add((atlas_uri, rdfs.seeAlso, Literal(revoked_by)))
         graph.add(
@@ -385,9 +384,8 @@ def add_to_ttl(tech, graph):
 
     else:
         graph.add((atlas_uri, RDF.type, owl.Class))
-        graph.add((atlas_uri, RDF.type, owl.NamedIndividual))
-        graph.add((atlas_uri, RDF.type, d3fend["ATLASTechnique"]))
-        graph.add((atlas_uri, RDFS.label, Literal(name)))
+        graph.add((atlas_uri, RDFS.label, Literal(mod_label)))
+        graph.add((atlas_uri, SKOS.prefLabel, Literal(pref_label)))
         graph.add(
             (
                 atlas_uri,
@@ -400,7 +398,7 @@ def add_to_ttl(tech, graph):
         else:
             for subclass_of in subclass:
                 graph.add((atlas_uri, RDFS.subClassOf, d3fend[subclass_of]))
-        graph.add((atlas_uri, d3fend["atlas-id"], Literal(atlas_id)))
+        graph.add((atlas_uri, d3fend["attack-id"], Literal(atlas_id)))
         key = "missing_neither"
     return key
 
@@ -464,8 +462,10 @@ def update_and_add(graph, data, thesrc):
             elif tech["label_change"]:
                 atlas_uri = URIRef(_XMLNS + tech["id"])
                 current_label = graph.value(atlas_uri, RDFS.label)
-                graph.remove((atlas_uri, RDFS.label, current_label))
-                graph.add((atlas_uri, RDFS.label, Literal(tech["label"])))
+                if current_label is not None:
+                    graph.remove((atlas_uri, RDFS.label, current_label))
+                graph.add((atlas_uri, RDFS.label, Literal(tech["label"] + " - ATLAS")))
+                graph.add((atlas_uri, SKOS.prefLabel, Literal(tech["label"])))
                 counters["label_change"] += 1
         update_definition(graph, tech)
 
@@ -488,7 +488,7 @@ def update_and_add(graph, data, thesrc):
         if (tactic_uri, None, None) not in graph:
             graph.add((tactic_uri, RDF.type, owl.Class))
             graph.add((tactic_uri, RDF.type, owl.NamedIndividual))
-            graph.add((tactic_uri, RDF.type, d3fend["ATLASTactic"]))
+            graph.add((tactic_uri, RDF.type, d3fend["OffensiveTactic"]))
             graph.add((tactic_uri, RDFS.label, Literal(tactic["name"] + " - ATLAS")))
             graph.add((tactic_uri, SKOS.prefLabel, Literal(tactic["name"])))
             graph.add((tactic_uri, RDFS.subClassOf, d3fend["ATLASTactic"]))
@@ -500,7 +500,7 @@ def update_and_add(graph, data, thesrc):
                     Literal(tactic["description"].split("\n")[0]),
                 )
             )
-            graph.add((tactic_uri, d3fend["atlas-id"], Literal(atlas_id)))
+            graph.add((tactic_uri, d3fend["attack-id"], Literal(atlas_id)))
             graph.add(
                 (
                     tactic_uri,
@@ -518,13 +518,17 @@ def update_and_add(graph, data, thesrc):
                 (
                     tactic_technique_uri,
                     RDFS.label,
-                    Literal(tactic["name"] + " - ATLAS - Technique"),
+                    Literal(f"{tactic['name']} Technique - ATLAS"),
+                )
+            )
+            graph.add(
+                (
+                    tactic_technique_uri,
+                    SKOS.prefLabel,
+                    Literal(f"{tactic['name']} Technique"),
                 )
             )
             graph.add((tactic_technique_uri, RDFS.subClassOf, d3fend["ATLASTechnique"]))
-            graph.add(
-                (tactic_technique_uri, RDFS.subClassOf, d3fend["OffensiveTechnique"])
-            )
             enables = BNode()
             graph.add((enables, RDF.type, owl.Restriction))
             graph.add((enables, owl.onProperty, d3fend["enables"]))
@@ -532,65 +536,65 @@ def update_and_add(graph, data, thesrc):
             graph.add((tactic_technique_uri, RDFS.subClassOf, enables))
 
     # Add mitigations to graph
-    for mitigation in thesrc.query(
-        [
-            Filter("external_references.source_name", "=", "mitre-atlas"),
-            Filter("type", "=", "course-of-action"),
-        ]
-    ):
-        atlas_id = next(
-            (
-                ref.get("external_id")
-                for ref in mitigation["external_references"]
-                if ref.get("source_name") == "mitre-atlas"
-            ),
-            None,
-        )
-        mitigation_uri = URIRef(_XMLNS + atlas_id)
+    # for mitigation in thesrc.query(
+    #     [
+    #         Filter("external_references.source_name", "=", "mitre-atlas"),
+    #         Filter("type", "=", "course-of-action"),
+    #     ]
+    # ):
+    #     atlas_id = next(
+    #         (
+    #             ref.get("external_id")
+    #             for ref in mitigation["external_references"]
+    #             if ref.get("source_name") == "mitre-atlas"
+    #         ),
+    #         None,
+    #     )
+    # mitigation_uri = URIRef(_XMLNS + atlas_id)
 
-        relations = thesrc.relationships(
-            mitigation["id"], "mitigates", source_only=True
-        )
-        mitigates_techs = [
-            tech
-            for tech in thesrc.query(
-                [Filter("id", "in", [rel.target_ref for rel in relations])]
-            )
-        ]
-        mitigates = [
-            next(
-                (
-                    ref.get("external_id")
-                    for ref in tech["external_references"]
-                    if ref.get("source_name") == "mitre-atlas"
-                ),
-                None,
-            )
-            for tech in mitigates_techs
-        ]
+    # relations = thesrc.relationships(
+    #     mitigation["id"], "mitigates", source_only=True
+    # )
+    # mitigates_techs = [
+    #     tech
+    #     for tech in thesrc.query(
+    #         [Filter("id", "in", [rel.target_ref for rel in relations])]
+    #     )
+    # ]
+    # mitigates = [
+    #     next(
+    #         (
+    #             ref.get("external_id")
+    #             for ref in tech["external_references"]
+    #             if ref.get("source_name") == "mitre-atlas"
+    #         ),
+    #         None,
+    #     )
+    #     for tech in mitigates_techs
+    # ]
 
-        if (mitigation_uri, None, None) not in graph:
-            graph.add((mitigation_uri, RDF.type, owl.NamedIndividual))
-            graph.add((mitigation_uri, RDF.type, d3fend["ATLASMitigation"]))
-            graph.add((mitigation_uri, RDFS.label, Literal(mitigation["name"])))
-            graph.add(
-                (
-                    mitigation_uri,
-                    d3fend["definition"],
-                    Literal(mitigation["description"].split("\n")[0]),
-                )
-            )
-            graph.add((mitigation_uri, d3fend["atlas-id"], Literal(atlas_id)))
-            graph.add(
-                (
-                    mitigation_uri,
-                    RDFS.seeAlso,
-                    URIRef("https://atlas.mitre.org/mitigations/" + atlas_id),
-                )
-            )
+    # if (mitigation_uri, None, None) not in graph:
+    #     graph.add((mitigation_uri, RDF.type, owl.NamedIndividual))
+    #     graph.add((mitigation_uri, RDF.type, d3fend["ATLASMitigation"]))
+    #     graph.add((mitigation_uri, RDFS.label, Literal(mitigation["name"])))
+    #     graph.add(
+    #         (
+    #             mitigation_uri,
+    #             d3fend["definition"],
+    #             Literal(mitigation["description"].split("\n")[0]),
+    #         )
+    #     )
+    #     graph.add((mitigation_uri, d3fend["attack-id"], Literal(atlas_id)))
+    #     graph.add(
+    #         (
+    #             mitigation_uri,
+    #             RDFS.seeAlso,
+    #             URIRef("https://atlas.mitre.org/mitigations/" + atlas_id),
+    #         )
+    #     )
 
-            for tech_atlas_id in mitigates:
-                graph.add((mitigation_uri, d3fend["related"], d3fend[tech_atlas_id]))
+    #     for tech_atlas_id in mitigates:
+    #         graph.add((mitigation_uri, d3fend["related"], d3fend[tech_atlas_id]))
 
     return counters
 
@@ -599,7 +603,7 @@ def main(do_counters=True, ATLAS_VERSION="4.6.0"):
 
     src = MemoryStore()
     src.load_from_file("data/stix-atlas.json")
-    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.atlas.ttl")
+    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.updates.ttl")
 
     add_atlas_facts(d3fend_graph)
 
@@ -609,7 +613,7 @@ def main(do_counters=True, ATLAS_VERSION="4.6.0"):
     )  # add new techniques and modify current ones
 
     d3fend_graph.serialize(
-        destination="src/ontology/d3fend-protege.atlas.ttl", format="turtle"
+        destination="src/ontology/d3fend-protege.updates.ttl", format="turtle"
     )
 
     if do_counters:
