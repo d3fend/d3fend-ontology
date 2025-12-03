@@ -356,7 +356,7 @@ def add_to_ttl(tech, graph):
             (
                 atlas_uri,
                 rdfs.comment,
-                Literal(tech["data"]["description"].split("\n")[0]),
+                Literal(tech["data"]["description"].strip()),
             )
         )
         key = "missing_deprecated"
@@ -419,15 +419,26 @@ def update_definition(graph, tech):
     if (None, None, Literal(atlas_id)) in graph:
 
         def_property = graph.value(atlas_uri, d3fend["definition"])
-        # Check if tech already has definition
+        incoming_def = tech["description"].strip()
+
+        # Add definition if missing; update if it differs
         if def_property is None:
             new = 1
-            # Add definition
             graph.add(
                 (
                     atlas_uri,
                     d3fend["definition"],
-                    Literal(tech["description"].split("\n")[0]),
+                    Literal(incoming_def),
+                )
+            )
+        elif str(def_property).strip() != incoming_def:
+            new = 1
+            graph.remove((atlas_uri, d3fend["definition"], def_property))
+            graph.add(
+                (
+                    atlas_uri,
+                    d3fend["definition"],
+                    Literal(incoming_def),
                 )
             )
     return new
@@ -497,7 +508,7 @@ def update_and_add(graph, data, thesrc):
                 (
                     tactic_uri,
                     d3fend["definition"],
-                    Literal(tactic["description"].split("\n")[0]),
+                    Literal(tactic["description"].strip()),
                 )
             )
             graph.add((tactic_uri, d3fend["attack-id"], Literal(atlas_id)))
