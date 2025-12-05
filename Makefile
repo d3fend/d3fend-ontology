@@ -13,11 +13,10 @@ SPARTA_VERSION := 3.1
 ATLAS_VERSION := 5.1.1
 ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
 
-JENA_VERSION := 4.5.0
-
+JENA_VERSION := 5.6.0
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.5/robot.jar"
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
