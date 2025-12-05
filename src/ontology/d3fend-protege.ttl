@@ -498,6 +498,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :d3fend-kb-object-property ;
     owl:inverseOf :member-of .
 
+:has-operating-mode a owl:ObjectProperty ;
+    rdfs:label "has-operating-mode" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x has-operating-mode y: The entity x is currently operating in or has the potential to be in operating mode y." .
+
 :has-output a owl:ObjectProperty ;
     rdfs:label "has-output" ;
     rdfs:subPropertyOf :has-participant ;
@@ -21576,8 +21581,8 @@ Additionally, after the code file is printed, it could be recovered from the sys
 :OperatingMode a owl:Class ;
     rdfs:label "Operating Mode" ;
     rdfs:subClassOf :SystemPlatformVariable ;
-    :definition "The Operating Mode designates the specific, selectable state of an OT controller that delineates its operational behavior and governs access to engineering functions, commonly including Program, Run, Remote, Test, or Stop." ;
-    :synonym "Keyswitch Position" .
+    :definition "An operating mode designates the specific way a system, product, or service functions for a particular task, configuration, or phase of operation" ;
+    rdfs:seeAlso <https://www.wassonstrategics.com/pdf/Wasson%20-%20System_Phases_Modes_and_States_Rev.%20D%20(10-29-14).pdf> .
 
 :OperatingModeMonitoring a :OperatingModeMonitoring,
         owl:Class,
@@ -21586,7 +21591,7 @@ Additionally, after the code file is printed, it could be recovered from the sys
     rdfs:subClassOf :PlatformMonitoring,
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     :d3fend-id "D3-OMM" ;
     :definition "Detects operating modes such as Program, Run, Remote, or Stop." ;
     :kb-article """## How it works
@@ -21606,7 +21611,7 @@ The key switch position is often available as a system diagnostic function block
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :restricts ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     :d3fend-id "D3-OPR" ;
     :definition "Restricting unauthorized changes to the operating mode prevents devices from switching into inappropriate or vulnerable states during normal use." ;
     :kb-article """## How it works
@@ -22187,7 +22192,7 @@ Key steps in operational process security monitoring are:
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -22201,10 +22206,10 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTAbortCommand ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OTAbortCommand ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :OTRunCommandEvent ] .
@@ -22374,6 +22379,9 @@ CIP: Save """,
             owl:onProperty :contains ;
             owl:someValuesFrom :OTControlProgram ],
         [ a owl:Restriction ;
+            owl:onProperty :has-operating-mode ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
             owl:onProperty :manages ;
             owl:someValuesFrom :OTControlLogicProcess ],
         [ a owl:Restriction ;
@@ -22381,6 +22389,12 @@ CIP: Save """,
             owl:someValuesFrom :OTPowerSupply ] ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
     :definition "An OT Controller is an industrial control device that automatically regulates one or more controlled variables in response to command inputs and real-time feedback signals." .
+
+:OTControllerOperatingMode a owl:Class ;
+    rdfs:label "Operating Mode" ;
+    rdfs:subClassOf :OperatingMode ;
+    :definition "The OT controller operating mode designates the specific, selectable state of an OT controller that delineates its operational behavior and governs access to engineering functions, commonly including Program, Run, Remote, Test, or Stop." ;
+    :synonym "Keyswitch Position" .
 
 :OTControlLogicProcess a owl:Class ;
     rdfs:label "OT Control Logic Process" ;
@@ -22844,7 +22858,7 @@ Modbus: Exception: Gateway Target Device Failed to Respond""" ;
     rdfs:subClassOf :ApplicationConfiguration,
         [ a owl:Restriction ;
             owl:onProperty :controls ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment "An OT Mode Switch is a dedicated mechanism, implemented as either a physical keyswitch or a software control, that permits authorized users to transition an OT controller between its operating modes." ;
     :definition "Keyswitch or mode switch is the mechanism for changing the operating mode of an OT controller or device." ;
     rdfs:seeAlso <https://isagca.org/hubfs/2023%20ISA%20Website%20Redesigns/ISAGCA/PDFs/Industrial%20Cybersecurity%20Knowledge%20FINAL.pdf?hsLang=en>,
@@ -22910,7 +22924,7 @@ GE-SRTP: TOGGLE FORCE SYSTEM MEMORY""" ;
     rdfs:subClassOf :OTModifyDeviceConfigurationCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -22924,7 +22938,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceConfigurationCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTModifyDeviceOperatingModeCommand ] ;
@@ -22970,7 +22984,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -22984,7 +22998,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTPauseCommand ],
@@ -23037,7 +23051,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -23051,7 +23065,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTProgramModeCommand ] ;
@@ -23230,7 +23244,7 @@ Modbus: Read FIFO Queue""" ;
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -23247,7 +23261,7 @@ BACnet: reinitializeDevice """,
             owl:someValuesFrom :NetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTRemoteModeCommand ] ;
@@ -23258,7 +23272,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -23272,7 +23286,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTRunCommand ] ;
@@ -23341,7 +23355,7 @@ BACnet: requestKey """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -23355,7 +23369,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTStopCommand ],
@@ -23386,7 +23400,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommand,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingMode ] ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     rdfs:comment """BACnet: deviceCommunicationControl
 BACnet: reinitializeDevice """,
         "GE-SRTP: SET PLC (RUN VS STOP)" ;
@@ -23400,7 +23414,7 @@ BACnet: reinitializeDevice """,
     rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingMode ],
+            owl:someValuesFrom :OTControllerOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :OTTestCommand ] ;
@@ -29160,7 +29174,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Change Operating Mode - ATTACK ICS" ;
     skos:prefLabel "Change Operating Mode" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
-        :ATTACKICSExecutionTechnique ;
+        :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControllerOperatingMode ] ;
     :attack-id "T0858" ;
     :definition "Adversaries may change the operating mode of a controller to gain additional access to engineering functions such as Program Download.   Programmable controllers typically have several modes of operation that control the state of the user program and control access to the controllers API. Operating modes can be physically selected using a key switch on the face of the controller but may also be selected with calls to the controllers API. Operating modes and the mechanisms by which they are selected often vary by vendor and product line. Some commonly implemented operating modes are described below:" .
 
