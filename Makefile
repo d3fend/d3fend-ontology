@@ -9,11 +9,14 @@ ATTACK_VERSION ?= 17.1
 
 CAPEC_VERSION := 3.9
 
-JENA_VERSION := 4.5.0
+SPARTA_VERSION := 3.1
+ATLAS_VERSION := 5.1.1
+ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
 
+JENA_VERSION := 5.6.0
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.5/robot.jar"
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -136,6 +139,16 @@ update-attack:
 	bash src/util/update_attack.sh $(ATTACK_VERSION) $(FRAMEWORKS)
 	$(END)
 
+download-sparta:
+	mkdir -p data
+	echo "Version: $(SPARTA_VERSION)"
+	cd data; wget https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json --no-check-certificate -O sparta_data_v$(SPARTA_VERSION).json
+	$(END)
+
+update-sparta:
+	bash src/util/update_sparta.sh $(SPARTA_VERSION)
+	$(END)
+
 download-capec:
 	mkdir -p data
 	echo "Version: $(CAPEC_VERSION)"
@@ -145,7 +158,15 @@ download-capec:
 
 update-capec:
 	bash src/util/update_capec.sh $(CAPEC_VERSION)
+
+download-atlas:
+	mkdir -p data
+	echo "Version: $(ATLAS_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/refs/tags/$(ATLAS_NAVIGATOR_DATA_TAG)/dist/stix-atlas.json
 	$(END)
+
+update-atlas:
+	bash src/util/update_atlas.sh $(ATLAS_VERSION)
 
 update-puns:
 	bash src/util/update_puns.sh
