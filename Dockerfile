@@ -17,7 +17,7 @@ RUN if [ -n "$(find .local -name '*.pem' -o -name '*.crt' 2>/dev/null)" ]; then 
   update-ca-trust extract; \
 fi
 
-RUN dnf -y install python39 java-17-openjdk-headless make python3-pip which git
+RUN dnf -y install python39 java-21-openjdk-headless make python3-pip which git
 VOLUME [ "/dist" ]
 RUN pip3 install pipenv==2022.8.5
 RUN make ROBOT_URL=${ROBOT_URL} clean install-deps
