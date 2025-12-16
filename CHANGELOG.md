@@ -1,5 +1,24 @@
 # D3FEND Ontology Change Log
 
+## Version - 1.3.0 - 2025-12-16
+
+ - Introduce new OT monitoring and hardening countermeasures, including OT variable access restriction, user/group permissions, unused ports, application exception monitoring, operational process monitoring, operational logic validation, and related artifacts and KB content. (#147, #138, #146)
+ - Add Data Diode and Remote Access Application Configuration Hardening countermeasures, with refined definitions, restrictions, and references.
+ - Add Human-Machine Interface artifacts and input device modeling, including HMI signals, input devices, and related relationships.
+ - Introduce System Platform Variable and update associated restrictions.
+ - Refactor RemoteControlCommand into Telecommand and adjust related remote command modeling. (#470)
+ - Enhance artifact, signal, and link relationships by refactoring signal hierarchies and physical link modeling, revising transmission media classes, and introducing the d3f:carries / d3f:carried-by relationship. (#421)
+ - Tidy RF and telecommunications modeling by deprecating RF node classes, removing redundant transmission medium and cable classes, and renaming TelecommunicationsSignal to Signal.
+ - Add Refine physical access monitoring and locking, including PhysicalLocking and PhysicalKey artifacts and restrictions. (#155, #156, #459)
+ - Make D3FEND technique identifiers a concatenation of labels for improved consistency. (#448)
+ - Add d3f:has-input and d3f:has-output properties and their inverses to better model signal flow between components. (#457)
+ - Add OperationalEvent and related annotations, delete an unused 'use case' class, and rename Organizational Activity to Operational Activity Plan. (#474)
+ - Improve CI/CD pipeline and build tooling by enhancing reports and quality checks, adjusting artifact uploads, and updating Java and Jena versions used for ontology validation.
+ - Integrate MITRE ATT&CK ICS and Mobile techniques into the D3FEND ontology and refine ATTACK Enterprise technique hierarchy and labels. (#357)
+ - Add MITRE ATLAS v5.1.1 techniques and update the ATLAS import script. (#469)
+ - Add SPARTA v3.1 techniques and top-level TTP classes. (#468)
+ - Revamp D3FEND–CCO mappings and update to CCO 2.0, fixing parthood relations and artifact definitions. (#452)
+
 ## Version - 1.2.0 - 2025-08-01
 
  - Add inbound internet web and encrypted traffic artifacts. (#442)
