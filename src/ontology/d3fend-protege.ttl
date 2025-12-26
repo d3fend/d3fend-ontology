@@ -36420,31 +36420,55 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1578.001 a owl:Class ;
     rdfs:label "Create Snapshot" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ComputingSnapshot ] ;
     :attack-id "T1578.001" ;
     :definition "An adversary may create a snapshot or data backup within a cloud account to evade defenses. A snapshot is a point-in-time copy of an existing cloud compute component such as a virtual machine (VM), virtual hard drive, or volume. An adversary may leverage permissions to create a snapshot in order to bypass restrictions that prevent access to existing compute service infrastructure, unlike in [Revert Cloud Instance](https://attack.mitre.org/techniques/T1578/004) where an adversary may revert to a snapshot to evade detection and remove evidence of their presence." .
 
 :T1578.002 a owl:Class ;
     rdfs:label "Create Cloud Instance" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :CloudInstanceMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Host ] ;
     :attack-id "T1578.002" ;
     :definition "An adversary may create a new instance or virtual machine (VM) within the compute service of a cloud account to evade defenses. Creating a new instance may allow an adversary to bypass firewall rules and permissions that exist on instances currently residing within an account. An adversary may [Create Snapshot](https://attack.mitre.org/techniques/T1578/001) of one or more volumes in an account, create a new instance, mount the snapshots, and then apply a less restrictive security policy to collect [Data from Local System](https://attack.mitre.org/techniques/T1005) or for [Remote Data Staging](https://attack.mitre.org/techniques/T1074/002).(Citation: Mandiant M-Trends 2020)" .
 
 :T1578.003 a owl:Class ;
     rdfs:label "Delete Cloud Instance" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :CloudInstanceMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :Host ] ;
     :attack-id "T1578.003" ;
     :definition "An adversary may delete a cloud instance after they have performed malicious activities in an attempt to evade detection and remove evidence of their presence.  Deleting an instance or virtual machine can remove valuable forensic artifacts and other evidence of suspicious behavior if the instance is not recoverable." .
 
 :T1578.004 a owl:Class ;
     rdfs:label "Revert Cloud Instance" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudInstanceMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Host ] ;
     :attack-id "T1578.004" ;
     :definition "An adversary may revert changes made to a cloud instance after they have performed malicious activities in attempt to evade detection and remove evidence of their presence. In highly virtualized environments, such as cloud-based infrastructure, this may be accomplished by restoring virtual machine (VM) or data storage snapshots through the cloud management dashboard or cloud APIs." .
 
 :T1578.005 a owl:Class ;
     rdfs:label "Modify Cloud Compute Configurations" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudConfiguration ] ;
     :attack-id "T1578.005" ;
     :definition "Adversaries may modify settings that directly affect the size, locations, and resources available to cloud compute infrastructure in order to evade defenses. These settings may include service quotas, subscription associations, tenant-wide policies, or other configurations that impact available compute. Such modifications may allow adversaries to abuse the victim’s compute resources to achieve their goals, potentially without affecting the execution of running instances and/or revealing their activities to the victim." .
 
