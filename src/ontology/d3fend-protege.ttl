@@ -6645,6 +6645,69 @@ To ensure that content is safe, it's composition must be validated according to 
     :definition "A control correlation identifier (CCI) catalog provides a catalog of CCIs for a given release date." ;
     rdfs:seeAlso <https://public.cyber.mil/stigs/cci/> .
 
+:ControlFlowGraph a owl:Class ;
+    rdfs:label "Control Flow Graph" ;
+    rdfs:subClassOf :DigitalInformation ;
+    :definition "A control flow graph is a representation of all possible control flow transfers within a program, typically computed at compile-time or link-time, including calls, jumps, and returns. The control flow graph can be used to compute a control flow policy that permits only the expected control flow transfers during process execution via control flow integrity mechanisms." .
+
+:ControlFlowIntegrity a :ControlFlowIntegrity,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Control Flow Integrity" ;
+    rdfs:subClassOf :ApplicationHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :enforces ;
+            owl:someValuesFrom :ControlFlowPolicy ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :CallStack ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :ShadowStack ],
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :ControlFlowGraph ],
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :MemoryAddress ] ;
+    :d3fend-id "D3-CFI" ;
+    :definition "Enforcing legal control flow transfers during application process execution." ;
+    :kb-article """## How it works
+
+Control flow integrity (CFI) restricts the destinations of control flow transfer instructions---particularly indirect function branches such as indirect function calls, jumps, and returns---such that execution can only proceed along paths determined to be valid at compile-time or load-time.
+
+CFI is typically implemented by instrumenting a program during compilation or binary rewriting. A control flow graph is constructed that defines the legitimate targets for each indirect control flow transfer. At runtime, before an indirect branch is taken, a check is performed to ensure that the target address is a member of the allowed target set. If the check fails, a defensive response such as process termination or exception handling is triggered.
+
+Implementations vary in granularity and enforcement mechanism:
+- Compiler-based CFI inserts runtime checks that validate indirect call targets against type or signature-based constraints.
+- Operating system–assisted CFI maintains a bitmap or table of valid indirect call targets and verifies them at runtime before allowing execution to continue.
+- Hardware-assisted CFI enforces control flow integrity using architectural features such as shadow stacks and specific CPU instructions.
+
+By preventing execution from jumping to attacker-controlled or unintended code locations, CFI mitigates a wide range of exploitation techniques, including return-oriented programming (ROP), jump-oriented programming (JOP), and function pointer overwrite attacks.
+
+## Considerations
+
+While control flow integrity significantly raises the bar for control flow hijacking attacks, several considerations affect its effectiveness:
+- Granularity trade-offs: coarse-grained CFI allows larger target sets and may permit some unintended control flow paths, while fine-grained CFI offers stronger guarantees at the cost of performance and complexity.
+- Performance overhead: runtime checks or hardware enforcement may introduce execution overhead, particularly in applications with frequent indirect branches.
+- Compatibility limitations: some legacy code patterns, dynamic code generation, or just-in-time (JIT) compilation workflows may require special handling or reduced CFI enforcement.
+- Data-only attacks: CFI does not prevent attacks that manipulate program behavior without altering control flow, such as logic corruption or data-oriented programming.
+- Bypass techniques: if an attacker can redirect execution to a valid but unintended target within the allowed control flow graph, exploitation may still be possible.
+
+CFI is most effective when combined with complementary defenses such as stack canaries, memory safety checks, address space layout randomization (ASLR), and hardware-backed memory protections.""" ;
+    :kb-reference :Reference-IntelControlEnforcementTechnology,
+        :Reference-LLVMControlFlowIntegrity,
+        :Reference-MicrosoftControlFlowGuard ;
+    :todo "Model more completely: CFI is very broad and has multiple implementations." .
+
+:ControlFlowPolicy a owl:Class ;
+    rdfs:label "Control Flow Policy" ;
+    rdfs:subClassOf :ControlFlowGraph ;
+    :definition "A control flow policy is a subset of the possible control flow transfers computed from a program's control flow graph. It defines only the expected and allowed control flow transfers and is enforced by control flow integrity." .
+
 :ConvolutionalNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Convolutional Neural Network" ;
@@ -43009,6 +43072,14 @@ This patent describes ensuring that a driver associated with the agent is initia
     :kb-reference-of :DriverLoadIntegrityChecking ;
     :kb-reference-title "Integrity assurance through early loading in the boot phase" .
 
+:Reference-IntelControlEnforcementTechnology a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Control Enforcement Technology (CET) - Intel Corporation" ;
+    :has-link "https://software.intel.com/sites/default/files/managed/4d/2a/control-flow-enforcement-technology-preview.pdf"^^xsd:anyURI ;
+    :kb-organization "Intel Corporation" ;
+    :kb-reference-of :ControlFlowIntegrity ;
+    :kb-reference-title "Complex Shadow-Stack Updates (Intel Control-Flow Enforcement Technology)" .
+
 :Reference-IntroducingFirefoxNewSiteIsolationArchitecture a :InternetArticleReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Introducing Firefox's new Site Isolation Architecture" ;
@@ -43086,6 +43157,14 @@ A disappearance of the heartbeat from the endpoint may indicate that the endpoin
     :kb-organization "LibreNMS.org" ;
     :kb-reference-of :DiskEncryption ;
     :kb-reference-title "LibreNMSDocs - Oxidized Extension" .
+
+:Reference-LLVMControlFlowIntegrity a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Clang/LLVM - Control Flow Integrity (CFI)" ;
+    :has-link "https://clang.llvm.org/docs/ControlFlowIntegrity.html"^^xsd:anyURI ;
+    :kb-organization "clang.org" ;
+    :kb-reference-of :ControlFlowIntegrity ;
+    :kb-reference-title "Control Flow Integrity" .
 
 :Reference-LsassProcessDumpViaProcdump_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
@@ -43406,6 +43485,14 @@ Some examples of data inputs:
     :kb-organization "SANS" ;
     :kb-reference-of :OperationalRiskAssessment ;
     :kb-reference-title "MGT516: Managing Security Vulnerabilities: Enterprise and Cloud" .
+
+:Reference-MicrosoftControlFlowGuard a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Control Flow Guard (CFG) - Microsoft" ;
+    :has-link "https://learn.microsoft.com/en-us/windows/win32/secbp/control-flow-guard"^^xsd:anyURI ;
+    :kb-organization "Microsoft" ;
+    :kb-reference-of :ControlFlowIntegrity ;
+    :kb-reference-title "Control Flow Guard for platform security" .
 
 :Reference-MissionDependencyModelingForCyberSituationalAwareness a :AcademicPaperReference,
         owl:NamedIndividual ;
