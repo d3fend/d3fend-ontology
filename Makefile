@@ -2,18 +2,21 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=1.1.0
-D3FEND_RELEASE_DATE ?="2025-04-21T00:12:00.000Z"
+D3FEND_VERSION ?=1.3.0
+D3FEND_RELEASE_DATE ?="2025-12-16T00:12:00.000Z"
 
-ATTACK_VERSION ?= 16.0
+ATTACK_VERSION ?= 18.1
 
 CAPEC_VERSION := 3.9
 
-JENA_VERSION := 4.5.0
+SPARTA_VERSION := 3.1
+ATLAS_VERSION := 5.1.1
+ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
 
+JENA_VERSION := 5.6.0
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.5/robot.jar"
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.jar"
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -129,11 +132,21 @@ install-deps: install-python-deps bin/robot.jar bin/jena ## install software dep
 download-attack:
 	mkdir -p data
 	echo "Version: $(ATTACK_VERSION)"
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
+	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/mobile-attack/mobile-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
-	bash src/util/update_attack.sh $(ATTACK_VERSION)
+	bash src/util/update_attack.sh $(ATTACK_VERSION) $(FRAMEWORKS)
+	$(END)
+
+download-sparta:
+	mkdir -p data
+	echo "Version: $(SPARTA_VERSION)"
+	cd data; wget https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json --no-check-certificate -O sparta_data_v$(SPARTA_VERSION).json
+	$(END)
+
+update-sparta:
+	bash src/util/update_sparta.sh $(SPARTA_VERSION)
 	$(END)
 
 download-capec:
@@ -145,7 +158,15 @@ download-capec:
 
 update-capec:
 	bash src/util/update_capec.sh $(CAPEC_VERSION)
+
+download-atlas:
+	mkdir -p data
+	echo "Version: $(ATLAS_VERSION)"
+	cd data; wget https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/refs/tags/$(ATLAS_NAVIGATOR_DATA_TAG)/dist/stix-atlas.json
 	$(END)
+
+update-atlas:
+	bash src/util/update_atlas.sh $(ATLAS_VERSION)
 
 update-puns:
 	bash src/util/update_puns.sh
@@ -179,6 +200,18 @@ reports/bogus-direct-subclassing-of-tactic-technique-report.txt:	build/d3fend-fu
 	./bin/robot report -i build/d3fend-full.owl \
 		--profile src/queries/bogus-direct-subclassing-of-tactic-technique-profile.txt \
 		--fail-on ERROR > reports/bogus-direct-subclassing-of-tactic-technique-report.txt
+	$(END)
+
+reports/missing-rdfs-label-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/missing-rdfs-label-profile.txt \
+		--fail-on none > reports/missing-rdfs-label-report.txt
+	$(END)
+
+reports/duplicate-labels.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/duplicate-labels-profile.txt \
+		--fail-on none > reports/duplicate-labels.txt
 	$(END)
 
 reports/missing-attack-id-report.txt:	build/d3fend-full.owl
@@ -360,7 +393,7 @@ reportsdir:
 	mkdir -p reports/
 	$(END)
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
 
 
@@ -438,6 +471,8 @@ dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
 	cp build/d3fend-public-with-controls.ttl dist/public/d3fend.ttl # For now, roll in the CCI & NIST controls extensions to base .ttl release
+	# TODO: Sadly some ontology tooling, possibly owlapi or robot, changing input files, thus we add a step here
+	pipenv run ttlfmt dist/public/d3fend.ttl
 	cp build/d3fend-public-with-controls.owl dist/public/d3fend.owl # For now, roll in the CCI & NIST controls extensions to base .owl release
 	cp build/d3fend-public-with-controls.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
