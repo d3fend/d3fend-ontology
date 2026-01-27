@@ -266,6 +266,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     :definition "x decodes y: Entity x transforms data y to a different form, usually through decompression." .
 
+:decrypts a owl:ObjectProperty ;
+    rdfs:label "decrypts" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :encrypts ;
+    :definition "x decrypts y: The entity x converts a secret code y back to its original form." .
+
 :deletes a owl:ObjectProperty ;
     rdfs:label "deletes" ;
     rdfs:subPropertyOf :evicts,
@@ -1197,6 +1203,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 :start a owl:ObjectProperty ;
     rdfs:label "start" ;
     rdfs:subPropertyOf :d3fend-process-object-property .
+
+:stores a owl:ObjectProperty ;
+    rdfs:label "stores" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x stores y: The subject x retains digital data or state y within a memory or storage mechanism in a way that allows later retrieval or use, potentially with defined properties for persistence, integrity, confidentiality, access control, and correctness." .
 
 :strengthens a owl:ObjectProperty ;
     rdfs:label "strengthens" ;
@@ -5080,6 +5091,30 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
     rdfs:subClassOf :ImageScannerInputDevice ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Barcode_reader> ;
     :definition "A barcode reader (or barcode scanner) is an optical scanner that can read printed barcodes, decode the data contained in the barcode and send the data to a computer. Like a flatbed scanner, it consists of a light source, a lens and a light sensor translating for optical impulses into electrical signals. Additionally, nearly all barcode readers contain decoder circuitry that can analyze the barcode's image data provided by the sensor and sending the barcode's content to the scanner's output port." .
+
+:BatteryManagementSystem a owl:Class ;
+    rdfs:label "Battery Management System" ;
+    rdfs:subClassOf :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Firmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :BatteryPack ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Battery_management_system> ;
+    :definition "A battery management system (BMS) is any electronic system that manages a rechargeable battery (cell or battery pack) by facilitating the safe usage and a long life of the battery in practical scenarios while monitoring and estimating its various states (such as state of health and state of charge),[1] calculating secondary data, reporting that data, controlling its environment, authenticating or balancing it." .
+
+:BatteryPack a owl:Class ;
+    rdfs:label "Battery Pack" ;
+    rdfs:subClassOf :EnergyStorageDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :BatteryManagementSystem ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ElectricBattery ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Battery_pack> ;
+    :definition "A battery pack is a set of any number of (preferably) identical batteries or individual battery cells." .
 
 :BayesianEstimation a owl:Class,
         owl:NamedIndividual ;
@@ -14909,6 +14944,12 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Signal> ;
     :definition "Time-varying voltage or current that carries information." .
 
+:ElectricBattery a owl:Class ;
+    rdfs:label "Electric Battery" ;
+    rdfs:subClassOf :EnergyStorageDevice ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Electric_battery> ;
+    :definition "An electric battery is a source of electric power consisting of one or more electrochemical cells with external connections for powering electrical devices." .
+
 :ElectromagneticSignal a owl:Class ;
     rdfs:label "Electromagnetic Signal" ;
     rdfs:subClassOf :Signal ;
@@ -15175,6 +15216,12 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
     rdfs:subClassOf :CyberSensor ;
     :definition "A sensor application installed on a endpoint (platform) to collect information on platform components." ;
     rdfs:seeAlso :ComputerPlatform .
+
+:EnergyStorageDevice a owl:Class ;
+    rdfs:label "Energy Storage Device" ;
+    rdfs:subClassOf :PhysicalArtifact ;
+    :definition "An energy storage device is a device whose primary function is to store electrical energy for later use and to exchange that energy with the rest of the system. It can both absorb power (charging) and deliver power (discharging), typically under defined operating limits. " ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Energy_storage> .
 
 :EnsembleLearning a owl:Class,
         owl:NamedIndividual ;
@@ -19366,7 +19413,13 @@ LAN Access Mediation is a network security approach that manages and controls ac
     rdfs:label "Laptop Computer" ;
     skos:altLabel "Laptop",
         "Notebook" ;
-    rdfs:subClassOf :PersonalComputer ;
+    rdfs:subClassOf :PersonalComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SmartBattery ],
+        [ a owl:Restriction ;
+            owl:onProperty :powered-by ;
+            owl:someValuesFrom :SmartBattery ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Laptop> ;
     :definition "A laptop computer (also laptop), is a small, portable personal computer (PC) with a \"clamshell\" form factor, typically having a thin LCD or LED computer screen mounted on the inside of the upper lid of the clamshell and an alphanumeric keyboard on the inside of the lower lid. The clamshell is opened up to use the computer. Laptops are folded shut for transportation, and thus are suitable for mobile use. Its name comes from lap, as it was deemed to be placed on a person's lap when being used. Although originally there was a distinction between laptops and notebooks (the former being bigger and heavier than the latter), as of 2014, there is often no longer any difference. Today, laptops are commonly used in a variety of settings, such as at work, in education, for playing games, web browsing" .
 
@@ -20543,7 +20596,13 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     rdfs:label "Mobile Phone" ;
     skos:altLabel "Cellphone",
         "Cellular Phone" ;
-    rdfs:subClassOf :PersonalComputer ;
+    rdfs:subClassOf :PersonalComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ElectricBattery ],
+        [ a owl:Restriction ;
+            owl:onProperty :powered-by ;
+            owl:someValuesFrom :ElectricBattery ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Mobile_phone> ;
     :definition "A mobile phone, cellular phone, cell phone, cellphone or hand phone, sometimes shortened to simply mobile, cell or just phone, is a portable telephone that can make and receive calls over a radio frequency link while the user is moving within a telephone service area. The radio frequency link establishes a connection to the switching systems of a mobile phone operator, which provides access to the public switched telephone network (PSTN). Modern mobile telephone services use a cellular network architecture and, therefore, mobile telephones are called cellular telephones or cell phones in North America. In addition to telephony, digital mobile phones (2G) support a variety of other services, such as text messaging, MMS, email, Internet access, short-range wireless communications (infrared," .
 
@@ -24545,6 +24604,12 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
     :definition "A PowerShell profile script is a script that runs when PowerShell starts and can be used as a logon script to customize user environments." ;
     rdfs:seeAlso <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.1> .
 
+:PowerSourceDevice a owl:Class ;
+    rdfs:label "Power Source Device" ;
+    rdfs:subClassOf :PhysicalArtifact ;
+    :definition "A power source device is a device that generates electrical power from a non-electrical form of energy. It is the first electrical element in the power chain and does not primarily store energy for later use. Examples include solar arrays, radioisotope thermoelectric generators (RTGs), fuel cells, and mechanical generators." ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Power_source> .
+
 :PowerSupply a owl:Class ;
     rdfs:label "Power Supply" ;
     rdfs:subClassOf :HardwareDevice ;
@@ -27474,6 +27539,12 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     :definition "A slow symbolic link is any symbolic link on a Unix filesystem that is not a fast symbolic link; slow symlink is thus retroactively termed from fast symlink.  Slow symbolic links stored the symbolic link information as data in regular files." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Symbolic_link#Storage_of_symbolic_links> .
 
+:SmartBattery a owl:Class ;
+    rdfs:label "Smart Battery" ;
+    rdfs:subClassOf :BatteryPack ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Smart_battery> ;
+    :definition "A smart battery or a smart battery pack is a rechargeable battery pack with a built-in battery management system (BMS), usually designed for use in a portable computer such as a laptop." .
+
 :SMBEvent a owl:Class ;
     rdfs:label "SMB Event" ;
     rdfs:subClassOf :ApplicationLayerEvent,
@@ -27643,6 +27714,12 @@ Application-layer discovery:
     :d3fend-id "D3-SU" ;
     :definition "Replacing old software on a computer system component." ;
     :kb-reference :Reference-MethodAndSystemForProvidingSoftwareUpdatesToLocalMachines .
+
+:SolarArray a owl:Class ;
+    rdfs:label "Solar Array" ;
+    rdfs:subClassOf :PowerSourceDevice ;
+    :definition "A solar array is a collection of multiple solar panels wired together (often in series or parallel strings) to generate a larger amount of direct current (DC) electricity, acting as the main power-producing component of a complete solar power system." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Solar_panel> .
 
 :SomersD a owl:Class,
         owl:NamedIndividual ;
@@ -38109,7 +38186,13 @@ Reconnaissance consists of techniques that involve adversaries actively or passi
 :TabletComputer a owl:Class ;
     rdfs:label "Tablet Computer" ;
     skos:altLabel "Tablet" ;
-    rdfs:subClassOf :PersonalComputer ;
+    rdfs:subClassOf :PersonalComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ElectricBattery ],
+        [ a owl:Restriction ;
+            owl:onProperty :powered-by ;
+            owl:someValuesFrom :ElectricBattery ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Tablet_computer> ;
     :definition "A tablet computer, commonly shortened to tablet, is a mobile device, typically with a mobile operating system and touchscreen display processing circuitry, and a rechargeable battery in a single, thin and flat package. Tablets, being computers, do what other personal computers do, but lack some input/output (I/O) abilities that others have. Modern tablets largely resemble modern smartphones, the only differences being that tablets are relatively larger than smartphones, with screens 7 inches (18 cm) or larger, measured diagonally, and may not support access to a cellular network." .
 
@@ -45488,4 +45571,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
