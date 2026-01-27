@@ -266,6 +266,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     :definition "x decodes y: Entity x transforms data y to a different form, usually through decompression." .
 
+:decrypts a owl:ObjectProperty ;
+    rdfs:label "decrypts" ;
+    rdfs:subPropertyOf :associated-with ;
+    owl:inverseOf :encrypts ;
+    :definition "x decrypts y: The entity x converts a secret code y back to its original form." .
+
 :deletes a owl:ObjectProperty ;
     rdfs:label "deletes" ;
     rdfs:subPropertyOf :evicts,
@@ -6933,6 +6939,29 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Public-key_cryptography> ;
     :definition "In cryptography, a key is a piece of information (a parameter) that determines the functional output of a cryptographic algorithm. For encryption algorithms, a key specifies the transformation of plaintext into ciphertext, and vice versa for decryption algorithms. Keys also specify transformations in other cryptographic algorithms, such as digital signature schemes and message authentication codes." .
+
+:CryptographicLibrary a owl:Class ;
+    rdfs:label "Cryptographic Library" ;
+    rdfs:subClassOf :SoftwareCryptographicModule,
+        :SoftwareLibrary ;
+    :definition "A cryptographic library is a software library that implements cryptographic functions and exposes them through defined programming interfaces for use by applications or other software components. " ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries> .
+
+:CryptographicModule a owl:Class ;
+    rdfs:label "Cryptographic Module" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :decrypts ;
+            owl:someValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :CryptographicKey ] ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/Cryptographicmodule> ;
+    :definition "The set of hardware, software, and/or firmware that implements approved security functions (including cryptographic algorithms and key generation) and is contained within a cryptographic boundary." ;
+    :todo "Add classes for cryptographic protocols, which can be referenced with an implements restriction" .
 
 :CustomArchiveFile a owl:Class ;
     rdfs:label "Custom Archive File" ;
@@ -14055,7 +14084,10 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DesktopComputer a owl:Class ;
     rdfs:label "Desktop Computer" ;
-    rdfs:subClassOf :PersonalComputer ;
+    rdfs:subClassOf :PersonalComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :TrustedPlatformModule ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Desktop_computer> ;
     :definition "A desktop computer is a personal computer designed for regular use at a single location on or near a desk or table due to its size and power requirements. The most common configuration has a case that houses the power supply, motherboard (a printed circuit board with a microprocessor as the central processing unit (CPU), memory, bus, and other electronic components, disk storage (usually one or more hard disk drives, solid state drives, optical disc drives, and in early models a floppy disk drive); a keyboard and mouse for input; and a computer monitor, speakers, and, often, a printer for output. The case may be oriented horizontally or vertically and placed either underneath, beside, or on top of a desk." .
 
@@ -17471,6 +17503,21 @@ Administrators collect information on hardware devices such as peripherals, NICs
     :synonym "Hardware Component Discovery",
         "Hardware Component Inventorying" .
 
+:HardwareCryptographicModule a owl:Class ;
+    rdfs:label "Hardware Cryptographic Module" ;
+    rdfs:subClassOf :CryptographicModule,
+        :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :CryptographicKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :HardwareRandomNumberGenerator ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SecureCryptoprocessor ] ;
+    :definition "A cryptographic module implemented primarily in dedicated hardware, often as a self-contained physical device or embedded hardware component, that performs cryptographic operations and enforces associated security protections within a defined physical boundary." .
+
 :HardwareDevice a owl:Class ;
     rdfs:label "Hardware Device" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -17556,6 +17603,21 @@ Administrators collect information on hardware devices such as peripherals, NICs
             owl:someValuesFrom :HardwareDevice ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> ;
     :definition "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." .
+
+:HardwareRandomNumberGenerator a owl:Class ;
+    rdfs:label "Hardware Random Number Generator" ;
+    rdfs:subClassOf :HardwareDevice ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Hardware_random_number_generator> ;
+    :definition "In computing, a hardware random number generator (HRNG), true random number generator (TRNG), non-deterministic random bit generator (NRBG), or physical random number generator is a device that generates random numbers from a physical process capable of producing entropy, unlike a pseudorandom number generator (PRNG) that utilizes a deterministic algorithm and non-physical nondeterministic random bit generators that do not include hardware dedicated to generation of entropy." ;
+    :synonym "HRNG",
+        "TRNG" .
+
+:HardwareSecurityModule a owl:Class ;
+    rdfs:label "Hardware Security Module" ;
+    rdfs:subClassOf :HardwareCryptographicModule ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Hardware_security_module> ;
+    :definition "A hardware security module (HSM) is a physical computing device that safeguards and manages secrets (most importantly digital keys), and performs encryption and decryption functions for digital signatures, strong authentication and other cryptographic functions." ;
+    :synonym "HSM" .
 
 :HarmonicMean a owl:Class,
         owl:NamedIndividual ;
@@ -19366,7 +19428,10 @@ LAN Access Mediation is a network security approach that manages and controls ac
     rdfs:label "Laptop Computer" ;
     skos:altLabel "Laptop",
         "Notebook" ;
-    rdfs:subClassOf :PersonalComputer ;
+    rdfs:subClassOf :PersonalComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :TrustedPlatformModule ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Laptop> ;
     :definition "A laptop computer (also laptop), is a small, portable personal computer (PC) with a \"clamshell\" form factor, typically having a thin LCD or LED computer screen mounted on the inside of the upper lid of the clamshell and an alphanumeric keyboard on the inside of the lower lid. The clamshell is opened up to use the computer. Laptops are folded shut for transportation, and thus are suitable for mobile use. Its name comes from lap, as it was deemed to be placed on a person's lap when being used. Although originally there was a distinction between laptops and notebooks (the former being bigger and heavier than the latter), as of 2014, there is often no longer any difference. Today, laptops are commonly used in a variety of settings, such as at work, in education, for playing games, web browsing" .
 
@@ -26835,6 +26900,12 @@ List of known unauthorized script files or regular expression patterns must be k
     :definition "Secondary memory (storage, hard disk) is the computer component holding information that does not need to be accessed quickly and that needs to be retained long-term." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Computer_data_storage#Secondary_storage> .
 
+:SecureCryptoprocessor a owl:Class ;
+    rdfs:label "Secure Cryptoprocessor" ;
+    rdfs:subClassOf :Processor ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Secure_cryptoprocessor> ;
+    :definition "A secure cryptoprocessor is a dedicated computer-on-a-chip or microprocessor for carrying out cryptographic operations, embedded in a packaging with multiple physical security measures, which give it a degree of tamper resistance. " .
+
 :SecurityEvent a owl:Class ;
     rdfs:label "Security Event" ;
     rdfs:subClassOf :DigitalEvent,
@@ -27094,6 +27165,9 @@ Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Advers
         [ a owl:Restriction ;
             owl:onProperty :manages ;
             owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :TrustedPlatformModule ],
         [ a owl:Restriction ;
             owl:onProperty :runs ;
             owl:someValuesFrom :ServiceApplication ] ;
@@ -27541,6 +27615,11 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     :definition "A software artifact server provides access to the software artifacts in a software repository. A software repository, or \"repo\" for short, is a storage location for software packages. Often a table of contents is stored, as well as metadata. Repositories group packages. Sometimes the grouping is for a programming language, such as CPAN for the Perl programming language, sometimes for an entire operating system, sometimes the license of the contents is the criteria. At client side, a package manager helps installing from and updating the repositories." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Artifact_(software_development)>,
         <http://dbpedia.org/resource/Software_repository> .
+
+:SoftwareCryptographicModule a owl:Class ;
+    rdfs:label "Software Cryptographic Module" ;
+    rdfs:subClassOf :CryptographicModule ;
+    :definition "A software component that implements one or more cryptographic functions (such as encryption, decryption, digital signing, verification, hashing, or key generation) and exposes them through a defined interface, typically including mechanisms for key handling and enforcement of specified security policies, but operating entirely on a general-purpose computing platform rather than as a dedicated hardware device." .
 
 :SoftwareDeploymentTool a owl:Class ;
     rdfs:label "Software Deployment Tool" ;
@@ -38588,6 +38667,16 @@ Using a trusted library can reduce the chances of introducing errors compared to
 Note: This resource should not be considered a definitive or exhaustive coding guideline.""" ;
     :kb-reference :Reference-LeverageSecurityFrameworksLibraries_OWASP .
 
+:TrustedPlatformModule a owl:Class ;
+    rdfs:label "Trusted Platform Module" ;
+    rdfs:subClassOf :HardwareCryptographicModule,
+        [ a owl:Restriction ;
+            owl:onProperty :verifies ;
+            owl:someValuesFrom :BootLoader ] ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/trusted_platform_module> ;
+    :definition "A tamper-resistant integrated circuit built into some computer motherboards that can perform cryptographic operations (including key generation) and protect small amounts of sensitive information, such as passwords and cryptographic keys." ;
+    :synonym "TPM" .
+
 :TrustedUserAttacker a owl:Class ;
     rdfs:label "Trusted User Attacker" ;
     rdfs:subClassOf :TrustedAttacker,
@@ -45610,4 +45699,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
