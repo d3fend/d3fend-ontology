@@ -287,6 +287,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x depends-on y: The entity x is contingent on y being available; x relies on y." ;
     rdfs:seeAlso <https://www.cisa.gov/what-are-dependencies> .
 
+:derived-from a owl:ObjectProperty ;
+    rdfs:label "derived-from" ;
+    rdfs:subPropertyOf :depends-on ;
+    :definition "x derived-from y: The entity x is derived from or based on the value of y." .
+
 :detects a owl:ObjectProperty ;
     rdfs:label "detects" ;
     rdfs:subPropertyOf :counters,
@@ -600,6 +605,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
+    owl:inverseOf :has-input ;
     :definition "x input-of y: An artifact x is input of an event y iff x participates at the start of y, provides the material or information required for y to begin, and during y either x's state is altered or the information content it bears is realized." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001841> .
 
@@ -990,6 +996,7 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :participates-in ;
     rdfs:domain :Artifact ;
     rdfs:range :Event ;
+    owl:inverseOf :has-output ;
     :definition "x output-of y: An artifact x is output of an event y iff x must be present when y concludes, was absent in the same state when x began, and y counts as complete only when x is available at its end." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001816> .
 
@@ -4574,6 +4581,12 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
     rdfs:label "ATLAS Thing" ;
     rdfs:subClassOf :ExternalThreatModelThing .
 
+:AtomicClock a owl:Class ;
+    rdfs:label "Atomic Clock" ;
+    rdfs:subClassOf :HardwareClock ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Atomic_clock> ;
+    :definition "An atomic clock is a clock that measures time by monitoring the resonant frequency of atoms." .
+
 :ATTACKEnterpriseDataSource a owl:Class ;
     rdfs:label "ATTACK Enterprise Data Source" ;
     rdfs:subClassOf :ATTACKEnterpriseThing .
@@ -5988,6 +6001,15 @@ Profiling request and response payloads across multiple clients to a single serv
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Clipboard_(computing)> ;
     :definition "The clipboard is a buffer that some operating systems provide for short-term storage and transfer within and between application programs. The clipboard is usually temporary and unnamed, and its contents reside in the computer's RAM. The clipboard is sometimes called the paste buffer. Windows, Linux and macOS support a single clipboard transaction. Each cut or copy overwrites the previous contents. Normally, paste operations copy the contents, leaving the contents available in the clipboard for further pasting." .
+
+:Clock a owl:Class ;
+    rdfs:label "Clock" ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :TimeRecord ] ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/clock> ;
+    :definition "A mechanism that generates periodic, accurately spaced signals for timekeeping applications. Clocks may be implemented in hardware or software and are essential for system operations, synchronization, and event ordering." .
 
 :Cloud-basedDatabaseApplication a owl:Class ;
     rdfs:label "Cloud-based Database Application" ;
@@ -17442,6 +17464,22 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
     :definition "Physical methods of preventing data from being written to computer storage." ;
     :kb-reference :Reference-WhatisHardwareWriteProtect .
 
+:HardwareClock a owl:Class ;
+    rdfs:label "Hardware Clock" ;
+    rdfs:subClassOf :Clock,
+        :HardwareDevice ;
+    :definition "A clock implemented using physical electronic components, typically providing timekeeping independent of system power or software state. " ;
+    rdfs:seeAlso <https://linux.die.net/man/8/clock> .
+
+:HardwareClockDeviceDriver a owl:Class ;
+    rdfs:label "Hardware Clock Device Driver" ;
+    rdfs:subClassOf :HardwareDriver,
+        [ a owl:Restriction ;
+            owl:onProperty :drives ;
+            owl:someValuesFrom :HardwareClock ] ;
+    :definition "A device driver for a hardware clock." ;
+    rdfs:seeAlso <https://docs.kernel.org/admin-guide/rtc.html> .
+
 :HardwareComponentInventory a :HardwareComponentInventory,
         owl:Class,
         owl:NamedIndividual ;
@@ -17557,6 +17595,28 @@ Administrators collect information on hardware devices such as peripherals, NICs
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> ;
     :definition "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." .
 
+:HardwareTimer a owl:Class ;
+    rdfs:label "Hardware Timer" ;
+    rdfs:subClassOf :HardwareDevice,
+        :Timer ;
+    rdfs:isDefinedBy <https://www.sciencedirect.com/topics/engineering/hardware-timer> ;
+    :definition "A hardware timer is defined as an electronic component that serves as an 8-bit or 16-bit counter, capable of measuring time intervals, generating timed outputs, and driving loads through mechanisms such as pulse width modulation (PWM)." .
+
+:HardwareTimerDeviceDriver a owl:Class ;
+    rdfs:label "Hardware Timer Device Driver" ;
+    rdfs:subClassOf :HardwareDriver,
+        [ a owl:Restriction ;
+            owl:onProperty :drives ;
+            owl:someValuesFrom :HardwareTimer ] ;
+    :definition "A device driver for a hardware timer." ;
+    rdfs:seeAlso <https://www.intel.com/content/www/us/en/docs/programmable/743810/25-1/timer-device-drivers.html> .
+
+:HardwareWatchdogTimer a owl:Class ;
+    rdfs:label "Hardware Watchdog Timer" ;
+    rdfs:subClassOf :HardwareTimer,
+        :WatchdogTimer ;
+    :definition "A hardware watchdog timer is a watchdog timer implemented using electronic components." .
+
 :HarmonicMean a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Harmonic Mean" ;
@@ -17647,6 +17707,12 @@ Wikipedia. (n.d.). Clustering high-dimensional data. [Link](https://en.wikipedia
     :kb-article """## References
 1. Higher-order logic. (2023, May 13). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Higher-order_logic)""" ;
     :synonym "HOL" .
+
+:HighPrecisionEventTimer a owl:Class ;
+    rdfs:label "High Precision Event Timer" ;
+    rdfs:subClassOf :HardwareTimer ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/High_Precision_Event_Timer> ;
+    :definition "A High Precision Event Timer (HPET) is a hardware timer available in modern x86-compatible personal computers. Compared to older types of timers available in the x86 architecture, HPET allows more efficient processing of highly timing-sensitive applications, such as multimedia playback and OS task switching." .
 
 :Histogramming a owl:Class ;
     rdfs:label "Histogramming" ;
@@ -21630,6 +21696,9 @@ Implement a key management procedure to include removing the physical key from t
             owl:someValuesFrom :LocalUserAccount ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
+            owl:someValuesFrom :OperatingSystemClock ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
             owl:someValuesFrom :SystemServiceSoftware ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
@@ -21637,6 +21706,15 @@ Implement a key management procedure to include removing the physical key from t
     :definition "An operating system (OS) is system software that manages computer hardware and software resources and provides common services for computer programs. All computer programs, excluding firmware, require an operating system to function. Time-sharing operating systems schedule tasks for efficient use of the system and may also include accounting software for cost allocation of processor time, mass storage, printing, and other resources." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Operating_system>,
         <https://schema.ocsf.io/objects/os> .
+
+:OperatingSystemClock a owl:Class ;
+    rdfs:label "Operating System Clock" ;
+    rdfs:subClassOf :SoftwareClock,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Kernel ] ;
+    :definition "An operating system clock is the primary software clock maintained by the operating system, representing the system's current time. It is used for timestamping files, scheduling tasks, and synchronizing processes." ;
+    rdfs:seeAlso <https://linux.die.net/sag/hw-sw-clocks.html> .
 
 :OperatingSystemConfiguration a owl:Class ;
     rdfs:label "Operating System Configuration" ;
@@ -23495,6 +23573,13 @@ In Siemens, each data block (DB) tag can be configured as "data block write-prot
         :Reference-S7-1200-Programmable-controller,
         :Reference-SecurePLCCodingPracticesTop20List ;
     :synonym "OT Variable Access Policy" .
+
+:OTWatchdogTimer a owl:Class ;
+    rdfs:label "OT Watchdog Timer" ;
+    rdfs:subClassOf :OTProcessVariable,
+        :SoftwareWatchdogTimer ;
+    :definition "An OT Watchdog Timer is a software-based monitoring mechanism used in operational technology (OT) environments to continuously supervise the execution and responsiveness of critical control applications, devices, or communication links. It operates by requiring periodic “heartbeat” signals or status updates from monitored processes within a defined time window; if these signals are not received on time (indicating a hang, fault, or abnormal delay) the OT Watchdog Timer automatically triggers predefined safety or recovery actions, such as placing equipment in a fail-safe state, restarting services, generating alarms, or initiating controlled shutdowns." ;
+    rdfs:seeAlso <https://literature.rockwellautomation.com/idc/groups/literature/documents/pm/1756-pm005_-en-p.pdf> .
 
 :OTWriteCommand a owl:Class ;
     rdfs:label "OT Write Command" ;
@@ -25373,6 +25458,12 @@ Proxy-based Web Server Access Mediation involves controlling access to web serve
     :kb-article """## References
 Q-learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Q-learning).""" .
 
+:QuantumLogicClock a owl:Class ;
+    rdfs:label "Quantum Logic Clock" ;
+    rdfs:subClassOf :AtomicClock ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Quantum_logic_clock> ;
+    :definition "A quantum clock is a type of atomic clock with laser cooled single ions confined together in an electromagnetic ion trap." .
+
 :QueryByCommittee a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Query By Committee" ;
@@ -25693,6 +25784,13 @@ Additional examples of equipment include couplers, attenuators, power dividers, 
         [ a owl:Restriction ;
             owl:onProperty :reads ;
             owl:someValuesFrom :MemoryBlock ] .
+
+:RealtimeClock a owl:Class ;
+    rdfs:label "Real-time Clock" ;
+    skos:altLabel "RTC" ;
+    rdfs:subClassOf :HardwareClock ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_clock> ;
+    :definition "A real-time clock (RTC) is an electronic device (most often in the form of an integrated circuit) that measures the passage of time. " .
 
 :REC-0001 a owl:Class ;
     rdfs:label "Gather Spacecraft Design Information - SPARTA" ;
@@ -27542,6 +27640,15 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     rdfs:seeAlso <http://dbpedia.org/resource/Artifact_(software_development)>,
         <http://dbpedia.org/resource/Software_repository> .
 
+:SoftwareClock a owl:Class ;
+    rdfs:label "Software Clock" ;
+    rdfs:subClassOf :Clock,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Software ] ;
+    :definition "A clock implemented in software which may synchronize with hardware clocks or external time sources." ;
+    rdfs:seeAlso <https://linux.die.net/sag/hw-sw-clocks.html> .
+
 :SoftwareDeploymentTool a owl:Class ;
     rdfs:label "Software Deployment Tool" ;
     rdfs:subClassOf :ServiceApplication ;
@@ -27632,6 +27739,15 @@ Application-layer discovery:
     rdfs:isDefinedBy <http://dbpedia.org/resource/Software_repository> ;
     :definition "A software repository, or repo for short, is a storage location for software packages. Often a table of contents is also stored, along with metadata. A software repository is typically managed by source or version control, or repository managers. Package managers allow automatically installing and updating repositories, sometimes called 'packages'." .
 
+:SoftwareTimer a owl:Class ;
+    rdfs:label "Software Timer" ;
+    rdfs:subClassOf :Timer,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Software ] ;
+    :definition "A timer implemented in software, typically managed by the operating system or application code. Software timers rely on underlying hardware timers or clocks to measure intervals and trigger actions. They are used for scheduling tasks, implementing timeouts, and managing periodic operations within software environments." ;
+    rdfs:seeAlso <https://docs.aws.amazon.com/freertos/latest/userguide/software-timers.html> .
+
 :SoftwareUpdate a owl:Class,
         owl:NamedIndividual,
         :SoftwareUpdate ;
@@ -27643,6 +27759,13 @@ Application-layer discovery:
     :d3fend-id "D3-SU" ;
     :definition "Replacing old software on a computer system component." ;
     :kb-reference :Reference-MethodAndSystemForProvidingSoftwareUpdatesToLocalMachines .
+
+:SoftwareWatchdogTimer a owl:Class ;
+    rdfs:label "Software Watchdog Timer" ;
+    rdfs:subClassOf :RuntimeVariable,
+        :SoftwareTimer,
+        :WatchdogTimer ;
+    :definition "A software watchdog timer is a watchdog timer implemented in software." .
 
 :SomersD a owl:Class,
         owl:NamedIndividual ;
@@ -28723,9 +28846,24 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "In computing, a system image is a serialized copy of the entire state of a computer system stored in some non-volatile form, such as a binary executable file." ;
     rdfs:seeAlso <https://dbpedia.org/resource/System_Image> .
 
+:SystemTime a owl:Class ;
+    rdfs:label "System Time" ;
+    rdfs:subClassOf :SystemPlatformVariable,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :TimeInstant ],
+        [ a owl:Restriction ;
+            owl:onProperty :derived-from ;
+            owl:someValuesFrom :OperatingSystemClock ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/System_time> ;
+    :definition "In computing, system time represents a computer system's notion of a point in time." .
+
 :SystemTimeApplication a owl:Class ;
     rdfs:label "System Time Application" ;
-    rdfs:subClassOf :UtilitySoftware ;
+    rdfs:subClassOf :UtilitySoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :SystemTime ] ;
     :definition "A system time utility is utility software that can get the system time, such as the Unix date command or Windows' Net utility." .
 
 :SystemUtilizationRecord a owl:Class ;
@@ -36420,55 +36558,31 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1578.001 a owl:Class ;
     rdfs:label "Create Snapshot" ;
-    rdfs:subClassOf :T1578,
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :ComputingSnapshot ] ;
+    rdfs:subClassOf :T1578 ;
     :attack-id "T1578.001" ;
     :definition "An adversary may create a snapshot or data backup within a cloud account to evade defenses. A snapshot is a point-in-time copy of an existing cloud compute component such as a virtual machine (VM), virtual hard drive, or volume. An adversary may leverage permissions to create a snapshot in order to bypass restrictions that prevent access to existing compute service infrastructure, unlike in [Revert Cloud Instance](https://attack.mitre.org/techniques/T1578/004) where an adversary may revert to a snapshot to evade detection and remove evidence of their presence." .
 
 :T1578.002 a owl:Class ;
     rdfs:label "Create Cloud Instance" ;
-    rdfs:subClassOf :T1578,
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :CloudInstanceMetadata ],
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :Host ] ;
+    rdfs:subClassOf :T1578 ;
     :attack-id "T1578.002" ;
     :definition "An adversary may create a new instance or virtual machine (VM) within the compute service of a cloud account to evade defenses. Creating a new instance may allow an adversary to bypass firewall rules and permissions that exist on instances currently residing within an account. An adversary may [Create Snapshot](https://attack.mitre.org/techniques/T1578/001) of one or more volumes in an account, create a new instance, mount the snapshots, and then apply a less restrictive security policy to collect [Data from Local System](https://attack.mitre.org/techniques/T1005) or for [Remote Data Staging](https://attack.mitre.org/techniques/T1074/002).(Citation: Mandiant M-Trends 2020)" .
 
 :T1578.003 a owl:Class ;
     rdfs:label "Delete Cloud Instance" ;
-    rdfs:subClassOf :T1578,
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :CloudInstanceMetadata ],
-        [ a owl:Restriction ;
-            owl:onProperty :deletes ;
-            owl:someValuesFrom :Host ] ;
+    rdfs:subClassOf :T1578 ;
     :attack-id "T1578.003" ;
     :definition "An adversary may delete a cloud instance after they have performed malicious activities in an attempt to evade detection and remove evidence of their presence.  Deleting an instance or virtual machine can remove valuable forensic artifacts and other evidence of suspicious behavior if the instance is not recoverable." .
 
 :T1578.004 a owl:Class ;
     rdfs:label "Revert Cloud Instance" ;
-    rdfs:subClassOf :T1578,
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :CloudInstanceMetadata ],
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :Host ] ;
+    rdfs:subClassOf :T1578 ;
     :attack-id "T1578.004" ;
     :definition "An adversary may revert changes made to a cloud instance after they have performed malicious activities in attempt to evade detection and remove evidence of their presence. In highly virtualized environments, such as cloud-based infrastructure, this may be accomplished by restoring virtual machine (VM) or data storage snapshots through the cloud management dashboard or cloud APIs." .
 
 :T1578.005 a owl:Class ;
     rdfs:label "Modify Cloud Compute Configurations" ;
-    rdfs:subClassOf :T1578,
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :CloudConfiguration ] ;
+    rdfs:subClassOf :T1578 ;
     :attack-id "T1578.005" ;
     :definition "Adversaries may modify settings that directly affect the size, locations, and resources available to cloud compute infrastructure in order to evade defenses. These settings may include service quotas, subscription associations, tenant-wide policies, or other configurations that impact available compute. Such modifications may allow adversaries to abuse the victim’s compute resources to achieve their goals, potentially without affecting the execution of running instances and/or revealing their activities to the victim." .
 
@@ -37759,10 +37873,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1666 a owl:Class ;
     rdfs:label "Modify Cloud Resource Hierarchy" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :CloudConfiguration ] ;
+    rdfs:subClassOf :DefenseEvasionTechnique ;
     :attack-id "T1666" ;
     :definition "Adversaries may attempt to modify hierarchical structures in infrastructure-as-a-service (IaaS) environments in order to evade defenses." .
 
@@ -38344,6 +38455,36 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
     :definition "In some computer security systems, a Ticket Granting Ticket or Ticket to Get Tickets (TGT) is a small, encrypted identification file with a limited validity period. After authentication, this file is granted to a user for data traffic protection by the key distribution center (KDC) subsystem of authentication services such as Kerberos. The TGT file contains the session key, its expiration date, and the user's IP address, which protects the user from man-in-the-middle attacks. The TGT is used to obtain a service ticket from Ticket Granting Service (TGS). User is granted access to network services only after this service ticket is provided." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Charlie_and_the_Chocolate_Factory> .
 
+:Time a owl:Class ;
+    rdfs:label "Time" ;
+    rdfs:subClassOf :DigitalInformation ;
+    :definition "Time is the one-dimensional continuum of temporal regions within which all processes unfold and at which all continuants exist. A temporal region is a specific portion of this continuum that may be either zero-dimensional (a temporal instant) or one-dimensional (a temporal interval). Temporal regions serve as the temporal boundaries and extents for occurrents (processes, events) and provide the temporal indexing for the existence of continuants (entities that persist through time)." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Time_in_physics> .
+
+:TimeInstant a owl:Class ;
+    rdfs:label "Time Instant" ;
+    rdfs:subClassOf :Time ;
+    :definition "A time instant is a zero-dimensional temporal region that has no duration and represents a singular point in the temporal continuum. Time instants serve as the temporal boundaries of temporal intervals and as the indexical points at which continuants exist and bear their qualities." .
+
+:TimeInterval a owl:Class ;
+    rdfs:label "Time Interval" ;
+    rdfs:subClassOf :Time ;
+    :definition "A time interval is a one-dimensional temporal region that has duration and represents a continuous extent of time bounded by two time instants (a start instant and an end instant). " .
+
+:Timer a owl:Class ;
+    rdfs:label "Timer" ;
+    rdfs:subClassOf :Clock ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Timer> ;
+    :definition "A timer or countdown timer is a type of clock that starts from a specified time duration and stops upon reaching 00:00. It can also usually be stopped manually before the whole duration has elapsed. An example of a simple timer is an hourglass. Commonly, a timer triggers an alarm when it ends. A timer can be implemented through hardware or software." .
+
+:TimeRecord a owl:Class ;
+    rdfs:label "Time Record" ;
+    rdfs:subClassOf :Record,
+        [ a owl:Restriction ;
+            owl:onProperty :records ;
+            owl:someValuesFrom :Time ] ;
+    :definition "A time record either records, describes, represents, or is generally about Time." .
+
 :TimeSeriesAnalysis a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Time Series Analysis" ;
@@ -38798,6 +38939,7 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 :User a owl:Class ;
     rdfs:label "User" ;
     rdfs:subClassOf :Agent,
+        :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :has-account ;
             owl:someValuesFrom :UserAccount ],
@@ -39036,7 +39178,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:subClassOf :AccessControlGroup,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :UserAccount ] ;
+            owl:someValuesFrom :User ] ;
     :definition "User groups are a way to collect user accounts and/or computer accounts into manageable units. Administrators can assign permissions, roles, or access to resources, as well as modify group membership, depending on the operating system." ;
     :synonym "Security Group" .
 
@@ -39362,6 +39504,14 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:label "Vulnerability" ;
     rdfs:subClassOf :D3FENDCore ;
     :definition "A Vulnerability is a publicly disclosed instance of one or more weaknesses in a product that an attacker could exploit, violating its confidentiality, integrity, or availability." .
+
+:WatchdogTimer a owl:Class ;
+    rdfs:label "Watchdog Timer" ;
+    rdfs:subClassOf :Timer ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Watchdog_timer> ;
+    :definition "A watchdog timer (WDT, or simply a watchdog) is an electronic or software timer that is used to detect and recover from computer malfunctions." ;
+    :synonym "Watchdog",
+        "WDT" .
 
 :Weakness a owl:Class ;
     rdfs:label "Weakness" ;
@@ -45557,15 +45707,6 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 [] a owl:AllDisjointClasses ;
     owl:members (
-            :Agent
-            :Artifact
-            :Event
-            :Goal
-            :Plan
-            :Weakness ) .
-
-[] a owl:AllDisjointClasses ;
-    owl:members (
             :Classifying
             :Forecasting
             :Generation
@@ -45610,4 +45751,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
