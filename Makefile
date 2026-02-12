@@ -2,10 +2,10 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=1.2.0
-D3FEND_RELEASE_DATE ?="2025-08-01T00:12:00.000Z"
+D3FEND_VERSION ?=1.3.0
+D3FEND_RELEASE_DATE ?="2025-12-16T00:12:00.000Z"
 
-ATTACK_VERSION ?= 17.1
+ATTACK_VERSION ?= 18.1
 
 CAPEC_VERSION := 3.9
 
@@ -471,6 +471,8 @@ dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
 	cp build/d3fend-public-with-controls.ttl dist/public/d3fend.ttl # For now, roll in the CCI & NIST controls extensions to base .ttl release
+	# TODO: Sadly some ontology tooling, possibly owlapi or robot, changing input files, thus we add a step here
+	pipenv run ttlfmt dist/public/d3fend.ttl
 	cp build/d3fend-public-with-controls.owl dist/public/d3fend.owl # For now, roll in the CCI & NIST controls extensions to base .owl release
 	cp build/d3fend-public-with-controls.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
