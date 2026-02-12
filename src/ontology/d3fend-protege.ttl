@@ -16278,9 +16278,9 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
 :FieldProgrammableGateArray a owl:Class ;
     rdfs:label "Field Programmable Gate Array" ;
     rdfs:subClassOf :ProgrammableLogicDevice ;
-    :synonym "FPGA" ; 
     rdfs:isDefinedBy <http://dbpedia.org/resource/Field-programmable_gate_array> ;
-    :definition "A field-programmable gate array (FPGA) is a type of configurable integrated circuit that can be repeatedly programmed after manufacturing. FPGAs are a subset of logic devices referred to as programmable logic devices (PLDs)." .
+    :definition "A field-programmable gate array (FPGA) is a type of configurable integrated circuit that can be repeatedly programmed after manufacturing. FPGAs are a subset of logic devices referred to as programmable logic devices (PLDs)." ;
+    :synonym "FPGA" .
 
 :File a owl:Class ;
     rdfs:label "File" ;
@@ -25729,10 +25729,10 @@ Additional examples of equipment include couplers, attenuators, power dividers, 
 
 :RealTimeOperatingSystem a owl:Class ;
     rdfs:label "Real-time operating system" ;
-    :synonym "RTOS" ;
     rdfs:subClassOf :OperatingSystem ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_operating_system> ;
-    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints. " .
+    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints. " ;
+    :synonym "RTOS" .
 
 :REC-0001 a owl:Class ;
     rdfs:label "Gather Spacecraft Design Information - SPARTA" ;
@@ -26622,6 +26622,11 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     :kb-reference :Reference-PrivacyAndSecuritySystemsAndMethodsOfUse,
         :Reference-Technical_Specifications_for_Construction_and_Management_of_Sensitive_Compartmented_Information_Facilities .
 
+:RFStateChangeEvent a owl:Class ;
+    rdfs:label "RF State Change Event" ;
+    rdfs:subClassOf :SDREvent ;
+    :definition "An SDR event where one or more radio-frequency (RF) operating conditions have been changed in a way that affects reception or emission (e.g., center frequency retune, gain/attenuation update, bandwidth/filter selection, antenna/port switch, TX enable/disable, etc)." .
+
 :ROM a owl:Class ;
     rdfs:label "ROM" ;
     rdfs:subClassOf :PrimaryStorage ;
@@ -26861,6 +26866,15 @@ Software installed on the host system hooks into a scripting engine to intercept
 ## Considerations
 List of known unauthorized script files or regular expression patterns must be kept up to date to ensure detection of new threats.""" ;
     :kb-reference :Reference-DetectingScript-basedMalware_CrowdstrikeInc .
+
+:SDREvent a owl:Class ;
+    rdfs:label "Software-defined Radio Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SoftwareDefinedRadio ] ;
+    :definition "An event involving an software-defined radio (SDR) device indicating that the SDR's lifecycle state, operational state, configuration, data-streaming status, timing/reference status, or fault condition has changed." ;
+    :synonym "SDR Event" .
 
 :SDRWaveform a owl:Class ;
     rdfs:label "Software-defined Radio Waveform" ;
@@ -39463,6 +39477,28 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:subClassOf :D3FENDCore ;
     :definition "A Vulnerability is a publicly disclosed instance of one or more weaknesses in a product that an attacker could exploit, violating its confidentiality, integrity, or availability." .
 
+:WaveformConfigurationEvent a owl:Class ;
+    rdfs:label "Waveform Configuration Event" ;
+    rdfs:subClassOf :SDREvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SDRWaveform ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :StandaloneSDR ] ;
+    :definition "An SDR event where the waveform's operational parameters have been applied and validated (e.g., sample rate, bandwidth, channel selection, framing/modulation options), placing the waveform in a state ready to run." .
+
+:WaveformLoadEvent a owl:Class ;
+    rdfs:label "Waveform Load Event" ;
+    rdfs:subClassOf :SDREvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SDRWaveform ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :StandaloneSDR ] ;
+    :definition "An SDR event where a waveform implementation (software/firmware/FPGA image and associated descriptors) has been installed or selected on the SDR and is available to be configured." .
+
 :Weakness a owl:Class ;
     rdfs:label "Weakness" ;
     rdfs:subClassOf :D3FENDCore ;
@@ -45710,4 +45746,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
