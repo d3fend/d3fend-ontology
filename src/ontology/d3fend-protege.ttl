@@ -14865,10 +14865,11 @@ This technique can be accomplished in a number of ways:
         :Reference-ProtectedComputingEnvironment_MicrosoftTechnologyLicensingLLC .
 
 :DSPApplication a owl:Class ;
-    rdfs:label "Digital Signal Processing (DSP) Application" ;
+    rdfs:label "Digital Signal Processing Application" ;
     rdfs:subClassOf :Application ;
-    :definition "A DSP application is a software system that ingests discrete-time or discrete-space signals (from sensors, ADCs, or files) and applies digital signal processing algorithms to analyze, transform, synthesize, or make decisions about those signals, often under real-time throughput and latency constraints. It encompasses capabilities such as filtering, spectral analysis, modulation/demodulation, channelization, synchronization, detection and estimation, compression, beamforming, and reconstruction, and spans domains including software-defined radio (e.g., waveform generation and physical-layer stacks), audio and speech, image and video, radar/sonar/LiDAR, biomedical signals, instrumentation, and control." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Digital_signal_processing> .
+    :definition "A Digital Signal Processing (DSP) application is a software system that ingests discrete-time or discrete-space signals (from sensors, ADCs, or files) and applies digital signal processing algorithms to analyze, transform, synthesize, or make decisions about those signals, often under real-time throughput and latency constraints. It encompasses capabilities such as filtering, spectral analysis, modulation/demodulation, channelization, synchronization, detection and estimation, compression, beamforming, and reconstruction, and spans domains including software-defined radio (e.g., waveform generation and physical-layer stacks), audio and speech, image and video, radar/sonar/LiDAR, biomedical signals, instrumentation, and control." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Digital_signal_processing> ;
+    :synonym "DSP Application" .
 
 :Dyna-Q a owl:Class,
         owl:NamedIndividual ;
@@ -24061,6 +24062,13 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     :definition "Firmware that is installed on peripheral hub device such as a USB or Firewire hub." ;
     rdfs:seeAlso <http://dbpedia.org/resource/USB_hub> .
 
+:PeripheralSDR a owl:Class ;
+    rdfs:label "Peripheral Software-Defined Radio" ;
+    rdfs:subClassOf :SoftwareDefinedRadio ;
+    :definition "An SDR hardware device that functions primarily as an RF front end plus data conversion and transport, relying on an external host computer to run most waveform/DSP processing and to control operation. It is commonly connected via USB, PCIe, or similar links and behaves like a high-speed radio peripheral." ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Software-defined_radio#RTL-SDR> ;
+    :synonym "Peripheral SDR" .
+
 :PermissionGrantingEvent a owl:Class ;
     rdfs:label "Permission Granting Event" ;
     rdfs:subClassOf :AccessControlAdministrationEvent ;
@@ -25710,10 +25718,10 @@ Additional examples of equipment include couplers, attenuators, power dividers, 
 
 :RealTimeOperatingSystem a owl:Class ;
     rdfs:label "Real-time operating system" ;
+    skos:altLabel "RTOS" ;
     rdfs:subClassOf :OperatingSystem ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_operating_system> ;
-    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints. " ;
-    skos:altLabel "RTOS" .
+    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints. " .
 
 :REC-0001 a owl:Class ;
     rdfs:label "Gather Spacecraft Design Information - SPARTA" ;
@@ -26843,6 +26851,14 @@ Software installed on the host system hooks into a scripting engine to intercept
 List of known unauthorized script files or regular expression patterns must be kept up to date to ensure detection of new threats.""" ;
     :kb-reference :Reference-DetectingScript-basedMalware_CrowdstrikeInc .
 
+:SDRWaveform a owl:Class ;
+    rdfs:label "Software-defined Radio Waveform" ;
+    rdfs:subClassOf :DSPApplication ;
+    rdfs:isDefinedBy <https://media.defense.gov/2020/Feb/13/2002249005/-1/-1/1/SCA_4.1_SCASPECIFICATION.PDF> ;
+    :definition "Although there are many definitions of a SDR, it is in essence a radio or communication system whose output signal is determined by software.  In this sense, the output is entirely reconfigurable at any given time, within the limits of the radio or system hardware capabilities (e.g. processing elements, power amplifiers, antennas, etc.) merely by loading new software as required by the user.  Since this software determines the output signal of the system, it is typically referred to as 'waveform software' or simply as the 'waveform' itself." ;
+    :synonym "SDR waveform",
+        "Waveform Software" .
+
 :Second-stageBootLoader a owl:Class ;
     rdfs:label "Second-stage Boot Loader" ;
     rdfs:subClassOf :BootLoader ;
@@ -27565,35 +27581,16 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
 
 :SoftwareDefinedRadio a owl:Class ;
     rdfs:label "Software-defined Radio" ;
-    rdfs:subClassOf :Host,
+    rdfs:subClassOf :HardwareDevice,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Receiver ],
         [ a owl:Restriction ;
-            owl:onProperty :executes ;
-            owl:someValuesFrom :SoftwareDefinedRadioWaveform ],
-        [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :DigitalSignalProcessor ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :FieldProgrammableGateArray ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :Transmitter ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :RealTimeOperatingSystem ] ;
+            owl:someValuesFrom :Transmitter ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Software-defined_radio> ;
     :definition "Software-defined radio (SDR) is a radio communication system where components that conventionally have been implemented in analog hardware (e.g. mixers, filters, amplifiers, modulators/demodulators, detectors, etc.) are instead implemented by means of software on a computer or embedded system." ;
-    skos:altLabel "SDR" .
-
-:SoftwareDefinedRadioWaveform a owl:Class ;
-    rdfs:label "Software-defined Radio Waveform" ;
-    rdfs:subClassOf :DSPApplication ;
-    rdfs:isDefinedBy <https://knl.fi/newsroom/unique-radio-waveform-and-innovative-software/> ;
-    :definition "In software-defined radios, a waveform is a software component that dictates the radio's operation and communication behavior. By setting parameters such as frequency bands, modulation methods, and other configurations, the waveform allows the radio to adapt to different communication scenarios." ;
-    :synonym "SDR waveform" .
+    :synonym "SDR" .
 
 :SoftwareDeploymentTool a owl:Class ;
     rdfs:label "Software Deployment Tool" ;
@@ -28107,6 +28104,26 @@ A standalone honeynet does not directly interact with the real enterprise enviro
 ## Considerations
 A standalone honeynet is a lower risk to deploy compared to connected or integrated honeynets due to its isolation from the enterprise network. However, this comes at cost in loss of fidelity and realism. Significant extra effort must be made in order to make the environment look realistic.""" ;
     :kb-reference :Reference-DynamicSelectionAndGenerationOfAVirtualCloneForDetonationOfSuspiciousContentWithinAHoneyNetwork_PaloAltoNetworksInc .
+
+:StandaloneSDR a owl:Class ;
+    rdfs:label "Standalone Software-Defined Radio" ;
+    rdfs:subClassOf :EmbeddedComputer,
+        :SoftwareDefinedRadio,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :SDRWaveform ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :DigitalSignalProcessor ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FieldProgrammableGateArray ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-run ;
+            owl:someValuesFrom :RealTimeOperatingSystem ] ;
+    :definition "An SDR hardware device that can operate as a self-contained radio system, incorporating onboard compute (e.g., SoC/CPU/DSP/FPGA) and software/firmware sufficient to run waveforms and manage RF functions without requiring a continuously attached host PC. It typically exposes control and data via network or other external interfaces and may run an embedded OS." ;
+    rdfs:seeAlso <https://satsearch.co/products/alenspace-totem-software-defined-radio-sdr> ;
+    :synonym "Standalone SDR" .
 
 :StandardDeviation a owl:Class,
         owl:NamedIndividual ;
