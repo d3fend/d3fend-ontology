@@ -26901,18 +26901,41 @@ List of known unauthorized script files or regular expression patterns must be k
     :synonym "SDR Event" .
 
 :SDRRadioConfiguration a owl:Class ;
-    rdfs:label "SDR Radio Configuration" ;
+    rdfs:label "Software-defined Radio Configuration" ;
     rdfs:subClassOf :HardwareDeviceConfiguration ;
     :definition "The physical radio hardware parameters used by a software-defined radio (SDR), including center frequency, bandwidth, gain settings, antenna selection, ADC/DAC sample rates, filter characteristics, power output, and others." ;
     rdfs:seeAlso <https://www.analog.com/media/en/training-seminars/design-handbooks/Software-Defined-Radio-for-Engineers-2018/SDR4Engineers.pdf> .
 
-:SDRWaveform a owl:Class ;
-    rdfs:label "Software-defined Radio Waveform" ;
+:SDRWaveformApplication a owl:Class ;
+    rdfs:label "Software-defined Radio Waveform Application" ;
     rdfs:subClassOf :DSPApplication ;
     rdfs:isDefinedBy <https://media.defense.gov/2020/Feb/13/2002249005/-1/-1/1/SCA_4.1_SCASPECIFICATION.PDF> ;
-    :definition "Although there are many definitions of a SDR, it is in essence a radio or communication system whose output signal is determined by software.  In this sense, the output is entirely reconfigurable at any given time, within the limits of the radio or system hardware capabilities (e.g. processing elements, power amplifiers, antennas, etc.) merely by loading new software as required by the user.  Since this software determines the output signal of the system, it is typically referred to as 'waveform software' or simply as the 'waveform' itself." ;
+    :definition "A software implementation of a radio waveform that executes on the programmable processing elements of a software-defined radio and realizes the signal processing functions necessary to transmit and receive a specific radio signal." ;
+    rdfs:seeAlso <https://ieeexplore.ieee.org/document/5768314> ;
     :synonym "SDR waveform",
         "Waveform Software" .
+
+:SDRWaveformConfigurationEvent a owl:Class ;
+    rdfs:label "SDR Waveform Application Configuration Event" ;
+    rdfs:subClassOf :SDREvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SDRWaveformApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :StandaloneSDR ] ;
+    :definition "An SDR event where the waveform application's operational parameters have been applied and validated (e.g., sample rate, bandwidth, channel selection, framing/modulation options), placing the waveform in a state ready to run." .
+
+:SDRWaveformLoadEvent a owl:Class ;
+    rdfs:label "SDR Waveform Application Load Event" ;
+    rdfs:subClassOf :SDREvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SDRWaveformApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :StandaloneSDR ] ;
+    :definition "An SDR event where a waveform application (software/firmware/FPGA image and associated descriptors) has been installed or selected on the SDR and is available to be configured." .
 
 :Second-stageBootLoader a owl:Class ;
     rdfs:label "Second-stage Boot Loader" ;
@@ -28153,7 +28176,7 @@ A standalone honeynet is a lower risk to deploy compared to connected or integra
         :SDR,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
-            owl:someValuesFrom :SDRWaveform ],
+            owl:someValuesFrom :SDRWaveformApplication ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DigitalSignalProcessor ],
@@ -39493,28 +39516,6 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     rdfs:label "Vulnerability" ;
     rdfs:subClassOf :D3FENDCore ;
     :definition "A Vulnerability is a publicly disclosed instance of one or more weaknesses in a product that an attacker could exploit, violating its confidentiality, integrity, or availability." .
-
-:WaveformConfigurationEvent a owl:Class ;
-    rdfs:label "Waveform Configuration Event" ;
-    rdfs:subClassOf :SDREvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SDRWaveform ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :StandaloneSDR ] ;
-    :definition "An SDR event where the waveform's operational parameters have been applied and validated (e.g., sample rate, bandwidth, channel selection, framing/modulation options), placing the waveform in a state ready to run." .
-
-:WaveformLoadEvent a owl:Class ;
-    rdfs:label "Waveform Load Event" ;
-    rdfs:subClassOf :SDREvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SDRWaveform ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :StandaloneSDR ] ;
-    :definition "An SDR event where a waveform implementation (software/firmware/FPGA image and associated descriptors) has been installed or selected on the SDR and is available to be configured." .
 
 :Weakness a owl:Class ;
     rdfs:label "Weakness" ;
