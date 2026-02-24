@@ -5429,6 +5429,28 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
             owl:someValuesFrom :BusNetworkFrame ] ;
     :definition "The ordered flow of frames, structured by a bus protocol, that traverses the shared bus medium during operation." .
 
+:BusTrafficAnalysis a :BusTrafficAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Bus Traffic Analysis" ;
+    rdfs:subClassOf :NetworkTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :BusNetworkTraffic ] ;
+    :d3fend-id "D3-BTA" ;
+    :definition "Analysis of communications bus traffic (e.g., MIL-STD-1553, CAN, SpaceWire) to identify anomalies, policy violations, or malicious activity. " ;
+    :kb-article """## How it works
+    Bus traffic analysis involves passively observing bus traffic and normalizing each transaction into key fields (e.g., direction, message type, endpoints/IDs, sub-address/function, length/count, and optionally payload). Each observed message is commpared against an explicit, updateable rule set that defines “normal behavior” as many sub-rules (allowed messages, valid field values/ranges, permitted command/response patterns, etc.). Messages that match no rule—or violate any sub-rule—are flagged as abnormal, optionally captured for forensics, and reported over an out-of-band channel; heavier analysis can be offloaded to a separate processing device while the monitor continues continuous status reporting.
+
+Where precise timing can be measured and controlled, the system can add prevention by using timing as a lightweight authenticity signal. Each protected transmitter and a trusted monitor agree on a secret, continuously generated sequence of allowed inter-message gaps; transmitters enforce the scheduled gap and the monitor verifies it per message. Timing violations or unknown/prohibited IDs can be acted on immediately (e.g., interrupting the message early), with escalation for repeated violations up to isolating/suspending the misbehaving transmitter—providing intrusion confinement without consuming payload bytes.
+
+## Considerations
+* Rule management: rule files should be securely validated/authenticated before activation; support controlled updates and rollback.
+* Coverage vs. false positives: tighter rules and deeper inspections improve detection but can increase false alarms; tune by subsystem criticality.
+* Performance and offload: deep inspection and logging can be selective based on risk rating; use out-of-band reporting to avoid impacting bus timing.""" ;
+    :kb-reference :Reference-BusDataMonitor_TheBoeingCompany,
+        :Reference-ZbCANAZeroByteCANDefenseSystem .
+
 :ByteSequenceEmulation a :ByteSequenceEmulation,
         owl:Class,
         owl:NamedIndividual ;
@@ -41289,6 +41311,18 @@ Methods, systems, and apparatus, including computer programs encoded on computer
     :kb-reference-title "Broadcast isolation and level 3 network switch" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-BusDataMonitor_TheBoeingCompany a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Bus Data Monitor - The Boeing Company" ;
+    :has-link "https://patents.google.com/patent/US10691573B2"^^xsd:anyURI ;
+    :kb-abstract "Disclosed is a bus data monitor (“BDM”) for use with a MIL-STD-1553 data bus (“1553 bus”). The BDM includes one or more processing units and a computer-readable medium. The computer-readable medium includes encoded thereon computer-executable instructions to cause the one or more processing units to receive data from the 1553 bus in signal communication with the BDM, access a rule set from a computer file stored on the computer-readable medium, compare the received data from the 1553 bus against the rule set, and determine if the received data violates any of the sub-rules defined in the rule set, where the rule set includes a plurality of defined sub-rules." ;
+    :kb-author "Josh D. Eckhardt, Thomas E. Donofrio, Khaled Serag" ;
+    :kb-mitre-analysis " " ;
+    :kb-organization "The Boeing Company" ;
+    :kb-reference-of :BusTrafficAnalysis ;
+    :kb-reference-title "Bus Data Monitor" ;
+    :todo "MITRE Analysis was not found" .
+
 :Reference-CAR-2014-05-001%3ARPCActivity_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2014-05-001: RPC Activity - MITRE" ;
@@ -45500,6 +45534,15 @@ With keystroke dynamics the biometric template used to identify an individual is
     :kb-reference-of :InputDeviceAnalysis ;
     :kb-reference-title "Keystroke Dynamics" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-ZbCANAZeroByteCANDefenseSystem a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - ZbCAN: A Zero-Byte CAN Defense System" ;
+    :has-link "https://www.usenix.org/system/files/sec23fall-prepub-381-serag.pdf"^^xsd:anyURI ;
+    :kb-abstract "Controller Area Network (CAN) is a widely used network protocol. In addition to being the main communication medium for vehicles, it is also used in factories, medical equipment, elevators, and avionics. Unfortunately, CAN was designed without any security features. Consequently, it has come under scrutiny by the research community, showing its security weakness. Recent works have shown that a single compromised ECU on a CANbuscan launch a multitude of attacks ranging from message injection, to bus flooding, to attacks exploiting CAN's error handling mechanism. Although several works have attempted to secure CAN, we argue that none of their approaches could be widely adopted for reasons inherent in their design. In this work, we introduce ZBCAN, a defense system that uses zero bytes of the CAN frame to secure against the most common CAN attacks, including message injection, impersonation, flooding, and error handling, without using encryption or MACs, while taking into consideration performance metrics such as delay, busload, and data-rate." ;
+    :kb-author "Khaled Serag, Rohit Bhatia, Akram Faqih, Muslum Ozgur Ozmen, Vireshwar Kumar, Z. Berkay Celik, Dongyan Xu" ;
+    :kb-reference-of :BusTrafficAnalysis ;
+    :kb-reference-title "ZbCAN: A Zero-Byte CAN Defense System" .
 
 :RegOpenKeyA a :GetSystemConfigValue,
         owl:NamedIndividual ;
