@@ -210,6 +210,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     :definition "x copy-of y: The subject x is a duplicate of the object y." .
 
+:corrupts a owl:ObjectProperty ;
+    rdfs:label "corrupts" ;
+    rdfs:subPropertyOf :impairs ;
+    :definition "x corrupts y: The entity x causes y to enter an incorrect, inconsistent, or unintended state by modifying y's information-bearing content (e.g., a bit, symbol, word, configuration cell, or stored parameter) such that y's value no longer matches the expected or previously valid value." .
+
 :counters a owl:ObjectProperty ;
     rdfs:label "counters" ;
     rdfs:subPropertyOf :may-counter .
@@ -805,6 +810,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "may-contain" ;
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "to potentially have as contents or constituent parts; comprise; include." .
+
+:may-corrupt a owl:ObjectProperty ;
+    rdfs:label "may-corrupt" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-corrupt y: They entity x may corrupt y's information bearing content; that is, 'x corrupts y' may be true." .
 
 :may-counter a owl:ObjectProperty ;
     rdfs:label "may-counter" ;
@@ -15419,7 +15429,19 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0007 a owl:Class ;
     rdfs:label "Trigger Single Event Upset - SPARTA" ;
     skos:prefLabel "Trigger Single Event Upset" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :Processor ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :ProcessorCacheMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :ProcessorRegister ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :RAM ] ;
     :attack-id "EX-0007" ;
     :definition "Threat actors may utilize techniques to create a single-event upset (SEU) which is a change of state caused by one single ionizing particle (ions, electrons, photons...) striking a sensitive node in a spacecraft(i.e., microprocessor, semiconductor memory, or power transistors). The state change is a result of the free charge created by ionization in or close to an important node of a logic element (e.g. memory \"bit\"). This can cause unstable conditions on the spacecraft depending on which component experiences the SEU. SEU is a known phenomenon for spacecraft due to high radiation in space, but threat actors may attempt to utilize items like microwaves to create a SEU." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0007/> .
@@ -25388,8 +25410,14 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
     rdfs:label "Radiation Hardening" ;
     rdfs:subClassOf :PlatformHardening,
         [ a owl:Restriction ;
-            owl:onProperty :hardens ;
-            owl:someValuesFrom :HardwareDevice ] ;
+            owl:onProperty :may-harden ;
+            owl:someValuesFrom :FlashMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-harden ;
+            owl:someValuesFrom :PrimaryStorage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-harden ;
+            owl:someValuesFrom :Processor ] ;
     :d3fend-id "D3-RH" ;
     :definition "Radiation hardening is the process of making electronic components and circuits resistant to damage or malfunction caused by high levels of ionizing radiation (particle radiation and high-energy electromagnetic radiation)." ;
     :kb-article """## How it works
