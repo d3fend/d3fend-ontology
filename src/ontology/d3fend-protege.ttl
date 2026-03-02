@@ -24570,6 +24570,27 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
 2. Higher-order logic. (2023, May 13)
 [Link](https://en.wikipedia.org/wiki/Higher-order_logic)""" .
 
+:PredictiveImpactSimulation a owl:Class,
+        owl:NamedIndividual,
+        :PredictiveImpactSimulation ;
+    rdfs:label "Predective Impact Simulation" ;
+    rdfs:subClassOf :TelecommandAnalysis ;
+    :d3fend-id "D3-PIS" ;
+    :definition "The use of a digital twin or high-fidelity sandbox to simulate the short-term outcome of a telecommand before it is committed to the system's physical actuators." ;
+    :kb-article """## How it works
+
+    This technique introduces a look-ahead delay in the command execution chain. Before a high-consequence command (like 'Ignite Thruster' or 'Purge System') is executed, the telecommand analysis agent passes the command to a Digital Twin (a software replica of the hardware). The twin runs a fast-time simulation of the next N seconds of operation. If the simulation predicts a 'Safe Mode' trigger, a hardware collision, or a thermal runaway, the agent blocks the real-world execution and alerts the operator.
+
+    This technique is the ultimate defense against sane-looking malicious commands that cause cascading failures. By verifying the consequence rather than the syntax, it effectively mitigates zero-day logic attacks that haven't been modeled in simpler state-based validators.
+    
+    ## Considerations
+    * Computational Cost: Requires significant on-board or edge-computing resources to run simulations in near-real-time.
+
+    * Determinism: The system must be deterministic enough for the simulation to be accurate; chaotic environments (e.g., high-turbulence flight) make predictive simulation much harder.
+
+    * Time-to-Execute Constraints: Adding a simulation step increases the command-to-action latency, which may be unacceptable for time-critical safety maneuvers.""" ;
+    :kb-reference :Reference-DigitalTwinAssistedMachineLearningForPredictiveCybersecurityInIACS .
+
 :PrimaryStorage a owl:Class ;
     rdfs:label "Primary Storage" ;
     rdfs:subClassOf :HardwareDevice,
@@ -27083,6 +27104,28 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
 Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Adversarial Nets with Policy Gradient. ArXiv preprint ArXiv:1609.05473. [Link](https://arxiv.org/abs/1609.05473)""" ;
     :synonym "Sequence GAN" .
 
+:SequentialLogicAndTemporalHeuristics a owl:Class,
+        owl:NamedIndividual,
+        :SequentialLogicAndTemporalHeuristics ;
+    rdfs:label "Sequential Logic & Temporal Heuristics" ;
+    rdfs:subClassOf :TelecommandAnalysis ;
+    :d3fend-id "D3-SLATH" ;
+    :definition "The analysis of telecommand streams over time to identify anomalies in execution order, frequency, or prerequisites that indicate automated attacks or logic-based exploitation." ;
+    :kb-article """## How it works
+
+    This technqiue utilizes Finite State Machines (FSM) and temporal windows to audit the conversation between the controller and the system. It maintains a rolling history of commands to ensure they follow a strict operational logic. For instance, a 'Firmware Commit' command is flagged as malicious if it is not preceded by a 'Firmware Upload' and a 'Checksum Verify' command within a specific time window. 
+    
+    Furthermore, it appliest temporal jeuristics to detect command flooding or cadence shifts. For example, if a drone typically receives one heartbeat command every 100ms, a sudden burst of ten commands in 10ms triggers an automated rate-limiting response. This protects against buffer overflows and ensures that the system's command processor is not overwhelmed by rapid-fire malicious instructions.
+    
+    ## Considerations
+    * Interleaved Streams: In systems with multiple authorized operators, the analyzer must be able to distinguish between different sessions to avoid incorrectly flagging interleaved valid commands as out-of-sequence.
+
+    * Latency Overhead: Maintaining and querying an FSM for every command packet adds processing time, which can be critical in high-speed control loops.
+
+    * Protocol Rigidity: Strict sequential logic can prevent emergency overrides if the emergency sequence itself wasn't modeled in the FSM.""" ;
+    :kb-reference :Reference-DevelopmentAndImplementationOfAPilotIntentRecognitionModelBasedOnOperationalSequences,
+        :Reference-EdgeApplicationDiscoveringAndManagementStateMachineObjectsInAutomationControllersForMESAndDCSApplications .
+
 :SerializationFunction a owl:Class ;
     rdfs:label "Serialization Function" ;
     rdfs:subClassOf :Subroutine ;
@@ -28070,6 +28113,27 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
     rdfs:subClassOf :Directory,
         :LocalResource ;
     :definition "A startup directory is a directory containing executable files or links to executable files which are run when a user logs in or when a system component or service is started." .
+
+:StateBasedSemanticCommandEvaluation a owl:Class,
+        owl:NamedIndividual,
+        :StateBasedSemanticEvaluation ;
+    rdfs:label "State-based Semantic Command Evaluation" ;
+    rdfs:subClassOf :TelecommandAnalysis ;
+    :d3fend-id "D3-SBSE" ;
+    :definition "The verification of individual telecommand parameters by cross-referencing intended actions with the real-time physical and operational state of the receiving system." ;
+    :kb-article """## How it works
+    
+    This technique acts as a physics-informed filter at the command-ingestion layer. When a command is received, the validator extracts the target parameters (e.g., 'Set Voltage to 400') and queries the current system state from the onboard sensor suite. It uses a state-space representation where the next state is predicted based on the current state and the command,
+    
+    The validator rejects the command if it falls outside a predefined safe operating envelope. In a water treatment plant, for example, a remote command to open a chemical intake valve would be blocked if the flow sensors indicate the main tank is already at capacity, preventing an overflow that a simple cryptographic check would have allowed.
+    
+    ## Considerations
+    * Sensor Trust: If an attacker compromises the sensors, they can trick the validator into blocking legitimate commands or allowing dangerous ones.
+
+    * Model Fidelity: An overly simplistic model of the system may lead to false negatives, where dangerous edge cases are not caught because the model doesn't account for certain variables (e.g., environmental temperature).
+
+    * State Drift: The internal model must be continuously synchronized with reality to prevent the deadlock of valid commands during unforeseen but safe operational shifts.""" ;
+    :kb-reference :Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensors .
 
 :StaticAnalysisTool a owl:Class ;
     rdfs:label "Static Analysis Tool" ;
@@ -38287,6 +38351,45 @@ Reconnaissance consists of techniques that involve adversaries actively or passi
     :definition "A telecommand or telecontrol is a command sent to control a remote system or systems not directly connected (e.g. via wires) to the place from which the telecommand is sent." ;
     :synonym "Remote Control Command" .
 
+:TelecommandAnalysis a owl:Class,
+        owl:NamedIndividual,
+        :TelecommandAnalysis ;
+    rdfs:label "Telecommand Analysis" ;
+    rdfs:subClassOf :MessageAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :Telecommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Detect ] ;
+    :d3fend-id "D3-TCA" ;
+    :definition "The systematic verification of telecommands to identify malicious or anomalous activity." .
+
+:TelecommandSequenceBaselineModeling a owl:Class,
+        owl:NamedIndividual,
+        :TelecommandSequenceBaselineModeling ;
+    rdfs:label "Telecommand Sequence Baseline Modeling" ;
+    rdfs:subClassOf :TelecommandAnalysis ;
+    :d3fend-id "D3-TSBM" ;
+    :definition "The use of machine learning to establish a high-fidelity behavioral baseline of authorized telecommand sequences, enabling the detection of out-of-order, logically inconsistent, or malicious command injections that deviate from established operational patterns." ;
+    :kb-article """## How it works
+
+This technique utilizes and parses historical telecommand logs, treating the command stream as a structured language. Tokenizing specific command IDs and their associated parameters allows for the training of a sequence-aware model (typically a Long Short-Term Memory (LSTM) network or a Transformer) to learn the conditional probability of a command appearing given the previous command sequence. This creates a probabilistic grammar of the system's nominal operations.
+
+Once the baseline is established, the model operates in an inference mode, either on the ground station or as a hardened on-board software module. For every incoming TC packet, the system calculates the likelihood score of that command following the current operational state. If the probability falls below a predefined threshold, the sequence is flagged as an anomaly. To reduce false positives, the model should be state-aware, meaning it correlates the command sequence with real-time telemetry (TM) to ensure the commands are appropriate for the spacecraft's current physical orientation and subsystem status.
+
+## Considerations
+* Computational Constraints: On-board implementation requires highly optimized, quantized models (e.g., TensorFlow Lite for Microcontrollers) to run within the limited CPU and power envelopes of space-grade hardware.
+
+* Emergency Overrides: The system must distinguish between a malicious anomaly and a rare but valid emergency command sequence that may not have appeared in the training baseline.
+
+* Concept Drift: As a mission evolves (e.g., moving from the commissioning phase to science operations), the normal command profile will change, requiring periodic retraining or adaptive learning loops.
+
+* Data Sparsity: Developing a robust baseline for rare maneuvers requires synthetic data generation, often using a Digital Twin to simulate valid but infrequent command-response cycles.
+
+* Adversarial Evasion: Sophisticated attackers may attempt mimicry attacks, where malicious intent is hidden within sequences that statistically resemble nominal behavior; multi-factor correlation with mission planning is required to mitigate this.""" ;
+    :kb-reference :Reference-SpacecraftTestDataIntegrationManagementTechnologyBasedOnBigDataPlatform .
+
 :TemporalDifferenceLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Temporal Difference Learning" ;
@@ -41970,6 +42073,17 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-reference-of :ContainerImageAnalysis ;
     :kb-reference-title "Kubernetes Hardening Guide" .
 
+:Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensorsa a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Context-aware intrusion detection method for smart devices with sensors - Florida International University" ;
+    :has-link "https://patents.google.com/patent/US10417413B2"^^xsd:anyURI ;
+    :kb-abstract "A smart device can include a data oriented sensor providing a numerical value, a logic oriented sensor providing a state, a sensor value collector connected to the data oriented sensor, a sensor logic state detector connected to the logic oriented sensor, a data processor connected to the sensor value collector and the sensor logic state detector, and a data analyzer connected to the data processor. The data processor can take the numerical value received from the sensor value collector, calculate an average value from the numerical value, sample the state receiving from the sensor logic state detector, and create an input matrix by using the average value and the sampled state. The data analyzer can receive the input matrix, train an analytical model, and check a data to indicate whether a state of the smart device is malicious or not." ;
+    :kb-author "Amit Kumar Sikder, Hidayet Aksu, A. Selcuk Uluagac" ;
+    :kb-mitre-analysis "This patent details a framework that creates a contextual model by observing changes in sensor data to distinguish between benign and malicious commands, specifically focusing on how commands affect the physical state of the device. " ;
+    :kb-organization "Florida International University" ;
+    :kb-reference-of :StateBasedSemanticEvaluation ;
+    :kb-reference-title "Context-aware intrusion detection method for smart devices with sensors" .
+
 :Reference-ControlLogix5570and5560Controllers a owl:NamedIndividual,
         :UserManualReference ;
     rdfs:label "Reference - ControlLogix 5570 and 5560 Controllers" ;
@@ -42263,6 +42377,16 @@ This patent includes File Content Signatures because in the case of a script fil
     :kb-reference-of :SystemCallAnalysis ;
     :kb-reference-title "Deterministic method for detecting and blocking of exploits on interpreted code" .
 
+:Reference-DevelopmentAndImplementationOfAPilotIntentRecognitionModelBasedOnOperationalSequences a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Development and Implementation of a Pilot Intent Recognition Model Based on Operational Sequences" ;
+    :has-link "https://www.mdpi.com/2226-4310/12/9/780"^^xsd:anyURI ;
+    :kb-abstract "With the advancement of intelligent human-computer interaction (IHCI) technology, the accurate recognition of an operator's intent has become essential for improving the collaborative efficiency in complex tasks. To address the challenges posed by stringent safety requirements and limited data availability in pilot intent recognition within the aviation domain, this paper presents a human intent recognition model based on operational sequence comparison. The model is built based on standard operational sequences and employs multi-dimensional scoring metrics, including operation matching degree, sequence matching degree, and coverage rate, to enable real-time dynamic analysis and intent recognition of flight operations. To evaluate the effectiveness of the model, an experimental platform was developed using Python 3.8 (64-bit) to simulate 46 key buttons in a flight cockpit. Additionally, five categories of typical flight tasks along with three operational test conditions were designed. Data were collected from 10 participants with flight simulation experience to assess the model's performance in terms of recognition accuracy and robustness under various operational scenarios, including segmented operations, abnormal operations, and special sequence operations. The experimental results demonstrated that both the linear weighting model and the feature hierarchical recognition model enabled all three feature scoring metrics to achieve high intent recognition accuracy. This approach effectively overcomes the limitations of traditional methods in capturing complex temporal relationships while also addressing the challenge of limited availability of annotated data. This paper proposes a novel technical approach for intelligent human-computer interaction systems within the aviation domain, demonstrating substantial theoretical significance and promising application potential." ;
+    :kb-author "Xiaodong Mao, Lishi Ding, Xiaofang Sun, Liping Pang, Ye Deng, Xin Wang" ;
+    :kb-mitre-analysis "This paper develops an Intention Recognition Model that validates pilot commands against Standard Operational Sequences. It uses metrics like sequence matching degree and sequential logic to detect abnormal operations in flight cockpits." ;
+    :kb-reference-of :SequentialLogicAndTemporalHeuristics ;
+    :kb-reference-title "Development and Implementation of a Pilot Intent Recognition Model Based on Operational Sequences" .
+
 :Reference-DHS-CCTV-Technology-Handbook a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - DHS CCTV Technology Handbook" ;
@@ -42281,6 +42405,16 @@ This patent includes File Content Signatures because in the case of a script fil
     :kb-reference-of :One-timePassword,
         :StrongPasswordPolicy ;
     :kb-reference-title "Digital Identity Guidelines" .
+
+:Reference-DigitalTwinAssistedMachineLearningForPredictiveCybersecurityInIACS a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Digital Twin-Assisted Machine Learning for Predictive Cybersecurity in IACS" ;
+    :has-link "https://www.researchgate.net/publication/397380238_Digital_Twin-Assisted_Machine_Learning_for_Predictive_Cybersecurity_in_IACS"^^xsd:anyURI ;
+    :kb-abstract "The convergence of Industrial Automation and Control Systems (IACS) with the Industrial Internet of Things (IIoT) has enhanced operational efficiency but also expanded the attack surface for sophisticated cyber threats. Traditional cybersecurity mechanisms often struggle to predict and mitigate these evolving attacks in real time. This paper proposes a Digital Twin-Assisted Machine Learning (DT-ML) framework for predictive cybersecurity in IACS environments. The digital twin simulates the behavior of physical industrial processes, generating realistic datasets that capture system dynamics under both normal and attack conditions. These datasets are utilized to train machine learning models capable of recognizing and classifying emerging attack patterns with high accuracy. The integration of digital twins enables continuous system monitoring, proactive threat prediction, and adaptive learning through simulated attack-response scenarios. Experimental results demonstrate that the proposed DT-ML approach improves early attack detection, reduces false alarms, and enhances the resilience of IACS networks against both known and zero-day threats. The study highlights the transformative potential of digital twins as a cyber-physical security enabler, bridging the gap between virtual simulations and real-time defense mechanisms." ;
+    :kb-author "Abdul Azeez Kolapo" ;
+    :kb-mitre-analysis "This paper demonstrates how high-fidelity virtual mirrors of physical infrastructure can be leveraged to train predictive AI, allowing for the pre-emptive identification of complex cyberattacks in industrial control settings before they affect the physical layer." ;
+    :kb-reference-of :PredictiveImpactSimulation ;
+    :kb-reference-title "Digital Twin-Assisted Machine Learning for Predictive Cybersecurity in IACS" .
 
 :Reference-DistributedMeta-informationQueryInANetwork_Bit9Inc a owl:NamedIndividual,
         :PatentReference ;
@@ -42371,6 +42505,17 @@ to retrieve the appropriate public key.  Message transit from author to recipien
         :StandaloneHoneynet ;
     :kb-reference-title "Dynamic selection and generation of a virtual clone for detonation of suspicious content within a honey network" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-EdgeApplicationDiscoveringAndManagementStateMachineObjectsInAutomationControllersForMESAndDCSApplications a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Edge application discovering and management state machine objects in automation controllers for MES and DCS applications - Rockwell Automation Technologies Inc." ;
+    :has-link "https://patents.google.com/patent/US12055924B2/en"^^xsd:anyURI ;
+    :kb-abstract "A state machine management component that executes on an edge device within an industrial facility is capable of discovering state machines defined on industrial controllers and translating the state machine definitions to information models that allow the state machines to be discovered and utilized by remote client applications. The edge-level information models allow the client applications to render or consume the state machine data generated by the controller, graphically render the state machines, submit commands, or set values, to the controller as state machine commands via the edge device. The edge-level system thus allows client applications with no prior knowledge of the control-level state machines to discover, retrieve, and interact with state machines defined on the industrial controllers." ;
+    :kb-author "Joachim Thomsen, Stephen C Briant, Martin Petrick, Frank Jordan, Manuel Sukerman, Daniel J Aardsma, John B Dart, Derrick Tapscott, James Butler" ;
+    :kb-mitre-analysis "This patent details a framework that creates a contextual model by observing changes in sensor data to distinguish between benign and malicious commands, specifically focusing on how commands affect the physical state of the device. " ;
+    :kb-organization "Rockwell Automation Technologies Inc." ;
+    :kb-reference-of :SequentialLogicAndTemporalHeuristics ;
+    :kb-reference-title "Edge application discovering and management state machine objects in automation controllers for MES and DCS applications" .
 
 :Reference-EmbeddingContextsForOn-lineThreatsIntoResponsePolicyZones-VerisignInc a owl:NamedIndividual,
         :PatentReference ;
@@ -44599,6 +44744,15 @@ Monitoring SMB write requests still creates some noise, particularly with named 
         :SystemVulnerabilityAssessment ;
     :kb-reference-title "Software vulnerability graph database" .
 
+:Reference-SpacecraftTestDataIntegrationManagementTechnologyBasedOnBigDataPlatform a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Spacecraft Test Data Integration Management Technology Based On Big Data Platform" ;
+    :has-link "https://scpe.org/index.php/scpe/article/view/2416/803"^^xsd:anyURI ;
+    :kb-abstract "In this paper, a general test platform for spacecraft data management is designed and constructed. This paper introduces a portable software development environment based on LUA. The technology of space environment data management, comprehensive analysis, parameter correction and visual display of spacecraft is realized. The relationship between continuity, mixed dispersion, variation and indication of remote sensing data is studied. This project uses the integrated Long Short Term Memory network (LSTM) technology to detect anomalies in satellite remote sensing observation data. Give full play to the advantages of laser scanning tunneling microscope in the nonlinear field. The combination of this method and the matrix method can improve the adaptive ability of spacecraft in an operation state to better identify abnormal information in remote sensing data. Experiments show that the algorithm can significantly improve the anomaly detection rate of the system. The system can monitor the front test device and record the data. The method can be connected with the space vehicle's central control and automatic test system. The comprehensive management of the integrated test system of space vehicles is realized." ;
+    :kb-author "Nanqi Gong" ;
+    :kb-reference-of :TelecommandSequenceBaselineModeling ;
+    :kb-reference-title "Spacecraft Test Data Integration Management Technology Based On Big Data Platform" .
+
 :Reference-Squiblydoo_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-04-003: Squiblydoo - MITRE" ;
@@ -45635,4 +45789,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
