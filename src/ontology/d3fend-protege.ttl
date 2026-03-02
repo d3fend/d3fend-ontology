@@ -24588,16 +24588,16 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
     :definition "The use of a digital twin or high-fidelity sandbox to simulate the short-term outcome of a telecommand before it is committed to the system's physical actuators." ;
     :kb-article """## How it works
 
-    This technique introduces a look-ahead delay in the command execution chain. Before a high-consequence command (like 'Ignite Thruster' or 'Purge System') is executed, the telecommand analysis agent passes the command to a Digital Twin (a software replica of the hardware). The twin runs a fast-time simulation of the next N seconds of operation. If the simulation predicts a 'Safe Mode' trigger, a hardware collision, or a thermal runaway, the agent blocks the real-world execution and alerts the operator.
+This technique introduces a look-ahead delay in the command execution chain. Before a high-consequence command (like 'Ignite Thruster' or 'Purge System') is executed, the telecommand analysis agent passes the command to a Digital Twin (a software replica of the hardware). The twin runs a fast-time simulation of the next N seconds of operation. If the simulation predicts a 'Safe Mode' trigger, a hardware collision, or a thermal runaway, the agent blocks the real-world execution and alerts the operator.
 
-    This technique is the ultimate defense against sane-looking malicious commands that cause cascading failures. By verifying the consequence rather than the syntax, it effectively mitigates zero-day logic attacks that haven't been modeled in simpler state-based validators.
-    
-    ## Considerations
-    * Computational Cost: Requires significant on-board or edge-computing resources to run simulations in near-real-time.
+This technique is the ultimate defense against sane-looking malicious commands that cause cascading failures. By verifying the consequence rather than the syntax, it effectively mitigates zero-day logic attacks that haven't been modeled in simpler state-based validators.
 
-    * Determinism: The system must be deterministic enough for the simulation to be accurate; chaotic environments (e.g., high-turbulence flight) make predictive simulation much harder.
+## Considerations
+* Computational Cost: Requires significant on-board or edge-computing resources to run simulations in near-real-time.
 
-    * Time-to-Execute Constraints: Adding a simulation step increases the command-to-action latency, which may be unacceptable for time-critical safety maneuvers.""" ;
+* Determinism: The system must be deterministic enough for the simulation to be accurate; chaotic environments (e.g., high-turbulence flight) make predictive simulation much harder.
+
+* Time-to-Execute Constraints: Adding a simulation step increases the command-to-action latency, which may be unacceptable for time-critical safety maneuvers.""" ;
     :kb-reference :Reference-DigitalTwinAssistedMachineLearningForPredictiveCybersecurityInIACS .
 
 :PrimaryStorage a owl:Class ;
@@ -27122,16 +27122,16 @@ Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Advers
     :definition "The analysis of telecommand streams over time to identify anomalies in execution order, frequency, or prerequisites that indicate automated attacks or logic-based exploitation." ;
     :kb-article """## How it works
 
-    This technqiue utilizes Finite State Machines (FSM) and temporal windows to audit the conversation between the controller and the system. It maintains a rolling history of commands to ensure they follow a strict operational logic. For instance, a 'Firmware Commit' command is flagged as malicious if it is not preceded by a 'Firmware Upload' and a 'Checksum Verify' command within a specific time window. 
-    
-    Furthermore, it appliest temporal jeuristics to detect command flooding or cadence shifts. For example, if a drone typically receives one heartbeat command every 100ms, a sudden burst of ten commands in 10ms triggers an automated rate-limiting response. This protects against buffer overflows and ensures that the system's command processor is not overwhelmed by rapid-fire malicious instructions.
-    
-    ## Considerations
-    * Interleaved Streams: In systems with multiple authorized operators, the analyzer must be able to distinguish between different sessions to avoid incorrectly flagging interleaved valid commands as out-of-sequence.
+This technqiue utilizes Finite State Machines (FSM) and temporal windows to audit the conversation between the controller and the system. It maintains a rolling history of commands to ensure they follow a strict operational logic. For instance, a 'Firmware Commit' command is flagged as malicious if it is not preceded by a 'Firmware Upload' and a 'Checksum Verify' command within a specific time window. 
 
-    * Latency Overhead: Maintaining and querying an FSM for every command packet adds processing time, which can be critical in high-speed control loops.
+Furthermore, it appliest temporal jeuristics to detect command flooding or cadence shifts. For example, if a drone typically receives one heartbeat command every 100ms, a sudden burst of ten commands in 10ms triggers an automated rate-limiting response. This protects against buffer overflows and ensures that the system's command processor is not overwhelmed by rapid-fire malicious instructions.
+    
+## Considerations
+* Interleaved Streams: In systems with multiple authorized operators, the analyzer must be able to distinguish between different sessions to avoid incorrectly flagging interleaved valid commands as out-of-sequence.
 
-    * Protocol Rigidity: Strict sequential logic can prevent emergency overrides if the emergency sequence itself wasn't modeled in the FSM.""" ;
+* Latency Overhead: Maintaining and querying an FSM for every command packet adds processing time, which can be critical in high-speed control loops.
+
+* Protocol Rigidity: Strict sequential logic can prevent emergency overrides if the emergency sequence itself wasn't modeled in the FSM.""" ;
     :kb-reference :Reference-DevelopmentAndImplementationOfAPilotIntentRecognitionModelBasedOnOperationalSequences,
         :Reference-EdgeApplicationDiscoveringAndManagementStateMachineObjectsInAutomationControllersForMESAndDCSApplications .
 
@@ -28131,17 +28131,17 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
     :d3fend-id "D3-SBSE" ;
     :definition "The verification of individual telecommand parameters by cross-referencing intended actions with the real-time physical and operational state of the receiving system." ;
     :kb-article """## How it works
-    
-    This technique acts as a physics-informed filter at the command-ingestion layer. When a command is received, the validator extracts the target parameters (e.g., 'Set Voltage to 400') and queries the current system state from the onboard sensor suite. It uses a state-space representation where the next state is predicted based on the current state and the command,
-    
-    The validator rejects the command if it falls outside a predefined safe operating envelope. In a water treatment plant, for example, a remote command to open a chemical intake valve would be blocked if the flow sensors indicate the main tank is already at capacity, preventing an overflow that a simple cryptographic check would have allowed.
-    
-    ## Considerations
-    * Sensor Trust: If an attacker compromises the sensors, they can trick the validator into blocking legitimate commands or allowing dangerous ones.
 
-    * Model Fidelity: An overly simplistic model of the system may lead to false negatives, where dangerous edge cases are not caught because the model doesn't account for certain variables (e.g., environmental temperature).
+This technique acts as a physics-informed filter at the command-ingestion layer. When a command is received, the validator extracts the target parameters (e.g., 'Set Voltage to 400') and queries the current system state from the onboard sensor suite. It uses a state-space representation where the next state is predicted based on the current state and the command,
 
-    * State Drift: The internal model must be continuously synchronized with reality to prevent the deadlock of valid commands during unforeseen but safe operational shifts.""" ;
+The validator rejects the command if it falls outside a predefined safe operating envelope. In a water treatment plant, for example, a remote command to open a chemical intake valve would be blocked if the flow sensors indicate the main tank is already at capacity, preventing an overflow that a simple cryptographic check would have allowed.
+    
+## Considerations
+* Sensor Trust: If an attacker compromises the sensors, they can trick the validator into blocking legitimate commands or allowing dangerous ones.
+
+* Model Fidelity: An overly simplistic model of the system may lead to false negatives, where dangerous edge cases are not caught because the model doesn't account for certain variables (e.g., environmental temperature).
+
+* State Drift: The internal model must be continuously synchronized with reality to prevent the deadlock of valid commands during unforeseen but safe operational shifts.""" ;
     :kb-reference :Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensors .
 
 :StaticAnalysisTool a owl:Class ;
