@@ -5387,8 +5387,32 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
 
 :BusMessage a owl:Class ;
     rdfs:label "Bus Message" ;
-    rdfs:subClassOf :DigitalMessage ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :carried-by ;
+            owl:someValuesFrom :ElectricalSignal ] ;
     :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
+
+:BusMessageBaselineAnalysis a :BusMessageBaselineAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Bus Message Baseline Analysis" ;
+    rdfs:subClassOf :BusTrafficAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :BusMessage ] ;
+    :d3fend-id "D3-BMBA" ;
+    :definition "Using machine learning to establish a behavioral baseline of authorized bus command sequences." ;
+    :kb-article """## How it works
+Historical bus traffic is ingested into a sequence-aware model, such as a Long Short-Term Memory (LSTM) network. The model is trained to treat the stream of Bus IDs, Function Codes, and Data Payloads as a structured language, learning the transition probabilities between different messages. For example, in a SpaceWire environment, the model learns that a "Memory Read" command must be followed by a specific "Acknowledge" command within a rigid temporal window.
+
+Once deployed, the model functions as an on-path or off-path Intrusion Detection System (IDS). It calculates a surprise or anomaly score for each sequence of messages. If an attacker attempts to inject a command that is out-of-order—such as a "Thruster Fire" command appearing without the preceding "Arming" sequence—the model identifies the break in the logical chain and alerts the flight software or ground control.
+
+## Considerations
+* Determinism: High-priority real-time systems like MIL-STD-1553 require very low-latency inference to prevent delayed responses.
+
+* False Positives: Non-deterministic events (like emergency resets) must be included in the training set to avoid false alarms.""" ;
+    :kb-reference :Reference-TargetedDetectionForAttacksOnTheMILSTD1553Bus .
 
 :BusNetwork a owl:Class ;
     rdfs:label "Bus Network" ;
@@ -5438,18 +5462,32 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
             owl:onProperty :analyzes ;
             owl:someValuesFrom :BusNetworkTraffic ] ;
     :d3fend-id "D3-BTA" ;
-    :definition "Analysis of communications bus traffic (e.g., MIL-STD-1553, CAN, SpaceWire) to identify anomalies, policy violations, or malicious activity. " ;
-    :kb-article """## How it works
-    Bus traffic analysis involves passively observing bus traffic and normalizing each transaction into key fields (e.g., direction, message type, endpoints/IDs, sub-address/function, length/count, and optionally payload). Each observed message is commpared against an explicit, updateable rule set that defines “normal behavior” as many sub-rules (allowed messages, valid field values/ranges, permitted command/response patterns, etc.). Messages that match no rule or violate any sub-rule are flagged as abnormal, optionally captured for forensics, and reported over an out-of-band channel; heavier analysis can be offloaded to a separate processing device while the monitor continues continuous status reporting.
+    :definition "Analyzing the timing, protocol structure, and data payloads of communication bus traffic to identify unauthorized activity." .
 
-Where precise timing can be measured and controlled, the system can add prevention by using timing as a lightweight authenticity signal. Each protected transmitter and a trusted monitor agree on a secret, continuously generated sequence of allowed inter-message gaps; transmitters enforce the scheduled gap and the monitor verifies it per message. Timing violations or unknown/prohibited IDs can be acted on immediately (e.g., interrupting the message early), with escalation for repeated violations up to isolating/suspending the misbehaving transmitter. This provides intrusion confinement without consuming payload bytes.
+:BusTrafficSignatureAnalysis a :BusTrafficSignatureAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Bus Traffic Signature Analysis" ;
+    rdfs:subClassOf :BusTrafficAnalysis ;
+    :d3fend-id "D3-BTSA" ;
+    :definition "Real-time analysis of bus traffic to identify known attack patterns based on predefined signatures." ;
+    :kb-article """## How it works
+A passive Bus Monitor (BM) or an inline security gateway captures every word or packet (e.g., 1553 Command Words or CAN Frames) on a bus network. The monitor extracts key fields, including IDs, Command/Status bits, Subaddresses, and Data Payload. The extracted fields are compared against three categories of signatures:
+
+* Protocol Signatures: Checks for malformed headers, invalid parity, or illegal mode codes (e.g., a "Transmitter Shutdown" command sent to a flight-critical remote terminal).
+* Logic Signatures: Compares the transaction against the ICD. For example, if RT 05 should only ever receive data on SA 10, a "Transmit" command to RT 05 SA 10 is flagged.
+* Timing Signatures: Monitors the inter-message gap. If a response arrives faster or slower than the standard allowed window (e.g., 4-12 ms for MIL-STD-1553), it suggests a spoofing attempt.
+
+Upon a match the system generates an alert or, in active configurations, prevents the packet from reaching its destination by injecting noise/error bits.
 
 ## Considerations
-* Rule management: rule files should be securely validated/authenticated before activation; support controlled updates and rollback.
-* Coverage vs. false positives: tighter rules and deeper inspections improve detection but can increase false alarms; tune by subsystem criticality.
-* Performance and offload: deep inspection and logging can be selective based on risk rating; use out-of-band reporting to avoid impacting bus timing.""" ;
-    :kb-reference :Reference-BusDataMonitor_TheBoeingCompany,
-        :Reference-ZbCANAZeroByteCANDefenseSystem .
+* False Negatives: This technique cannot detect zero-day attacks or legitimate commands used maliciously (e.g., a valid command sent at a "bad" time).
+
+* Latency: For 1Mbps buses like MIL-STD-1553, the signature check must be performed in hardware (e.g., FPGA) to avoid delaying critical flight data.
+
+* Evasion: Attackers may use "Gray-hole" attacks where they slightly vary payloads to avoid exact signature matches while still achieving the desired effect.""" ;
+    :kb-reference :Reference-BusRepeaterAndBitInjectorForMILSTD15531760CommunicationsBus,
+        :Reference-IntrusionDetectionForInternetOfVehilesCANBusCommunicationsUsingMachineLearningAnEmpiricalStudyOnTheCICIoV2024Dataset .
 
 :ByteSequenceEmulation a :ByteSequenceEmulation,
         owl:Class,
@@ -41317,17 +41355,16 @@ Methods, systems, and apparatus, including computer programs encoded on computer
     :kb-reference-title "Broadcast isolation and level 3 network switch" ;
     :todo "MITRE Analysis was not found" .
 
-:Reference-BusDataMonitor_TheBoeingCompany a owl:NamedIndividual,
+:Reference-BusRepeaterAndBitInjectorForMILSTD15531760CommunicationsBus a owl:NamedIndividual,
         :PatentReference ;
-    rdfs:label "Reference - Bus Data Monitor - The Boeing Company" ;
-    :has-link "https://patents.google.com/patent/US10691573B2"^^xsd:anyURI ;
-    :kb-abstract "Disclosed is a bus data monitor (“BDM”) for use with a MIL-STD-1553 data bus (“1553 bus”). The BDM includes one or more processing units and a computer-readable medium. The computer-readable medium includes encoded thereon computer-executable instructions to cause the one or more processing units to receive data from the 1553 bus in signal communication with the BDM, access a rule set from a computer file stored on the computer-readable medium, compare the received data from the 1553 bus against the rule set, and determine if the received data violates any of the sub-rules defined in the rule set, where the rule set includes a plurality of defined sub-rules." ;
-    :kb-author "Josh D. Eckhardt, Thomas E. Donofrio, Khaled Serag" ;
-    :kb-mitre-analysis "This patent details a hardware-integrated monitoring system that captures and validates bus traffic against a predefined model of authorized message sequences and timing constraints to detect anomalies or unauthorized commands in real-time." ;
-    :kb-organization "The Boeing Company" ;
-    :kb-reference-of :BusTrafficAnalysis ;
-    :kb-reference-title "Bus Data Monitor" ;
-    :todo "MITRE Analysis was not found" .
+    rdfs:label "Reference - Bus repeater and bit injector for MIL-STD-1553/1760 communications bus - National Technology & Engineering Solutions of Sandia, LLC " ;
+    :has-link "https://www.osti.gov/biblio/2541937"^^xsd:anyURI ;
+    :kb-abstract "A fault insertion device (FID) comprises a transceiver and an FPGA. The transceiver receives signals from a MIL-STD-1553/1760 communications bus. The FPGA evaluates the signals received from the communications bus against a set of rules stored by the FPGA. Based upon the set of rules, the FPGA can selectively modify messages received from the communications bus prior to transmission to a remote terminal or a bus controller that is configured to communicate on the communications bus." ;
+    :kb-author "Jason P. Krein, Jeremy W. Giron, Matthew S. Geuss, Robert Nevett IV, Stephen T. Simpson, Roger Martin Kilgore, Jacob Edward Leemaster" ;
+    :kb-mitre-analysis "This patent describes a hardware-based traffic monitor (FPGA) that evaluates 1553 signals against a stored set of rules and can selectively modify or block messages that violate these signatures before they reach the controller." ;
+    :kb-organization "National Technology & Engineering Solutions of Sandia, LLC" ;
+    :kb-reference-of :BusTrafficSignatureAnalysis ;
+    :kb-reference-title "Bus repeater and bit injector for MIL-STD-1553/1760 communications bus" .
 
 :Reference-CAR-2014-05-001%3ARPCActivity_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
@@ -43109,6 +43146,16 @@ This patent describes ensuring that a driver associated with the agent is initia
     :has-link "https://patents.google.com/patent/US7240368B1"^^xsd:anyURI ;
     :kb-reference-of :NetworkTrafficSignatureAnalysis ;
     :kb-reference-title "Intrusion and misuse deterrence system employing a virtual network" .
+
+:Reference-IntrusionDetectionForInternetOfVehilesCANBusCommunicationsUsingMachineLearningAnEmpiricalStudyOnTheCICIoV2024Dataset a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Intrusion Detection for Internet of Vehicles CAN Bus Communications Using Machine Learning: An Empirical Study on the CICIoV2024 Dataset" ;
+    :has-link "https://www.mdpi.com/1999-5903/18/1/42"^^xsd:anyURI ;
+    :kb-abstract "The rapid integration of connectivity and automation in modern vehicles has significantly expanded the attack surface of in-vehicle networks, particularly the Controller Area Network (CAN) bus, which lacks native security mechanisms. This study investigates machine learning-based intrusion detection for Internet of Vehicles (IoV) environments using the CICIoV2024 dataset. Unlike prior studies that rely on highly redundant traffic traces, this work applies strict de-duplication to eliminate repetitive CAN frames, resulting in a dataset of unique attack signatures. To ensure statistical robustness despite the reduced data size, Stratified K-Fold Cross-Validation was employed. Experimental results reveal that while traditional models like Random Forest (optimized with ANOVA feature selection) maintain stability (F1-Macro ≈ 0.64), Deep Learning models fail to generalize (F1-Macro < 0.55) when denied the massive redundancy they typically require. These findings challenge the “near-perfect” detection rates reported in the literature, suggesting that previous benchmarks may reflect data leakage rather than true anomaly detection capabilities. The study concludes that lightweight models offer superior resilience for resource-constrained vehicular environments when evaluated on realistic, non-redundant data." ;
+    :kb-author "Hop Le, Izzat Alsmadi" ;
+    :kb-mitre-analysis "This paper highlights the accuracy trap in signature-based detection and identifies that the first three data bytes and the specific CAN ID are the most critical features for defining robust, lightweight signatures in automotive networks." ;
+    :kb-reference-of :BusTrafficSignatureAnalysis ;
+    :kb-reference-title "Intrusion Detection for Internet of Vehicles CAN Bus Communications Using Machine Learning: An Empirical Study on the CICIoV2024 Dataset" .
 
 :Reference-IntrusionDetectionUsingAHeartbeat_SophosLtd a owl:NamedIndividual,
         :PatentReference ;
@@ -45069,6 +45116,16 @@ Based on the trust rating an alert is generated identifying the incoming email m
     :kb-reference-title "Tamper proof mutating software" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-TargetedDetectionForAttacksOnTheMILSTD1553Bus a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Targeted Detection for Attacks on the MIL-STD-1553 Bus" ;
+    :has-link "https://ieeexplore.ieee.org/document/10288202"^^xsd:anyURI ;
+    :kb-abstract "The rapid integration of connectivity and automation in modern vehicles has significantly expanded the attack surface of in-vehicle networks, particularly the Controller Area Network (CAN) bus, which lacks native security mechanisms. This study investigates machine learning-based intrusion detection for Internet of Vehicles (IoV) environments using the CICIoV2024 dataset. Unlike prior studies that rely on highly redundant traffic traces, this work applies strict de-duplication to eliminate repetitive CAN frames, resulting in a dataset of unique attack signatures. To ensure statistical robustness despite the reduced data size, Stratified K-Fold Cross-Validation was employed. Experimental results reveal that while traditional models like Random Forest (optimized with ANOVA feature selection) maintain stability (F1-Macro ≈ 0.64), Deep Learning models fail to generalize (F1-Macro < 0.55) when denied the massive redundancy they typically require. These findings challenge the “near-perfect” detection rates reported in the literature, suggesting that previous benchmarks may reflect data leakage rather than true anomaly detection capabilities. The study concludes that lightweight models offer superior resilience for resource-constrained vehicular environments when evaluated on realistic, non-redundant data." ;
+    :kb-author "Matthew Rogers, Kasper Rasmussen" ;
+    :kb-mitre-analysis "This paper highlights the accuracy trap in signature-based detection and identifies that the first three data bytes and the specific CAN ID are the most critical features for defining robust, lightweight signatures in automotive networks." ;
+    :kb-reference-of :BusMessageBaselineAnalysis ;
+    :kb-reference-title "Targeted Detection for Attacks on the MIL-STD-1553 Bus" .
+
 :Reference-TCGTrustedAttestationProtocolUseCasesForTPMFamilies1.2And2.0AndDICE a owl:NamedIndividual,
         :SpecificationReference ;
     rdfs:label "Reference - TCG Trusted Attestation Protocol Use Cases for TPM Families 1.2 and 2.0 and DICE" ;
@@ -45540,16 +45597,6 @@ With keystroke dynamics the biometric template used to identify an individual is
     :kb-reference-of :InputDeviceAnalysis ;
     :kb-reference-title "Keystroke Dynamics" ;
     :todo "MITRE Analysis was not found" .
-
-:Reference-ZbCANAZeroByteCANDefenseSystem a :AcademicPaperReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - ZbCAN: A Zero-Byte CAN Defense System" ;
-    :has-link "https://www.usenix.org/system/files/sec23fall-prepub-381-serag.pdf"^^xsd:anyURI ;
-    :kb-abstract "Controller Area Network (CAN) is a widely used network protocol. In addition to being the main communication medium for vehicles, it is also used in factories, medical equipment, elevators, and avionics. Unfortunately, CAN was designed without any security features. Consequently, it has come under scrutiny by the research community, showing its security weakness. Recent works have shown that a single compromised ECU on a CANbuscan launch a multitude of attacks ranging from message injection, to bus flooding, to attacks exploiting CAN's error handling mechanism. Although several works have attempted to secure CAN, we argue that none of their approaches could be widely adopted for reasons inherent in their design. In this work, we introduce ZBCAN, a defense system that uses zero bytes of the CAN frame to secure against the most common CAN attacks, including message injection, impersonation, flooding, and error handling, without using encryption or MACs, while taking into consideration performance metrics such as delay, busload, and data-rate." ;
-    :kb-mitre-analysis "This paper introduces a backwards-compatible defense framework that secures Controller Area Networks (CAN) by using a secret, dynamically generated sequence of inter-frame space timings to detect and preemptively block malicious message injections without requiring cryptographic overhead or payload modifications." ;
-    :kb-author "Khaled Serag, Rohit Bhatia, Akram Faqih, Muslum Ozgur Ozmen, Vireshwar Kumar, Z. Berkay Celik, Dongyan Xu" ;
-    :kb-reference-of :BusTrafficAnalysis ;
-    :kb-reference-title "ZbCAN: A Zero-Byte CAN Defense System" .
 
 :RegOpenKeyA a :GetSystemConfigValue,
         owl:NamedIndividual ;
