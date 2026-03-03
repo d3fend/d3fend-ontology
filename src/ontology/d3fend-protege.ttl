@@ -5390,11 +5390,36 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
     rdfs:subClassOf :DigitalMessage ;
     :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
 
+:BusMessageAuthentication a :BusMessageAuthentication,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Bus Message Authentication" ;
+    rdfs:subClassOf :BusMessageHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :BusMessage ] ;
+    :d3fend-id "D3-BMA" ;
+    :definition "Applies cryptographic primitives to individual bus frames to verify the sender's identity and ensure the integrity of the data payload." ;
+    :kb-article """## How it works
+Bus Message Authentication functions as a continuous validation layer that operates between the physical transmission of a signal and the application layer's processing of data. Every node on a bus network is provisioned with a cryptographic key and a synchronized 'freshness' state (such as a monotonic counter). When a node prepares to transmit, it generates a Message Authentication Code (MAC) which is created by hashing the message content, the sender's unique ID, and the current freshness value using its secret key. This MAC is then appended to the outgoing frame.
+
+As messages circulate on the bus network, receiving nodes do not immediately trust the incoming data. Instead, a hardware controller intercepts the frame and performs a real-time parallel verification. The controller re-calculates the expected MAC based on its own copy of the key and the current network freshness state. If the received MAC matches the calculated one, the message is passed to the system for further action. If the MAC is missing, incorrect, or stale (indicating a replay of an older message), the hardware silently drops the frame or triggers a security alert. 
+
+## Considerations
+* Bandwidth Overhead: Adding authentication tags (MACs) and freshness values reduces the effective data throughput; this requires a trade-off between the desired security level (tag length) and the available bus capacity.
+
+* Real-Time Latency: Cryptographic processing must occur in hardware (e.g., via AES-NI, FPGA logic, or specialized ASICs) to meet the deterministic timing constraints of safety-critical systems.
+
+* Key Management: A robust mechanism for secure key storage and lifecycle management (e.g., rotation and revocation) is required to ensure that a single compromised node does not jeopardize the entire network.
+
+* Protocol Transparency: In legacy environments, authentication must often be implemented as a shim that remains compatible with existing protocol standards to avoid breaking legacy hardware.""" ;
+    :kb-reference :Reference-ControllerAreaNetworkMessageAuthentication .
+
 :BusMessageHardening a :BusMessageHardening,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Bus Message Hardening" ;
-    rdfs:subClassOf :DefensiveTechnique,
+    rdfs:subClassOf :MessageHardening,
         [ a owl:Restriction ;
             owl:onProperty :hardens ;
             owl:someValuesFrom :BusMessage ] ;
@@ -14913,6 +14938,28 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Dynamic_program_analysis> ;
     :definition "Dynamic program analysis is the analysis of computer software that is performed by executing programs on a real or virtual processor." ;
     :todo "Find better full description; wikipedia entry is too narrow in focus after first sentence and misses a lot of the security aspects" .
+
+:DynamicBusMessageTimingOrchestration a :DynamicBusMessageTimingOrchestration,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Dynamic Bus Message Timing Orchestration" ;
+    rdfs:subClassOf :BusMessageHardening ;
+    :d3fend-id "D3-DBMTO" ;
+    :definition "Embeds synchronized, cryptographically-derived timing delays into the intervals between bus messages, using the inter-frame space as a non-data-based authentication channel." ;
+    :kb-article """## How it works
+Dynamic Bus Message Timing Orchestration functions by transforming the idle Inter-Frame Space (IFS), the silent period between two consecutive bus messages, into a dynamic authentication channel. In a standard communications bus protocol, this gap is typically a static, fixed duration used only for synchronization or bus recovery. Under this countermeasure, the gap becomes a temporal secret that changes for every message according to a pre-shared, synchronized cryptographic sequence.
+
+As bus messages are transmitted, both the sender and the designated bus monitor calculate the required delay for the next transmission using a synchronized internal state, such as a pseudo-random number generator or a rolling code. For a message to be accepted as legitimate, its arrival time relative to the previous message must deviate by a precise, sub-microsecond value that matches this calculated secret.
+
+The system serves as a temporal gatekeeper: if an attacker attempts to inject a malicious bus message, they will statistically fail to match the required timing gap because they lack the underlying cryptographic synchronization. The bus monitor identifies any message falling outside this narrow, shifting temporal window as an intrusion.
+
+## Considerations
+* Clock Drift and Synchronization: All bus network nodes must maintain a high-precision temporal lock; if a node's clock drifts beyond the "timing secret" increment, its legitimate bus messages will be rejected.
+
+* Hardware Jitter: The inherent electrical noise and processing jitter of the bus network nodes must be lower than the timing increments used for the secret, otherwise the system will experience high false-alarm rates.
+
+* Protocol Impact: While no additional data bytes are added to the payload, the intentional introduction of variable delays slightly increases the overall cycle time of the bus, which may impact strictly deterministic real-time systems.""" ;
+    :kb-reference :Reference-ZbCANAZeroByteCANDefenseSystem .
 
 :ElectricalSignal a owl:Class ;
     rdfs:label "Electrical Signal" ;
@@ -41989,6 +42036,17 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-reference-of :ContainerImageAnalysis ;
     :kb-reference-title "Kubernetes Hardening Guide" .
 
+:Reference-ControllerAreaNetworkMessageAuthentication a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Controller area network message authentication - Ford Global Technologies LLC" ;
+    :has-link "https://patents.google.com/patent/US20180131522A1"^^xsd:anyURI ;
+    :kb-abstract "Method and apparatus are disclosed for controller area network message authentication. An example disclosed vehicle includes a data bus and a first control unit communicatively coupled to the data bus. The example first control unit generates a secured message by (a) calculating a message authentication code, (b) truncating the message authentication code, (c) truncating a freshness value used to generate the message authentication code, and (d) placing portions of the truncated message authentication code and the truncated freshness value in separate portions of the secured message." ;
+    :kb-author "James Martin Lawlis, Douglas A. Oliver, Xin Ye" ;
+    :kb-mitre-analysis "This patent describes a method for securing communication by calculating a MAC, truncating it, and also truncating a freshness value (counter) to fit within the restricted data field of a CAN frame (8 bytes)." ;
+    :kb-organization "Ford Global Technologies LLC" ;
+    :kb-reference-of :BusMessageAuthentication ;
+    :kb-reference-title "Controller area network message authentication " .
+
 :Reference-ControlLogix5570and5560Controllers a owl:NamedIndividual,
         :UserManualReference ;
     rdfs:label "Reference - ControlLogix 5570 and 5560 Controllers" ;
@@ -45510,6 +45568,16 @@ With keystroke dynamics the biometric template used to identify an individual is
     :kb-reference-of :InputDeviceAnalysis ;
     :kb-reference-title "Keystroke Dynamics" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-ZbCANAZeroByteCANDefenseSystem a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - ZbCAN: A Zero-Byte CAN Defense System" ;
+    :has-link "https://www.usenix.org/system/files/sec23fall-prepub-381-serag.pdf"^^xsd:anyURI ;
+    :kb-abstract "Controller Area Network (CAN) is a widely used network protocol. In addition to being the main communication medium for vehicles, it is also used in factories, medical equipment, elevators, and avionics. Unfortunately, CAN was designed without any security features. Consequently, it has come under scrutiny by the research community, showing its security weakness. Recent works have shown that a single compromised ECU on a CANbuscan launch a multitude of attacks ranging from message injection, to bus flooding, to attacks exploiting CAN's error handling mechanism. Although several works have attempted to secure CAN, we argue that none of their approaches could be widely adopted for reasons inherent in their design. In this work, we introduce ZBCAN, a defense system that uses zero bytes of the CAN frame to secure against the most common CAN attacks, including message injection, impersonation, flooding, and error handling, without using encryption or MACs, while taking into consideration performance metrics such as delay, busload, and data-rate." ;
+    :kb-author "Khaled Serag, Rohit Bhatia, Akram Faqih, Muslum Ozgur Ozmen, Vireshwar Kumar, Z. Berkay Celik, Dongyan Xu" ;
+    :kb-mitre-analysis "This paper introduces a backwards-compatible defense framework that secures Controller Area Networks (CAN) by using a secret, dynamically generated sequence of inter-frame space timings to detect and preemptively block malicious message injections without requiring cryptographic overhead or payload modifications." ;
+    :kb-reference-of :DynamicBusMessageTimingOrchestration ;
+    :kb-reference-title "ZbCAN: A Zero-Byte CAN Defense System" .
 
 :RegOpenKeyA a :GetSystemConfigValue,
         owl:NamedIndividual ;
