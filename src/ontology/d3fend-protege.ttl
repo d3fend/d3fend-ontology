@@ -34097,7 +34097,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1486 a owl:Class ;
     rdfs:label "Data Encrypted for Impact" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CryptographicKey ] ;
     :attack-id "T1486" ;
     :definition "Adversaries may encrypt data on target systems or on large numbers of systems in a network to interrupt availability to system and network resources. They can attempt to render stored data inaccessible by encrypting files or data on local and remote drives and withholding access to a decryption key. This may be done in order to extract monetary compensation from a victim in exchange for decryption or a decryption key (ransomware) or to render data permanently inaccessible in cases where the key is not saved or transmitted.(Citation: US-CERT Ransomware 2016)(Citation: FireEye WannaCry 2017)(Citation: US-CERT NotPetya 2017)(Citation: US-CERT SamSam 2018)" .
 
@@ -34127,7 +34133,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1490 a owl:Class ;
     rdfs:label "Inhibit System Recovery" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingSystemConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemServiceSoftware ] ;
     :attack-id "T1490" ;
     :definition "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options." .
 
@@ -35277,7 +35289,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1548.005 a owl:Class ;
     rdfs:label "Temporary Elevated Cloud Access" ;
-    rdfs:subClassOf :T1548 ;
+    rdfs:subClassOf :T1548,
+        [ a owl:Restriction ;
+            owl:onProperty :abuses ;
+            owl:someValuesFrom :AccessControlConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CloudUserAccount ] ;
     :attack-id "T1548.005" ;
     :definition "Adversaries may abuse permission configurations that allow them to gain temporarily elevated access to cloud resources. Many cloud environments allow administrators to grant user or service accounts permission to request just-in-time access to roles, impersonate other accounts, pass roles onto resources and services, or otherwise gain short-term access to a set of privileges that may be distinct from their own." .
 
@@ -35873,8 +35891,15 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1562.008 a owl:Class ;
     rdfs:label "Disable or Modify Cloud Logs" ;
-    rdfs:subClassOf :T1562 ;
+    rdfs:subClassOf :T1562,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :CloudServiceSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudConfiguration ] ;
     :attack-id "T1562.008" ;
+    :comment "We have modelled the definition not the name; this technique modifies the cloud logging configuration but not tampering with the logs themselves." ;
     :definition "An adversary may disable or modify cloud logging capabilities and integrations to limit what data is collected on their activities and avoid detection. Cloud environments allow for collection and analysis of audit and application logs that provide insight into what activities a user does within the environment. If an adversary has sufficient permissions, they can disable or modify logging to avoid detection of their activities." .
 
 :T1562.009 a owl:Class ;
