@@ -20621,6 +20621,27 @@ Policy and Value Iteration. Towards Data Science.  [Link](https://towardsdatasci
     :kb-article """## References
 Model-free (reinforcement learning). Wikipedia. [Link](https://en.wikipedia.org/wiki/Model-free_(reinforcement_learning)).)""" .
 
+:ModelBasedTelecommandAnalysis a :ModelBasedTelecommandAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Model-based Telecommand Analysis" ;
+    rdfs:subClassOf :TelecommandAnalysis ;
+    :d3fend-id "D3-MBTCA" ;
+    :definition "Analyzes telecommands by simulating their predicted impact on a system's physical and functional state against a library of safety invariants and behavioral models." ;
+    :kb-article """## How it works
+
+This technique functions as a state-aware security filter that evaluates the semantic intent of a telecommand rather than just its syntax or encryption. When a telecommand is received, the system retrieves the current context of the system based on its sensor or telemetry data. It then utilizes a behavioral model, built using a set of known good command data, to predict the state transition that would occur if the command were executed. This "look-ahead" simulation allows the system to determine if the command is logically consistent with the vehicle's current physical constraints and mission objectives.
+
+The predicted outcome is cross-referenced against a set of mission-critical safety invariants and forbidden states. For example, the system would flag a command to rotate a sensitive optical instrument toward the sun, or an instruction to fire thrusters while in a delicate docking phase, as a high-confidence anomaly. By verifying that the command sequence complies with the laws of physics and the specific operational logic of the spacecraft's hardware, the countermeasure can mitigate malicious command injections that are cryptographically valid but intended to cause physical damage or mission failure.
+    
+## Considerations
+* Sensor Trust: If an attacker compromises the sensors, they can trick the validator into blocking legitimate commands or allowing dangerous ones.
+
+* Model Fidelity: An overly simplistic model of the system may lead to false negatives, where dangerous edge cases are not caught because the model doesn't account for certain variables (e.g., environmental temperature).
+
+* State Drift: The internal model must be continuously synchronized with reality to prevent the deadlock of valid commands during unforeseen but safe operational shifts.""" ;
+    :kb-reference :Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensors .
+
 :Modem a owl:Class ;
     rdfs:label "Modem" ;
     rdfs:subClassOf :ComputerNetworkNode ;
@@ -26901,27 +26922,6 @@ If an attacker wants to inject some data into the program, for example as a para
     :kb-article """## References
 GeeksforGeeks. (n.d.). ANN - Self Organizing Neural Network (SONN). [Link](https://www.geeksforgeeks.org/ann-self-organizing-neural-network-sonn/)""" ;
     :todo "May be called SONN based on citation" .
-
-:SemanticTelecommandAnalysis a owl:Class,
-        owl:NamedIndividual,
-        :SemanticTelecommandAnalysis ;
-    rdfs:label "Semantic Telecommand Analysis" ;
-    rdfs:subClassOf :TelecommandAnalysis ;
-    :d3fend-id "D3-STCA" ;
-    :definition "Verifying individual telecommand parameters by cross-referencing intended actions with the real-time physical and operational state of the receiving system." ;
-    :kb-article """## How it works
-
-This technique acts as a physics-informed filter at the command-ingestion layer. When a command is received, the validator extracts the target parameters (e.g., 'Set Voltage to 400') and queries the current system state from the onboard sensor suite. It uses a state-space representation where the next state is predicted based on the current state and the command,
-
-The validator rejects the command if it falls outside a predefined safe operating envelope. In a water treatment plant, for example, a remote command to open a chemical intake valve would be blocked if the flow sensors indicate the main tank is already at capacity, preventing an overflow that a simple cryptographic check would have allowed.
-    
-## Considerations
-* Sensor Trust: If an attacker compromises the sensors, they can trick the validator into blocking legitimate commands or allowing dangerous ones.
-
-* Model Fidelity: An overly simplistic model of the system may lead to false negatives, where dangerous edge cases are not caught because the model doesn't account for certain variables (e.g., environmental temperature).
-
-* State Drift: The internal model must be continuously synchronized with reality to prevent the deadlock of valid commands during unforeseen but safe operational shifts.""" ;
-    :kb-reference :Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensors .
 
 :Semi-supervisedBoosting a owl:Class,
         owl:NamedIndividual ;
@@ -38360,7 +38360,7 @@ Once the baseline is established, the model operates in an inference mode, eithe
     rdfs:label "Telecommand Outcome Simulation" ;
     rdfs:subClassOf :TelecommandAnalysis ;
     :d3fend-id "D3-TCOS" ;
-    :definition "Simulating the short-term outcome of a telecommand before it is committed to the system's physical actuators." ;
+    :definition "Simulating the short-term outcome of a telecommand before it is committed to a system's physical actuators." ;
     :kb-article """## How it works
 
 This technique introduces a look-ahead delay in the command execution chain. Before a high-consequence command (like 'Ignite Thruster' or 'Purge System') is executed, the telecommand analysis agent passes the command to a Digital Twin (a software replica of the hardware). The twin runs a fast-time simulation of the next N seconds of operation. If the simulation predicts a 'Safe Mode' trigger, a hardware collision, or a thermal runaway, the agent blocks the real-world execution and alerts the operator.
@@ -42096,7 +42096,7 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-reference-of :ContainerImageAnalysis ;
     :kb-reference-title "Kubernetes Hardening Guide" .
 
-:Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensorsa a owl:NamedIndividual,
+:Reference-ContextAwareIntrusionDetectionMethodForSmartDevicesWithSensors a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Context-aware intrusion detection method for smart devices with sensors - Florida International University" ;
     :has-link "https://patents.google.com/patent/US10417413B2"^^xsd:anyURI ;
@@ -42104,7 +42104,7 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-author "Amit Kumar Sikder, Hidayet Aksu, A. Selcuk Uluagac" ;
     :kb-mitre-analysis "This patent details a framework that creates a contextual model by observing changes in sensor data to distinguish between benign and malicious commands, specifically focusing on how commands affect the physical state of the device. " ;
     :kb-organization "Florida International University" ;
-    :kb-reference-of :SemanticTelecommandAnalysis ;
+    :kb-reference-of :ModelBasedTelecommandAnalysis ;
     :kb-reference-title "Context-aware intrusion detection method for smart devices with sensors" .
 
 :Reference-ControlLogix5570and5560Controllers a owl:NamedIndividual,
