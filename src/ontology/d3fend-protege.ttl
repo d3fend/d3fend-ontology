@@ -26182,6 +26182,44 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
     rdfs:subClassOf :Command ;
     :definition "A remote command is an instruction or set of instructions issued from a geographically or logically distant location to control, configure, or elicit a response from a target system, device, or entity. The execution of a remote command does not require direct physical interaction with the target; instead, it relies on a communication link to transmit the instruction and receive any resulting feedback or data." .
 
+:RemoteCommandAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :RemoteCommandAuthentication ;
+    rdfs:label "Remote Command Authentication" ;
+    rdfs:subClassOf :RemoteCommandAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :RemoteCommand ] ;
+    :d3fend-id "D3-RCA" ;
+    :definition "Authenticating the sender of a remote command and ensuring message integrity." ;
+    :kb-article """## How it works
+Remote command authentication binds each command to a trusted issuing principal by attaching a cryptographic credential, typically a message authentication code (MAC) or digital signature, computed over the command content and relevant metadata. The receiving system recomputes or verifies this credential using a shared secret or public key; commands that fail verification are dropped before reaching the execution layer. This ensures that even if an adversary can observe or intercept command traffic, they cannot forge or alter commands without access to the underlying key material.
+
+To prevent replay attacks, authentication is paired with a freshness mechanism. This is commonly implemented as a monotonically increasing sequence counter, a timestamp-bounded validity window, or a nonce bound to a specific command instance. The receiving system maintains state about previously accepted commands and rejects any that fall outside the expected freshness window, regardless of whether their cryptographic credential is valid.
+
+## Considerations
+* Transport vs. command-layer implementation: When commands are issued over session-oriented, cryptographically protected transports (TLS, SSH, mTLS), authentication and anti-replay may be provided by the transport layer rather than implemented per-command. In stateless, connectionless, or highly constrained environments such as spacecraft telecommanding, these mechanisms must be implemented at the command layer itself.
+
+* Key management: The security of the countermeasure is bounded by the security of the underlying key lifecycle — generation, distribution, storage, rotation, and revocation. Compromised key material defeats cryptographic authentication entirely.
+
+* Symmetric vs. asymmetric schemes: HMAC-based MACs (e.g., HMAC-SHA256) are computationally efficient and well-suited to constrained receivers, but require secure shared-secret distribution. Digital signatures (e.g., ECDSA) provide non-repudiation and avoid shared-secret distribution but impose higher computational cost.
+
+* Sequence counter persistence: In systems with intermittent connectivity or power cycling (e.g., embedded systems, spacecraft), sequence counters or nonce state must survive restarts to prevent replay windows from resetting to an exploitable baseline.""" ;
+    :kb-reference :Reference-SpaceDataLinkSecurityProtocol-CCSDS,
+        :Reference-TheKerberosNetworkAuthenticationService-IETF .
+
+:RemoteCommandHardening a owl:Class,
+        owl:NamedIndividual,
+        :RemoteCommandHardening ;
+    rdfs:label "Remote Command Hardening" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Harden ] ;
+    :d3fend-id "D3-RCH" ;
+    :definition "Remote command hardening includes measures taken to ensure the confidentiality and integrity of remote commands." ;
+    :enables :Harden .
+
 :RemoteDatabaseQuery a owl:Class ;
     rdfs:label "Remote Database Query" ;
     rdfs:subClassOf :DatabaseQuery,
@@ -44599,6 +44637,16 @@ Monitoring SMB write requests still creates some noise, particularly with named 
         :SystemVulnerabilityAssessment ;
     :kb-reference-title "Software vulnerability graph database" .
 
+:Reference-SpaceDataLinkSecurityProtocol-CCSDS a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Space Data Link Security Protocol - CCSDS" ;
+    :has-link "https://ccsds.org/Pubs/355x0b2.pdf"^^xsd:anyURI ;
+    :kb-abstract "The purpose of this Recommended Standard is to specify the Space Data Link Security Protocol (hereafter referred as the Security Protocol) for CCSDS data links.  This protocol provides a security header and trailer along with associated procedures that may be used with the CCSDS Telemetry, Telecommand, Advanced Orbiting Systems, and Unified Space Data Link Protocols to provide a structured method for applying data authentication and/or data confidentiality at the Data Link Layer." ;
+    :kb-author "" ;
+    :kb-organization "Consultative Committee for Space Data Systems (CCSDS)" ;
+    :kb-reference-of :RemoteCommandAuthentication ;
+    :kb-reference-title "CCSDS 355.0-B-2: Space Data Link Security Protocol" .
+
 :Reference-Squiblydoo_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-04-003: Squiblydoo - MITRE" ;
@@ -45073,6 +45121,16 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-author "Matt Weir, Sudhir Aggarwal, Michael Collins, Henry Stern" ;
     :kb-reference-of :StrongPasswordPolicy ;
     :kb-reference-title "Testing Metrics for Password Creation Policies by Attacking Large Sets of Revealed Passwords" .
+
+:Reference-TheKerberosNetworkAuthenticationService-IETF a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - The Kerberos Network Authentication Service (V5) - IETF" ;
+    :has-link "https://tools.ietf.org/html/rfc1510"^^xsd:anyURI ;
+    :kb-abstract "This document gives an overview and specification of Version 5 of the protocol for the Kerberos network authentication system. Version 4, described elsewhere, is presently in production use at MIT's Project Athena, and at other Internet sites." ;
+    :kb-author "J. Kohl, C. Neuman" ;
+    :kb-organization "Internet Engineering Task Force (IETF)" ;
+    :kb-reference-of :RemoteCommandAuthentication ;
+    :kb-reference-title "The Kerberos Network Authentication Service (V5)" .
 
 :Reference-ThePyramidOfPain-DavidBianco a :InternetArticleReference,
         owl:NamedIndividual ;
@@ -45635,4 +45693,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
