@@ -16418,6 +16418,35 @@ Rules, often called signatures, are used for both generic and targeted malware d
     :synonym "File Content Signatures",
         "File Signatures" .
 
+:FileContentValidation a :FileContentValidation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Content Validation" ;
+    rdfs:subClassOf :FileAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-FCV" ;
+    :definition "Verifies the integrity of files stored in non-volatile memory by comparing their current state against known-good baselines." ;
+    :kb-article """## How it works
+This technique computes a deterministic digest of a file's byte contents, typically a cryptographic hash (e.g., SHA-256) or, in lower-assurance contexts, a cyclic redundancy check (CRC-32), and compares it against a pre-established reference value stored in a trusted location. At enrollment time, the reference digest is computed from a known-good copy of the file and stored out-of-band from the file itself (e.g., in a signed manifest, a remote integrity database, or a blockchain-anchored ledger). At validation time, the digest is recomputed from the live file and compared; any mismatch indicates that the file has been altered, corrupted, or replaced since enrollment. For finer-grained detection, the file may be segmented into fixed or variable-length blocks, with per-block digests organized into a Merkle tree, allowing the precise location of a modification to be identified rather than merely its presence.
+
+For adversarial settings, a bare CRC or unsalted hash is insufficient, as an attacker with knowledge of the scheme can modify a file and recompute a valid digest. Robust deployments use a keyed HMAC or an asymmetric digital signature over the digest, binding the integrity check to a secret or private key that the attacker cannot replicate. The reference store itself must also be protected — if an attacker can overwrite both the file and its stored digest, validation is defeated. 
+
+## Considerations
+* Hash algorithm strength: CRC and MD5 are unsuitable for adversarial integrity checks; use SHA-256 or stronger. CRC is appropriate only for accidental corruption detection (e.g., transmission errors).
+
+* Reference store integrity: The digest database or manifest must be stored in a trust boundary separate from the files it validates; co-location allows an attacker to update both simultaneously.
+
+* Key management: HMAC or signature-based schemes introduce a secret or private key whose compromise nullifies all integrity guarantees; key rotation and storage hygiene are critical.
+
+* Performance tradeoffs: Full-file hashing of large files on every access is expensive; block-level or Merkle-tree approaches, lazy validation, or caching of recent digests can reduce overhead.
+
+* Compliance relevance: PCI DSS Requirement 11.5 mandates file integrity monitoring with weekly comparison and alerting, making this countermeasure directly applicable to regulatory audit trails.
+""" ;
+    :kb-reference :Reference-ComputerFileIntegrityVerification-GenDigitalInc,
+        :Reference-TheDesignAndImplementationOfTripewireAFileSystemIntegrityChecker .
+
 :FileCopyEvent a owl:Class ;
     rdfs:label "File Copy Event" ;
     rdfs:subClassOf :FileCreationEvent,
@@ -41936,6 +41965,17 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-reference-of :HomoglyphDetection ;
     :kb-reference-title "Computer-implemented methods and systems for identifying visually similar text character strings" .
 
+:Reference-ComputerFileIntegrityVerification-GenDigitalInc a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Computer file integrity verification - Gen Digital Inc" ;
+    :has-link "https://patents.google.com/patent/EP1049977B1"^^xsd:anyURI ;
+    :kb-abstract "System and method for verifying the integrity of contents within a computer file. A security value S is stored within the file. A verification function f is applied against the entire contents of the file including S, where f is a function of S. Results R of the applying step are compared against a preselected value r, where r is not stored within the file. When R equals r, a determination is made that the file has not been modified. f is typically a distributive invertible function such as the Cyclic Redundancy Check (CRC) function known as modulo p, where p is a prime number and is one bit greater than the length of S. Typically, the value of r is zero. Before executing the verification function f, a check generating program is first executed. This check generating program is executed by a computer that is remote from the file, further enhancing the security of the system." ;
+    :kb-author "John Millard" ;
+    :kb-mitre-analysis "A foundational patent specifically on CRC-based file integrity. " ;
+    :kb-organization "Gen Digital Inc" ;
+    :kb-reference-of :FileContentValidation ;
+    :kb-reference-title "Computer file integrity verification" .
+
 :Reference-ComputerMotherboardHavingPeripheralSecurityFunctions a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Computer motherboard having peripheral security functions" ;
@@ -45080,6 +45120,17 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-author "Matt Weir, Sudhir Aggarwal, Michael Collins, Henry Stern" ;
     :kb-reference-of :StrongPasswordPolicy ;
     :kb-reference-title "Testing Metrics for Password Creation Policies by Attacking Large Sets of Revealed Passwords" .
+
+:Reference-TheDesignAndImplementationOfTripewireAFileSystemIntegrityChecker a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - The design and implementation of tripwire: a file system integrity checker" ;
+    :has-link "https://dl.acm.org/doi/10.1145/191177.191183"^^xsd:anyURI ;
+    :kb-abstract "At the heart of most computer systems is a file system. The file system contains user data, executable programs, configuration and authorization information, and (usually) the base executable version of the operating system itself. The ability to monitor file systems for unauthorized or unexpected changes gives system administrators valuable data for protecting and maintaining their systems. However, in environments of many networked heterogeneous platforms with different policies and software, the task of monitoring changes becomes quite daunting. Tripwire is a tool that aids UNIX system administrators and users in monitoring a designated set of files and directories for any changes. Used with system files on a regular (e.g., daily) basis, Tripwire can notify system administrators of corrupted or altered files, so corrective actions may be taken in a timely manner. Tripwire may also be used on user or group files or databases to signal changes.This paper describes the design and implementation of the Tripwire tool. It uses interchangeable “signature” (usually, message digest) routines to identify changes in files, and is highly configurable. Tripwire is no-cost software, available on the Internet, and is currently in use on thousands of machines around the world." ;
+    :kb-author "Gene H. Kim, Eugene H. Spafford" ;
+    :kb-mitre-analysis "The seminal academic paper behind the most widely deployed file integrity monitoring tool. Referenced extensively in subsequent work." ;
+    :kb-organization "Purdue University" ;
+    :kb-reference-of :FileContentValidation ;
+    :kb-reference-title "The design and implementation of tripwire: a file system integrity checker" .
 
 :Reference-ThePyramidOfPain-DavidBianco a :InternetArticleReference,
         owl:NamedIndividual ;
