@@ -16421,35 +16421,6 @@ Rules, often called signatures, are used for both generic and targeted malware d
     :synonym "File Content Signatures",
         "File Signatures" .
 
-:FileContentValidation a :FileContentValidation,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "File Content Validation" ;
-    rdfs:subClassOf :FileHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :validates ;
-            owl:someValuesFrom :File ] ;
-    :d3fend-id "D3-FCV" ;
-    :definition "Verifies the integrity of files stored in non-volatile memory by comparing their current state against known-good baselines." ;
-    :kb-article """## How it works
-This technique computes a deterministic digest of a file's byte contents, typically a cryptographic hash (e.g., SHA-256) or, in lower-assurance contexts, a cyclic redundancy check (CRC-32), and compares it against a pre-established reference value stored in a trusted location. At enrollment time, the reference digest is computed from a known-good copy of the file and stored out-of-band from the file itself (e.g., in a signed manifest, a remote integrity database, or a blockchain-anchored ledger). At validation time, the digest is recomputed from the live file and compared; any mismatch indicates that the file has been altered, corrupted, or replaced since enrollment. For finer-grained detection, the file may be segmented into fixed or variable-length blocks, with per-block digests organized into a Merkle tree, allowing the precise location of a modification to be identified rather than merely its presence.
-
-For adversarial settings, a bare CRC or unsalted hash is insufficient, as an attacker with knowledge of the scheme can modify a file and recompute a valid digest. Robust deployments use a keyed HMAC or an asymmetric digital signature over the digest, binding the integrity check to a secret or private key that the attacker cannot replicate. The reference store itself must also be protected — if an attacker can overwrite both the file and its stored digest, validation is defeated. 
-
-## Considerations
-* Hash algorithm strength: CRC and MD5 are unsuitable for adversarial integrity checks; use SHA-256 or stronger. CRC is appropriate only for accidental corruption detection (e.g., transmission errors).
-
-* Reference store integrity: The digest database or manifest must be stored in a trust boundary separate from the files it validates; co-location allows an attacker to update both simultaneously.
-
-* Key management: HMAC or signature-based schemes introduce a secret or private key whose compromise nullifies all integrity guarantees; key rotation and storage hygiene are critical.
-
-* Performance tradeoffs: Full-file hashing of large files on every access is expensive; block-level or Merkle-tree approaches, lazy validation, or caching of recent digests can reduce overhead.
-
-* Compliance relevance: PCI DSS Requirement 11.5 mandates file integrity monitoring with weekly comparison and alerting, making this countermeasure directly applicable to regulatory audit trails.
-""" ;
-    :kb-reference :Reference-ComputerFileIntegrityVerification-GenDigitalInc,
-        :Reference-TheDesignAndImplementationOfTripewireAFileSystemIntegrityChecker .
-
 :FileCopyEvent a owl:Class ;
     rdfs:label "File Copy Event" ;
     rdfs:subClassOf :FileCreationEvent,
@@ -16684,6 +16655,35 @@ Windows - In Microsoft Azure, file integrity monitoring can be enabled which can
 Files can change constantly due to the non-static nature of a computer system. File Integrity Monitoring works best when pointed at a narrow scope of critical files to limit the number of unneccessary files that may be modified over the course of normal use. The accuracy and precision of defined policies also affect the efficacy of this technique.""" ;
     :kb-reference :Reference-FileIntegrityMonitoringinMicrosoftDefenderforCloud-Microsoft,
         :Reference-Tripwire .
+
+:FileIntegrityValidation a :FileIntegrityValidation,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "File Integrity Validation" ;
+    rdfs:subClassOf :FileHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :validates ;
+            owl:someValuesFrom :File ] ;
+    :d3fend-id "D3-FCV" ;
+    :definition "Verifies the integrity of files stored in non-volatile memory by comparing their current state against known-good baselines." ;
+    :kb-article """## How it works
+This technique computes a deterministic digest of a file's byte contents, typically a cryptographic hash (e.g., SHA-256) or, in lower-assurance contexts, a cyclic redundancy check (CRC-32), and compares it against a pre-established reference value stored in a trusted location. At enrollment time, the reference digest is computed from a known-good copy of the file and stored out-of-band from the file itself (e.g., in a signed manifest, a remote integrity database, or a blockchain-anchored ledger). At validation time, the digest is recomputed from the live file and compared; any mismatch indicates that the file has been altered, corrupted, or replaced since enrollment. For finer-grained detection, the file may be segmented into fixed or variable-length blocks, with per-block digests organized into a Merkle tree, allowing the precise location of a modification to be identified rather than merely its presence.
+
+For adversarial settings, a bare CRC or unsalted hash is insufficient, as an attacker with knowledge of the scheme can modify a file and recompute a valid digest. Robust deployments use a keyed HMAC or an asymmetric digital signature over the digest, binding the integrity check to a secret or private key that the attacker cannot replicate. The reference store itself must also be protected — if an attacker can overwrite both the file and its stored digest, validation is defeated. 
+
+## Considerations
+* Hash algorithm strength: CRC and MD5 are unsuitable for adversarial integrity checks; use SHA-256 or stronger. CRC is appropriate only for accidental corruption detection (e.g., transmission errors).
+
+* Reference store integrity: The digest database or manifest must be stored in a trust boundary separate from the files it validates; co-location allows an attacker to update both simultaneously.
+
+* Key management: HMAC or signature-based schemes introduce a secret or private key whose compromise nullifies all integrity guarantees; key rotation and storage hygiene are critical.
+
+* Performance tradeoffs: Full-file hashing of large files on every access is expensive; block-level or Merkle-tree approaches, lazy validation, or caching of recent digests can reduce overhead.
+
+* Compliance relevance: PCI DSS Requirement 11.5 mandates file integrity monitoring with weekly comparison and alerting, making this countermeasure directly applicable to regulatory audit trails.
+""" ;
+    :kb-reference :Reference-ComputerFileIntegrityVerification-GenDigitalInc,
+        :Reference-TheDesignAndImplementationOfTripewireAFileSystemIntegrityChecker .
 
 :FileInternalStructureVerification a :FileInternalStructureVerification,
         owl:Class,
@@ -41988,7 +41988,7 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-author "John Millard" ;
     :kb-mitre-analysis "A foundational patent specifically on CRC-based file integrity. " ;
     :kb-organization "Gen Digital Inc" ;
-    :kb-reference-of :FileContentValidation ;
+    :kb-reference-of :FileIntegrityValidation ;
     :kb-reference-title "Computer file integrity verification" .
 
 :Reference-ComputerMotherboardHavingPeripheralSecurityFunctions a owl:NamedIndividual,
@@ -45144,7 +45144,7 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-author "Gene H. Kim, Eugene H. Spafford" ;
     :kb-mitre-analysis "The seminal academic paper behind the most widely deployed file integrity monitoring tool. Referenced extensively in subsequent work." ;
     :kb-organization "Purdue University" ;
-    :kb-reference-of :FileContentValidation ;
+    :kb-reference-of :FileIntegrityValidation ;
     :kb-reference-title "The design and implementation of tripwire: a file system integrity checker" .
 
 :Reference-ThePyramidOfPain-DavidBianco a :InternetArticleReference,
