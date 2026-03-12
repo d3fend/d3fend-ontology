@@ -14919,6 +14919,27 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Signal> ;
     :definition "Time-varying voltage or current that carries information." .
 
+:ElectromagneticHardening a :ElectromagneticHardening,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Electromagnetic Hardening" ;
+    rdfs:subClassOf :PlatformHardening ;
+    :d3fend-id "D3-EMH" ;
+    :definition "The application of physical and material-level design measures to electronic systems, components, or facilities to reduce their susceptibility to damage or disruption from electromagnetic threats." ;
+    :kb-article """## How it works
+EM hardening operates on the principle of controlling the coupling path between an electromagnetic threat and the sensitive electronics it could affect. At the most fundamental level, this involves creating barriers that reflect, absorb, or redirect unwanted electromagnetic energy before it can induce damaging or disruptive currents in protected circuitry. The physical mechanisms exploited include the Faraday cage effect (conductive enclosures that attenuate external fields), skin-depth shielding (where conductive materials dissipate high-frequency fields before they penetrate), and transient suppression components (such as surge protectors and ferrite chokes) that clamp induced voltages at I/O interfaces.
+
+For threats at higher energy levels or involving ionizing radiation, such as nuclear EMP (NEMP) or space radiation, hardening extends beyond shielding to encompass radiation-tolerant component selection, redundant circuit architectures, and layout practices that minimize antenna-like structures susceptible to field coupling. The approach is inherently defense-in-depth: no single measure provides complete protection, so hardened systems typically layer multiple techniques across the facility, chassis, board, and component levels.
+
+## Considerations
+* Threat scope must be defined early: design choices differ significantly between defending against ambient RFI, conducted EMI on power lines, intentional jamming, HEMP (High-Altitude EMP), or ionizing radiation in space or nuclear environments.
+* Hardening can conflict with thermal management: fully sealed enclosures that maximize shielding often restrict airflow, requiring careful thermal design trade-offs.
+* Testing and certification are mandatory for assurance: claimed shielding effectiveness must be validated through standardized testing (e.g., IEEE 299, MIL-STD-461) rather than inferred from design alone.
+* Maintenance can degrade hardening: field modifications, connector re-terminations, or enclosure repairs can inadvertently introduce shielding gaps, necessitating re-verification procedures.
+""" ;
+    :kb-reference :Reference-SystemAndMethodForProvidingCertifiableElectromagneticPulseAndRFIProtection_InstantAccessNetworksLLC ;
+    :synonym "EM Hardening" .
+
 :ElectromagneticSignal a owl:Class ;
     rdfs:label "Electromagnetic Signal" ;
     rdfs:subClassOf :Signal ;
@@ -25408,7 +25429,10 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
         owl:NamedIndividual,
         :RadiationHardening ;
     rdfs:label "Radiation Hardening" ;
-    rdfs:subClassOf :PlatformHardening,
+    rdfs:subClassOf :ElectromagneticHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :may-harden ;
+            owl:someValuesFrom :CentralProcessingUnit ],
         [ a owl:Restriction ;
             owl:onProperty :may-harden ;
             owl:someValuesFrom :EEPROM ],
@@ -25417,10 +25441,7 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
             owl:someValuesFrom :FlashMemory ],
         [ a owl:Restriction ;
             owl:onProperty :may-harden ;
-            owl:someValuesFrom :PrimaryStorage ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-harden ;
-            owl:someValuesFrom :CentralProcessingUnit ] ;
+            owl:someValuesFrom :PrimaryStorage ] ;
     :d3fend-id "D3-RH" ;
     :definition "Radiation hardening is the process of making electronic components and circuits resistant to damage or malfunction caused by high levels of ionizing radiation." ;
     :kb-article """## How it works 
@@ -26628,7 +26649,7 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
         owl:NamedIndividual,
         :RFShielding ;
     rdfs:label "RF Shielding" ;
-    rdfs:subClassOf :PlatformHardening ;
+    rdfs:subClassOf :ElectromagneticHardening ;
     :d3fend-id "D3-RFS" ;
     :definition "Adding physical barriers to a platform to prevent undesired radio interference." ;
     :kb-reference :Reference-PrivacyAndSecuritySystemsAndMethodsOfUse,
@@ -44882,6 +44903,17 @@ and deploy decoy physical or virtual endpoints.""" ;
     :kb-organization "Nokia of America Corp" ;
     :kb-reference-of :EmailFiltering ;
     :kb-reference-title "System and method for providing anonymous remailing and filtering of electronic mail" .
+
+:Reference-SystemAndMethodForProvidingCertifiableElectromagneticPulseAndRFIProtection_InstantAccessNetworksLLC a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - System and method for providing certifiable electromagnetic pulse and rfi protection through mass-produced shielded containers and rooms - Instant Access Networks LLC" ;
+    :has-link "https://patents.google.com/patent/US20070105445A1"^^xsd:anyURI ;
+    :kb-abstract "Disclosed are a system and method for providing certifiable shielded cabinets and rooms, or pods, to protect devices, equipment and people from electromagnetic interference such as electromagnetic pulse, and directed energy attack. The method simulates the separate electric and magnetic shield requirements and capabilities of each type of materials, simulating them separately and together to form a combined set of materials layered for an enhanced electromagnetic shield that is lighter weight and less expensive. Further disclosed is a system and method for SCADA, RFID, and OID monitoring and controls to enable initial and ongoing testing and control." ;
+    :kb-author "Charles Manto, Joseph Child" ;
+    :kb-mitre-analysis "This patent discloses a system for protecting devices, equipment, and people from EMI, EMP (including high-altitude EMP), RFI, directed energy weapons, and natural events such as extreme solar flares, using layered combinations of lightweight metals and ferrous materials simulated separately and together to optimize shielding effectiveness." ;
+    :kb-organization "Instant Access Networks LLC" ;
+    :kb-reference-of :ElectromagneticHardening ;
+    :kb-reference-title "System and method for providing certifiable electromagnetic pulse and rfi protection through mass-produced shielded containers and rooms" .
 
 :Reference-SystemAndMethodForScanningRemoteServicesToLocateStoredObjectsWithMalware a owl:NamedIndividual,
         :PatentReference ;
