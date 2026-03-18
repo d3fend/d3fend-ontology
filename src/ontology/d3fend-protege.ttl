@@ -5394,7 +5394,7 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Bus Message Authentication" ;
-    rdfs:subClassOf :BusMessageHardening,
+    rdfs:subClassOf :MessageAuthentication,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
             owl:someValuesFrom :BusMessage ] ;
@@ -5414,17 +5414,6 @@ As messages circulate on the bus network, receiving nodes do not immediately tru
 
 * Protocol Transparency: In legacy environments, authentication must often be implemented as a shim that remains compatible with existing protocol standards to avoid breaking legacy hardware.""" ;
     :kb-reference :Reference-ControllerAreaNetworkMessageAuthentication .
-
-:BusMessageHardening a :BusMessageHardening,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Bus Message Hardening" ;
-    rdfs:subClassOf :MessageHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :hardens ;
-            owl:someValuesFrom :BusMessage ] ;
-    :d3fend-id "D3-BMH" ;
-    :definition "The use of cryptographic authentication, data integrity checks, or active protocol enforcement within bus message structures to prevent the unauthorized injection, replay, or modification of bus-level communications." .
 
 :BusNetwork a owl:Class ;
     rdfs:label "Bus Network" ;
@@ -20482,6 +20471,56 @@ Email and messaging are frequently used to deliver malicious content to targets.
 Emails and messages are also complex data structures. They contain files and links, and complex data encodings which vary region to region. Thus the defensive techniques used to analyze emails and messages are highly varied ranging from deep content analysis and execution to social network graph-style analytics to analyze trust or risk.""" ;
     :synonym "Electronic Message Analysis",
         "Email Or Messaging Analysis" .
+
+:MessageAuthentication a :MessageAuthentication,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Message Authentication" ;
+    rdfs:subClassOf :MessageHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :DigitalMessage ] ;
+    :d3fend-id "D3-MAN" ;
+    :definition "Authenticating the sender of a message and ensuring message integrity." ;
+    :kb-article """## How it works
+
+### Digital Signature
+Digital signatures are used to verifying a message is from the expected sender. In email, Secure/Multipurpose Internet Mail Extensions (S/MIME) protocol is typically used to digitally sign messages. A hash value of the sender's message is created and encrypted with the sender's private key to create a digital signature. The message and the digital signature are sent to the recipient where the sender's public key is used to decrypt the digital signature and compute the hash of the message. The computed hash is compared with the hash from the received message, and any difference in the hash values signify the message did not originate from the sender and has been alerted in transit.
+
+### Message Authentication Code (MAC)
+MAC is a fixed size string that is appended to a message to provide message authentication and integrity. The sender MAC signing algorithm takes as input a secret symmetric key shared between sender and recipient and the message to calculate a short tag that is appended to the message. The recipient receives the message with the appended tag, and a MAC verification algorithm is run using the symmetric key to verify the message came from the stated sender and ensure the message has not been tampered with.
+
+## Considerations
+- Public keys associated with digital signatures should be verified by a Certification Authority (CA) to prevent impersonation. The CA verifies the owner of a public key and puts the sender's identity and public key into a certificate that is signed by the CA.
+- Digital signatures provide non-repudiation where a third party can verify the authenticity of the message using the sender's digital certificate signed by the CA.
+- Symmetric keys must be exchanged securely via a private channel and management of new symmetric keys are needed for each pair of participants wishing to exchange messages.""" ;
+    :kb-reference :Reference-DomainKeysIdentifiedMail-Signatures-IETF,
+        :Reference-SecureMultipurposeInternetMailExtensionsMIME-Version3.1 .
+
+:MessageEncryption a :MessageEncryption,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Message Encryption" ;
+    rdfs:subClassOf :MessageHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :DigitalMessage ] ;
+    :d3fend-id "D3-MENCR" ;
+    :definition "Encrypting a message body using a cryptographic key." ;
+    :kb-article """## How it works
+
+### Asymmetric Cryptography
+Asymmetric encryption is typically accomplished using public and private key certificates based on the X.509 standard. The sender encrypts messages using the recipient's public key and the receipt decrypts the message using their private key. Standards that can be used to implement user message encryption include S/MIME (Secure/Multipurpose Internet Mail Extensions) and PGP.
+
+### Symmetric Cryptography
+Symmetric encryption uses the same cryptographic key by both the sender and receiver to encrypt and decrypt a message. Asymmetric key exchange protocols such as Diffie-Hellman can be used to share the cryptographic key with the recipient. For synchronous or low-latency environments (like a message bus), a pre-shared or dynamically derived symmetric key is typically used to minimize computational overhead.
+
+## Considerations
+- Separate configuration settings to enable message encryption are often needed for each messenger client (e.g. webmail, desktop client, mobile).
+- Continuous monitoring to ensure private keys are not compromised and the certificate authority (CA) is trusted.
+- Secure transfer of private keys between multiple devices.
+- Encryption adds latency and increases CPU utilization; while negligible for user-to-user messages, it can be a critical factor for real-time bus systems.""" ;
+    :kb-reference :Reference-SecureMultipurposeInternetMailExtensionsMIME-Version3.1 .
 
 :MessageHardening a :MessageHardening,
         owl:Class,
@@ -39104,54 +39143,6 @@ Access is determined based on the attributes associated with subjects (requester
     rdfs:label "User Manual Reference" ;
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "User Manual" .
-
-:UserMessageAuthentication a owl:Class,
-        owl:NamedIndividual,
-        :UserMessageAuthentication ;
-    rdfs:label "User Message Authentication" ;
-    rdfs:subClassOf :UserMessageHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :authenticates ;
-            owl:someValuesFrom :UserToUserMessage ] ;
-    :d3fend-id "D3-UMAN" ;
-    :definition "Authenticating the sender of a message and ensuring message integrity." ;
-    :kb-article """## How it works
-
-### Digital Signature
-Digital signatures are used to verifying a message is from the expected sender. In email, Secure/Multipurpose Internet Mail Extensions (S/MIME) protocol is typically used to digitally sign messages. A hash value of the sender's message is created and encrypted with the sender's private key to create a digital signature. The message and the digital signature are sent to the recipient where the sender's public key is used to decrypt the digital signature and compute the hash of the message. The computed hash is compared with the hash from the received message, and any difference in the hash values signify the message did not originate from the sender and has been alerted in transit.
-
-### Message Authentication Code (MAC)
-MAC is a fixed size string that is appended to a message to provide message authentication and integrity. The sender MAC signing algorithm takes as input a secret symmetric key shared between sender and recipient and the message to calculate a short tag that is appended to the message. The recipient receives the message with the appended tag, and a MAC verification algorithm is run using the symmetric key to verify the message came from the stated sender and ensure the message has not been tampered with.
-
-## Considerations
-- Public keys associated with digital signatures should be verified by a Certification Authority (CA) to prevent impersonation. The CA verifies the owner of a public key and puts the sender's identity and public key into a certificate that is signed by the CA.
-- Digital signatures provide non-repudiation where a third party can verify the authenticity of the message using the sender's digital certificate signed by the CA.
-- Symmetric keys must be exchanged securely via a private channel and management of new symmetric keys are needed for each pair of participants wishing to exchange messages.""" ;
-    :kb-reference :Reference-DomainKeysIdentifiedMail-Signatures-IETF,
-        :Reference-SecureMultipurposeInternetMailExtensionsMIME-Version3.1 .
-
-:UserMessageEncryption a owl:Class,
-        owl:NamedIndividual,
-        :UserMessageEncryption ;
-    rdfs:label "User Message Encryption" ;
-    rdfs:subClassOf :UserMessageHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :encrypts ;
-            owl:someValuesFrom :UserToUserMessage ] ;
-    :d3fend-id "D3-UMENCR" ;
-    :definition "Encrypting a message body using a cryptographic key." ;
-    :kb-article """## How it works
-
-### Asymmetric Cryptography
-Asymmetric encryption is typically accomplished using public and private key certificates based on the X.509 standard. The sender encrypts messages using the recipient's public key and the receipt decrypts the message using their private key. Standards that can be used to implement message encryption include S/MIME (Secure/Multipurpose Internet Mail Extensions) and PGP.
-### Symmetric Cryptography
-Symmetric encryption uses the same cryptographic key by both the sender and receiver to encrypt and decrypt a message. Asymmetric key exchange protocols such as Diffie-Hellman can be used to share the cryptographic key with the recipient.
-
-## Considerations
-- Separate configuration settings to enable message encryption are often needed for each messenger client (e.g. webmail, desktop client, mobile).
-- Continuous monitoring to ensure private keys are not compromised and the certificate authority (CA) is trusted.
-- Secure transfer of private keys between multiple devices.""" ;
-    :kb-reference :Reference-SecureMultipurposeInternetMailExtensionsMIME-Version3.1 .
 
 :UserMessageHardening a owl:Class,
         owl:NamedIndividual,
