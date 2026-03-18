@@ -14939,28 +14939,6 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     :definition "Dynamic program analysis is the analysis of computer software that is performed by executing programs on a real or virtual processor." ;
     :todo "Find better full description; wikipedia entry is too narrow in focus after first sentence and misses a lot of the security aspects" .
 
-:DynamicBusMessageTimingOrchestration a :DynamicBusMessageTimingOrchestration,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Dynamic Bus Message Timing Orchestration" ;
-    rdfs:subClassOf :BusMessageHardening ;
-    :d3fend-id "D3-DBMTO" ;
-    :definition "Embeds synchronized, cryptographically-derived timing delays into the intervals between bus messages, using the inter-frame space as a non-data-based authentication channel." ;
-    :kb-article """## How it works
-Dynamic Bus Message Timing Orchestration functions by transforming the idle Inter-Frame Space (IFS), the silent period between two consecutive bus messages, into a dynamic authentication channel. In a standard communications bus protocol, this gap is typically a static, fixed duration used only for synchronization or bus recovery. Under this countermeasure, the gap becomes a temporal secret that changes for every message according to a pre-shared, synchronized cryptographic sequence.
-
-As bus messages are transmitted, both the sender and the designated bus monitor calculate the required delay for the next transmission using a synchronized internal state, such as a pseudo-random number generator or a rolling code. For a message to be accepted as legitimate, its arrival time relative to the previous message must deviate by a precise, sub-microsecond value that matches this calculated secret.
-
-The system serves as a temporal gatekeeper: if an attacker attempts to inject a malicious bus message, they will statistically fail to match the required timing gap because they lack the underlying cryptographic synchronization. The bus monitor identifies any message falling outside this narrow, shifting temporal window as an intrusion.
-
-## Considerations
-* Clock Drift and Synchronization: All bus network nodes must maintain a high-precision temporal lock; if a node's clock drifts beyond the "timing secret" increment, its legitimate bus messages will be rejected.
-
-* Hardware Jitter: The inherent electrical noise and processing jitter of the bus network nodes must be lower than the timing increments used for the secret, otherwise the system will experience high false-alarm rates.
-
-* Protocol Impact: While no additional data bytes are added to the payload, the intentional introduction of variable delays slightly increases the overall cycle time of the bus, which may impact strictly deterministic real-time systems.""" ;
-    :kb-reference :Reference-ZbCANAZeroByteCANDefenseSystem .
-
 :ElectricalSignal a owl:Class ;
     rdfs:label "Electrical Signal" ;
     rdfs:subClassOf :Signal ;
@@ -45568,16 +45546,6 @@ With keystroke dynamics the biometric template used to identify an individual is
     :kb-reference-of :InputDeviceAnalysis ;
     :kb-reference-title "Keystroke Dynamics" ;
     :todo "MITRE Analysis was not found" .
-
-:Reference-ZbCANAZeroByteCANDefenseSystem a :AcademicPaperReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - ZbCAN: A Zero-Byte CAN Defense System" ;
-    :has-link "https://www.usenix.org/system/files/sec23fall-prepub-381-serag.pdf"^^xsd:anyURI ;
-    :kb-abstract "Controller Area Network (CAN) is a widely used network protocol. In addition to being the main communication medium for vehicles, it is also used in factories, medical equipment, elevators, and avionics. Unfortunately, CAN was designed without any security features. Consequently, it has come under scrutiny by the research community, showing its security weakness. Recent works have shown that a single compromised ECU on a CANbuscan launch a multitude of attacks ranging from message injection, to bus flooding, to attacks exploiting CAN's error handling mechanism. Although several works have attempted to secure CAN, we argue that none of their approaches could be widely adopted for reasons inherent in their design. In this work, we introduce ZBCAN, a defense system that uses zero bytes of the CAN frame to secure against the most common CAN attacks, including message injection, impersonation, flooding, and error handling, without using encryption or MACs, while taking into consideration performance metrics such as delay, busload, and data-rate." ;
-    :kb-author "Khaled Serag, Rohit Bhatia, Akram Faqih, Muslum Ozgur Ozmen, Vireshwar Kumar, Z. Berkay Celik, Dongyan Xu" ;
-    :kb-mitre-analysis "This paper introduces a backwards-compatible defense framework that secures Controller Area Networks (CAN) by using a secret, dynamically generated sequence of inter-frame space timings to detect and preemptively block malicious message injections without requiring cryptographic overhead or payload modifications." ;
-    :kb-reference-of :DynamicBusMessageTimingOrchestration ;
-    :kb-reference-title "ZbCAN: A Zero-Byte CAN Defense System" .
 
 :RegOpenKeyA a :GetSystemConfigValue,
         owl:NamedIndividual ;
