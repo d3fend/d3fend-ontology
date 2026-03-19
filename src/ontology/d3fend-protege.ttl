@@ -6959,6 +6959,9 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
             owl:onProperty :contains ;
             owl:someValuesFrom :CryptographicMode ],
         [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :CryptographicModuleOperatingMode ],
+        [ a owl:Restriction ;
             owl:onProperty :decrypts ;
             owl:allValuesFrom :DigitalArtifact ],
         [ a owl:Restriction ;
@@ -6970,11 +6973,6 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/Cryptographicmodule> ;
     :definition "The set of hardware, software, and/or firmware that implements approved security functions (including cryptographic algorithms and key generation) and is contained within a cryptographic boundary." ;
     :todo "Add classes for cryptographic protocols, which can be referenced with an implements restriction" .
-
-:CryptographicModuleClearModeTransitionEvent a owl:Class ;
-    rdfs:label "Cryptographic Module Clear Mode Transition Event" ;
-    rdfs:subClassOf :CryptographicModuleEvent ;
-    :definition "A cryptographic module event in which the module transitions to 'clear mode', an operational state in which one or more cryptographic security services (confidentiality, authentication, or both) are suspended or disabled for some or all traffic." .
 
 :CryptographicModuleEvent a owl:Class ;
     rdfs:label "Cryptographic Module Event" ;
@@ -7007,6 +7005,44 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
             owl:onProperty :has-participant ;
             owl:someValuesFrom :CryptographicMode ] ;
     :definition "A cryptographic module event in which the value of a cryptographic mode parameter, governing the algorithm, protocol variant, or combination of security services enforced by the module, transitions from one state to another, resulting in a material change to the protection behavior applied to subsequent operations." .
+
+:CryptographicModuleOperatingMode a owl:Class ;
+    rdfs:label "Cryptographic Module Operating Mode" ;
+    rdfs:subClassOf :OperatingMode ;
+    :definition "A cryptographic module operating mode is a high-level state (such as clear, bypass, or FIPS-approved mode) that dictates the module's security posture, the set of available cryptographic services, and the level of protection applied to sensitive data during that period of operation." .
+
+:CryptographicModuleOperatingModeChangeEvent a owl:Class ;
+    rdfs:label "Cryptographic Module Operating Mode Change Event" ;
+    rdfs:subClassOf :CryptographicModuleEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CryptographicModuleOperatingMode ] ;
+    :definition "A cryptographic module event in which the module transitions from one operating mode to another, such as going from 'functional' to 'clear' mode." .
+
+:CryptographicModuleOperatingModeRestriction a :CryptographicModuleOperatingModeRestriction,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Cryptographic Module Operating Mode Restriction" ;
+    rdfs:subClassOf :OperatingModeRestriction,
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :CrytpographicModuleOperatingMode ] ;
+    :d3fend-id "D3-CMOMR" ;
+    :definition "Restricting the available operating states of a cryptographic module to a predefined secure subset to prevent transitions into vulnerable, maintenance, or plaintext (clear) modes during active operation." ;
+    :kb-article """## How it works
+Cryptographic modules (such as Hardware Security Modules, TPMs, or smart cards) typically support multiple "operating modes" defined by their internal state machines. These often include an Approved Mode (where only NIST-validated algorithms are active), a Non-Approved Mode, and a Bypass/Clear Mode (where data flows without encryption). This countermeasure works by enforcing a policy, either through hardware fuses, physical jumpers, or cryptographically signed configuration files, that disables the module's ability to enter any mode not explicitly required for its production mission.
+
+By locking the module into a specific state, such as FIPS-Approved Only, the system ensures that even a compromised host operating system cannot command the module to enter a "Maintenance" or "Debug" state to leak keys or process data in the clear. Advanced implementations use hardware-based State Machine Enforcement, where the physical transition to a restricted mode requires a hardware-level reset or the presence of a physical "Mode Lock" token, effectively neutralizing software-based mode-switching attacks.
+
+## Considerations
+* Operational Bricking Risk: If a module is permanently restricted (e.g., via hardware fuse) and a firmware bug or configuration error occurs, the module may become unrecoverable because maintenance/recovery modes have been disabled.
+
+* Dual Control (Quorum): For high-security environments, transitions out of a restricted mode should require "m-of-n" authorization (e.g., two security officers) to prevent a single administrator from subverting the restriction.
+
+* Compliance Enforcement: Restricting a module to "Approved Mode Only" simplifies regulatory audits (e.g., PCI-DSS, FIPS 140-3) by removing the technical possibility of using non-compliant, weak, or legacy algorithms.
+""" ;
+    :kb-reference :Reference-AMDASPCryptographicCoProcessorNonProprietarySecurityPolicy-atsec,
+        :Reference-FIPS140-3SecurityRequirementsForCryptographicModules-NIST .
 
 :CustomArchiveFile a owl:Class ;
     rdfs:label "Custom Archive File" ;
@@ -41253,6 +41289,22 @@ The time field indicates the first and last time a system reported a user logged
     :todo "MITRE Analysis was not found",
         "No section headers were given (MITRE Analysis or Document Abstract); all text placed in kb-abstract section." .
 
+:Reference-AMDASPCryptographicCoProcessorNonProprietarySecurityPolicy-atsec a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - AMD ASP Cryptographic CoProcessor Non-Proprietary Security Policy FIPS 140-3: Security Requirements for Cryptographic Modules - atsec" ;
+    :has-link "https://csrc.nist.gov/CSRC/media/projects/cryptographic-module-validation-program/documents/security-policies/140sp4723.pdf"^^xsd:anyURI ;
+    :kb-abstract """This section is informative to the reader to reference cryptographic services and other services of
+AMD Ryzen PRO 7000 Series ASP Cryptographic CoProcessor (the “module”) from Advanced
+Micro Devices (AMD) (the “vendor”). Only the components listed in Section 2.1 are subject to the
+FIPS 140-3 validation. The CMVP (Cryptographic Module Validation Program) makes no
+statement as to the correct operation of the module or the security strengths of the generated
+keys (when supported) if the specific operational environment is not listed on the validation
+certificate.""" ;
+    :kb-mitre-analysis "AMD uses a Soft Fuse Chain to manage the lifecycle of this cryptographic coprocessor. Specifically, Bit 32 of the fuse chain is dedicated to enabling 'FIPS capability'. Once this bit is set (blown) during the manufacturing or provisioning phase, the module is restricted to FIPS-approved algorithms and states." ;
+    :kb-organization "atsec information security corporation" ;
+    :kb-reference-of :CryptographicModuleOperatingModeRestriction ;
+    :kb-reference-title "AMD ASP Cryptographic CoProcessor FIPS 140-3 Non-Proprietary Security Policy FIPS 140-3: Security Requirements for Cryptographic Modules" .
+
 :Reference-AnalysisOfTheWindowsVistaSecurityModel_SymantecCorporation a :AcademicPaperReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Analysis of the Windows Vista Security Model - Symantec Corporation" ;
@@ -42641,6 +42693,16 @@ If a process is conducting a traversal of the directory and accessing files acco
         :IPReputationAnalysis,
         :URLReputationAnalysis ;
     :kb-reference-title "Finding phishing sites" .
+
+:Reference-FIPS140-3SecurityRequirementsForCryptographicModules-NIST a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - FIPS 140-3: Security Requirements for Cryptographic Modules - NIST" ;
+    :has-link "https://csrc.nist.gov/pubs/fips/140-3/final"^^xsd:anyURI ;
+    :kb-abstract "This standard specifies the security requirements for a cryptographic module utilized within a security system protecting sensitive information in computer and telecommunication systems (including voice systems) as defined in Section 5131 of the Information Technology Management Reform Act of 1996, (Public Law 104-106) and the Federal Information Security Management Act of 2002 (Public Law 107-347)." ;
+    :kb-mitre-analysis "The foundational standard that defines 'Approved Mode of Operation' and the requirement for modules to provide indicators and enforcement mechanisms to distinguish between secure and non-secure states." ;
+    :kb-organization "National Institute of Standards and Technology (NIST)" ;
+    :kb-reference-of :CryptographicModuleOperatingModeRestriction ;
+    :kb-reference-title "FIPS 140.3: Security Requirements for Cryptographic Modules" .
 
 :Reference-FIPS-201-3 a owl:NamedIndividual,
         :SpecificationReference ;
