@@ -5393,27 +5393,6 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
             owl:someValuesFrom :ElectricalSignal ] ;
     :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
 
-:BusMessageBaselineAnalysis a :BusMessageBaselineAnalysis,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Bus Message Baseline Analysis" ;
-    rdfs:subClassOf :BusTrafficAnalysis,
-        [ a owl:Restriction ;
-            owl:onProperty :analyzes ;
-            owl:someValuesFrom :BusMessage ] ;
-    :d3fend-id "D3-BMBA" ;
-    :definition "Using machine learning to establish a behavioral baseline of authorized bus command sequences." ;
-    :kb-article """## How it works
-Historical bus traffic is ingested into a sequence-aware model, such as a Long Short-Term Memory (LSTM) network. The model is trained to treat the stream of Bus IDs, Function Codes, and Data Payloads as a structured language, learning the transition probabilities between different messages. For example, in a SpaceWire environment, the model learns that a "Memory Read" command must be followed by a specific "Acknowledge" command within a rigid temporal window.
-
-Once deployed, the model functions as an on-path or off-path Intrusion Detection System (IDS). It calculates a surprise or anomaly score for each sequence of messages. If an attacker attempts to inject a command that is out-of-order—such as a "Thruster Fire" command appearing without the preceding "Arming" sequence—the model identifies the break in the logical chain and alerts the flight software or ground control.
-
-## Considerations
-* Determinism: High-priority real-time systems like MIL-STD-1553 require very low-latency inference to prevent delayed responses.
-
-* False Positives: Non-deterministic events (like emergency resets) must be included in the training set to avoid false alarms.""" ;
-    :kb-reference :Reference-TargetedDetectionForAttacksOnTheMILSTD1553Bus .
-
 :BusNetwork a owl:Class ;
     rdfs:label "Bus Network" ;
     skos:altLabel "Bus",
@@ -45127,16 +45106,6 @@ Based on the trust rating an alert is generated identifying the incoming email m
     :kb-reference-of :ProcessCodeSegmentVerification ;
     :kb-reference-title "Tamper proof mutating software" ;
     :todo "MITRE Analysis was not found" .
-
-:Reference-TargetedDetectionForAttacksOnTheMILSTD1553Bus a :AcademicPaperReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Targeted Detection for Attacks on the MIL-STD-1553 Bus" ;
-    :has-link "https://ieeexplore.ieee.org/document/10288202"^^xsd:anyURI ;
-    :kb-abstract "The rapid integration of connectivity and automation in modern vehicles has significantly expanded the attack surface of in-vehicle networks, particularly the Controller Area Network (CAN) bus, which lacks native security mechanisms. This study investigates machine learning-based intrusion detection for Internet of Vehicles (IoV) environments using the CICIoV2024 dataset. Unlike prior studies that rely on highly redundant traffic traces, this work applies strict de-duplication to eliminate repetitive CAN frames, resulting in a dataset of unique attack signatures. To ensure statistical robustness despite the reduced data size, Stratified K-Fold Cross-Validation was employed. Experimental results reveal that while traditional models like Random Forest (optimized with ANOVA feature selection) maintain stability (F1-Macro ≈ 0.64), Deep Learning models fail to generalize (F1-Macro < 0.55) when denied the massive redundancy they typically require. These findings challenge the “near-perfect” detection rates reported in the literature, suggesting that previous benchmarks may reflect data leakage rather than true anomaly detection capabilities. The study concludes that lightweight models offer superior resilience for resource-constrained vehicular environments when evaluated on realistic, non-redundant data." ;
-    :kb-author "Matthew Rogers, Kasper Rasmussen" ;
-    :kb-mitre-analysis "This paper highlights the accuracy trap in signature-based detection and identifies that the first three data bytes and the specific CAN ID are the most critical features for defining robust, lightweight signatures in automotive networks." ;
-    :kb-reference-of :BusMessageBaselineAnalysis ;
-    :kb-reference-title "Targeted Detection for Attacks on the MIL-STD-1553 Bus" .
 
 :Reference-TCGTrustedAttestationProtocolUseCasesForTPMFamilies1.2And2.0AndDICE a owl:NamedIndividual,
         :SpecificationReference ;
