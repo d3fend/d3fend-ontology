@@ -4838,10 +4838,10 @@ Day, O., & Khoshgoftaar, T.M. (2017). A survey on heterogeneous transfer learnin
     rdfs:isDefinedBy <http://dbpedia.org/resource/Input_device#Voice_input_devices> ;
     :definition "Audio input devices allow a user to send audio info to a computer for processing, recording, or carrying out commands. Devices such as microphones allow users to speak to the computer in order to record a voice message or navigate software. Aside from recording, audio input devices are also used with speech recognition software." .
 
-:AuditLogFile a owl:Class ;
-    rdfs:label "Audit Log File" ;
-    rdfs:subClassOf :LogFile ;
-    :definition "An audit log file is a file containing a chronological record of system activities, including records of system accesses and operations performed in a given period." ;
+:AuditLog a owl:Class ;
+    rdfs:label "Audit Log" ;
+    rdfs:subClassOf :EventLog ;
+    :definition "A chronological log of system activities, including records of system accesses and operations performed in a given period." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Audit_trail>,
         <https://csrc.nist.gov/glossary/term/audit_log> .
 
@@ -13512,7 +13512,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     rdfs:subClassOf :SPARTADefenseEvasionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :writes ;
-            owl:someValuesFrom :AuditLogFile ] ;
+            owl:someValuesFrom :AuditLog ] ;
     :attack-id "DE-0010" ;
     :definition "Threat actors may seek to exploit the inherent nature of flight software and its limited capacity for event logging/storage between downlink windows as a means to conceal malicious activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0010/> .
@@ -19968,6 +19968,28 @@ Newer system call.""" .
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/06515215-n> ;
     :definition "A record of events in the order of their occurrence." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Chronology> .
+
+:LogAnalysis a :LogAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Log Analysis" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :EventLog ],
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Detect ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Log_analysis> ;
+    :d3fend-id "D3-LA" ;
+    :definition "Analyzing computer-generated records for the purpose of detecting malicious or anomalous activity." ;
+    :enables :Detect ;
+    :kb-article """## How it works
+Log analysis operates by collecting message log data from one or more sources, such as operating system audit logs, application logs, or network device logs, and subjecting that data to a set of inspection and correlation techniques. These techniques may range from simple pattern matching and keyword searches to more sophisticated statistical baselining, where deviations from expected log volume, structure, or content trigger further investigation. Logs may be analyzed in real time as they are generated, in batch after the fact, or both, depending on the operational context and the latency requirements of the detection use case.
+
+At a higher level, log analysis functions as a form of behavioral visibility, as it reconstructs what happened on a system or network by treating log records as an ordered evidence trail. Analysts or automated systems evaluate this trail for signs of tampering, suppression, or anomalous activity, such as unexpected gaps in log continuity, truncation of log files, or the absence of records during a time window where activity was expected. The output of log analysis typically feeds into broader detection pipelines, alerting workflows, or forensic investigations, making it a foundational component of any defensive monitoring capability.
+""" ;
+    :synonym "Log Message Analysis" .
 
 :LogFile a owl:Class ;
     rdfs:label "Log File" ;
