@@ -5288,10 +5288,10 @@ Sciencedirect. (n.d.). Semi-supervised learning: An overview. [Link](https://www
     skos:altLabel "Bootloader" ;
     rdfs:subClassOf :Software,
         [ a owl:Restriction ;
-            owl:onProperty :loads ;
+            owl:onProperty :executes ;
             owl:someValuesFrom :ExecutableBinary ],
         [ a owl:Restriction ;
-            owl:onProperty :executes ;
+            owl:onProperty :loads ;
             owl:someValuesFrom :ExecutableBinary ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Bootloader> ;
     :definition "A bootloader is software that is responsible for booting a computer. When a computer is turned off, its software‍-‌including operating systems, application code, and data‍-‌remains stored on non-volatile memory. When the computer is powered on, it typically does not have an operating system or its loader in random-access memory (RAM). The computer first executes a relatively small program stored in read-only memory (ROM, and later EEPROM, NOR flash) along with some needed data, to initialize RAM (especially on x86 systems) to access the nonvolatile device (usually block device, eg NAND flash) or devices from which the operating system programs and data can be loaded into RAM." .
@@ -5322,7 +5322,7 @@ Sciencedirect. (n.d.). Semi-supervised learning: An overview. [Link](https://www
             owl:someValuesFrom :First-stageBootLoader ],
         [ a owl:Restriction ;
             owl:onProperty :executed-by ;
-            owl:someValuesFrom :Processor ] ;
+            owl:someValuesFrom :CentralProcessingUnit ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Boot_ROM> ;
     :definition "Boot ROM is a piece of read-only memory (ROM) that is used for booting a computer system. It contains instructions that are run after the CPU is reset to the reset vector, and it typically loads a bootloader." ;
     :synonym "Boot Read-only Memory" .
@@ -18294,6 +18294,30 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
     :kb-article """## References
 
 Zhang, Q., Wang, H., Lu, H., Won, D., & Yoon, S. W. (2018). Medical Image Synthesis with Generative Adversarial Networks for Tissue Recognition. 2018 IEEE International Conference on Healthcare Informatics (ICHI), 199-207. doi: 10.1109/ICHI.2018.00030. [Link](https://ieeexplore.ieee.org/document/8419363)""" .
+
+:ImmutableBootROM a :ImmutableBootROM,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Immutable Boot ROM" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :BootROM ] ;
+    :d3fend-id "D3-IBR" ;
+    :definition "Ensuring integrity of initial boot code by storing it in a non-reprogrammable storage component." ;
+    :kb-article """## How it works
+Immutable Boot ROM establishes the hardware root of trust by guaranteeing that the very first code a processor executes is exactly what was placed there by a trusted manufacturer or integrator and cannot subsequently be changed. This is achieved either through mask ROM, where code is physically embedded in the die's metal layers during fabrication, or through flash/OTP regions that are write-locked via a hardware fuse or a strap-controlled permission bit that is permanently committed before delivery. Because the processor's reset vector points into this region, any boot sequence must pass through it, making it the unconditional entry point for the entire chain of trust.
+
+The security value of immutable Boot ROM derives from the fact that it shifts the attacker's required capability from software exploitation to physical die-level modification, which is substantially more difficult, expensive, and detectable. The ROM typically contains the minimum code necessary to load, verify, and hand off to the next boot stage — it should not contain complex or update-prone logic. Any cryptographic keys embedded in the ROM (e.g., public keys used to verify the first-stage bootloader) are permanently fixed, meaning key compromise requires hardware replacement; this is both a strength (no remote key extraction path) and a lifecycle constraint that must be planned for.
+
+## Considerations
+* Key management: public keys baked into mask ROM or committed OTP cannot be rotated if the corresponding private key is ever compromised; key selection and long-term validity must be assessed before commitment.
+* Post-fabrication bugs cannot be patched: any vulnerability discovered in the ROM code after the lock point is permanent; ROM logic should be minimal, formally reviewed, and thoroughly tested before commitment.
+* Verify the lock state: write-lock mechanisms must themselves be confirmed as set and irrevocable before delivery; an unlocked "immutable" ROM provides no protection.
+* Distinguish ROM from write-protected flash: hardware-enforced write-lock on flash can approximate immutability but may be bypassable through fault injection or misconfiguration; true mask ROM or OTP-committed regions provide stronger guarantees.
+* Supply chain integrity: immutability only protects against post-delivery tampering; if the ROM contents are compromised before or during fabrication, the root of trust is poisoned at the source.
+""" ;
+    :kb-reference :Reference-SecureBootingAComputingDevice-AppleInc .
 
 :IMP-0001 a owl:Class ;
     rdfs:label "Deception (or Misdirection) - SPARTA" ;
@@ -44313,6 +44337,17 @@ delivery, up to message rejection.""" ;
     :kb-author "OWASP" ;
     :kb-reference-of :CredentialScrubbing ;
     :kb-reference-title "Secrets Management Cheat Sheet" .
+
+:Reference-SecureBootingAComputingDevice-AppleInc a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Secure booting a computing device - Apple Inc" ;
+    :has-link "https://patents.google.com/patent/US8254568"^^xsd:anyURI ;
+    :kb-abstract "A method and an apparatus for executing codes embedded inside a device to verify a code image loaded in a memory of the device are described. A code image may be executed after being verified as a trusted code image. The embedded codes may be stored in a secure ROM (read only memory) chip of the device. In one embodiment, the verification of the code image is based on a key stored within the secure ROM chip. The key may be unique to each device. Access to the key may be controlled by the associated secure ROM chip. The device may complete establishing an operating environment subsequent to executing the verified code image." ;
+    :kb-author "Michael Smith, Joshua de Cesare, Dallas Blake De Atley, John Andrew Wright" ;
+    :kb-mitre-analysis "A key patent describing how a secure ROM anchors the verification chain. It describes a method for executing codes embedded inside a device to verify a code image loaded in memory, where verification is based on a key stored within a secure ROM chip, and access to the key is controlled by the associated secure ROM chip." ;
+    :kb-organization "Apple Inc." ;
+    :kb-reference-of :ImmutableBootROM ;
+    :kb-reference-title "Secure booting a computing device" .
 
 :Reference-SecureCachingOfServerCredentials_DellProductsLP a owl:NamedIndividual,
         :PatentReference ;
