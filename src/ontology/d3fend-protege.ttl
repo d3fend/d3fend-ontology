@@ -34067,7 +34067,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1486 a owl:Class ;
     rdfs:label "Data Encrypted for Impact" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :encrypts ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CryptographicKey ] ;
     :attack-id "T1486" ;
     :definition "Adversaries may encrypt data on target systems or on large numbers of systems in a network to interrupt availability to system and network resources. They can attempt to render stored data inaccessible by encrypting files or data on local and remote drives and withholding access to a decryption key. This may be done in order to extract monetary compensation from a victim in exchange for decryption or a decryption key (ransomware) or to render data permanently inaccessible in cases where the key is not saved or transmitted.(Citation: US-CERT Ransomware 2016)(Citation: FireEye WannaCry 2017)(Citation: US-CERT NotPetya 2017)(Citation: US-CERT SamSam 2018)" .
 
@@ -34097,7 +34103,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1490 a owl:Class ;
     rdfs:label "Inhibit System Recovery" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingSystemConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemServiceSoftware ] ;
     :attack-id "T1490" ;
     :definition "Adversaries may delete or remove built-in data and turn off services designed to aid in the recovery of a corrupted system to prevent recovery.(Citation: Talos Olympic Destroyer 2018)(Citation: FireEye WannaCry 2017) This may deny access to available backups and recovery options." .
 
@@ -35247,7 +35259,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1548.005 a owl:Class ;
     rdfs:label "Temporary Elevated Cloud Access" ;
-    rdfs:subClassOf :T1548 ;
+    rdfs:subClassOf :T1548,
+        [ a owl:Restriction ;
+            owl:onProperty :abuses ;
+            owl:someValuesFrom :AccessControlConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CloudUserAccount ] ;
     :attack-id "T1548.005" ;
     :definition "Adversaries may abuse permission configurations that allow them to gain temporarily elevated access to cloud resources. Many cloud environments allow administrators to grant user or service accounts permission to request just-in-time access to roles, impersonate other accounts, pass roles onto resources and services, or otherwise gain short-term access to a set of privileges that may be distinct from their own." .
 
@@ -35843,8 +35861,15 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1562.008 a owl:Class ;
     rdfs:label "Disable or Modify Cloud Logs" ;
-    rdfs:subClassOf :T1562 ;
+    rdfs:subClassOf :T1562,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :CloudServiceSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudConfiguration ] ;
     :attack-id "T1562.008" ;
+    :comment "We have modelled the definition not the name; this technique modifies the cloud logging configuration but not tampering with the logs themselves." ;
     :definition "An adversary may disable or modify cloud logging capabilities and integrations to limit what data is collected on their activities and avoid detection. Cloud environments allow for collection and analysis of audit and application logs that provide insight into what activities a user does within the environment. If an adversary has sufficient permissions, they can disable or modify logging to avoid detection of their activities." .
 
 :T1562.009 a owl:Class ;
@@ -36465,31 +36490,55 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1578.001 a owl:Class ;
     rdfs:label "Create Snapshot" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ComputingSnapshot ] ;
     :attack-id "T1578.001" ;
     :definition "An adversary may create a snapshot or data backup within a cloud account to evade defenses. A snapshot is a point-in-time copy of an existing cloud compute component such as a virtual machine (VM), virtual hard drive, or volume. An adversary may leverage permissions to create a snapshot in order to bypass restrictions that prevent access to existing compute service infrastructure, unlike in [Revert Cloud Instance](https://attack.mitre.org/techniques/T1578/004) where an adversary may revert to a snapshot to evade detection and remove evidence of their presence." .
 
 :T1578.002 a owl:Class ;
     rdfs:label "Create Cloud Instance" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :CloudInstanceMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Host ] ;
     :attack-id "T1578.002" ;
     :definition "An adversary may create a new instance or virtual machine (VM) within the compute service of a cloud account to evade defenses. Creating a new instance may allow an adversary to bypass firewall rules and permissions that exist on instances currently residing within an account. An adversary may [Create Snapshot](https://attack.mitre.org/techniques/T1578/001) of one or more volumes in an account, create a new instance, mount the snapshots, and then apply a less restrictive security policy to collect [Data from Local System](https://attack.mitre.org/techniques/T1005) or for [Remote Data Staging](https://attack.mitre.org/techniques/T1074/002).(Citation: Mandiant M-Trends 2020)" .
 
 :T1578.003 a owl:Class ;
     rdfs:label "Delete Cloud Instance" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :CloudInstanceMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :deletes ;
+            owl:someValuesFrom :Host ] ;
     :attack-id "T1578.003" ;
     :definition "An adversary may delete a cloud instance after they have performed malicious activities in an attempt to evade detection and remove evidence of their presence.  Deleting an instance or virtual machine can remove valuable forensic artifacts and other evidence of suspicious behavior if the instance is not recoverable." .
 
 :T1578.004 a owl:Class ;
     rdfs:label "Revert Cloud Instance" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudInstanceMetadata ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Host ] ;
     :attack-id "T1578.004" ;
     :definition "An adversary may revert changes made to a cloud instance after they have performed malicious activities in attempt to evade detection and remove evidence of their presence. In highly virtualized environments, such as cloud-based infrastructure, this may be accomplished by restoring virtual machine (VM) or data storage snapshots through the cloud management dashboard or cloud APIs." .
 
 :T1578.005 a owl:Class ;
     rdfs:label "Modify Cloud Compute Configurations" ;
-    rdfs:subClassOf :T1578 ;
+    rdfs:subClassOf :T1578,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudConfiguration ] ;
     :attack-id "T1578.005" ;
     :definition "Adversaries may modify settings that directly affect the size, locations, and resources available to cloud compute infrastructure in order to evade defenses. These settings may include service quotas, subscription associations, tenant-wide policies, or other configurations that impact available compute. Such modifications may allow adversaries to abuse the victim’s compute resources to achieve their goals, potentially without affecting the execution of running instances and/or revealing their activities to the victim." .
 
@@ -37780,7 +37829,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1666 a owl:Class ;
     rdfs:label "Modify Cloud Resource Hierarchy" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CloudConfiguration ] ;
     :attack-id "T1666" ;
     :definition "Adversaries may attempt to modify hierarchical structures in infrastructure-as-a-service (IaaS) environments in order to evade defenses." .
 
@@ -38816,7 +38868,6 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
 :User a owl:Class ;
     rdfs:label "User" ;
     rdfs:subClassOf :Agent,
-        :DigitalInformationBearer,
         [ a owl:Restriction ;
             owl:onProperty :has-account ;
             owl:someValuesFrom :UserAccount ],
@@ -39055,7 +39106,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     rdfs:subClassOf :AccessControlGroup,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :User ] ;
+            owl:someValuesFrom :UserAccount ] ;
     :definition "User groups are a way to collect user accounts and/or computer accounts into manageable units. Administrators can assign permissions, roles, or access to resources, as well as modify group membership, depending on the operating system." ;
     :synonym "Security Group" .
 
@@ -45573,6 +45624,15 @@ With keystroke dynamics the biometric template used to identify an individual is
     rdfs:label "X86 Code Segment" .
 
 ### Axioms
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+            :Agent
+            :Artifact
+            :Event
+            :Goal
+            :Plan
+            :Weakness ) .
 
 [] a owl:AllDisjointClasses ;
     owl:members (
