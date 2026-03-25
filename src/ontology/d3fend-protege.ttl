@@ -5398,6 +5398,14 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
     rdfs:isDefinedBy <http://dbpedia.org/resource/Bus_(computing)> ;
     :definition "An electronic communication system that links multiple components through one shared transmission medium, together with the interface hardware and link-layer signalling that govern access to that medium." .
 
+:BusNetworkEvent a owl:Class ;
+    rdfs:label "Bus Network Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :BusNetwork ] ;
+    :definition "An event representing observable occurrences or state changes associated with a communications bus network." .
+
 :BusNetworkFrame a owl:Class ;
     rdfs:label "Bus Network Frame" ;
     skos:altLabel "Bus Frame" ;
@@ -5428,6 +5436,16 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
             owl:onProperty :contains ;
             owl:someValuesFrom :BusNetworkFrame ] ;
     :definition "The ordered flow of frames, structured by a bus protocol, that traverses the shared bus medium during operation." .
+
+:BusResetEvent a owl:Class ;
+    rdfs:label "Bus Reset Event" ;
+    rdfs:subClassOf :BusNetworkEvent ;
+    :definition "An event representing a bus or interface reset (autonomous or commanded) to recover from errors or restore communication." .
+
+:BusTransactionFailedEvent a owl:Class ;
+    rdfs:label "Bus Transaction Failed Event" ;
+    rdfs:subClassOf :BusNetworkEvent ;
+    :definition "An event representing a bus transaction failure, due to issues such as timeout, checksum error, or arbitration loss." .
 
 :ByteSequenceEmulation a :ByteSequenceEmulation,
         owl:Class,
@@ -17557,6 +17575,12 @@ Administrators collect information on hardware devices such as peripherals, NICs
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> ;
     :definition "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." .
 
+:HardwareFaultEvent a owl:Class ;
+    rdfs:label "Hardware Fault Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
+    :definition "An event that records the occurrence of any hardware-related malfunction or anomaly, such as memory bit flips, watchdog resets, bus errors, sensor failures, or power irregularities captured by on-device monitoring or diagnostic mechanisms to support detection, logging, analysis, and potential recovery actions." ;
+    :todo "Determine if this is still necessary with other more specific event types being defined" .
+
 :HarmonicMean a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Harmonic Mean" ;
@@ -19470,6 +19494,24 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
         :DigitalInformationBearer ;
     :definition "A link is a connection or association between two entities that facilitates communication, interaction, or data transfer." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Link> .
+
+:LinkAcquiredEvent a owl:Class ;
+    rdfs:label "Link Acquired Event" ;
+    rdfs:subClassOf :LinkEvent ;
+    :definition "Indicates that the physical link has been acquired and is usable for data transfer." .
+
+:LinkEvent a owl:Class ;
+    rdfs:label "Link Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :PhysicalLink ] ;
+    :definition "A link event is any discrete occurrence that affects the state, performance, or behavior of a communication link such as its establishment, modification, degradation, interruption, recovery, or termination." .
+
+:LinkLostEvent a owl:Class ;
+    rdfs:label "Link Lost Event" ;
+    rdfs:subClassOf :LinkEvent ;
+    :definition "Indicates loss of the physical link or transition into a non-usable state." .
 
 :Linux_Exit a owl:Class ;
     rdfs:label "Linux _Exit" ;
@@ -21579,6 +21621,19 @@ Additionally, after the code file is printed, it could be recovered from the sys
     rdfs:subClassOf :SystemPlatformVariable ;
     :definition "An operating mode designates the specific way a system, product, or service functions for a particular task, configuration, or phase of operation" ;
     rdfs:seeAlso <https://www.wassonstrategics.com/pdf/Wasson%20-%20System_Phases_Modes_and_States_Rev.%20D%20(10-29-14).pdf> .
+
+:OperatingModeChangeEvent a owl:Class ;
+    rdfs:label "Operating Mode Change Event" ;
+    rdfs:subClassOf :OperatingModeEvent ;
+    :definition "An event that specifically represents a transition from one defined operating mode or state to another. " .
+
+:OperatingModeEvent a owl:Class ;
+    rdfs:label "Operating Mode Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OperatingMode ] ;
+    :definition "An operating mode event is a discrete, time-stamped indication that a system, subsystem, or device has entered, exited, or transitioned between defined operating modes or states (e.g., from standby to active, from acquisition to tracking)." .
 
 :OperatingModeMonitoring a :OperatingModeMonitoring,
         owl:Class,
@@ -38287,6 +38342,34 @@ Reconnaissance consists of techniques that involve adversaries actively or passi
     :definition "A telecommand or telecontrol is a command sent to control a remote system or systems not directly connected (e.g. via wires) to the place from which the telecommand is sent." ;
     :synonym "Remote Control Command" .
 
+:TelecommandAcceptanceEvent a owl:Class ;
+    rdfs:label "Telecommand Acceptance Event" ;
+    rdfs:subClassOf :TelecommandEvent ;
+    :definition "An event representing the successful arrival and acceptance of a telecommand by a target system or subsystem. " .
+
+:TelecommandEvent a owl:Class ;
+    rdfs:label "Telecommand Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Telecommand ] ;
+    :definition "An event representing the issuance, transmission, reception, or execution outcome of a remote control instruction (command) sent to a system, capturing the details, timing, and status of that remote commanding action." .
+
+:TelecommandExecutionEvent a owl:Class ;
+    rdfs:label "Telecommand Execution Event" ;
+    rdfs:subClassOf :TelecommandEvent ;
+    :definition "An event representing the completion of an attempted execution of a previously received and parsed telecommand by the target system or subsystem." .
+
+:TelecommandRejectionEvent a owl:Class ;
+    rdfs:label "Telecommand Rejection Event" ;
+    rdfs:subClassOf :TelecommandEvent ;
+    :definition "An event representing the refusal of a received telecommand by the target system or subsystem. " .
+
+:TelecommandTransmissionEvent a owl:Class ;
+    rdfs:label "Telecommand Transmission Event" ;
+    rdfs:subClassOf :TelecommandEvent ;
+    :definition "An event marking the successful emission of a telecommand from its originating system onto a communication link toward a designated destination. It captures the act of sending the command but does not imply that the command was received, decoded, or executed by the destination." .
+
 :TemporalDifferenceLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Temporal Difference Learning" ;
@@ -45635,4 +45718,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
