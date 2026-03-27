@@ -6946,18 +6946,9 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     :definition "A cryptographic library is a software library that implements cryptographic functions and exposes them through defined programming interfaces for use by applications or other software components. " ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries> .
 
-:CryptographicMode a owl:Class ;
-    rdfs:label "Cryptographic Mode" ;
-    rdfs:subClassOf :SecurityPolicyConfigurationResource ;
-    :definition "A cryptographic mode is a persistent, control-plane parameter of a cryptographic enforcement mechanism whose value selects the active security services (confidentiality, authentication, or both), algorithm variant, or operational state (protective, degraded, or bypass)." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Block_cipher_mode_of_operation> .
-
 :CryptographicModule a owl:Class ;
     rdfs:label "Cryptographic Module" ;
     rdfs:subClassOf :DigitalInformationBearer,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :CryptographicMode ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :CryptographicModuleOperatingMode ],
@@ -6997,14 +6988,6 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
             owl:onProperty :has-participant ;
             owl:someValuesFrom :CryptographicKey ] ;
     :definition "A cryptographic module event in which a cryptographic key transitions from the active state to a deactivated or suspended state, withdrawing it from operational use within the module's key state machine." .
-
-:CryptographicModuleModeChangeEvent a owl:Class ;
-    rdfs:label "Cryptographic Module Mode Change Event" ;
-    rdfs:subClassOf :CryptographicModuleEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :CryptographicMode ] ;
-    :definition "A cryptographic module event in which the value of a cryptographic mode parameter, governing the algorithm, protocol variant, or combination of security services enforced by the module, transitions from one state to another, resulting in a material change to the protection behavior applied to subsequent operations." .
 
 :CryptographicModuleOperatingMode a owl:Class ;
     rdfs:label "Cryptographic Module Operating Mode" ;
@@ -13478,11 +13461,8 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     skos:prefLabel "Cryptographic Modes" ;
     rdfs:subClassOf :DE-0003,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :CryptographicMode ],
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :CryptographicModule ] ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :CryptographicModuleOperatingMode ] ;
     :attack-id "DE-0003.07" ;
     :definition "Threat actors may modify the internal cryptographic modes of the victim spacecraft. Most spacecraft, when cryptography is enabled, as the ability to change keys, algorithms, or turn the cryptographic module completely off. Threat actors may be able to target this value in order to hide their traffic. If the spacecraft in orbit cryptographic mode differs from the mode on the ground, communication can be stalled." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/07/> .
