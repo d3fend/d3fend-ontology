@@ -5390,6 +5390,31 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
     rdfs:subClassOf :DigitalMessage ;
     :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
 
+:BusMessageAuthentication a :BusMessageAuthentication,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Bus Message Authentication" ;
+    rdfs:subClassOf :MessageAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :BusMessage ] ;
+    :d3fend-id "D3-BMA" ;
+    :definition "Applies cryptographic primitives to individual bus frames to verify the sender's identity and ensure the integrity of the data payload." ;
+    :kb-article """## How it works
+Bus Message Authentication functions as a continuous validation layer that operates between the physical transmission of a signal and the application layer's processing of data. Every node on a bus network is provisioned with a cryptographic key and a synchronized 'freshness' state (such as a monotonic counter). When a node prepares to transmit, it generates a Message Authentication Code (MAC) which is created by hashing the message content, the sender's unique ID, and the current freshness value using its secret key. This MAC is then appended to the outgoing frame.
+
+As messages circulate on the bus network, receiving nodes do not immediately trust the incoming data. Instead, a hardware controller intercepts the frame and performs a real-time parallel verification. The controller re-calculates the expected MAC based on its own copy of the key and the current network freshness state. If the received MAC matches the calculated one, the message is passed to the system for further action. If the MAC is missing, incorrect, or stale (indicating a replay of an older message), the hardware silently drops the frame or triggers a security alert.
+
+## Considerations
+* Bandwidth Overhead: Adding authentication tags (MACs) and freshness values reduces the effective data throughput; this requires a trade-off between the desired security level (tag length) and the available bus capacity.
+
+* Real-Time Latency: Cryptographic processing must occur in hardware (e.g., via AES-NI, FPGA logic, or specialized ASICs) to meet the deterministic timing constraints of safety-critical systems.
+
+* Key Management: A robust mechanism for secure key storage and lifecycle management (e.g., rotation and revocation) is required to ensure that a single compromised node does not jeopardize the entire network.
+
+* Protocol Transparency: In legacy environments, authentication must often be implemented as a shim that remains compatible with existing protocol standards to avoid breaking legacy hardware.""" ;
+    :kb-reference :Reference-ControllerAreaNetworkMessageAuthentication .
+
 :BusNetwork a owl:Class ;
     rdfs:label "Bus Network" ;
     skos:altLabel "Bus",
@@ -15683,7 +15708,16 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0014.02 a owl:Class ;
     rdfs:label "Bus Traffic Spoofing - SPARTA" ;
     skos:prefLabel "Bus Traffic Spoofing" ;
-    rdfs:subClassOf :EX-0014 ;
+    rdfs:subClassOf :EX-0014,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :BusNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :spoofs ;
+            owl:someValuesFrom :BusMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :BusNetworkNode ] ;
     :attack-id "EX-0014.02" ;
     :definition "Threat actors may attempt to target the main or secondary bus onboard the victim spacecraft and spoof their data. The spacecraft bus often directly processes and sends messages from the ground controllers to the various subsystems within the spacecraft and between the subsystems themselves. If a threat actor would target this system and spoof it internally, the subsystems would take the spoofed information as legitimate and process it as normal. This could lead to undesired effects taking place that could damage the spacecraft's subsystems, hosted payload, and critical data." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/02/> .
@@ -20454,7 +20488,7 @@ Emails and messages are also complex data structures. They contain files and lin
     rdfs:subClassOf :MessageHardening,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
-            owl:someValuesFrom :UserToUserMessage ] ;
+            owl:someValuesFrom :DigitalMessage ] ;
     :d3fend-id "D3-MAN" ;
     :definition "Authenticating the sender of a message and ensuring message integrity." ;
     :kb-article """## How it works
@@ -20479,20 +20513,22 @@ MAC is a fixed size string that is appended to a message to provide message auth
     rdfs:subClassOf :MessageHardening,
         [ a owl:Restriction ;
             owl:onProperty :encrypts ;
-            owl:someValuesFrom :UserToUserMessage ] ;
+            owl:someValuesFrom :DigitalMessage ] ;
     :d3fend-id "D3-MENCR" ;
     :definition "Encrypting a message body using a cryptographic key." ;
     :kb-article """## How it works
 
 ### Asymmetric Cryptography
-Asymmetric encryption is typically accomplished using public and private key certificates based on the X.509 standard. The sender encrypts messages using the recipient's public key and the receipt decrypts the message using their private key. Standards that can be used to implement message encryption include S/MIME (Secure/Multipurpose Internet Mail Extensions) and PGP.
+Asymmetric encryption is typically accomplished using public and private key certificates based on the X.509 standard. The sender encrypts messages using the recipient's public key and the receipt decrypts the message using their private key. Standards that can be used to implement user message encryption include S/MIME (Secure/Multipurpose Internet Mail Extensions) and PGP.
+
 ### Symmetric Cryptography
-Symmetric encryption uses the same cryptographic key by both the sender and receiver to encrypt and decrypt a message. Asymmetric key exchange protocols such as Diffie-Hellman can be used to share the cryptographic key with the recipient.
+Symmetric encryption uses the same cryptographic key by both the sender and receiver to encrypt and decrypt a message. Asymmetric key exchange protocols such as Diffie-Hellman can be used to share the cryptographic key with the recipient. For synchronous or low-latency environments (like a message bus), a pre-shared or dynamically derived symmetric key is typically used to minimize computational overhead.
 
 ## Considerations
 - Separate configuration settings to enable message encryption are often needed for each messenger client (e.g. webmail, desktop client, mobile).
 - Continuous monitoring to ensure private keys are not compromised and the certificate authority (CA) is trusted.
-- Secure transfer of private keys between multiple devices.""" ;
+- Secure transfer of private keys between multiple devices.
+- Encryption adds latency and increases CPU utilization; while negligible for user-to-user messages, it can be a critical factor for real-time bus systems.""" ;
     :kb-reference :Reference-SecureMultipurposeInternetMailExtensionsMIME-Version3.1 .
 
 :MessageHardening a :MessageHardening,
@@ -20504,9 +20540,8 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
             owl:onProperty :enables ;
             owl:someValuesFrom :Harden ] ;
     :d3fend-id "D3-MH" ;
-    :definition "Email or Messaging Hardening includes measures taken to ensure the confidentiality and integrity of user to user computer messages." ;
-    :enables :Harden ;
-    :synonym "Email Or Messaging Hardening" .
+    :definition "The application of security controls to user-to-user and system-to-system communications so messages remain confidential, unaltered, and verifiable while resisting injection, replay, and tampering." ;
+    :enables :Harden .
 
 :MessageTransferAgent a owl:Class ;
     rdfs:label "Message Transfer Agent" ;
@@ -41969,6 +42004,17 @@ In addition to looking for RAR or 7z program names, command line usage of 7Zip o
     :kb-author "National Security Agency" ;
     :kb-reference-of :ContainerImageAnalysis ;
     :kb-reference-title "Kubernetes Hardening Guide" .
+
+:Reference-ControllerAreaNetworkMessageAuthentication a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Controller area network message authentication - Ford Global Technologies LLC" ;
+    :has-link "https://patents.google.com/patent/US20180131522A1"^^xsd:anyURI ;
+    :kb-abstract "Method and apparatus are disclosed for controller area network message authentication. An example disclosed vehicle includes a data bus and a first control unit communicatively coupled to the data bus. The example first control unit generates a secured message by (a) calculating a message authentication code, (b) truncating the message authentication code, (c) truncating a freshness value used to generate the message authentication code, and (d) placing portions of the truncated message authentication code and the truncated freshness value in separate portions of the secured message." ;
+    :kb-author "James Martin Lawlis, Douglas A. Oliver, Xin Ye" ;
+    :kb-mitre-analysis "This patent describes a method for securing communication by calculating a MAC, truncating it, and also truncating a freshness value (counter) to fit within the restricted data field of a CAN frame (8 bytes)." ;
+    :kb-organization "Ford Global Technologies LLC" ;
+    :kb-reference-of :BusMessageAuthentication ;
+    :kb-reference-title "Controller area network message authentication " .
 
 :Reference-ControlLogix5570and5560Controllers a owl:NamedIndividual,
         :UserManualReference ;
