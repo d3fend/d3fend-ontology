@@ -17939,13 +17939,13 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
     :attack-id "IA-0002",
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
-            owl:someValuesFrom :SDRRadioConfiguration ],
+            owl:someValuesFrom :Software-definedRadioConfiguration ],
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
-            owl:someValuesFrom :SDRWaveformApplication ],
+            owl:someValuesFrom :Software-definedRadioWaveformApplication ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :SDR ] ;
+            owl:someValuesFrom :Software-definedRadio ] ;
     :definition "Threat actors may target software defined radios due to their software nature to establish C2 channels. Since SDRs are programmable, when combined with supply chain or development environment attacks, SDRs provide a pathway to setup covert C2 channels for a threat actor." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0002/> .
 
@@ -24057,13 +24057,6 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     :definition "Firmware that is installed on peripheral hub device such as a USB or Firewire hub." ;
     rdfs:seeAlso <http://dbpedia.org/resource/USB_hub> .
 
-:PeripheralSDR a owl:Class ;
-    rdfs:label "Peripheral Software-Defined Radio" ;
-    rdfs:subClassOf :SDR ;
-    :definition "An SDR hardware device that functions primarily as an RF front end plus data conversion and transport, relying on an external host computer to run most waveform/DSP processing and to control operation. It is commonly connected via USB, PCIe, or similar links and behaves like a high-speed radio peripheral." ;
-    rdfs:seeAlso <https://en.wikipedia.org/wiki/Software-defined_radio#RTL-SDR> ;
-    :synonym "Peripheral SDR" .
-
 :PermissionGrantingEvent a owl:Class ;
     rdfs:label "Permission Granting Event" ;
     rdfs:subClassOf :AccessControlAdministrationEvent ;
@@ -26600,14 +26593,6 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     :kb-reference :Reference-PrivacyAndSecuritySystemsAndMethodsOfUse,
         :Reference-Technical_Specifications_for_Construction_and_Management_of_Sensitive_Compartmented_Information_Facilities .
 
-:RFStateChangeEvent a owl:Class ;
-    rdfs:label "RF State Change Event" ;
-    rdfs:subClassOf :SDREvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SDRRadioConfiguration ] ;
-    :definition "An SDR event where one or more radio-frequency (RF) operating conditions have been changed in a way that affects reception or emission (e.g., center frequency retune, gain/attenuation update, bandwidth/filter selection, antenna/port switch, TX enable/disable, etc)." .
-
 :ROM a owl:Class ;
     rdfs:label "ROM" ;
     rdfs:subClassOf :PrimaryStorage ;
@@ -26847,71 +26832,6 @@ Software installed on the host system hooks into a scripting engine to intercept
 ## Considerations
 List of known unauthorized script files or regular expression patterns must be kept up to date to ensure detection of new threats.""" ;
     :kb-reference :Reference-DetectingScript-basedMalware_CrowdstrikeInc .
-
-:SDR a owl:Class ;
-    rdfs:label "Software-defined Radio" ;
-    rdfs:subClassOf :HardwareDevice,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :Receiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :SDRRadioConfiguration ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :Transmitter ] ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Software-defined_radio> ;
-    :definition "Software-defined radio (SDR) is a radio communication system where components that conventionally have been implemented in analog hardware (e.g. mixers, filters, amplifiers, modulators/demodulators, detectors, etc.) are instead implemented by means of software on a computer or embedded system." ;
-    :synonym "SDR" .
-
-:SDREvent a owl:Class ;
-    rdfs:label "Software-defined Radio Event" ;
-    rdfs:subClassOf :DigitalEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SDR ] ;
-    :definition "An event involving an software-defined radio (SDR) device indicating that the SDR's lifecycle state, operational state, configuration, data-streaming status, timing/reference status, or fault condition has changed." ;
-    :synonym "SDR Event" .
-
-:SDRRadioConfiguration a owl:Class ;
-    rdfs:label "Software-defined Radio Configuration" ;
-    rdfs:subClassOf :HardwareDeviceConfiguration ;
-    :definition "The physical radio hardware parameters used by a software-defined radio (SDR), including center frequency, bandwidth, gain settings, antenna selection, ADC/DAC sample rates, filter characteristics, power output, and others." ;
-    rdfs:seeAlso <https://www.analog.com/media/en/training-seminars/design-handbooks/Software-Defined-Radio-for-Engineers-2018/SDR4Engineers.pdf> .
-
-:SDRWaveformApplication a owl:Class ;
-    rdfs:label "Software-defined Radio Waveform Application" ;
-    rdfs:subClassOf :DSPApplication,
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :FPGABitstream ] ;
-    rdfs:isDefinedBy <https://media.defense.gov/2020/Feb/13/2002249005/-1/-1/1/SCA_4.1_SCASPECIFICATION.PDF> ;
-    :definition "A software implementation of a radio waveform that executes on the programmable processing elements of a software-defined radio and realizes the signal processing functions necessary to transmit and receive a specific radio signal. On peripheral SDRs, this can take the form of a compiled flowgraph that runs on the host PC, whereas in stand-alone SDRs it may be an FPGA bitstream or waveform package that executes on the SDR's processing elements." ;
-    rdfs:seeAlso <https://ieeexplore.ieee.org/document/5768314> ;
-    :synonym "SDR waveform",
-        "Waveform Software" .
-
-:SDRWaveformConfigurationEvent a owl:Class ;
-    rdfs:label "SDR Waveform Application Configuration Event" ;
-    rdfs:subClassOf :SDREvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SDRWaveformApplication ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :StandaloneSDR ] ;
-    :definition "An SDR event where the waveform application's operational parameters have been applied and validated (e.g., sample rate, bandwidth, channel selection, framing/modulation options), placing the waveform in a state ready to run." .
-
-:SDRWaveformLoadEvent a owl:Class ;
-    rdfs:label "SDR Waveform Application Load Event" ;
-    rdfs:subClassOf :SDREvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SDRWaveformApplication ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :StandaloneSDR ] ;
-    :definition "An SDR event where a waveform application (software/firmware/FPGA image and associated descriptors) has been installed or selected on the SDR and is available to be configured." .
 
 :Second-stageBootLoader a owl:Class ;
     rdfs:label "Second-stage Boot Loader" ;
@@ -27626,6 +27546,100 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     rdfs:isDefinedBy <http://dbpedia.org/resource/Software> ;
     :definition "Computer software, or simply software, is that part of a computer system that consists of encoded information or computer instructions, in contrast to the physical hardware from which the system is built." .
 
+:Software-definedRadio a owl:Class ;
+    rdfs:label "Software-defined Radio" ;
+    rdfs:subClassOf :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Receiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Software-definedRadioConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :Transmitter ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Software-defined_radio> ;
+    :definition "Software-defined radio (SDR) is a radio communication system where components that conventionally have been implemented in analog hardware (e.g. mixers, filters, amplifiers, modulators/demodulators, detectors, etc.) are instead implemented by means of software on a computer or embedded system." ;
+    :synonym "SDR" .
+
+:Software-definedRadioComputer a owl:Class ;
+    rdfs:label "Software-Defined Radio Computer" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        :Software-definedRadio,
+        [ a owl:Restriction ;
+            owl:onProperty :may-run ;
+            owl:someValuesFrom :RealTimeOperatingSystem ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :Software-definedRadioWaveformApplication ] ;
+    :definition "An embedded computer that includes a self-contained radio system, onboard compute (e.g., SoC/CPU/DSP/FPGA), and software/firmware sufficient to run waveforms and manage RF functions without requiring a continuously attached host PC. It typically exposes control and data via network or other external interfaces and may run an embedded OS." ;
+    rdfs:seeAlso <https://satsearch.co/products/alenspace-totem-software-defined-radio-sdr> ;
+    :synonym "Standalone SDR" .
+
+:Software-definedRadioConfiguration a owl:Class ;
+    rdfs:label "Software-defined Radio Configuration" ;
+    rdfs:subClassOf :HardwareDeviceConfiguration ;
+    :definition "The physical radio hardware parameters used by a software-defined radio (SDR), including center frequency, bandwidth, gain settings, antenna selection, ADC/DAC sample rates, filter characteristics, power output, and others." ;
+    rdfs:seeAlso <https://www.analog.com/media/en/training-seminars/design-handbooks/Software-Defined-Radio-for-Engineers-2018/SDR4Engineers.pdf> .
+
+:Software-definedRadioDevice a owl:Class ;
+    rdfs:label "Software-Defined Radio Device" ;
+    rdfs:subClassOf :Software-definedRadio ;
+    :definition "A hardware device that functions primarily as an RF front end plus data conversion and transport, relying on an external host computer to run most waveform/DSP processing and to control operation. It is commonly connected via USB, PCIe, or similar links and behaves like a high-speed radio peripheral." ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Software-defined_radio#RTL-SDR> ;
+    :synonym "Peripheral SDR" .
+
+:Software-definedRadioEvent a owl:Class ;
+    rdfs:label "Software-defined Radio Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadio ] ;
+    :definition "An event involving an software-defined radio (SDR) device indicating that the SDR's lifecycle state, operational state, configuration, data-streaming status, timing/reference status, or fault condition has changed." ;
+    :synonym "SDR Event" .
+
+:Software-definedRadioRFStateChangeEvent a owl:Class ;
+    rdfs:label "Software-defined Radio RF State Change Event" ;
+    rdfs:subClassOf :Software-definedRadioEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioConfiguration ] ;
+    :definition "A software-defined radio (SDR) event where one or more radio-frequency (RF) parameters have been changed in a way that affects reception or emission (e.g., center frequency retune, gain/attenuation update, bandwidth/filter selection, antenna/port switch, TX enable/disable, etc)." .
+
+:Software-definedRadioWaveformApplication a owl:Class ;
+    rdfs:label "Software-defined Radio Waveform Application" ;
+    rdfs:subClassOf :DSPApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FPGABitstream ] ;
+    rdfs:isDefinedBy <https://media.defense.gov/2020/Feb/13/2002249005/-1/-1/1/SCA_4.1_SCASPECIFICATION.PDF> ;
+    :definition "A software implementation of a radio waveform that executes on the programmable processing elements of a software-defined radio and realizes the signal processing functions necessary to transmit and receive a specific radio signal. On peripheral SDRs, this can take the form of a compiled flowgraph that runs on the host PC, whereas in stand-alone SDRs it may be an FPGA bitstream or waveform package that executes on the SDR's processing elements." ;
+    rdfs:seeAlso <https://ieeexplore.ieee.org/document/5768314> ;
+    :synonym "SDR waveform",
+        "Waveform Software" .
+
+:Software-definedRadioWaveformConfigurationEvent a owl:Class ;
+    rdfs:label "SDR Waveform Application Configuration Event" ;
+    rdfs:subClassOf :Software-definedRadioEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioWaveformApplication ] ;
+    :definition "An SDR event where the waveform application's operational parameters have been applied and validated (e.g., sample rate, bandwidth, channel selection, framing/modulation options), placing the waveform in a state ready to run." .
+
+:Software-definedRadioWaveformLoadEvent a owl:Class ;
+    rdfs:label "SDR Waveform Application Load Event" ;
+    rdfs:subClassOf :Software-definedRadioEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioWaveformApplication ] ;
+    :definition "An SDR event where a waveform application (software/firmware/FPGA image and associated descriptors) has been installed or selected on the SDR and is available to be configured." .
+
 :SoftwareArtifactAllowlisting a owl:Class,
         owl:NamedIndividual,
         :PlatformHardening,
@@ -28182,20 +28196,6 @@ A standalone honeynet does not directly interact with the real enterprise enviro
 ## Considerations
 A standalone honeynet is a lower risk to deploy compared to connected or integrated honeynets due to its isolation from the enterprise network. However, this comes at cost in loss of fidelity and realism. Significant extra effort must be made in order to make the environment look realistic.""" ;
     :kb-reference :Reference-DynamicSelectionAndGenerationOfAVirtualCloneForDetonationOfSuspiciousContentWithinAHoneyNetwork_PaloAltoNetworksInc .
-
-:StandaloneSDR a owl:Class ;
-    rdfs:label "Standalone Software-Defined Radio" ;
-    rdfs:subClassOf :OTEmbeddedComputer,
-        :SDR,
-        [ a owl:Restriction ;
-            owl:onProperty :may-run ;
-            owl:someValuesFrom :RealTimeOperatingSystem ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :SDRWaveformApplication ] ;
-    :definition "An SDR hardware device that can operate as a self-contained radio system, incorporating onboard compute (e.g., SoC/CPU/DSP/FPGA) and software/firmware sufficient to run waveforms and manage RF functions without requiring a continuously attached host PC. It typically exposes control and data via network or other external interfaces and may run an embedded OS." ;
-    rdfs:seeAlso <https://satsearch.co/products/alenspace-totem-software-defined-radio-sdr> ;
-    :synonym "Standalone SDR" .
 
 :StandardDeviation a owl:Class,
         owl:NamedIndividual ;
