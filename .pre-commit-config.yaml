@@ -25,10 +25,13 @@ repos:
 #         - --in-place
 #         - --remove-unused-variables
 #         - --remove-all-unused-imports
--   repo: https://github.com/psf/black
-    rev: 22.12.0
+-   repo: local
     hooks:
     -   id: black
+        name: black
+        entry: pipenv run black
+        language: system
+        types: [python]
 # - repo: https://github.com/PyCQA/isort
 #   rev: 5.8.0
 #   hooks:
@@ -43,36 +46,27 @@ repos:
 #     - id: isort
 #       name: isort (pyi)
 #       types: [pyi]
-- repo: https://github.com/PyCQA/flake8
-  rev: 6.0.0
-  hooks:
-  - id: flake8
-- repo: https://github.com/PyCQA/bandit
-  rev: 1.7.4
-  hooks:
-    - id: bandit
-      name: bandit
-      args: ["-c", ".bandit.yaml"]
-      description: 'Bandit is a tool for finding common security issues in Python code'
-      entry: bandit
-      language: python
-      language_version: python3
-      types: [python]
+    -   id: flake8
+        name: flake8
+        entry: pipenv run flake8
+        language: system
+        types: [python]
+    -   id: bandit
+        name: bandit
+        args: ["-c", ".bandit.yaml"]
+        description: 'Bandit is a tool for finding common security issues in Python code'
+        entry: pipenv run bandit
+        language: system
+        types: [python]
 # - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
 #   rev: v1.2.1
 #   hooks:
 #     - id: python-safety-dependencies-check
-- repo: local
-  hooks:
-  - id: ttlfmt
-    name: ttlfmt
-    entry: ttlfmt
-    files: >-
-      src/ontology/d3fend-protege.ttl
-    types:
-    - file
-    language: python
-    additional_dependencies:
-    - rdflib
-    - ttlser
-    - ttlser[ttlfmt]
+    -   id: ttlfmt
+        name: ttlfmt
+        entry: pipenv run ttlfmt
+        files: >-
+          src/ontology/d3fend-protege.ttl
+        types:
+        - file
+        language: system
