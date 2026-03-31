@@ -210,6 +210,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     :definition "x copy-of y: The subject x is a duplicate of the object y." .
 
+:corrupts a owl:ObjectProperty ;
+    rdfs:label "corrupts" ;
+    rdfs:subPropertyOf :impairs ;
+    :definition "x corrupts y: The entity x causes y to enter an incorrect, inconsistent, or unintended state by modifying y's information-bearing content (e.g., a bit, symbol, word, configuration cell, or stored parameter) such that y's value no longer matches the expected or previously valid value." .
+
 :counters a owl:ObjectProperty ;
     rdfs:label "counters" ;
     rdfs:subPropertyOf :may-counter .
@@ -810,6 +815,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "may-contain" ;
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "to potentially have as contents or constituent parts; comprise; include." .
+
+:may-corrupt a owl:ObjectProperty ;
+    rdfs:label "may-corrupt" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-corrupt y: They entity x may corrupt y's information content; that is, 'x corrupts y' may be true." .
 
 :may-counter a owl:ObjectProperty ;
     rdfs:label "may-counter" ;
@@ -15035,6 +15045,29 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:isDefinedBy <http://dbpedia.org/resource/Signal> ;
     :definition "Time-varying voltage or current that carries information." .
 
+:ElectromagneticRadiationHardening a :ElectromagneticRadiationHardening,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Electromagnetic Radiation Hardening" ;
+    skos:altLabel "Electromagnetic Hardening" ;
+    rdfs:subClassOf :RadiationHardening ;
+    rdfs:isDefinedBy <https://patents.google.com/patent/US20070105445A1> ;
+    :d3fend-id "D3-EMH" ;
+    :definition "The application of physical and material-level design measures to electronic systems, components, or facilities to reduce their susceptibility to damage or disruption from electromagnetic threats." ;
+    :kb-article """## How it works
+EM hardening operates on the principle of controlling the coupling path between an electromagnetic threat and the sensitive electronics it could affect. At the most fundamental level, this involves creating barriers that reflect, absorb, or redirect unwanted electromagnetic energy before it can induce damaging or disruptive currents in protected circuitry. The physical mechanisms exploited include the Faraday cage effect (conductive enclosures that attenuate external fields), skin-depth shielding (where conductive materials dissipate high-frequency fields before they penetrate), and transient suppression components (such as surge protectors and ferrite chokes) that clamp induced voltages at I/O interfaces.
+
+For threats at higher energy levels or involving ionizing radiation, such as nuclear EMP (NEMP) or space radiation, hardening extends beyond shielding to encompass radiation-tolerant component selection, redundant circuit architectures, and layout practices that minimize antenna-like structures susceptible to field coupling. The approach is inherently defense-in-depth: no single measure provides complete protection, so hardened systems typically layer multiple techniques across the facility, chassis, board, and component levels.
+
+## Considerations
+* Threat scope must be defined early: design choices differ significantly between defending against ambient RFI, conducted EMI on power lines, intentional jamming, HEMP (High-Altitude EMP), or ionizing radiation in space or nuclear environments.
+* Hardening can conflict with thermal management: fully sealed enclosures that maximize shielding often restrict airflow, requiring careful thermal design trade-offs.
+* Testing and certification are mandatory for assurance: claimed shielding effectiveness must be validated through standardized testing (e.g., IEEE 299, MIL-STD-461) rather than inferred from design alone.
+* Maintenance can degrade hardening: field modifications, connector re-terminations, or enclosure repairs can inadvertently introduce shielding gaps, necessitating re-verification procedures.
+""" ;
+    :kb-reference :Reference-SystemAndMethodForProvidingCertifiableElectromagneticPulseAndRFIProtection_InstantAccessNetworksLLC ;
+    :synonym "EM Hardening" .
+
 :ElectromagneticSignal a owl:Class ;
     rdfs:label "Electromagnetic Signal" ;
     rdfs:subClassOf :Signal ;
@@ -15545,7 +15578,19 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0007 a owl:Class ;
     rdfs:label "Trigger Single Event Upset - SPARTA" ;
     skos:prefLabel "Trigger Single Event Upset" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :CacheMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :FlashMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :MemoryExtent ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-corrupt ;
+            owl:someValuesFrom :ProcessorRegister ] ;
     :attack-id "EX-0007" ;
     :definition "Threat actors may utilize techniques to create a single-event upset (SEU) which is a change of state caused by one single ionizing particle (ions, electrons, photons...) striking a sensitive node in a spacecraft(i.e., microprocessor, semiconductor memory, or power transistors). The state change is a result of the free charge created by ionization in or close to an important node of a logic element (e.g. memory \"bit\"). This can cause unstable conditions on the spacecraft depending on which component experiences the SEU. SEU is a known phenomenon for spacecraft due to high radiation in space, but threat actors may attempt to utilize items like microwaves to create a SEU." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0007/> .
@@ -24008,6 +24053,15 @@ Newcastle University. (n.d.). Parametric Hypothesis Tests. [Link](https://www.nc
 1. String-searching algorithm. (2023, April 8). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/String-searching_algorithm)""",
         "Numeric pattern matching is a method of matching some defined pattern specification against a numeric value." .
 
+:ParticleRadiationHardening a owl:Class,
+        owl:NamedIndividual,
+        :ParticleRadiationHardening ;
+    rdfs:label "Particle Radiation Hardening" ;
+    rdfs:subClassOf :RadiationHardening ;
+    rdfs:isDefinedBy <https://www.mdpi.com/2079-9292/10/17/2144> ;
+    :definition "The application of material, process, layout, or circuit-level design measures to electronic systems and components to reduce susceptibility to total ionizing dose degradation and single-event effects caused by ionizing particles such as protons, heavy ions, neutrons, or electrons." ;
+    :synonym "Ionizing Particle Hardening" .
+
 :Partition a owl:Class ;
     rdfs:label "Partition" ;
     skos:altLabel "Disk Partition",
@@ -25614,6 +25668,27 @@ Q-learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Q-learning).""" .
     :kb-article """## References
 Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
 
+:RadiationHardening a owl:Class,
+        owl:NamedIndividual,
+        :RadiationHardening ;
+    rdfs:label "Radiation Hardening" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :d3fend-id "D3-RH" ;
+    :definition "Radiation hardening is the process of making electronic components and circuits resistant to damage or malfunction caused by high levels of ionizing radiation." ;
+    :kb-article """## How it works
+
+There are three core radiation hardening methodologies:
+
+1. Radiation Hardening by Process (RHBP): modifying the physical fabrication of a semiconductor (e.g., using SOI - Silicon on Insulator), offering the highest intrinsic protection. Usually the most expensive option as it requires a specialized semiconducter fabrication plant.
+2. Radiation Hardening by Design (RHBD): modifying circuit topology and physical layout using techniques such as Triple Modular Redundancy (TMM). A more cost-effective option, with the constraint of potentially increasing chip area and power.
+3. Radiation Hardening by Shielding (RHBS): using physical materials (e.g., aluminum or tantalum) to block ionizing particles. Simple to implement, with the constraint of increasing size and weight.""" ;
+    :kb-reference :Reference-ARadiationHardenedSARADCWithDelayBasedDualFeedbackFlipFlopsForSensorReadoutSystems,
+        :Reference-DiagnosisOfFaultsInducedByRadiationAndCircuitLevelDesignMitigationTechniques,
+        :Reference-MethodOfMakingThinAtomicZGradeShields .
+
 :RadioModem a owl:Class ;
     rdfs:label "Radio Modem" ;
     rdfs:subClassOf :Modem ;
@@ -25622,7 +25697,10 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
 
 :RAM a owl:Class ;
     rdfs:label "RAM" ;
-    rdfs:subClassOf :PrimaryStorage ;
+    rdfs:subClassOf :PrimaryStorage,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :MemoryExtent ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Random-access_memory> ;
     :definition "Random-access memory (RAM) is a form of computer memory that can be read and changed in any order, typically used to store working data and machine code." ;
     :synonym "Random-access Memory" .
@@ -26815,7 +26893,7 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
         owl:NamedIndividual,
         :RFShielding ;
     rdfs:label "RF Shielding" ;
-    rdfs:subClassOf :PlatformHardening ;
+    rdfs:subClassOf :ElectromagneticRadiationHardening ;
     :d3fend-id "D3-RFS" ;
     :definition "Adding physical barriers to a platform to prevent undesired radio interference." ;
     :kb-reference :Reference-PrivacyAndSecuritySystemsAndMethodsOfUse,
@@ -41621,6 +41699,15 @@ Outlier data values which deviate from behavioral profile by more than a predete
     :kb-mitre-analysis "This patent includes the description of a method of blocking email traffic from untrusted domains by analyzing the TCP/IP source IP addresses and blocking traffic for IPs whose reverse lookup response FQDN matches a denylist." ;
     :kb-reference-title "Apparatus for to provide content to and query a reverse domain name system server" .
 
+:Reference-ARadiationHardenedSARADCWithDelayBasedDualFeedbackFlipFlopsForSensorReadoutSystems a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - A Radiation-Hardened SAR ADC with Delay-Based Dual Feedback Flip-Flops for Sensor Readout Systems" ;
+    :has-link "https://www.mdpi.com/1424-8220/20/1/171"^^xsd:anyURI ;
+    :kb-abstract "For stable and effective control of the sensor system, analog sensor signals such as temperature, pressure, and electromagnetic fields should be accurately measured and converted to digital bits. However, radiation environments, such as space, flight, nuclear power plants, and nuclear fusion reactors, as well as high-reliability applications, such as automotive semiconductor systems, suffer from radiation effects that degrade the performance of the sensor readout system including analog-to-digital converters (ADCs) and cause system malfunctions. This paper investigates an optimal ADC structure in radiation environments and proposes a successive- approximation-register (SAR) ADC using delay-based double feedback flip-flops to enhance the system tolerance against radiation effects, including total ionizing dose (TID) and single event effects (SEE). The proposed flip-flop was fabricated using 130 nm complementary metal-oxide-semiconductor (CMOS) silicon-on-insulator (SOI) process, and its radiation tolerance was measured in actual radiation test facilities. Also, the proposed radiation-hardened SAR ADC with delay-based dual feedback flip-flops was designed and verified by utilizing compact transistor models, which reflect radiation effects to CMOS parameters, and radiation simulator computer aided design (CAD) tools." ;
+    :kb-author "Duckhoon Ro, Changhong Min, Myounggon Kang, Hyung-Min Lee" ;
+    :kb-reference-of :RadiationHardening ;
+    :kb-reference-title "A Radiation-Hardened SAR ADC with Delay-Based Dual Feedback Flip-Flops for Sensor Readout Systems" .
+
 :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Architecture of transparent network security for application containers - Neuvector Inc" ;
@@ -42720,6 +42807,15 @@ This patent includes File Content Signatures because in the case of a script fil
     :kb-author "U.S. Department of Homeland Security" ;
     :kb-reference-of :VideoSurveillance ;
     :kb-reference-title "CCTV Technology Handbook" .
+
+:Reference-DiagnosisOfFaultsInducedByRadiationAndCircuitLevelDesignMitigationTechniques a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Diagnosis of Faults Induced by Radiation and Circuit-Level Design Mitigation Techniques: Experience from VCO and High-Speed Driver CMOS ICs Case Studies" ;
+    :has-link "https://www.mdpi.com/2079-9292/10/17/2144"^^xsd:anyURI ;
+    :kb-abstract "In this paper, we discuss the diagnosis of particle-induced failures in harsh environments such as space and high-energy physics. To address these effects, simulation-before-test and simulation-after-test can be the key points in choosing which radiation hardening by design (RHBD) techniques can be implemented to mitigate or prevent failures. Despite the fact that total ionising dose (TID) has slow but destructive effects overtime on silicon devices, single-event effect (SEE) impulsively disrupts the typical operation of a circuit with temporary or permanent effects. The recently released SpaceFibre protocol drives the current requirements for space applications, and the future upgrade of the LHC experiment scheduled by CERN will require a redesign of the electronic front-end to sustain a radiation level up to the 1 Grad TID level. The effects that these two environments have on two different architectures for high-radiation and high-frequency data transmission are reported, and the efficiency of the mitigation techniques implemented, based on simulations and measurement tests, in the commercial 65 nm technology, are exploited." ;
+    :kb-author "Danilo Monda, Gabriele Ciarpi, Sergio Saponara" ;
+    :kb-reference-of :RadiationHardening ;
+    :kb-reference-title "Diagnosis of Faults Induced by Radiation and Circuit-Level Design Mitigation Techniques: Experience from VCO and High-Speed Driver CMOS ICs Case Studies" .
 
 :Reference-DigitalIdentityGuidelines800-63-3 a :GuidelineReference,
         owl:NamedIndividual ;
@@ -43874,6 +43970,18 @@ Some examples of data inputs:
     :kb-organization "Nozomi Networks" ;
     :kb-reference-of :RemoteFirmwareUpdateMonitoring ;
     :kb-reference-title "Method for detecting anomalies in time series data produced by devices of an infrastructure in a network" .
+
+:Reference-MethodOfMakingThinAtomicZGradeShields a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Method of making thin atomic (Z) grade shields - NASA" ;
+    :has-link "https://patents.google.com/patent/US20110296412A1"^^xsd:anyURI ;
+    :kb-abstract "A radiation-shielded structural enclosure is formed from layers of material having higher and lower Z (atomic) numbers. The enclosure may be formed from layers of titanium that are bonded to opposite sides of a layer of tantalum. A layer of aluminum alloy may be bonded to at least one of the layers of titanium. The enclosure provides structural support for components disposed inside the enclosure and provides radiation shielding for the components." ;
+    :kb-author "Donald L. Thomsen, III" ;
+    :kb-mitre-analysis " " ;
+    :kb-organization "NASA" ;
+    :kb-reference-of :RadiationHardening ;
+    :kb-reference-title "A Method of making thin atomic (Z) grade shields" ;
+    :todo "MITRE Analysis was not found" .
 
 :Reference-MethodUsingKernelModeAssistanceForTheDetectionAndRemovalOfThreatsWhichAreActivelyPreventingDetectionAndRemovalFromARunningSystem_SymantecCorporation a owl:NamedIndividual,
         :PatentReference ;
@@ -45273,6 +45381,17 @@ and deploy decoy physical or virtual endpoints.""" ;
     :kb-organization "Nokia of America Corp" ;
     :kb-reference-of :EmailFiltering ;
     :kb-reference-title "System and method for providing anonymous remailing and filtering of electronic mail" .
+
+:Reference-SystemAndMethodForProvidingCertifiableElectromagneticPulseAndRFIProtection_InstantAccessNetworksLLC a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - System and method for providing certifiable electromagnetic pulse and rfi protection through mass-produced shielded containers and rooms - Instant Access Networks LLC" ;
+    :has-link "https://patents.google.com/patent/US20070105445A1"^^xsd:anyURI ;
+    :kb-abstract "Disclosed are a system and method for providing certifiable shielded cabinets and rooms, or pods, to protect devices, equipment and people from electromagnetic interference such as electromagnetic pulse, and directed energy attack. The method simulates the separate electric and magnetic shield requirements and capabilities of each type of materials, simulating them separately and together to form a combined set of materials layered for an enhanced electromagnetic shield that is lighter weight and less expensive. Further disclosed is a system and method for SCADA, RFID, and OID monitoring and controls to enable initial and ongoing testing and control." ;
+    :kb-author "Charles Manto, Joseph Child" ;
+    :kb-mitre-analysis "This patent discloses a system for protecting devices, equipment, and people from EMI, EMP (including high-altitude EMP), RFI, directed energy weapons, and natural events such as extreme solar flares, using layered combinations of lightweight metals and ferrous materials simulated separately and together to optimize shielding effectiveness." ;
+    :kb-organization "Instant Access Networks LLC" ;
+    :kb-reference-of :ElectromagneticRadiationHardening ;
+    :kb-reference-title "System and method for providing certifiable electromagnetic pulse and rfi protection through mass-produced shielded containers and rooms" .
 
 :Reference-SystemAndMethodForScanningRemoteServicesToLocateStoredObjectsWithMalware a owl:NamedIndividual,
         :PatentReference ;
