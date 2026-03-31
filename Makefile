@@ -9,7 +9,7 @@ ATTACK_VERSION ?= 18.1
 
 CAPEC_VERSION := 3.9
 
-SPARTA_VERSION := 3.1
+SPARTA_VERSION := 3.2
 ATLAS_VERSION := 5.1.1
 ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
 
@@ -109,7 +109,7 @@ install-system-deps:
 	$(END)
 
 install-python-deps:
-	pipenv install
+	pipenv install --dev
 	$(END)
 
 bindir:
@@ -495,12 +495,12 @@ help: ##print out this message
 format: ## Format ttl to canonical, stable format for effective diffing (accomplished before any commits)
 	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
 
-# requires https://pre-commit.com/#install
+# requires `make install-python-deps`
 pre-commit-install:
-	pre-commit install
+	pipenv run pre-commit install
 
 pre-commit:
-	pre-commit run --all-files
+	pipenv run pre-commit run --all-files
 
 
 .PHONY: all help clean build dist test robot
