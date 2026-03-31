@@ -1747,6 +1747,146 @@ skos:prefLabel a owl:AnnotationProperty .
 
 ### Classes
 
+:FlightSoftware a owl:Class ; 
+    rdfs:label "Flight Software" ;
+    rdfs:subClassOf :RealTimeEmbeddedSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :FlightSoftwareParameterTable ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :EventLog ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SoftwareWatchdogTimer ],
+        [ a owl:Restriction ;
+            owl:onProperty :parses ;
+            owl:someValuesFrom :Telecommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :Telecommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :TelemetryRecord ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ExecutableBinary ] ; 
+    :definition "Flight Software (FSW) is software that runs on a processor embedded in a spacecraft's avionics. It is responsible for managing on-board activities, data processing and spacecraft health and safety. The name “flight software” reflects the location where it executes, i.e. in the spacecraft , to differentiate from “ground software”, which runs in the ground segment." ;
+    :synonym "On-board software", "FSW", "OBSW" ; 
+    rdfs:seeAlso <https://phxcubesat.asu.edu/subsystems/flight-software>,
+        <https://www.spiedigitallibrary.org/conference-proceedings-of-spie/13546/135462R/An-evaluation-of-flight-software-platforms-for-small-satellite-missions/10.1117/12.3062481.full> .
+
+:OnboardComputer a owl:Class ;
+    rdfs:label "Onboard Computer" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :RealTimeOperatingSystem ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :FlightSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :BootLoader ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FlashMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :EEPROM ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ECCMemory ], 
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :HardwareWatchdogTimer ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :HardwareClock ] ; 
+    rdfs:isDefinedBy <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> ;
+    :definition "A self-contained, embedded computing unit installed within a vehicle or other autonomous platform that executes real-time control, data-handling, and mission-management software. It interfaces directly with the platform's sensors, actuators, and communication links, processes and stores operational data, and issues commands to subsystems, enabling the system to function independently of external computing resources." ;
+    :synonym "OBC" ;
+    rdfs:seeAlso <https://blog.satsearch.co/2020-03-11-an-overview-of-on-board-computer-obc-systems-available-on-the-global-space-marketplace> .
+    
+:Spacecraft a owl:Class ;
+    rdfs:label "Spacecraft" ;
+    rdfs:subClassOf :Vehicle,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OnboardComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Receiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :HardwareCryptographicModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Transmitter ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :StandaloneSDR],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SpacecraftActuator],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :InertialMeasurementUnit ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-operating-mode ;
+            owl:someValuesFrom :OperatingMode] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Spacecraft> ;
+    :definition "A spacecraft is a vehicle that is designed to fly and operate in outer space. Spacecraft are used for a variety of purposes, including communications, Earth observation, meteorology, navigation, space colonization, planetary exploration, and transportation of humans and cargo." .
+
+:GNSSSatellite a owl:Class ;
+    rdfs:label "GNSS Satellite" ;
+    rdfs:subClassOf :Satellite,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :AtomicClock ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :GNSSSignal ] ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Satellite_navigation> ;
+    d3f:definition "A GNSS satellite is part of a space-based constellation that transmits signals, allowing receivers on Earth to determine their position, navigation, and timing (PNT) through trilateration." .
+
+:GNSSTimeRecord a owl:Class ;
+    rdfs:label "GNSS Time Record" ;
+    rdfs:subClassOf :TimeRecord ;
+    :definition "A GNSS Time Record is an information content entity encoded in a GNSS signal that represents the transmission time of that signal as determined by the transmitting satellite, expressed relative to a constellation-specific time standard and epoch." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS> .
+
+:GNSSSignal a owl:Class ;
+    rdfs:label "GNSS Signal" ;
+    rdfs:subClassOf :ElectromagneticSignal, 
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
+    :synonym "Global Navigation Satellite System Signal" ; 
+    :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>, <https://gssc.esa.int/navipedia/index.php/GNSS_signal> .
+
+:GNSSReceiver a owl:Class ;
+    rdfs:label "GNSS Receiver" ;
+    rdfs:subClassOf :Receiver ;
+    :definition "A GNSS (Global Navigation Satellite System) receiver is an electronic device that picks up signals from one or more satellite constellations (like GPS, GLONASS, Galileo, BeiDou) to calculate precise location, velocity, and time." ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation> .
+
+:Satellite a owl:Class ;
+    rdfs:label "Satellite" ;
+    rdfs:subClassOf :Spacecraft,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SatelliteTransponder ] ; 
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Satellite> ;
+    :definition "A satellite or an artificial satellite is an object, typically a spacecraft, placed into orbit around a celestial body. They have a variety of uses, including communication relay, weather forecasting, navigation (GPS), broadcasting, scientific research, and Earth observation." .
+
 :AcademicPaperReference a owl:Class ;
     rdfs:label "Academic Paper Reference" ;
     rdfs:subClassOf :TechniqueReference ;
