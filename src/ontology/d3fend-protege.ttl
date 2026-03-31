@@ -13421,7 +13421,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0002 a owl:Class ;
     rdfs:label "Disrupt or Deceive Downlink - SPARTA" ;
     skos:prefLabel "Disrupt or Deceive Downlink" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :WirelessLink ] ;
     :attack-id "DE-0002" ;
     :definition "Threat actors may target ground-side telemetry reception, processing, or display to disrupt the operator’s visibility into spacecraft health and activity. This may involve denial-based attacks that prevent the spacecraft from transmitting telemetry to the ground (e.g., disabling telemetry links or crashing telemetry software), or more subtle deception-based attacks that manipulate telemetry content to conceal unauthorized actions. Since telemetry is the primary method ground controllers rely on to monitor spacecraft status, any disruption or manipulation can delay or prevent detection of malicious activity, suppress automated or manual mitigations, or degrade trust in telemetry-based decision support systems." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/> .
@@ -13461,7 +13464,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.01 a owl:Class ;
     rdfs:label "Vehicle Command Counter (VCC) - SPARTA" ;
     skos:prefLabel "Vehicle Command Counter (VCC)" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemPlatformVariable ] ;
     :attack-id "DE-0003.01" ;
     :definition "The VCC tracks how many commands the spacecraft has accepted. An adversary masks activity by zeroing, freezing, or selectively decrementing the VCC, or by steering actions through paths that do not increment it (maintenance dictionaries, alternate receivers, hidden handlers). They may also overwrite the telemetry field that reports the VCC so ground displays show a lower or steady count while high volumes of commands are processed. This breaks simple “command volume” heuristics and makes bursty activity look normal." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/01/> .
@@ -13469,7 +13475,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.02 a owl:Class ;
     rdfs:label "Rejected Command Counter - SPARTA" ;
     skos:prefLabel "Rejected Command Counter" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemPlatformVariable ] ;
     :attack-id "DE-0003.02" ;
     :definition "This counter records commands that failed checks or were refused. To hide probing and trial-and-error, the adversary suppresses increments, periodically clears the value, or forges the downlinked field so rejection rates appear benign. Variants also tamper with associated reason codes or event entries, replacing them with innocuous outcomes. Analysts reviewing telemetry see no evidence of failed attempts even as the system is being exercised aggressively." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/02/> .
@@ -13477,7 +13486,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.03 a owl:Class ;
     rdfs:label "Command Receiver On/Off Mode - SPARTA" ;
     skos:prefLabel "Command Receiver On/Off Mode" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
     :attack-id "DE-0003.03" ;
     :definition "By toggling receiver enable states (per-receiver, per-antenna, or per-band), the adversary creates deliberate “quiet windows” in which outside intervention cannot arrive. Turning a command receiver off, or shifting to a configuration that ignores the primary path, allows queued actions or onboard procedures to run without interruption, while operators perceive a transient loss of commandability consistent with geometry or environment. Brief, well-timed toggles can also desynchronize counters and handovers, complicating reconstruction of what occurred." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/03/> .
@@ -13485,7 +13497,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.04 a owl:Class ;
     rdfs:label "Command Receivers Received Signal Strength - SPARTA" ;
     skos:prefLabel "Command Receivers Received Signal Strength" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemPlatformVariable ] ;
     :attack-id "DE-0003.04" ;
     :definition "Threat actors may target the on-board command receivers received signal parameters (i.e., automatic gain control (AGC)) in order to stop specific commands or signals from being processed by the spacecraft. For ground controllers to communicate with spacecraft in orbit, the on-board receivers need to be configured to receive signals with a specific signal to noise ratio (ratio of signal power to the noise power). Targeting values related to the antenna signaling that are modifiable can prevent the spacecraft from receiving ground commands." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/04/> .
@@ -13493,7 +13508,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.05 a owl:Class ;
     rdfs:label "Command Receiver Lock Modes - SPARTA" ;
     skos:prefLabel "Command Receiver Lock Modes" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
     :attack-id "DE-0003.05" ;
     :definition "Receivers advertise acquisition states, bit lock, frame lock, and command lock, that indicate readiness to accept telecommands. Adversaries leverage these indicators in two ways: (1) use command-lock tests to validate geometry, power, Doppler, and polarization without risking visible command execution; and (2) tamper with the values that report lock status so ground views never show that lock was achieved. Techniques include freezing or clearing lock flags and counters, raising/lowering internal thresholds so lock occurs without being reported (or vice versa), and timing brief lock intervals between telemetry samples. The result is a window where the spacecraft is receptive to commands while downlinked status suggests otherwise." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/05/> .
@@ -13501,7 +13519,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.06 a owl:Class ;
     rdfs:label "Telemetry Downlink Modes - SPARTA" ;
     skos:prefLabel "Telemetry Downlink Modes" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingMode ] ;
     :attack-id "DE-0003.06" ;
     :definition "Spacecraft expose modes that control what telemetry is sent and how, real-time channels, recorder playback, beacon/summary only, event-driven reporting, and per-virtual-channel/APID selections. By switching modes or editing the associated parameters (rates, filters, playback queues, index ranges), an adversary can thin, defer, or reroute observability. Typical effects include suppressing high-rate engineering streams in favor of minimal beacons, delaying playback of time periods of interest, replaying benign segments, or redirecting packets to alternate virtual channels that are not routinely monitored. Telemetry continues to flow, but it no longer reflects the activity the operators need to see." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/06/> .
@@ -13517,7 +13538,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.08 a owl:Class ;
     rdfs:label "Received Commands - SPARTA" ;
     skos:prefLabel "Received Commands" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :CommandHistoryLog ] ;
     :attack-id "DE-0003.08" ;
     :definition "Spacecraft typically maintain histories of accepted, rejected, and executed commands, buffers, logs, or file records that can be downlinked on demand or periodically. An adversary conceals activity by editing or pruning these artifacts: removing entries, altering opcodes or arguments, rewriting timestamps and source identifiers, rolling logs early, or repopulating with benign-looking commands to balance counters. Related acknowledgments and event records may be suppressed or reclassified so cross-checks appear consistent. After manipulation, the official command history shows a plausible narrative that omits or mischaracterizes the adversary’s actions." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/08/> .
@@ -13525,7 +13549,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.09 a owl:Class ;
     rdfs:label "System Clock for Evasion - SPARTA" ;
     skos:prefLabel "System Clock for Evasion" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemTime ] ;
     :attack-id "DE-0003.09" ;
     :definition "The adversary biases the spacecraft’s authoritative time so that telemetry, event logs, and command histories appear shifted or inconsistent. By writing clock registers, altering disciplining sources (e.g., GNSS vs. free-running oscillator), or tweaking distribution services and offsets, they can make stored commands execute “earlier” or “later” on the timeline and misalign acknowledgments with actual actions. Downlinked frames still carry plausible timestamps near packet headers, but those stamps no longer reflect when data was produced, complicating reconstruction of sequences and masking causality during incident analysis." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/09/> .
@@ -13568,7 +13595,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0005 a owl:Class ;
     rdfs:label "Subvert Protections via Safe-Mode - SPARTA" ;
     skos:prefLabel "Subvert Protections via Safe-Mode" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :VehicleOperatingMode ] ;
     :attack-id "DE-0005" ;
     :definition "The adversary exploits the spacecraft’s recovery posture to bypass controls that are stricter in nominal operations. During safe-mode, vehicles often accept contingency dictionaries, relax rate/size and timetag checks, activate alternate receivers or antennas, and emit reduced or summary telemetry. By timing actions to this state, or deliberately inducing it, the attacker issues maintenance-looking edits, loads, or mode changes that proceed under broadened acceptance while downlink visibility is thinned. Unauthorized activity blends with anomaly response, evading both automated safeguards and operator suspicion." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0005/> .
@@ -13576,7 +13606,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0006 a owl:Class ;
     rdfs:label "Modify Whitelist - SPARTA" ;
     skos:prefLabel "Modify Whitelist" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :AccessControlConfiguration ] ;
     :attack-id "DE-0006" ;
     :definition "Threat actors may target whitelists on the spacecrafts as a means to execute and/or hide malicious processes/programs. Whitelisting is a common technique used on traditional IT systems but has also been used on spacecrafts. Whitelisting is used to prevent execution of unknown or potentially malicious software. However, this technique can be bypassed if not implemented correctly but threat actors may also simply attempt to modify the whitelist outright to ensure their malicious software will operate on the spacecraft that utilizes whitelisting." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0006/> .
@@ -13584,7 +13617,19 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0007 a owl:Class ;
     rdfs:label "Evasion via Rootkit - SPARTA" ;
     skos:prefLabel "Evasion via Rootkit" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :BootSector ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Kernel ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :KernelModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemFirmware ] ;
     :attack-id "DE-0007" ;
     :definition "A rootkit hides malicious activity by interposing on reporting paths after the system has booted. In flight contexts this includes patching flight software APIs, kernel syscalls, message queues, and telemetry publishers so task lists, counters, health channels, and event severities are falsified before downlink. Command handlers can be hooked to suppress evidence of certain opcodes or sources; recorder catalogs and file listings can be rewritten on the fly; and housekeeping can be biased to show nominal temperatures, currents, or voltages while actions proceed. The defining feature is runtime concealment: the observability surfaces operators rely on are altered to present a curated, benign narrative." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0007/> .
@@ -13592,7 +13637,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0008 a owl:Class ;
     rdfs:label "Evasion via Bootkit - SPARTA" ;
     skos:prefLabel "Evasion via Bootkit" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :BootLoader ] ;
     :attack-id "DE-0008" ;
     :definition "A bootkit hides activity by running first and shaping what higher layers will later observe. Positioned in boot ROM handoff or early loaders, it can select or patch images in memory, alter device trees and driver tables, seed forged counters and timestamps, and preconfigure telemetry/crypto modes so subsequent components launch into a reality curated by the attacker. Because integrity and logging mechanisms are initialized afterward, the resulting view of processes, files, and histories reflects the bootkit’s choices, allowing long-term evasion that persists across resets and mode transitions." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0008/> .
@@ -13648,7 +13696,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0010 a owl:Class ;
     rdfs:label "Overflow Audit Log - SPARTA" ;
     skos:prefLabel "Overflow Audit Log" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :abuses ;
+            owl:someValuesFrom :EventLog ] ;
     :attack-id "DE-0010" ;
     :definition "The adversary hides activity by exhausting finite on-board logging and telemetry buffers so incriminating events are overwritten before they can be downlinked. Spacecraft typically use ring buffers with severity filters, per-subsystem quotas, and scheduled dump windows; by generating bursts of benign but high-frequency events (file listings, status queries, low-severity housekeeping, repeated mode toggles) or by provoking chatter from chatty subsystems, the attacker accelerates rollover. Variants target recorder indexes and event catalogs so new entries displace older ones, or they align floods with known downlink gaps and pass handovers when retention is shortest. To analysts on the ground, logs appear present but incomplete, showing a plausible narrative that omits the very interval when unauthorized commands or updates occurred." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0010/> .
@@ -13656,7 +13707,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0011 a owl:Class ;
     rdfs:label "Credentialed Evasion - SPARTA" ;
     skos:prefLabel "Credentialed Evasion" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Credential ] ;
     :attack-id "DE-0011" ;
     :definition "Threat actors may leverage valid credentials to conduct unauthorized actions against a spacecraft or related system in a way that conceals their presence and evades detection. By using trusted authentication mechanisms attackers can blend in with legitimate operations and avoid triggering access control alarms or anomaly detection systems. This technique enables evasion by appearing authorized, allowing adversaries to issue commands, access sensitive subsystems, or move laterally within spacecraft or constellation architectures without exploiting software vulnerabilities. When credential use is poorly segmented or monitored, this form of access can be used to maintain stealthy persistence or facilitate other tactics under the guise of legitimate activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0011/> .
@@ -15516,7 +15570,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0001.01 a owl:Class ;
     rdfs:label "Command Packets - SPARTA" ;
     skos:prefLabel "Command Packets" ;
-    rdfs:subClassOf :EX-0001 ;
+    rdfs:subClassOf :EX-0001,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "EX-0001.01" ;
     :definition "Threat actors may resend authentic-looking telecommands that were previously accepted by the spacecraft. Captures may include whole command PDUs with framing, CRC/MAC, counters, and timetags intact, or they may be reconstructed from operator tooling and procedure logs. When timing, counters, and mode preconditions align, the replayed packet can cause the same effect: toggling relays, initiating safing or recovery scripts, adjusting tables, commanding momentum dumps, or scheduling delta-v events. Even when outright execution fails, repeated “near-miss” injections can map acceptance windows, rate/size limits, and interlocks by observing the spacecraft’s acknowledgments and state changes. At scale, streams of valid-but-stale commands can congest command queues, delay legitimate activity, or trigger nuisance FDIR responses." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0001/01/> .
@@ -15524,7 +15581,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0001.02 a owl:Class ;
     rdfs:label "Bus Traffic Replay - SPARTA" ;
     skos:prefLabel "Bus Traffic Replay" ;
-    rdfs:subClassOf :EX-0001 ;
+    rdfs:subClassOf :EX-0001,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :BusNetworkTraffic ] ;
     :attack-id "EX-0001.02" ;
     :definition "Instead of the RF path, the attacker targets internal command/data handling by injecting or retransmitting messages on the spacecraft bus (e.g., 1553, SpaceWire, custom). Because many subsystems act on the latest message or on message rate rather than on uniqueness, a flood of historical yet well-formed frames can consume bandwidth, starve critical publishers, or cause subsystems to perform the same action repeatedly. Secondary effects include stale sensor values being re-consumed, watchdog timers being reset at incorrect intervals, and autonomy rules misclassifying the situation due to out-of-order but valid-looking events. On time-triggered or scheduled buses, replaying at precise offsets can collide with or supersede legitimate messages, steering system state without changing software. The goal is to harness the bus’s determinism, repeating prior internal stimuli to recreate prior effects or to induce resource exhaustion." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0001/02/> .
@@ -15532,7 +15592,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0002 a owl:Class ;
     rdfs:label "Position, Navigation, and Timing (PNT) Geofencing - SPARTA" ;
     skos:prefLabel "Position, Navigation, and Timing (PNT) Geofencing" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :RuntimeVariable ] ;
     :attack-id "EX-0002" ;
     :definition "Malware or implanted procedures execute only when the spacecraft’s state meets geometric and temporal criteria. Triggers can be defined in orbital elements, inertial or Earth-fixed coordinates, relative geometry, lighting conditions, or time references. The code monitors on-board navigation solutions, ephemerides, or propagated TLEs and arms itself when thresholds are met (e.g., “only fire over region X,” “only activate during LEOP,” or “only run within N seconds of a scheduled downlink.”) Geofencing reduces exposure and aids deniability: triggers are rare, aligned with mission cadence, and hard to reproduce on the ground. More elaborate variants require conjunctions of conditions (position + attitude + clock epoch) or incorporate drift so the trigger slowly evolves with the orbit. The result is effect-on-demand: execution occurs precisely where and when the actor intends, while remaining dormant elsewhere." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0002/> .
@@ -15578,7 +15641,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0005.02 a owl:Class ;
     rdfs:label "Malicious Use of Hardware Commands - SPARTA" ;
     skos:prefLabel "Malicious Use of Hardware Commands" ;
-    rdfs:subClassOf :EX-0005 ;
+    rdfs:subClassOf :EX-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTModifyDeviceConfigurationCommand ] ;
     :attack-id "EX-0005.02" ;
     :definition "Threat actors may issue low-level device or maintenance commands that act directly on hardware, bypassing much of the high-level command mediation. These may be memory-mapped register writes forwarded over the bus, vendor-specific instrument/control opcodes, built-in-test and calibration modes, boot-mode or fuse-programming sequences, file/sector operations to on-board non-volatile stores, or actuator primitives for wheels, thrusters, motors, heaters, and RF chains. Because these interfaces exist to configure sensors, zero momentum, switch power domains, tune gains, or adjust clocks, they can also be sequenced to produce harmful effects: over-driving mechanisms, altering persistent calibration, disabling watchdogs, or switching timing sources. Some hardware command sets are only exposed in maintenance or contingency modes, while others are always reachable through gateway processors that translate high-level telecommands into device-level operations. By crafting orders that respect expected framing and rate/size limits, the adversary can induce mechanical, electrical, or logical state changes with immediate, high-privilege impact, all while appearing to exercise legitimate device capabilities." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0005/02/> .
@@ -15646,7 +15712,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0009.01 a owl:Class ;
     rdfs:label "Flight Software - SPARTA" ;
     skos:prefLabel "Flight Software" ;
-    rdfs:subClassOf :EX-0009 ;
+    rdfs:subClassOf :EX-0009,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Application ] ;
     :attack-id "EX-0009.01" ;
     :definition "Flight software presents rich attack surface where mission-specific parsing and autonomy live. Vulnerable components include command and telemetry handlers, table loaders, file transfer services, mode management and safing logic, payload control applications, and gateway processes that bridge payload and bus protocols. Typical flaws are unchecked lengths and indices in command fields, arithmetic overflows in rate/size calculations, insufficient validation of table contents, format-string misuse in logging, incomplete state cleanup across rapid mode changes, and race conditions in concurrent message processing. Some FSW suites expose operator-facing APIs or scripting/procedure engines used for automation; malformed invocations can coerce unexpected behaviors or enable arbitrary expressions. Because many subsystems act on “last write wins,” logic errors can yield durable configuration changes without obvious anomalies in protocol syntax. Successful exploitation lets an adversary execute code, alter persistent parameters, or chain effects across partitions that would otherwise be segmented by design." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0009/01/> .
@@ -15654,7 +15723,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0009.02 a owl:Class ;
     rdfs:label "Operating System - SPARTA" ;
     skos:prefLabel "Operating System" ;
-    rdfs:subClassOf :EX-0009 ;
+    rdfs:subClassOf :EX-0009,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingSystem ] ;
     :attack-id "EX-0009.02" ;
     :definition "At the OS layer the attacker targets primitives that schedule work and mediate hardware. Maintenance builds may expose shells or management consoles; misconfigurations around these interfaces can provide paths to command interpreters or privileged syscalls. Exploitation yields kernel-mode execution, arbitrary memory read/write, or control of scheduling and address spaces, letting the actor tamper with FSW processes, intercept command paths, or manipulate storage and bus drivers beneath application checks. The technique leverages generic OS weaknesses adapted to the spacecraft’s particular build, turning low-level control into mission-facing effects that appear to originate from legitimate processes." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0009/02/> .
@@ -15686,7 +15758,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0010.02 a owl:Class ;
     rdfs:label "Wiper Malware - SPARTA" ;
     skos:prefLabel "Wiper Malware" ;
-    rdfs:subClassOf :EX-0010 ;
+    rdfs:subClassOf :EX-0010,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :File ] ;
     :attack-id "EX-0010.02" ;
     :definition "Wipers deliberately destroy or irreversibly corrupt data and, in some cases, executable images to impair or end mission operations. Destructive routines may overwrite with patterns or pseudorandom data, repeatedly reformat volumes, trigger wear mechanisms on non-volatile memory, or manipulate low-level translation layers so recovery tools see a blank or inconsistent device. Activation can be immediate or staged, sleeping until a specific time, pass, or maintenance action, and may be paired with anti-recovery steps such as erasing checksums, undo logs, or golden images. Because wipers operate at storage and image layers that underpin many subsystems, collateral effects can cascade: autonomy enters safing without viable recovery paths, downlinks carry only noise, and subsequent updates cannot be authenticated or applied. The defining feature is irreversible loss of data or executables as the primary objective, rather than concealment or monetization." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0010/02/> .
@@ -15694,7 +15769,19 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0010.03 a owl:Class ;
     rdfs:label "Rootkit - SPARTA" ;
     skos:prefLabel "Rootkit" ;
-    rdfs:subClassOf :EX-0010 ;
+    rdfs:subClassOf :EX-0010,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :BootSector ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Kernel ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :KernelModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SystemFirmware ] ;
     :attack-id "EX-0010.03" ;
     :definition "A rootkit hides the presence and activity of other malicious components by interposing on the mechanisms that report system state. On spacecraft this can occur within flight software processes, at OS kernel level, inside separation kernels/hypervisors, or down in system firmware where drivers and initialization routines run. Techniques include API and syscall hooking, patching message queues and inter-process communication paths, altering task lists and scheduler views, filtering telemetry packets and event logs, and rewriting sensor or health values before they are recorded or downlinked. Rootkits may also hook command handlers and gateways so certain opcodes, timetags, or sources are silently accepted or ignored while external observers see normal acknowledgments. Because many missions rely on deterministic procedures and limited observability, even small alterations to reporting can make malicious actions appear as plausible mode transitions or benign anomalies. Persistence often pairs with the concealment layer, with the rootkit reinjecting companions after resets or rebuilds by monitoring for specific files, tables, or image loads and modifying them on the fly." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0010/03/> .
@@ -15702,7 +15789,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0010.04 a owl:Class ;
     rdfs:label "Bootkit - SPARTA" ;
     skos:prefLabel "Bootkit" ;
-    rdfs:subClassOf :EX-0010 ;
+    rdfs:subClassOf :EX-0010,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :BootLoader ] ;
     :attack-id "EX-0010.04" ;
     :definition "A bootkit positions itself in the pre-OS boot chain so that it executes before normal integrity checks and can shape what the system subsequently trusts. After seizing early control, the bootkit can redirect image selection, patch kernels or flight binaries in memory, adjust device trees and driver tables, or install hooks that persist across warm resets. Some variants maintain shadow copies of legitimate images and present them to basic verification routines while steering actual execution to a modified payload; others manipulate fallback logic so recovery modes load attacker-controlled code. Because the boot path initializes memory maps, buses, and authentication material, a bootkit can also influence key/counter setup and gateway configurations, creating conditions favorable to later tactics. The central characteristic is precedence: by running first, the implant defines the reality higher layers observe, ensuring that every subsequent component launches under conditions curated by the attacker." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0010/04/> .
@@ -15718,7 +15808,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012 a owl:Class ;
     rdfs:label "Modify On-Board Values - SPARTA" ;
     skos:prefLabel "Modify On-Board Values" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :RuntimeVariable ] ;
     :attack-id "EX-0012" ;
     :definition "The attacker alters live or persistent data that the spacecraft uses to make decisions and route work. Targets include device and control registers, parameter and limit tables, internal routing/subscriber maps, schedules and timelines, priority/QoS settings, watchdog and timer values, autonomy/FDIR rule tables, ephemeris and attitude references, and power/thermal setpoints. Many missions expose legitimate mechanisms for updating these artifacts, direct memory read/write commands, table load services, file transfers, or maintenance procedures, which can be invoked to steer behavior without changing code. Edits may be transient (until reset) or latched/persistent across boots; they can be narrowly scoped (a single bit flip on an enable mask) or systemic (rewriting a routing table so commands are misdelivered). The effect space spans subtle biasing of control loops, selective blackholing of commands or telemetry, rescheduling of operations, and wholesale changes to mode logic, all accomplished by modifying the values the software already trusts and consumes." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/> .
@@ -15820,7 +15913,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0012,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :OperatingSystemClock ] ;
+            owl:someValuesFrom :SystemTime ] ;
     :attack-id "EX-0012.12" ;
     :definition "Spacecraft maintain multiple time bases and distribute time to schedule sequences, validate timetags, manage anti-replay counters, and align navigation/attitude processing. By writing to clock registers, altering time-distribution services, switching disciplining sources, or biasing oscillator parameters, an adversary can skew these references. Effects include reordering or prematurely firing stored command sequences, invalidating timetag checks, desynchronizing counters used by authentication or ranging, misaligning estimator windows, and corrupting timestamped payload data. Even small offsets can accumulate into observable misbehavior when autonomy and scheduling depend on tight temporal guarantees. The result is execution that happens at the wrong moment, or not at all, because the system’s notion of “now” has been shifted." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/12/> .
@@ -15844,7 +15937,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0013.01 a owl:Class ;
     rdfs:label "Valid Commands - SPARTA" ;
     skos:prefLabel "Valid Commands" ;
-    rdfs:subClassOf :EX-0013 ;
+    rdfs:subClassOf :EX-0013,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "EX-0013.01" ;
     :definition "Here the adversary saturates paths with legitimate telecommands or bus messages so the spacecraft burns scarce resources honoring them. Inputs may be innocuous (no-ops, time queries, telemetry requests) or low-risk configuration edits, but at scale they consume command handler cycles, fill queues, generate events and logs, trigger acknowledgments, and provoke downstream work in subsystems (e.g., repeated state reports, mode toggles, or file listings). On internal buses, valid actuator or housekeeping messages replayed at high rate can starve higher-priority publishers or cause control laws to chase stale stimuli. Because the traffic is syntactically correct, and often contextually plausible, the system attempts to process it rather than discard it early, increasing CPU usage, memory pressure, and power draw. Consequences include delayed or preempted legitimate operations, transient loss of commandability, and knock-on FDIR activity as deadlines slip and telemetry appears inconsistent." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0013/01/> .
@@ -15917,7 +16013,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0015 a owl:Class ;
     rdfs:label "Side-Channel Attack - SPARTA" ;
     skos:prefLabel "Side-Channel Attack" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTEmbeddedComputer ] ;
     :attack-id "EX-0015" ;
     :definition "Adversaries extract secrets or steer execution by observing or perturbing physical byproducts of computation rather than the intended interfaces. Passive channels include timing, power draw, electromagnetic emissions, acoustic/optical leakage, and thermal patterns correlated with operations such as key use, counter updates, or parser activity. Active channels deliberately induce faults during runtime, e.g., voltage or clock glitches, electromagnetic/laser injection, or targeted radiation, to flip bits, skip checks, or bias intermediate values. On spacecraft, prime targets include crypto modules, SDR/FPGA pipelines, bootloaders, and bus controllers whose switching behavior or error handling reveals protocol state or key material. With sufficient samples, or with repeated fault attempts, statistical features emerge that reduce entropy of the sensitive variable under study; in effect, a successful fault campaign turns into information leakage comparable to a passive side channel. Collection vantage points range from on-orbit proximity (for EM/optical), to ATLO and ground test (for direct probing), to instrumented compromised hardware already in the signal path." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0015/> .
@@ -15987,7 +16086,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0018 a owl:Class ;
     rdfs:label "Non-Kinetic Physical Attack - SPARTA" ;
     skos:prefLabel "Non-Kinetic Physical Attack" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :OTEmbeddedComputer ] ;
     :attack-id "EX-0018" ;
     :definition "The adversary inflicts physical effects on a satellite without mechanical contact, using energy delivered through the environment. Principal modalities are electromagnetic pulse (EMP), high-power laser (optical/thermal effects), and high-power microwave (HPM). These methods can be tuned for reversible disruption (temporary sensor saturation, processor upsets) or irreversible damage (component burnout, optics degradation), and may be executed from ground, airborne, or space platforms given line-of-sight and power/aperture conditions. Forensics are often ambiguous: signatures may resemble environmental phenomena or normal degradations, and confirmation of effect is frequently limited to what the operator observes in telemetry or performance loss." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0018/> .
@@ -24229,7 +24331,10 @@ Wolfram MathWorld. (n.d.). Correlation Coefficient. [Link](https://mathworld.wol
 :PER-0001 a owl:Class ;
     rdfs:label "Memory Compromise - SPARTA" ;
     skos:prefLabel "Memory Compromise" ;
-    rdfs:subClassOf :SPARTAPersistenceTechnique ;
+    rdfs:subClassOf :SPARTAPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :PrimaryStorage ] ;
     :attack-id "PER-0001" ;
     :definition "The adversary arranges for malicious content to survive resets and mode changes by targeting memories and execution paths that initialize the system. Candidates include boot ROM handoff vectors, first/second-stage loaders, non-volatile images (flash/EEPROM), “golden” fallback partitions, configuration words/fuses, and RAM regions reconstructed at start-up from stored files or tables. Persistence may also ride auto-run mechanisms, init scripts, procedure engines, stored command sequences, or event hooks that execute on boot, safe-mode entry/exit, time triggers, or receipt of specific telemetry/commands. Variants keep the core payload only in RAM but ensure it is reloaded after every restart by patching copy-on-boot routines, altering file catalogs, or modifying table loaders so the same bytes are restored. The common thread is control of where the spacecraft looks for what to run next, so unauthorized logic is reinstated whenever the system resets or transitions modes." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/PER-0001/> .
@@ -24269,7 +24374,10 @@ Wolfram MathWorld. (n.d.). Correlation Coefficient. [Link](https://mathworld.wol
 :PER-0004 a owl:Class ;
     rdfs:label "Replace Cryptographic Keys - SPARTA" ;
     skos:prefLabel "Replace Cryptographic Keys" ;
-    rdfs:subClassOf :SPARTAPersistenceTechnique ;
+    rdfs:subClassOf :SPARTAPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :adds ;
+            owl:someValuesFrom :CryptographicKey ] ;
     :attack-id "PER-0004" ;
     :definition "The adversary cements control by changing the cryptographic material the spacecraft uses to authenticate or protect links and updates. Targets include uplink authentication keys and counters, link-encryption/session keys and key-encryption keys (KEKs), key identifiers/selectors, and algorithm profiles. Using authorized rekey commands or key-loading procedures, often designed for over-the-air use, the attacker installs new values in non-volatile storage and updates selectors so subsequent traffic must use the attacker’s keys to be accepted. Variants desynchronize anti-replay by advancing counters or switching epochs, or strand operators by flipping profiles to a mode for which only the adversary holds parameters. Once replaced, the new material persists across resets and mode changes, turning the spacecraft into a node that recognizes the adversary’s channel while rejecting former controllers." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/PER-0004/> .
@@ -24277,7 +24385,10 @@ Wolfram MathWorld. (n.d.). Correlation Coefficient. [Link](https://mathworld.wol
 :PER-0005 a owl:Class ;
     rdfs:label "Credentialed Persistence - SPARTA" ;
     skos:prefLabel "Credentialed Persistence" ;
-    rdfs:subClassOf :SPARTAPersistenceTechnique ;
+    rdfs:subClassOf :SPARTAPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Credential ] ;
     :attack-id "PER-0005" ;
     :definition "Threat actors may acquire or leverage valid credentials to maintain persistent access to a spacecraft or its supporting command and control (C2) systems. These credentials may include system service accounts, user accounts, maintenance access credentials, cryptographic keys, or other authentication mechanisms that enable continued entry without triggering access alarms. By operating with legitimate credentials, adversaries can sustain access over extended periods, evade detection, and facilitate follow-on tactics such as command execution, data exfiltration, or lateral movement. Credentialed persistence is particularly effective in environments lacking strong credential lifecycle management, segmentation, or monitoring allowing threat actors to exploit trusted pathways while remaining embedded in mission operations." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/PER-0005/> .
@@ -38770,7 +38881,8 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
 
 :Timer a owl:Class ;
     rdfs:label "Timer" ;
-    rdfs:subClassOf :Clock ;
+    rdfs:subClassOf :Clock,
+        :RuntimeVariable ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Timer> ;
     :definition "A timer or countdown timer is a type of clock that starts from a specified time duration and stops upon reaching 00:00. It can also usually be stopped manually before the whole duration has elapsed. An example of a simple timer is an hourglass. Commonly, a timer triggers an alarm when it ends. A timer can be implemented through hardware or software." .
 
@@ -39699,6 +39811,10 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
             owl:onProperty :contains ;
             owl:someValuesFrom :VectorImage ] ;
     :definition "A file that contains graphics data represented by vectors." .
+
+:VehicleOperatingMode a owl:Class ;
+    rdfs:label "Vehicle Operating Mode" ;
+    rdfs:subClassOf :OperatingMode .
 
 :Vendor a owl:Class ;
     rdfs:label "Vendor" ;
