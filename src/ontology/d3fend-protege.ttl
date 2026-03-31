@@ -1747,6 +1747,30 @@ skos:prefLabel a owl:AnnotationProperty .
 
 ### Classes
 
+:Transponder a owl:Class ;
+    rdfs:label "Transponder" ;
+    rdfs:subClassOf :HardwareDevice ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Transponder> ;
+    :definition "In telecommunications, a transponder is a device that, upon receiving a signal, emits a different signal in response." . 
+
+:SatelliteTransponder a owl:Class ;
+    rdfs:label "Satellite Transponder" ;
+    rdfs:subClassOf :Transponder ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Transponder_(satellite_communications)> ;
+    :definition "A communications satellite's transponder is the series of interconnected units that form a communications channel between the receiving and the transmitting antennas." . 
+
+:SpacecraftSafeMode a owl:Class ;
+    rdfs:label "Spacecraft Safe Mode" ;
+    rdfs:subClassOf :SafeMode ;
+    :definition "Safe mode is an operating mode of a modern uncrewed spacecraft during which all non-essential systems are shut down and only essential functions such as thermal management, radio reception and attitude control are active." ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Safe_mode_in_spacecraft> .
+
+:SafeMode a owl:Class ;
+    rdfs:label "Safe Mode" ;
+    rdfs:subClassOf :OperatingMode ;
+    :definition "An intentionally constrained operating mode of a system in which nonessential functions are disabled or limited and control is shifted to a minimal, well-tested configuration that prioritizes preventing harm (to the system, its environment, or data), maintaining basic stability and monitoring, and enabling diagnosis and recovery back to normal operation." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Safe_mode> .
+
 :Vehicle a owl:Class ;
     rdfs:label "Vehicle" ;
     rdfs:subClassOf :PhysicalArtifact ; 
@@ -1789,26 +1813,23 @@ skos:prefLabel a owl:AnnotationProperty .
             owl:onProperty :contains ;
             owl:someValuesFrom :Receiver ],
         [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Transmitter ],
+        [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :GNSSReceiver ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :HardwareCryptographicModule ],
         [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :Transmitter ],
-        [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :StandaloneSDR],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :SpacecraftActuator],
+            owl:someValuesFrom :Software-definedRadioComputer],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :BusNetwork ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :InertialMeasurementUnit ],
+            owl:someValuesFrom :TransducerSensor ],
         [ a owl:Restriction ;
             owl:onProperty :has-operating-mode ;
             owl:someValuesFrom :OperatingMode] ;
@@ -16445,7 +16466,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :EXF-0006.02 a owl:Class ;
     rdfs:label "Transponder - SPARTA" ;
     skos:prefLabel "Transponder" ;
-    rdfs:subClassOf :EXF-0006 ;
+    rdfs:subClassOf :EXF-0006,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :SatelliteTransponder ] ;
     :attack-id "EXF-0006.02" ;
     :definition "On bent-pipe or regenerative transponders, configuration controls what is translated, amplified, and routed. An adversary can remap input–output paths, shift translation frequencies, adjust polarization or gain to favor non-mission receivers, or enable auxiliary ports so selected virtual channels or recorder playbacks are forwarded outside the planned ground segment. In regenerative systems, edited routing tables or QoS rules can mirror traffic to an attacker-controlled endpoint. The result is a sanctioned-looking carrier that quietly delivers mission data to unauthorized listeners." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0006/02/> .
