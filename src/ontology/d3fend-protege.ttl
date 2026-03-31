@@ -14,6 +14,17 @@
 
 ### Object Properties
 
+d3f:captures a owl:ObjectProperty ;
+    rdfs:label "captures" ;
+    rdfs:subPropertyOf d3f:associated-with ; 
+    d3f:definition "x captures y: The entity x acquires, records, or stores a copy of communications data y from any source or state (e.g., in transit, at rest, or from storage) such that x can subsequently access, analyze, or use y." .
+
+d3f:intercepts a owl:ObjectProperty ;
+    rdfs:label "intercepts" ;
+    rdfs:subPropertyOf d3f:captures ; 
+    d3f:definition "x intercepts y: The entity x captures communications data y while y is in transit between other communicating parties, where x is not an intended endpoint of that communication." .
+
+
 :abuses a owl:ObjectProperty ;
     rdfs:label "abuses" ;
     skos:altLabel "misapplies",
@@ -25893,7 +25904,10 @@ Valid Commanding Periods: This information can provide insight into when a comma
 :REC-0005.01 a owl:Class ;
     rdfs:label "Uplink Intercept Eavesdropping - SPARTA" ;
     skos:prefLabel "Uplink Intercept Eavesdropping" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.01" ;
     :definition "Threat actors may capture the RF communications as it pertains to the uplink to the victim spacecraft. This information can contain commanding information that the threat actor can use to perform other attacks against the victim spacecraft." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/01/> .
@@ -25901,7 +25915,10 @@ Valid Commanding Periods: This information can provide insight into when a comma
 :REC-0005.02 a owl:Class ;
     rdfs:label "Downlink Intercept - SPARTA" ;
     skos:prefLabel "Downlink Intercept" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.02" ;
     :definition "Threat actors may capture the RF communications as it pertains to the downlink of the victim spacecraft. This information can contain important telemetry such as onboard status and mission data." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/02/> .
