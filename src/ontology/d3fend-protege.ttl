@@ -38369,59 +38369,13 @@ Reconnaissance consists of techniques that involve adversaries actively or passi
         owl:NamedIndividual,
         :TelecommandAnalysis ;
     rdfs:label "Telecommand Analysis" ;
-    rdfs:subClassOf :MessageAnalysis,
+    rdfs:subClassOf :NetworkTrafficAnalysis,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
             owl:someValuesFrom :Telecommand ] ;
     :d3fend-id "D3-TCA" ;
     :definition "The systematic verification of telecommands to identify malicious or anomalous activity." ;
     :kb-reference :Reference-TrustManagementApproachToSatelliteSystemTelecommandSecurity .
-
-:TelecommandBaselineAnalysis a owl:Class,
-        owl:NamedIndividual,
-        :TelecommandBaselineAnalysis ;
-    rdfs:label "Telecommand Baseline Analysis" ;
-    rdfs:subClassOf :TelecommandAnalysis ;
-    :d3fend-id "D3-TCBA" ;
-    :definition "Using machine learning to establish a behavioral baseline of authorized telecommand sequences." ;
-    :kb-article """## How it works
-
-This technique utilizes and parses historical telecommand logs, treating the command stream as a structured language. Tokenizing specific command IDs and their associated parameters allows for the training of a sequence-aware model (typically a Long Short-Term Memory (LSTM) network or a Transformer) to learn the conditional probability of a command appearing given the previous command sequence. This creates a probabilistic grammar of the system's nominal operations.
-
-Once the baseline is established, the model operates in an inference mode, either on the ground station or as a hardened on-board software module. For every incoming TC packet, the system calculates the likelihood score of that command following the current operational state. If the probability falls below a predefined threshold, the sequence is flagged as an anomaly. To reduce false positives, the model should be state-aware, meaning it correlates the command sequence with real-time telemetry (TM) to ensure the commands are appropriate for the spacecraft's current physical orientation and subsystem status.
-
-## Considerations
-* Computational Constraints: On-board implementation requires highly optimized, quantized models (e.g., TensorFlow Lite for Microcontrollers) to run within the limited CPU and power envelopes of space-grade hardware.
-
-* Emergency Overrides: The system must distinguish between a malicious anomaly and a rare but valid emergency command sequence that may not have appeared in the training baseline.
-
-* Concept Drift: As a mission evolves (e.g., moving from the commissioning phase to science operations), the normal command profile will change, requiring periodic retraining or adaptive learning loops.
-
-* Data Sparsity: Developing a robust baseline for rare maneuvers requires synthetic data generation, often using a Digital Twin to simulate valid but infrequent command-response cycles.
-
-* Adversarial Evasion: Sophisticated attackers may attempt mimicry attacks, where malicious intent is hidden within sequences that statistically resemble nominal behavior; multi-factor correlation with mission planning is required to mitigate this.""" ;
-    :kb-reference :Reference-SpacecraftTestDataIntegrationManagementTechnologyBasedOnBigDataPlatform .
-
-:TelecommandOutcomeSimulation a owl:Class,
-        owl:NamedIndividual,
-        :TelecommandOutcomeSimulation ;
-    rdfs:label "Telecommand Outcome Simulation" ;
-    rdfs:subClassOf :TelecommandAnalysis ;
-    :d3fend-id "D3-TCOS" ;
-    :definition "Simulating the short-term outcome of a telecommand before it is committed to a system's physical actuators." ;
-    :kb-article """## How it works
-
-This technique introduces a look-ahead delay in the command execution chain. Before a high-consequence command (like 'Ignite Thruster' or 'Purge System') is executed, the telecommand analysis agent passes the command to a Digital Twin (a software replica of the hardware). The twin runs a fast-time simulation of the next N seconds of operation. If the simulation predicts a 'Safe Mode' trigger, a hardware collision, or a thermal runaway, the agent blocks the real-world execution and alerts the operator.
-
-This technique is the ultimate defense against sane-looking malicious commands that cause cascading failures. By verifying the consequence rather than the syntax, it effectively mitigates zero-day logic attacks that haven't been modeled in simpler state-based validators.
-
-## Considerations
-* Computational Cost: Requires significant on-board or edge-computing resources to run simulations in near-real-time.
-
-* Determinism: The system must be deterministic enough for the simulation to be accurate; chaotic environments (e.g., high-turbulence flight) make predictive simulation much harder.
-
-* Time-to-Execute Constraints: Adding a simulation step increases the command-to-action latency, which may be unacceptable for time-critical safety maneuvers.""" ;
-    :kb-reference :Reference-DigitalTwinAssistedMachineLearningForPredictiveCybersecurityInIACS .
 
 :TelecommandSequenceAnalysis a owl:Class,
         owl:NamedIndividual,
