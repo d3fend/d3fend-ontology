@@ -25,12 +25,27 @@ def get_sparta_id(tech):
     )
 
 
-def add_technique_to_graph(src, g, tech):
+def sync_definition(graph, sparta_uri, incoming_definition):
+    """
+    Keep a single SPARTA definition on the technique.
+    If the incoming definition changed, replace the existing value.
+    """
+    incoming_def = Literal(incoming_definition.strip())
+    existing_defs = set(graph.objects(sparta_uri, D3F.definition))
+
+    if existing_defs == {incoming_def}:
+        return
+
+    graph.remove((sparta_uri, D3F.definition, None))
+    graph.add((sparta_uri, D3F.definition, incoming_def))
+
+
+def add_technique_to_graph(g, tech, d3fend_graph):
     """
     Add a SPARTA Technique to the graph
-    :param src: MemoryStore
     :param g: Graph
     :param tech: STIX attack-pattern object that is a SPARTA Technique
+    :param d3fend_graph: Graph of D3FEND Ontology
     """
     sparta_id = get_sparta_id(tech)
     # If the technique has a SPARTA ID, add it to the graph
@@ -49,7 +64,7 @@ def add_technique_to_graph(src, g, tech):
             None,
         )
         g.add((sparta_uri, RDFS.seeAlso, URIRef(sparta_url)))
-        g.add((sparta_uri, D3F.definition, Literal(tech["description"])))
+        sync_definition(d3fend_graph, sparta_uri, tech["description"])
         g.add((sparta_uri, D3F["attack-id"], Literal(sparta_id)))
         # NOTE: as of v1.6, SPARTA STIX data has "x_sparta_is_subtechnique" set to False for everything, so this is a workaround
         # If the SPARTA ID has a period, it is a sub-technique
@@ -90,7 +105,7 @@ def get_sparta_graph(sparta_path, d3fend_graph):
 
     # Add SPARTA Techniques to the graph
     for tech in techniques:
-        add_technique_to_graph(src, g, tech)
+        add_technique_to_graph(g, tech, d3fend_graph)
 
     return g
 
