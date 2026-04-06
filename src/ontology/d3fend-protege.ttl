@@ -5424,7 +5424,7 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
     rdfs:subClassOf :DigitalMessage,
         [ a owl:Restriction ;
             owl:onProperty :carried-by ;
-            owl:someValuesFrom :ElectricalSignal ] ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
     :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
 
 :BusMessageAuthentication a :BusMessageAuthentication,
@@ -5490,43 +5490,6 @@ As messages circulate on the bus network, receiving nodes do not immediately tru
             owl:onProperty :contains ;
             owl:someValuesFrom :BusNetworkFrame ] ;
     :definition "The ordered flow of frames, structured by a bus protocol, that traverses the shared bus medium during operation." .
-
-:BusTrafficAnalysis a :BusTrafficAnalysis,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Bus Traffic Analysis" ;
-    rdfs:subClassOf :NetworkTrafficAnalysis,
-        [ a owl:Restriction ;
-            owl:onProperty :analyzes ;
-            owl:someValuesFrom :BusNetworkTraffic ] ;
-    :d3fend-id "D3-BTA" ;
-    :definition "Analyzing the timing, protocol structure, and data payloads of communication bus traffic to identify unauthorized activity." ;
-    :kb-reference :Reference-SimulationAndVerificationSystemAndMethod .
-
-:BusTrafficSignatureAnalysis a :BusTrafficSignatureAnalysis,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Bus Traffic Signature Analysis" ;
-    rdfs:subClassOf :BusTrafficAnalysis ;
-    :d3fend-id "D3-BTSA" ;
-    :definition "Real-time analysis of bus traffic to identify known attack patterns based on predefined signatures." ;
-    :kb-article """## How it works
-A passive Bus Monitor (BM) or an inline security gateway captures every word or packet (e.g., 1553 Command Words or CAN Frames) on a bus network. The monitor extracts key fields, including IDs, Command/Status bits, Subaddresses, and Data Payload. The extracted fields are compared against three categories of signatures:
-
-* Protocol Signatures: Checks for malformed headers, invalid parity, or illegal mode codes (e.g., a "Transmitter Shutdown" command sent to a flight-critical remote terminal).
-* Logic Signatures: Compares the transaction against the ICD. For example, if RT 05 should only ever receive data on SA 10, a "Transmit" command to RT 05 SA 10 is flagged.
-* Timing Signatures: Monitors the inter-message gap. If a response arrives faster or slower than the standard allowed window (e.g., 4-12 ms for MIL-STD-1553), it suggests a spoofing attempt.
-
-Upon a match the system generates an alert or, in active configurations, prevents the packet from reaching its destination by injecting noise/error bits.
-
-## Considerations
-* False Negatives: This technique cannot detect zero-day attacks or legitimate commands used maliciously (e.g., a valid command sent at a "bad" time).
-
-* Latency: For 1Mbps buses like MIL-STD-1553, the signature check must be performed in hardware (e.g., FPGA) to avoid delaying critical flight data.
-
-* Evasion: Attackers may use "Gray-hole" attacks where they slightly vary payloads to avoid exact signature matches while still achieving the desired effect.""" ;
-    :kb-reference :Reference-BusRepeaterAndBitInjectorForMILSTD15531760CommunicationsBus,
-        :Reference-IntrusionDetectionForInternetOfVehilesCANBusCommunicationsUsingMachineLearningAnEmpiricalStudyOnTheCICIoV2024Dataset .
 
 :ByteSequenceEmulation a :ByteSequenceEmulation,
         owl:Class,
@@ -41923,17 +41886,6 @@ Methods, systems, and apparatus, including computer programs encoded on computer
     :kb-reference-title "Broadcast isolation and level 3 network switch" ;
     :todo "MITRE Analysis was not found" .
 
-:Reference-BusRepeaterAndBitInjectorForMILSTD15531760CommunicationsBus a owl:NamedIndividual,
-        :PatentReference ;
-    rdfs:label "Reference - Bus repeater and bit injector for MIL-STD-1553/1760 communications bus - National Technology & Engineering Solutions of Sandia, LLC " ;
-    :has-link "https://www.osti.gov/biblio/2541937"^^xsd:anyURI ;
-    :kb-abstract "A fault insertion device (FID) comprises a transceiver and an FPGA. The transceiver receives signals from a MIL-STD-1553/1760 communications bus. The FPGA evaluates the signals received from the communications bus against a set of rules stored by the FPGA. Based upon the set of rules, the FPGA can selectively modify messages received from the communications bus prior to transmission to a remote terminal or a bus controller that is configured to communicate on the communications bus." ;
-    :kb-author "Jason P. Krein, Jeremy W. Giron, Matthew S. Geuss, Robert Nevett IV, Stephen T. Simpson, Roger Martin Kilgore, Jacob Edward Leemaster" ;
-    :kb-mitre-analysis "This patent describes a hardware-based traffic monitor (FPGA) that evaluates 1553 signals against a stored set of rules and can selectively modify or block messages that violate these signatures before they reach the controller." ;
-    :kb-organization "National Technology & Engineering Solutions of Sandia, LLC" ;
-    :kb-reference-of :BusTrafficSignatureAnalysis ;
-    :kb-reference-title "Bus repeater and bit injector for MIL-STD-1553/1760 communications bus" .
-
 :Reference-CAR-2014-05-001%3ARPCActivity_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2014-05-001: RPC Activity - MITRE" ;
@@ -43743,16 +43695,6 @@ This patent describes ensuring that a driver associated with the agent is initia
     :kb-reference-of :NetworkTrafficSignatureAnalysis ;
     :kb-reference-title "Intrusion and misuse deterrence system employing a virtual network" .
 
-:Reference-IntrusionDetectionForInternetOfVehilesCANBusCommunicationsUsingMachineLearningAnEmpiricalStudyOnTheCICIoV2024Dataset a :AcademicPaperReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Intrusion Detection for Internet of Vehicles CAN Bus Communications Using Machine Learning: An Empirical Study on the CICIoV2024 Dataset" ;
-    :has-link "https://www.mdpi.com/1999-5903/18/1/42"^^xsd:anyURI ;
-    :kb-abstract "The rapid integration of connectivity and automation in modern vehicles has significantly expanded the attack surface of in-vehicle networks, particularly the Controller Area Network (CAN) bus, which lacks native security mechanisms. This study investigates machine learning-based intrusion detection for Internet of Vehicles (IoV) environments using the CICIoV2024 dataset. Unlike prior studies that rely on highly redundant traffic traces, this work applies strict de-duplication to eliminate repetitive CAN frames, resulting in a dataset of unique attack signatures. To ensure statistical robustness despite the reduced data size, Stratified K-Fold Cross-Validation was employed. Experimental results reveal that while traditional models like Random Forest (optimized with ANOVA feature selection) maintain stability (F1-Macro ≈ 0.64), Deep Learning models fail to generalize (F1-Macro < 0.55) when denied the massive redundancy they typically require. These findings challenge the “near-perfect” detection rates reported in the literature, suggesting that previous benchmarks may reflect data leakage rather than true anomaly detection capabilities. The study concludes that lightweight models offer superior resilience for resource-constrained vehicular environments when evaluated on realistic, non-redundant data." ;
-    :kb-author "Hop Le, Izzat Alsmadi" ;
-    :kb-mitre-analysis "This paper highlights the accuracy trap in signature-based detection and identifies that the first three data bytes and the specific CAN ID are the most critical features for defining robust, lightweight signatures in automotive networks." ;
-    :kb-reference-of :BusTrafficSignatureAnalysis ;
-    :kb-reference-title "Intrusion Detection for Internet of Vehicles CAN Bus Communications Using Machine Learning: An Empirical Study on the CICIoV2024 Dataset" .
-
 :Reference-IntrusionDetectionUsingAHeartbeat_SophosLtd a owl:NamedIndividual,
         :PatentReference ;
     rdfs:label "Reference - Intrusion detection using a heartbeat - Sophos Ltd" ;
@@ -45185,17 +45127,6 @@ To survive the timeout, adversaries and red teams can create services that direc
     :kb-author "Security Industry Association (SIA)" ;
     :kb-reference-of :ElectronicLockMonitoring ;
     :kb-reference-title "Open Supervised Device Protocol (OSDP) v2.2" .
-
-:Reference-SimulationAndVerificationSystemAndMethod a owl:NamedIndividual,
-        :PatentReference ;
-    rdfs:label "Reference - Simulation and verification system and method - National Aeronautics and Space Administration NASA" ;
-    :has-link "https://patents.google.com/patent/US10027566B1"^^xsd:anyURI ;
-    :kb-abstract "A simulation and verification system and method. An interoperability server provides a communications hub for communications between communicating nodes. Nodes connected to a first protocol data bus communicate in a first protocol, e.g., a half-duplex bus protocol. Nodes connected to a second protocol data bus communicate in a second protocol, e.g., a full-duplex bus protocol. A time synchronization bus provides time-frames for synchronizing operation of connected nodes. Interceptors optionally intercept communications between nodes." ;
-    :kb-author "Steven Seeger, Daniel Nawrocki" ;
-    :kb-mitre-analysis "This patent describes an interoperability server that acts as a hub for 1553B and SpaceWire, utilizing interceptors to monitor and analyze traffic for timing-out or out-of-sequence responses. " ;
-    :kb-organization "National Aeronautics and Space Administration NASA" ;
-    :kb-reference-of :BusTrafficAnalysis ;
-    :kb-reference-title "Simulation and verification system and method" .
 
 :Reference-SimultaneousLoginsOnAHost_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
