@@ -1758,138 +1758,6 @@ skos:prefLabel a owl:AnnotationProperty .
 
 ### Classes
 
-:Transponder a owl:Class ;
-    rdfs:label "Transponder" ;
-    rdfs:subClassOf :HardwareDevice ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Transponder> ;
-    :definition "In telecommunications, a transponder is a device that, upon receiving a signal, emits a different signal in response." . 
-
-:SatelliteTransponder a owl:Class ;
-    rdfs:label "Satellite Transponder" ;
-    rdfs:subClassOf :Transponder ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Transponder_(satellite_communications)> ;
-    :definition "A communications satellite's transponder is the series of interconnected units that form a communications channel between the receiving and the transmitting antennas." . 
-
-:SpacecraftSafeMode a owl:Class ;
-    rdfs:label "Spacecraft Safe Mode" ;
-    rdfs:subClassOf :SafeMode ;
-    :definition "Safe mode is an operating mode of a modern uncrewed spacecraft during which all non-essential systems are shut down and only essential functions such as thermal management, radio reception and attitude control are active." ;
-    rdfs:isDefinedBy <https://dbpedia.org/resource/Safe_mode_in_spacecraft> .
-
-:SafeMode a owl:Class ;
-    rdfs:label "Safe Mode" ;
-    rdfs:subClassOf :OperatingMode ;
-    :definition "An intentionally constrained operating mode of a system in which nonessential functions are disabled or limited and control is shifted to a minimal, well-tested configuration that prioritizes preventing harm (to the system, its environment, or data), maintaining basic stability and monitoring, and enabling diagnosis and recovery back to normal operation." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Safe_mode> .
-
-:Vehicle a owl:Class ;
-    rdfs:label "Vehicle" ;
-    rdfs:subClassOf :PhysicalArtifact ; 
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Vehicle> ;
-    :definition "A vehicle is a machine designed for self-propulsion, usually to transport people, cargo, or both." .
-
-:OnboardComputer a owl:Class ;
-    rdfs:label "Onboard Computer" ;
-    rdfs:subClassOf :OTEmbeddedComputer,
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :RealTimeOperatingSystem ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :FlightSoftware ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :BootLoader ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :FlashMemory ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :HardwareWatchdogTimer ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :HardwareClock ] ; 
-    rdfs:isDefinedBy <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> ;
-    :definition "A self-contained, embedded computing unit installed within a vehicle or other autonomous platform that executes real-time control, data-handling, and mission-management software. It interfaces directly with the platform's sensors, actuators, and communication links, processes and stores operational data, and issues commands to subsystems, enabling the system to function independently of external computing resources." ;
-    :synonym "OBC" ;
-    rdfs:seeAlso <https://blog.satsearch.co/2020-03-11-an-overview-of-on-board-computer-obc-systems-available-on-the-global-space-marketplace> .
-    
-:Spacecraft a owl:Class ;
-    rdfs:label "Spacecraft" ;
-    rdfs:subClassOf :Vehicle,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :OnboardComputer ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :Receiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :Transmitter ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :HardwareCryptographicModule ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :Software-definedRadioComputer],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :BusNetwork ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :TransducerSensor ],
-        [ a owl:Restriction ;
-            owl:onProperty :has-operating-mode ;
-            owl:someValuesFrom :OperatingMode] ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Spacecraft> ;
-    :definition "A spacecraft is a vehicle that is designed to fly and operate in outer space. Spacecraft are used for a variety of purposes, including communications, Earth observation, meteorology, navigation, space colonization, planetary exploration, and transportation of humans and cargo." .
-
-:GNSSSatellite a owl:Class ;
-    rdfs:label "GNSS Satellite" ;
-    rdfs:subClassOf :Satellite,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :AtomicClock ],
-        [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :GNSSSignal ] ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Satellite_navigation> ;
-    :definition "A GNSS satellite is part of a space-based constellation that transmits signals, allowing receivers on Earth to determine their position, navigation, and timing (PNT) through trilateration." .
-
-:GNSSTimeRecord a owl:Class ;
-    rdfs:label "GNSS Time Record" ;
-    rdfs:subClassOf :TimeRecord ;
-    :definition "A GNSS Time Record is an information content entity encoded in a GNSS signal that represents the transmission time of that signal as determined by the transmitting satellite, expressed relative to a constellation-specific time standard and epoch." ;
-    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS> .
-
-:GNSSSignal a owl:Class ;
-    rdfs:label "GNSS Signal" ;
-    rdfs:subClassOf :ElectromagneticSignal, 
-        [ a owl:Restriction ;
-            owl:onProperty :carries ;
-            owl:someValuesFrom :GNSSTimeRecord ] ;
-    :synonym "Global Navigation Satellite System Signal" ; 
-    :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
-    rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>, <https://gssc.esa.int/navipedia/index.php/GNSS_signal> .
-
-:GNSSReceiver a owl:Class ;
-    rdfs:label "GNSS Receiver" ;
-    rdfs:subClassOf :Receiver ;
-    :definition "A GNSS (Global Navigation Satellite System) receiver is an electronic device that picks up signals from one or more satellite constellations (like GPS, GLONASS, Galileo, BeiDou) to calculate precise location, velocity, and time." ;
-    rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation> .
-
-:Satellite a owl:Class ;
-    rdfs:label "Satellite" ;
-    rdfs:subClassOf :Spacecraft,
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :SatelliteTransponder ] ; 
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Satellite> ;
-    :definition "A satellite or an artificial satellite is an object, typically a spacecraft, placed into orbit around a celestial body. They have a variety of uses, including communication relay, weather forecasting, navigation (GPS), broadcasting, scientific research, and Earth observation." .
-
 :AcademicPaperReference a owl:Class ;
     rdfs:label "Academic Paper Reference" ;
     rdfs:subClassOf :TechniqueReference ;
@@ -15350,12 +15218,6 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     :definition "Dynamic program analysis is the analysis of computer software that is performed by executing programs on a real or virtual processor." ;
     :todo "Find better full description; wikipedia entry is too narrow in focus after first sentence and misses a lot of the security aspects" .
 
-:ElectretCapsule a owl:Class ;
-    rdfs:label "Electret Capsule" ;
-    rdfs:subClassOf :ElectroacousticTransducer ;
-    :definition "An electret capsule is a small, specialized type of condenser microphone element that uses a permanently charged dielectric material (the electret) to generate an electrostatic field. It acts as a transducer, converting sound waves into electrical signals via capacitance changes." ;
-    rdfs:seeAlso <https://dbpedia.org/resource/Electret_microphone> .
-
 :ElectricalQuantitySensor a owl:Class ;
     rdfs:label "Electrical Quantity Sensor" ;
     rdfs:subClassOf :TransducerSensor ;
@@ -15391,7 +15253,7 @@ Analyzing the interaction of a piece of code with a system while the code is bei
             owl:someValuesFrom :ElectricalSignal ] ;
     :definition "A transducer sensor which converts information associated with electrochemical reactions into an electrical signal." ;
     rdfs:seeAlso <https://www.sciencedirect.com/topics/engineering/electrochemical-sensor> .
-    
+
 :ElectromagneticRadiationHardening a :ElectromagneticRadiationHardening,
         owl:Class,
         owl:NamedIndividual ;
@@ -15468,12 +15330,6 @@ Electronic lock monitoring collects status and events from door controllers, rea
         :Reference-SIA-OSDP-2-2 ;
     :synonym "Door Lock Monitoring",
         "Lock State Monitoring" .
-
-:ElectrostaticFieldMeter a owl:Class ;
-    rdfs:label "Electrostatic Fieldmeter" ;
-    rdfs:subClassOf :ElectricFieldSensor ;
-    rdfs:isDefinedBy <https://dbpedia.org/resource/Electrostatic_fieldmeter> ;
-    :definition "A sensor that measures surface charge or electric field strength, often using a vibrating or rotating sensor electrode to modulate and detect the electrostatic field." .
 
 :Email a owl:Class ;
     rdfs:label "Email" ;
@@ -17870,6 +17726,41 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:subClassOf :DomainUserAccount ;
     :definition "A type of user account in Microsoft Windows (NT) that has a domain-wide scope.defines that user's access to a logical group of network objects (computers, users, devices) that share the same Active Directory databases; that is, a user's access to the domain." ;
     rdfs:seeAlso <https://networkencyclopedia.com/global-user-account> .
+
+:GNSSReceiver a owl:Class ;
+    rdfs:label "GNSS Receiver" ;
+    rdfs:subClassOf :Receiver ;
+    :definition "A GNSS (Global Navigation Satellite System) receiver is an electronic device that picks up signals from one or more satellite constellations (like GPS, GLONASS, Galileo, BeiDou) to calculate precise location, velocity, and time." ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation> .
+
+:GNSSSatellite a owl:Class ;
+    rdfs:label "GNSS Satellite" ;
+    rdfs:subClassOf :Satellite,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :AtomicClock ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :GNSSSignal ] ;
+    :definition "A GNSS satellite is part of a space-based constellation that transmits signals, allowing receivers on Earth to determine their position, navigation, and timing (PNT) through trilateration." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Satellite_navigation> .
+
+:GNSSSignal a owl:Class ;
+    rdfs:label "GNSS Signal" ;
+    rdfs:subClassOf :ElectromagneticSignal,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
+    :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>,
+        <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
+    :synonym "Global Navigation Satellite System Signal" .
+
+:GNSSTimeRecord a owl:Class ;
+    rdfs:label "GNSS Time Record" ;
+    rdfs:subClassOf :TimeRecord ;
+    :definition "A GNSS Time Record is an information content entity encoded in a GNSS signal that represents the transmission time of that signal as determined by the transmitting satellite, expressed relative to a constellation-specific time standard and epoch." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Time_References_in_GNSS> .
 
 :Goal a owl:Class ;
     rdfs:label "Goal" ;
@@ -21261,14 +21152,6 @@ Kernel malware can manipulate memory contents, for example modifying pointers to
             owl:someValuesFrom :MemoryAllocationEvent ] ;
     :definition "An event where a process writes data to a memory address, storing new information or updating existing content." .
 
-:MEMSDiaphragm a owl:Class ;
-    rdfs:label "MEMS Diaphragm" ;
-    rdfs:subClassOf :ElectroacousticTransducer ;
-    :definition "A MEMS diaphragm is the thin, flexible mechanical element in a micro-electro-mechanical systems (MEMS) microphone that physically vibrates in response to sound pressure. As sound waves cause the diaphragm to move relative to a fixed reference structure, its mechanical motion is converted into an electrical signal, providing the primary acoustic-to-electrical transduction in a MEMS microphone." ;
-    rdfs:seeAlso <https://dbpedia.org/resource/MEMS>,
-        <https://zoomcorp.com/en/us/news/what-is-a-mems-microphone/> ;
-    :synonym "Micro-electromechanical-systems Diaphragm" .
-
 :MessageAnalysis a :MessageAnalysis,
         owl:Class,
         owl:NamedIndividual ;
@@ -22406,6 +22289,32 @@ Programmatically checking if a pointer is NULL before use.
             owl:someValuesFrom :ImageFile ] ;
     :definition "A document file in a format associated with an d3f:OfficeApplication." ;
     rdfs:seeAlso :OfficeApplication .
+
+:OnboardComputer a owl:Class ;
+    rdfs:label "Onboard Computer" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :HardwareClock ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FlashMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :HardwareWatchdogTimer ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :BootLoader ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :FlightSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :RealTimeOperatingSystem ] ;
+    rdfs:isDefinedBy <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> ;
+    :definition "A self-contained, embedded computing unit installed within a vehicle or other autonomous platform that executes real-time control, data-handling, and mission-management software. It interfaces directly with the platform's sensors, actuators, and communication links, processes and stores operational data, and issues commands to subsystems, enabling the system to function independently of external computing resources." ;
+    rdfs:seeAlso <https://blog.satsearch.co/2020-03-11-an-overview-of-on-board-computer-obc-systems-available-on-the-global-space-marketplace> ;
+    :synonym "OBC" .
 
 :One-timePassword a :One-timePassword,
         owl:Class,
@@ -26372,12 +26281,6 @@ Q-learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Q-learning).""" .
     :kb-article """## References
 Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
 
-:Radiometer a owl:Class ;
-    rdfs:label "Radiometer" ;
-    rdfs:subClassOf :Photodetector ;
-    rdfs:isDefinedBy <https://dbpedia.org/resource/Radiometer> ;
-    :definition "A radiometer or roentgenometer is a device for measuring the radiant flux (power) of electromagnetic radiation." .
-    
 :RadiationHardening a owl:Class,
         owl:NamedIndividual,
         :RadiationHardening ;
@@ -26398,6 +26301,12 @@ There are three core radiation hardening methodologies:
     :kb-reference :Reference-ARadiationHardenedSARADCWithDelayBasedDualFeedbackFlipFlopsForSensorReadoutSystems,
         :Reference-DiagnosisOfFaultsInducedByRadiationAndCircuitLevelDesignMitigationTechniques,
         :Reference-MethodOfMakingThinAtomicZGradeShields .
+
+:Radiometer a owl:Class ;
+    rdfs:label "Radiometer" ;
+    rdfs:subClassOf :Photodetector ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Radiometer> ;
+    :definition "A radiometer or roentgenometer is a device for measuring the radiant flux (power) of electromagnetic radiation." .
 
 :RadioModem a owl:Class ;
     rdfs:label "Radio Modem" ;
@@ -27680,6 +27589,12 @@ Example RPC Protocols:
     :definition "A runtime variable is an abstract storage location paired with an associated symbolic name, which contains some known or unknown quantity of data or object referred to as a value, which can change during the execution of a computer program." ;
     rdfs:seeAlso <https://dbpedia.org/page/Variable_(computer_science)> .
 
+:SafeMode a owl:Class ;
+    rdfs:label "Safe Mode" ;
+    rdfs:subClassOf :OperatingMode ;
+    :definition "An intentionally constrained operating mode of a system in which nonessential functions are disabled or limited and control is shifted to a minimal, well-tested configuration that prioritizes preventing harm (to the system, its environment, or data), maintaining basic stability and monitoring, and enabling diagnosis and recovery back to normal operation." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Safe_mode> .
+
 :SARSA a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "SARSA" ;
@@ -27689,6 +27604,21 @@ Example RPC Protocols:
     :definition "State-action-reward-state-action (SARSA) is an algorithm for learning a Markov decision process policy, used in the reinforcement learning area of machine learning." ;
     :kb-article """## References
 State-action-reward-state-action. Wikipedia.  [Link](https://en.wikipedia.org/wiki/State%E2%80%93action%E2%80%93reward%E2%80%93state%E2%80%93action).""" .
+
+:Satellite a owl:Class ;
+    rdfs:label "Satellite" ;
+    rdfs:subClassOf :Spacecraft,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SatelliteTransponder ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Satellite> ;
+    :definition "A satellite or an artificial satellite is an object, typically a spacecraft, placed into orbit around a celestial body. They have a variety of uses, including communication relay, weather forecasting, navigation (GPS), broadcasting, scientific research, and Earth observation." .
+
+:SatelliteTransponder a owl:Class ;
+    rdfs:label "Satellite Transponder" ;
+    rdfs:subClassOf :Transponder ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Transponder_(satellite_communications)> ;
+    :definition "A communications satellite's transponder is the series of interconnected units that form a communications channel between the receiving and the transmitting antennas." .
 
 :SavedInstructionPointer a owl:Class ;
     rdfs:label "Saved Instruction Pointer" ;
@@ -28880,6 +28810,45 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:label "Source Code Reference" ;
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "Source Code" .
+
+:Spacecraft a owl:Class ;
+    rdfs:label "Spacecraft" ;
+    rdfs:subClassOf :Vehicle,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :OnboardComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Receiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Transmitter ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-operating-mode ;
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :HardwareCryptographicModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :Software-definedRadioComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :TransducerSensor ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Spacecraft> ;
+    :definition "A spacecraft is a vehicle that is designed to fly and operate in outer space. Spacecraft are used for a variety of purposes, including communications, Earth observation, meteorology, navigation, space colonization, planetary exploration, and transportation of humans and cargo." .
+
+:SpacecraftSafeMode a owl:Class ;
+    rdfs:label "Spacecraft Safe Mode" ;
+    rdfs:subClassOf :SafeMode ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Safe_mode_in_spacecraft> ;
+    :definition "Safe mode is an operating mode of a modern uncrewed spacecraft during which all non-essential systems are shut down and only essential functions such as thermal management, radio reception and attitude control are active." .
 
 :SPARTADefenseEvasionTechnique a owl:Class ;
     rdfs:label "Defense Evasion Technique - SPARTA" ;
@@ -39944,6 +39913,12 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
     :definition "A device or system that takes information and generates a signal suitable for propagation. It encodes and formats the content, impresses it on a physical carrier (such as electromagnetic fields, light, electrical currents, or acoustic waves), and performs signal conditioning—such as modulation, pulse shaping, pre-emphasis, and power amplification—to meet spectral, timing, and power requirements. A transmitter may be analog or digital, implemented in hardware, software, or both, and is designed to launch the signal into the chosen medium with characteristics that enable reliable reception." ;
     rdfs:seeAlso <https://dbpedia.org/page/Signal_transmission> .
 
+:Transponder a owl:Class ;
+    rdfs:label "Transponder" ;
+    rdfs:subClassOf :HardwareDevice ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Transponder> ;
+    :definition "In telecommunications, a transponder is a device that, upon receiving a signal, emits a different signal in response." .
+
 :TransportLayerEvent a owl:Class ;
     rdfs:label "Transport Layer Event" ;
     rdfs:subClassOf :NetworkEvent ;
@@ -40672,6 +40647,12 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
             owl:onProperty :contains ;
             owl:someValuesFrom :VectorImage ] ;
     :definition "A file that contains graphics data represented by vectors." .
+
+:Vehicle a owl:Class ;
+    rdfs:label "Vehicle" ;
+    rdfs:subClassOf :PhysicalArtifact ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Vehicle> ;
+    :definition "A vehicle is a machine designed for self-propulsion, usually to transport people, cargo, or both." .
 
 :VehicleOperatingMode a owl:Class ;
     rdfs:label "Vehicle Operating Mode" ;
