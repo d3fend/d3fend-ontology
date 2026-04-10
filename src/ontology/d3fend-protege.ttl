@@ -5432,7 +5432,10 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
 
 :BusMessage a owl:Class ;
     rdfs:label "Bus Message" ;
-    rdfs:subClassOf :DigitalMessage ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :carried-by ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
     :definition "A digital message potentially containing commands, telemetry, or status signals, encoded in a bus protocol and conveyed over a bus within one or more frames." .
 
 :BusMessageAuthentication a :BusMessageAuthentication,
@@ -5487,7 +5490,7 @@ As messages circulate on the bus network, receiving nodes do not immediately tru
             owl:onProperty :connected-to ;
             owl:someValuesFrom :BusNetwork ],
         [ a owl:Restriction ;
-            owl:onProperty :transmits ;
+            owl:onProperty :produces ;
             owl:someValuesFrom :BusNetworkTraffic ] ;
     :definition "A device or logical endpoint whose interface is directly connected to a bus and exchanges data over the shared medium using the protocol implemented on that interface." .
 
@@ -15984,14 +15987,8 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Bus Traffic Spoofing" ;
     rdfs:subClassOf :EX-0014,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :BusNetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :spoofs ;
-            owl:someValuesFrom :BusMessage ],
-        [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :BusNetworkNode ] ;
+            owl:someValuesFrom :BusNetworkTraffic ] ;
     :attack-id "EX-0014.02" ;
     :definition "Here the adversary forges messages on internal command/data paths (e.g., 1553, SpaceWire, CAN, custom). By emitting frames with valid identifiers, addresses, and timing, the attacker can make subscribers accept actuator setpoints, power switch toggles, mode changes, or housekeeping values that originated off-path. Because many consumers act on “latest value wins” or on message cadence, forged traffic can mask real publishers, starve critical topics, or force handlers to execute unintended branches. Gateways that translate between networks amplify impact: a spoofed message on one side can propagate to multiple domains as legitimate payload. Outcomes include misdelivered commands, silent configuration drift, and control loops chasing phantom stimuli, all while bus monitors show protocol-conformant traffic." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/02/> .
@@ -39898,7 +39895,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
             owl:onProperty :restricts ;
             owl:someValuesFrom :UserGroup ] ;
     rdfs:isDefinedBy <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf> ;
-    :d3fend-id "D3F-UGPH" ;
+    :d3fend-id "D3-UGPH" ;
     :definition "Access control where access is determined based on attributes associated with users and the objects being accessed. " ;
     :kb-article """## How it works
 
