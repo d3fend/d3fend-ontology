@@ -29977,14 +29977,32 @@ When system firmware verification fails a set of predefined responses is typical
 :T0864 a owl:Class ;
     rdfs:label "Transient Cyber Asset - ATTACK ICS" ;
     skos:prefLabel "Transient Cyber Asset" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :OTEngineeringWorkstation ] ;
     :attack-id "T0864" ;
     :definition "Adversaries may target devices that are transient across ICS networks and external networks. Normally, transient assets are brought into an environment by authorized personnel and do not remain in that environment on a permanent basis. (Citation: North American Electric Reliability Corporation June 2021) Transient assets are commonly needed to support management functions and may be more common in systems where a remotely managed asset is not feasible, external connections for remote access do not exist, or 3rd party contractor/vendor access is required." .
 
 :T0865 a owl:Class ;
     rdfs:label "Spearphishing Attachment - ATTACK ICS" ;
     skos:prefLabel "Spearphishing Attachment" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :ClientComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ClientComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Email ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundInternetMailTraffic ] ;
     :attack-id "T0865" ;
     :definition "Adversaries may use a spearphishing attachment, a variant of spearphishing, as a form of a social engineering attack against specific targets. Spearphishing attachments are different from other forms of spearphishing in that they employ malware attached to an email. All forms of spearphishing are electronically delivered and target a specific individual, company, or industry. In this scenario, adversaries attach a file to the spearphishing email and usually rely upon [User Execution](https://attack.mitre.org/techniques/T0863) to gain execution and access. (Citation: Enterprise ATT&CK October 2019)" .
 
@@ -29992,21 +30010,57 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Exploitation of Remote Services - ATTACK ICS" ;
     skos:prefLabel "Exploitation of Remote Services" ;
     rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
-        :ATTACKICSLateralMovementTechnique ;
+        :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :ClientComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :Server ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessCodeSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :StackFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTProtocolMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :IntranetNetworkTraffic ] ;
     :attack-id "T0866" ;
     :definition "Adversaries may exploit a software vulnerability to take advantage of a programming error in a program, service, or within the operating system software or kernel itself to enable remote service abuse. A common goal for post-compromise exploitation of remote services is for initial access into and lateral movement throughout the ICS environment to enable access to targeted systems. (Citation: Enterprise ATT&CK)" .
 
 :T0867 a owl:Class ;
     rdfs:label "Lateral Tool Transfer - ATTACK ICS" ;
     skos:prefLabel "Lateral Tool Transfer" ;
-    rdfs:subClassOf :ATTACKICSLateralMovementTechnique ;
+    rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :ClientComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :Server ] ;
     :attack-id "T0867" ;
     :definition "Adversaries may transfer tools or other files from one system to another to stage adversary tools or other files over the course of an operation. (Citation: Enterprise ATT&CK) Copying of files may also be performed laterally between internal victim systems to support Lateral Movement with remote Execution using inherent file sharing protocols such as file sharing over SMB to connected network shares. (Citation: Enterprise ATT&CK)" .
 
 :T0868 a owl:Class ;
     rdfs:label "Detect Operating Mode - ATTACK ICS" ;
     skos:prefLabel "Detect Operating Mode" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :detects ;
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-evaluate ;
+            owl:someValuesFrom :OTModeSwitch ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTReadDeviceConfigurationCommand ] ;
     :attack-id "T0868" ;
     :definition "Adversaries may gather information about a PLCs or controllers current operating mode. Operating modes dictate what change or maintenance functions can be manipulated and are often controlled by a key switch on the PLC (e.g.,  run, prog [program], and remote). Knowledge of these states may be valuable to an adversary to determine if they are able to reprogram the PLC. Operating modes and the mechanisms by which they are selected often vary by vendor and product line. Some commonly implemented operating modes are described below:" .
 
