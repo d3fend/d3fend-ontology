@@ -29498,28 +29498,58 @@ When system firmware verification fails a set of predefined responses is typical
 :T0800 a owl:Class ;
     rdfs:label "Activate Firmware Update Mode - ATTACK ICS" ;
     skos:prefLabel "Activate Firmware Update Mode" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Firmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDeviceFirmwareCommand ] ;
     :attack-id "T0800" ;
     :definition "Adversaries may activate firmware update mode on devices to prevent expected response functions from engaging in reaction to an emergency or process malfunction. For example, devices such as protection relays may have an operation mode designed for firmware installation. This mode may halt process monitoring and related functions to allow new firmware to be loaded. A device left in update mode may be placed in an inactive holding state if no firmware is provided to it. By entering and leaving a device in this mode, the adversary may deny its usual functionalities." .
 
 :T0801 a owl:Class ;
     rdfs:label "Monitor Process State - ATTACK ICS" ;
     skos:prefLabel "Monitor Process State" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTEmbeddedComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTLogicVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :IOModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :OTProcessDataHistorian ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadCommand ] ;
     :attack-id "T0801" ;
     :definition "Adversaries may gather information about the physical process state. This information may be used to gain more information about the process itself or used as a trigger for malicious actions. The sources of process state information may vary such as, OPC tags, historian data, specific PLC block information, or network traffic." .
 
 :T0802 a owl:Class ;
     rdfs:label "Automated Collection - ATTACK ICS" ;
     skos:prefLabel "Automated Collection" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDeviceDescriptionMessage ] ;
     :attack-id "T0802" ;
     :definition "Adversaries may automate collection of industrial environment information using tools or scripts. This automated collection may leverage native control protocols and tools available in the control systems environment. For example, the OPC protocol may be used to enumerate and gather information. Access to a system or interface with these native protocols may allow collection and enumeration of other attached, communicating servers and devices." .
 
 :T0803 a owl:Class ;
     rdfs:label "Block Command Message - ATTACK ICS" ;
     skos:prefLabel "Block Command Message" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :blocks ;
+            owl:someValuesFrom :OTDeviceConfigurationCommand ] ;
     :attack-id "T0803" ;
     :definition "Adversaries may block a command message from reaching its intended target to prevent command execution. In OT networks, command messages are sent to provide instructions to control system devices. A blocked command message can inhibit response functions from correcting a disruption or unsafe condition. (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)  (Citation: Electricity Information Sharing and Analysis Center; SANS Industrial Control Systems March 2016)" .
 
@@ -29533,7 +29563,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0805 a owl:Class ;
     rdfs:label "Block Serial COM - ATTACK ICS" ;
     skos:prefLabel "Block Serial COM" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :blocks ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
     :attack-id "T0805" ;
     :definition "Adversaries may block access to serial COM to prevent instructions or configurations from reaching target devices. Serial Communication ports (COM) allow communication with control system devices. Devices can receive command and configuration messages over such serial COM. Devices also use serial COM to send command and reporting messages. Blocking device serial COM may also block command messages and block reporting messages." .
 
