@@ -30140,64 +30140,28 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Wireless Sniffing - ATTACK ICS" ;
     skos:prefLabel "Wireless Sniffing" ;
     rdfs:subClassOf :ATTACKICSCollectionTechnique,
-        :ATTACKICSDiscoveryTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :WirelessLink ],
-        [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :WirelessLink ] ;
+        :ATTACKICSDiscoveryTechnique ;
     :attack-id "T0887" ;
     :definition "Adversaries may seek to capture radio frequency (RF) communication used for remote control and reporting in distributed environments. RF communication frequencies vary between 3 kHz to 300 GHz, although are commonly between 300 MHz to 6 GHz. (Citation: Candell, R., Hany, M., Lee, K. B., Liu,Y., Quimby, J., Remley, K. April 2018)  The wavelength and frequency of the signal affect how the signal propagates through open air, obstacles (e.g. walls and trees) and the type of radio required to capture them. These characteristics are often standardized in the protocol and hardware and may have an effect on how the signal is captured. Some examples of wireless protocols that may be found in cyber-physical environments are: WirelessHART, Zigbee, WIA-FA, and 700 MHz Public Safety Spectrum." .
 
 :T0888 a owl:Class ;
     rdfs:label "Remote System Information Discovery - ATTACK ICS" ;
     skos:prefLabel "Remote System Information Discovery" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :may-access ;
-            owl:someValuesFrom :OperatingSystemConfigurationFile ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateProcess ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-invoke ;
-            owl:someValuesFrom :CreateSocket ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-produce ;
-            owl:someValuesFrom :OTDeviceDescriptionMessage ],
-        [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
     :attack-id "T0888" ;
     :definition "An adversary may attempt to get detailed information about remote systems and their peripherals, such as make/model, role, and configuration. Adversaries may use information from Remote System Information Discovery to aid in targeting and shaping follow-on behaviors. For example, the system's operational role and model information can dictate whether it is a relevant target for the adversary's operational objectives. In addition, the system's configuration may be used to scope subsequent technique usage." .
 
 :T0889 a owl:Class ;
     rdfs:label "Modify Program - ATTACK ICS" ;
     skos:prefLabel "Modify Program" ;
-    rdfs:subClassOf :ATTACKICSPersistenceTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :OTControlProgram ],
-        [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :OTModifyControlProgramCommand ] ;
+    rdfs:subClassOf :ATTACKICSPersistenceTechnique ;
     :attack-id "T0889" ;
     :definition "Adversaries may modify or add a program on a controller to affect how it interacts with the physical process, peripheral devices and other hosts on the network. Modification to controller programs can be accomplished using a Program Download in addition to other types of program modification such as online edit and program append." .
 
 :T0890 a owl:Class ;
     rdfs:label "Exploitation for Privilege Escalation - ATTACK ICS" ;
     skos:prefLabel "Exploitation for Privilege Escalation" ;
-    rdfs:subClassOf :ATTACKICSPrivilegeEscalationTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :enables ;
-            owl:someValuesFrom :TA0004 ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-modify ;
-            owl:someValuesFrom :StackFrame ],
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :ProcessCodeSegment ] ;
+    rdfs:subClassOf :ATTACKICSPrivilegeEscalationTechnique ;
     :attack-id "T0890" ;
     :definition "Adversaries may exploit software vulnerabilities in an attempt to elevate privileges. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. Security constructs such as permission levels will often hinder access to information and use of certain techniques, so adversaries will likely need to perform privilege escalation to include use of software exploitation to circumvent those restrictions. (Citation: The MITRE Corporation)" .
 
@@ -30205,38 +30169,77 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Hardcoded Credentials - ATTACK ICS" ;
     skos:prefLabel "Hardcoded Credentials" ;
     rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
-        :ATTACKICSPersistenceTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :Credential ] ;
+        :ATTACKICSPersistenceTechnique ;
     :attack-id "T0891" ;
     :definition "Adversaries may leverage credentials that are hardcoded in software or firmware to gain an unauthorized interactive user session to an asset. Examples credentials that may be hardcoded in an asset include:" .
 
 :T0892 a owl:Class ;
     rdfs:label "Change Credential - ATTACK ICS" ;
     skos:prefLabel "Change Credential" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Credential ] ;
     :attack-id "T0892" ;
     :definition "Adversaries may modify software and device credentials to prevent operator and responder access. Depending on the device, the modification or addition of this password could prevent any device configuration actions from being accomplished and may require a factory reset or replacement of hardware. These credentials are often built-in features provided by the device vendors as a means to restrict access to management interfaces." .
 
 :T0893 a owl:Class ;
     rdfs:label "Data from Local System - ATTACK ICS" ;
     skos:prefLabel "Data from Local System" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :System ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTReadCommand ] ;
     :attack-id "T0893" ;
     :definition "Adversaries may target and collect data from local system sources, such as file systems, configuration files, or local databases. This can include sensitive data such as specifications, schematics, or diagrams of control system layouts, devices, and processes." .
 
 :T0894 a owl:Class ;
     rdfs:label "System Binary Proxy Execution - ATTACK ICS" ;
     skos:prefLabel "System Binary Proxy Execution" ;
-    rdfs:subClassOf :ATTACKICSEvasionTechnique ;
+    rdfs:subClassOf :ATTACKICSEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ShellCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateThread ],
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :SharedLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-add ;
+            owl:someValuesFrom :Software ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SystemConfigurationDatabase ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessSegment ] ;
     :attack-id "T0894" ;
     :definition "Adversaries may bypass process and/or signature-based defenses by proxying execution of malicious content with signed, or otherwise trusted, binaries. Binaries used in this technique are often Microsoft-signed files, indicating that they have been either downloaded from Microsoft or are already native in the operating system. (Citation: LOLBAS Project) Binaries signed with trusted digital certificates can typically execute on Windows systems protected by digital signature validation. Several Microsoft signed binaries that are default on Windows installations can be used to proxy execution of other files or commands. Similarly, on Linux systems adversaries may abuse trusted binaries such as split to proxy execution of malicious commands. (Citation: split man page)(Citation: GTFO split)" .
 
 :T0895 a owl:Class ;
     rdfs:label "Autorun Image - ATTACK ICS" ;
     skos:prefLabel "Autorun Image" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0895" ;
     :definition "Adversaries may leverage AutoRun functionality or scripts to execute malicious code. Devices configured to enable AutoRun functionality or legacy operating systems may be susceptible to abuse of these features to run malicious code stored on various forms of removeable media (i.e., USB, Disk Images [.ISO]). Commonly, AutoRun or AutoPlay are disabled in many operating systems configurations to mitigate against this technique. If a device is configured to enable AutoRun or AutoPlay, adversaries may execute code on the device by mounting the removable media to the device, either through physical or virtual means. This may be especially relevant for virtual machine environments where disk images may be dynamically mapped to a guest system on a hypervisor." .
 
