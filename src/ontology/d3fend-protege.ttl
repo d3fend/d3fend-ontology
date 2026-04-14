@@ -30075,7 +30075,16 @@ When system firmware verification fails a set of predefined responses is typical
 :T0878 a owl:Class ;
     rdfs:label "Alarm Suppression - ATTACK ICS" ;
     skos:prefLabel "Alarm Suppression" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :OTDiagnosticsMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :OTController ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDiagnosticsMessage ] ;
     :attack-id "T0878" ;
     :definition "Adversaries may target protection function alarms to prevent them from notifying operators of critical conditions. Alarm messages may be a part of an overall reporting system and of particular interest for adversaries. Disruption of the alarm system does not imply the disruption of the reporting system as a whole." .
 
@@ -30110,21 +30119,36 @@ When system firmware verification fails a set of predefined responses is typical
 :T0883 a owl:Class ;
     rdfs:label "Internet Accessible Device - ATTACK ICS" ;
     skos:prefLabel "Internet Accessible Device" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTEmbeddedComputer ] ;
     :attack-id "T0883" ;
     :definition "Adversaries may gain access into industrial environments through systems exposed directly to the internet for remote access rather than through [External Remote Services](https://attack.mitre.org/techniques/T0822). Internet Accessible Devices are exposed to the internet unintentionally or intentionally without adequate protections. This may allow for adversaries to move directly into the control system network. Access onto these devices is accomplished without the use of exploits, these would be represented within the [Exploit Public-Facing Application](https://attack.mitre.org/techniques/T0819) technique." .
 
 :T0884 a owl:Class ;
     rdfs:label "Connection Proxy - ATTACK ICS" ;
     skos:prefLabel "Connection Proxy" ;
-    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique ;
+    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :IntranetNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OutboundInternetNetworkTraffic ] ;
     :attack-id "T0884" ;
     :definition "Adversaries may use a connection proxy to direct network traffic between systems or act as an intermediary for network communications." .
 
 :T0885 a owl:Class ;
     rdfs:label "Commonly Used Port - ATTACK ICS" ;
     skos:prefLabel "Commonly Used Port" ;
-    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique ;
+    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "T0885" ;
     :definition "Adversaries may communicate over a commonly used port to bypass firewalls or network detection systems and to blend in with normal network activity, to avoid more detailed inspection. They may use the protocol associated with the port, or a completely different protocol. They may use commonly open ports, such as the examples provided below." .
 
@@ -30132,7 +30156,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Remote Services - ATTACK ICS" ;
     skos:prefLabel "Remote Services" ;
     rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
-        :ATTACKICSLateralMovementTechnique ;
+        :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :IntranetNetworkTraffic ] ;
     :attack-id "T0886" ;
     :definition "Adversaries may leverage remote services to move between assets and network segments. These services are often used to allow operators to interact with systems remotely within the network, some examples are RDP, SMB, SSH, and other similar mechanisms. (Citation: Blake Johnson, Dan Caban, Marina Krotofil, Dan Scali, Nathan Brubaker, Christopher Glyer December 2017) (Citation: Dragos December 2017) (Citation: Joe Slowik April 2019)" .
 
