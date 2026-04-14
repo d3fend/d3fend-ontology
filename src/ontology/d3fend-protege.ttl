@@ -29836,24 +29836,61 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T0845" ;
     :definition "Adversaries may attempt to upload a program from a PLC to gather information about an industrial process. Uploading a program may allow them to acquire and study the underlying logic. Methods of program upload include vendor software, which enables the user to upload and read a program running on a PLC. This software can be used to upload the target program to a workstation, jump box, or an interfacing device." .
 
+
 :T0846 a owl:Class ;
     rdfs:label "Remote System Discovery - ATTACK ICS" ;
     skos:prefLabel "Remote System Discovery" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :OperatingSystemConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateSocket ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTDeviceIdentificationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0846" ;
     :definition "Adversaries may attempt to get a listing of other systems by IP address, hostname, or other logical identifier on a network that may be used for subsequent Lateral Movement or Discovery techniques. Functionality could exist within adversary tools to enable this, but utilities available on the operating system or vendor software could also be used. (Citation: Enterprise ATT&CK January 2018)" .
 
 :T0847 a owl:Class ;
     rdfs:label "Replication Through Removable Media - ATTACK ICS" ;
     skos:prefLabel "Replication Through Removable Media" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :RemovableMediaDevice ] ;
     :attack-id "T0847" ;
     :definition "Adversaries may move onto systems, such as those separated from the enterprise network, by copying malware to removable media which is inserted into the control systems environment. The adversary may rely on unknowing trusted third parties, such as suppliers or contractors with access privileges, to introduce the removable media. This technique enables initial access to target devices that never connect to untrusted networks, but are physically accessible." .
+
+:ControlServer a owl:Class ;
+    rdfs:label "Control Server" ;
+    rdfs:subClassOf :Server ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/control_server> ;
+    :definition "A controller that also acts as a server that hosts the control software that communicates with lower-level control devices, such as remote terminal units (RTUs) and programmable logic controllers (PLCs), over an OT network. In a SCADA system, this is often called a SCADA server, MTU, or supervisory controller." .
 
 :T0848 a owl:Class ;
     rdfs:label "Rogue Master - ATTACK ICS" ;
     skos:prefLabel "Rogue Master" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :OTController ],
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ControlServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0848" ;
     :definition "Adversaries may setup a rogue master to leverage control server functions to communicate with outstations. A rogue master can be used to send legitimate control messages to other control system devices, affecting processes in unintended ways. It may also be used to disrupt network communications by capturing and receiving the network traffic meant for the actual master. Impersonating a master may also allow an adversary to avoid detection." .
 
@@ -29873,18 +29910,40 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T0850" ;
     :definition "Adversaries may perform role identification of devices involved with physical processes of interest in a target control system. Control systems devices often work in concert to control a physical process. Each device can have one or more roles that it performs within that control process. By collecting this role-based data, an adversary can construct a more targeted attack." .
 
+
 :T0851 a owl:Class ;
     rdfs:label "Rootkit - ATTACK ICS" ;
     skos:prefLabel "Rootkit" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
-        :ATTACKICSInhibitResponseFunctionTechnique ;
+        :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :BootSector ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Firmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Kernel ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :KernelModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T0851" ;
     :definition "Adversaries may deploy rootkits to hide the presence of programs, files, network connections, services, drivers, and other system components. Rootkits are programs that hide the existence of malware by intercepting and modifying operating-system API calls that supply system information. Rootkits or rootkit-enabling functionality may reside at the user or kernel level in the operating system, or lower. (Citation: Enterprise ATT&CK January 2018)" .
 
 :T0852 a owl:Class ;
     rdfs:label "Screen Capture - ATTACK ICS" ;
     skos:prefLabel "Screen Capture" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :copies ;
+            owl:someValuesFrom :GraphicalUserInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetScreenCapture ] ;
     :attack-id "T0852" ;
     :definition "Adversaries may attempt to perform screen capture of devices in the control system environment. Screenshots may be taken of workstations, HMIs, or other devices that display environment-relevant process, device, reporting, alarm, or related data. These device displays may reveal information regarding the ICS process, layout, control, and related schematics. In particular, an HMI can provide a lot of important industrial process information. (Citation: ICS-CERT October 2017) Analysis of screen captures may provide the adversary with an understanding of intended operations and interactions between critical devices." .
 
