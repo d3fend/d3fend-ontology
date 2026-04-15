@@ -17872,28 +17872,6 @@ Administrators collect information on hardware devices such as peripherals, NICs
     :synonym "Hardware Component Discovery",
         "Hardware Component Inventorying" .
 
-:HardwareConfigurationLocking a :HardwareConfigurationLocking,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Hardware Configuration Locking" ;
-    rdfs:subClassOf :PlatformHardening,
-        [ a owl:Restriction ;
-            owl:onProperty :restricts ;
-            owl:someValuesFrom :HardwareDeviceConfiguration ] ;
-    :d3fend-id "D3-HCL" ;
-    :definition "Rendering the configuration registers of a hardware peripheral or subsystem immutable after initial boot-time provisioning." ;
-    :kb-article """## How it works
-Many hardware peripherals in embedded and OT systems expose their operational parameters through memory-mapped or bus-accessible control registers: timeout values, clock prescalers, interrupt masks, mode selectors, memory protection boundaries, encryption key slots, bus routing tables, and so on. Hardware configuration locking treats these parameters not as runtime-adjustable settings but as provisioning-time constants. The pattern is consistent across peripheral types: during the secure boot sequence, a trusted bootloader or hardware root of trust writes the intended parameter values to the relevant control registers. A lock bit, lock register, or lock sequence is then asserted. From that point forward, the hardware logic itself ignores or rejects all subsequent writes to those registers for the remainder of the power cycle (or permanently, in the case of one-time-programmable fuse-based locks). The lock is enforced below the software abstraction layer: it does not depend on an operating system, a privilege level, or a software access-control policy being intact. 
-
-The mechanism takes several physical forms depending on the peripheral and platform. Integrated peripherals on microcontrollers commonly expose a dedicated lock register into which a specific key sequence must be written to enable subsequent writes to configuration registers so that once the lock key is written and the window closes, no further changes are possible without a power-on reset. External supervisory or peripheral ICs often implement locking through hardware strap pins whose values are sampled at power-up and held in latches, making the configuration a function of PCB layout rather than software state. One-time-programmable fuse bits provide the strongest guarantee, permanently encoding a configuration that survives all power cycles and resets. 
-
-## Considerations
-* Softlock vs. hardlock distinction: A softlock, where a key sequence written to a lock register prevents further writes until a reset, still relies on the hardware correctly honoring that register state and cannot prevent an adversary who controls the reset mechanism from cycling through the lock. A hardlock, implemented via OTP fuses, strap pin latches, or dedicated supervisory hardware, cannot be reversed by any software action and provides the strongest guarantee.
-* Boot sequence trust dependency: the security guarantee provided by hardware configuration locking is only as strong as the integrity of the boot sequence that performs the provisioning. 
-* Trade-offs in operational flexibility: locking hardware configuration at boot removes the ability to reconfigure peripherals in response to changing mission conditions. 
-* Radiation and fault-injection robustness: in radiation prone environments such as space, Single Event Upsets (SEUs) can flip register bits, including lock bits and the configuration values they protect. Configuration registers that are locked should ideally reside in radiation-hardened or error-correcting memory cells.""" ;
-    :kb-reference :Reference-SecureWatchdogTimer-IntelCorp .
-
 :HardwareDevice a owl:Class ;
     rdfs:label "Hardware Device" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -17984,6 +17962,38 @@ The mechanism takes several physical forms depending on the peripheral and platf
             owl:someValuesFrom :HardwareDevice ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> ;
     :definition "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." .
+
+:HardwareRegister a owl:Class ;
+    rdfs:label "Hardware Register" ;
+    rdfs:subClassOf :HardwareDeviceConfiguration,
+        :PrimaryStorage,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    rdfs:isDefinedBy <https://dbpedia.org/page/Hardware_register> ;
+    :definition "A hardware register is a small, fixed-size storage location physically embedded within peripheral hardware that holds the operational parameters, status flags, and control bits governing the behavior of that device, and which are directly read from or written to by software via memory-mapped or I/O-mapped addresses." .
+
+:HardwareRegisterLocking a :HardwareRegisterLocking,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Hardware Register Locking" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :HardwareRegister ] ;
+    :d3fend-id "D3-HCL" ;
+    :definition "Rendering the configuration registers of a hardware peripheral or subsystem immutable after initial boot-time provisioning." ;
+    :kb-article """## How it works
+Many hardware peripherals in embedded and OT systems expose their operational parameters through memory-mapped or bus-accessible control registers: timeout values, clock prescalers, interrupt masks, mode selectors, etc. Hardware register locking treats these parameters not as runtime-adjustable settings but as provisioning-time constants. The pattern is consistent across peripheral types: during the secure boot sequence, a trusted bootloader or hardware root of trust writes the intended parameter values to the relevant control registers. A lock bit, lock register, or lock sequence is then asserted. From that point forward, the hardware logic itself ignores or rejects all subsequent writes to those registers for the remainder of the power cycle (or permanently, in the case of one-time-programmable fuse-based locks). The lock is enforced below the software abstraction layer: it does not depend on an operating system, a privilege level, or a software access-control policy being intact. 
+
+The mechanism takes several physical forms depending on the peripheral and platform. Integrated peripherals on microcontrollers commonly expose a dedicated lock register into which a specific key sequence must be written to enable subsequent writes to configuration registers so that once the lock key is written and the window closes, no further changes are possible without a power-on reset. External supervisory or peripheral ICs often implement locking through hardware strap pins whose values are sampled at power-up and held in latches, making the configuration a function of PCB layout rather than software state. One-time-programmable fuse bits provide the strongest guarantee, permanently encoding a configuration that survives all power cycles and resets. 
+
+## Considerations
+* Softlock vs. hardlock distinction: A softlock, where a key sequence written to a lock register prevents further writes until a reset, still relies on the hardware correctly honoring that register state and cannot prevent an adversary who controls the reset mechanism from cycling through the lock. A hardlock, implemented via OTP fuses, strap pin latches, or dedicated supervisory hardware, cannot be reversed by any software action and provides the strongest guarantee.
+* Boot sequence trust dependency: the security guarantee provided by hardware configuration locking is only as strong as the integrity of the boot sequence that performs the provisioning. 
+* Trade-offs in operational flexibility: locking hardware configuration at boot removes the ability to reconfigure peripherals in response to changing mission conditions. 
+* Radiation and fault-injection robustness: in radiation prone environments such as space, Single Event Upsets (SEUs) can flip register bits, including lock bits and the configuration values they protect. Configuration registers that are locked should ideally reside in radiation-hardened or error-correcting memory cells.""" ;
+    :kb-reference :Reference-SecureWatchdogTimer-IntelCorp .
 
 :HardwareTimer a owl:Class ;
     rdfs:label "Hardware Timer" ;
@@ -25431,15 +25441,6 @@ For example, Microsoft Word may block execution of any subprocess that is not in
     rdfs:subClassOf :HardwareDevice ;
     :definition "A Processor Component is a functional subunit or module within a processor that performs specific tasks to support the processor's overall operation." ;
     rdfs:seeAlso :Processor .
-
-:HardwareRegister a owl:Class ;
-    rdfs:label "Hardware Register" ;
-    rdfs:subClassOf :PrimaryStorage, :HardwareDeviceConfiguration,
-        [ a owl:Restriction ;
-            owl:onProperty :may-be-contained-by ;
-            owl:someValuesFrom :HardwareDevice ] ;
-    rdfs:isDefinedBy <https://dbpedia.org/page/Hardware_register> ;
-    :definition "A hardware register is a small, fixed-size storage location physically embedded within peripheral hardware that holds the operational parameters, status flags, and control bits governing the behavior of that device, and which are directly read from or written to by software via memory-mapped or I/O-mapped addresses." .
 
 :ProcessorRegister a owl:Class ;
     rdfs:label "Processor Register" ;
@@ -45323,7 +45324,7 @@ To fit the scope of the Top 20 Secure PLC Coding practices list, practices need 
     :kb-author "Peter Munguia, Kyle Gilsdorf, Shailendra Jha" ;
     :kb-mitre-analysis "Foundational description of a write-once lock bit pattern applied to a peripheral enable mechanism, clearable only by power cycle or hardware reset and not by any software path." ;
     :kb-organization "Intel Corp" ;
-    :kb-reference-of :HardwareConfigurationLocking ;
+    :kb-reference-of :HardwareRegisterLocking ;
     :kb-reference-title "Secure watchdog timer" .
 
 :Reference-Securing_Web_Transactions__TLS_Server_Certificate_Management_Appendix_A_Passive_Inspection a :GuidelineReference,
@@ -46642,4 +46643,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
