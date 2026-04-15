@@ -21985,32 +21985,6 @@ Programmatically checking if a pointer is NULL before use.
     :definition "A document file in a format associated with an d3f:OfficeApplication." ;
     rdfs:seeAlso :OfficeApplication .
 
-:OnboardComputer a owl:Class ;
-    rdfs:label "Onboard Computer" ;
-    rdfs:subClassOf :OTEmbeddedComputer,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :HardwareClock ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :FlashMemory ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :HardwareWatchdogTimer ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :BootLoader ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :FlightSoftware ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :RealTimeOperatingSystem ] ;
-    rdfs:isDefinedBy <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> ;
-    :definition "A self-contained, embedded computing unit installed within a vehicle or other autonomous platform that executes real-time control, data-handling, and mission-management software. It interfaces directly with the platform's sensors, actuators, and communication links, processes and stores operational data, and issues commands to subsystems, enabling the system to function independently of external computing resources." ;
-    rdfs:seeAlso <https://blog.satsearch.co/2020-03-11-an-overview-of-on-board-computer-obc-systems-available-on-the-global-space-marketplace> ;
-    :synonym "OBC" .
-
 :One-timePassword a :One-timePassword,
         owl:Class,
         owl:NamedIndividual ;
@@ -28374,31 +28348,13 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :Vehicle,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :OnboardComputer ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
             owl:someValuesFrom :Receiver ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Transmitter ],
         [ a owl:Restriction ;
-            owl:onProperty :has-operating-mode ;
-            owl:someValuesFrom :OperatingMode ],
-        [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :BusNetwork ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :HardwareCryptographicModule ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :Software-definedRadioComputer ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :TransducerSensor ] ;
+            owl:someValuesFrom :Software-definedRadioComputer ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Spacecraft> ;
     :definition "A spacecraft is a vehicle that is designed to fly and operate in outer space. Spacecraft are used for a variety of purposes, including communications, Earth observation, meteorology, navigation, space colonization, planetary exploration, and transportation of humans and cargo." .
 
@@ -40127,13 +40083,47 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
 
 :Vehicle a owl:Class ;
     rdfs:label "Vehicle" ;
-    rdfs:subClassOf :PhysicalArtifact ;
+    rdfs:subClassOf :PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :has-operating-mode ;
+            owl:someValuesFrom :VehicleOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :TransducerSensor ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Vehicle> ;
-    :definition "A vehicle is a machine designed for self-propulsion, usually to transport people, cargo, or both." .
+    :definition "A vehicle is a machine designed for self-propulsion, usually to transport people, cargo, or both." ;
+    :synonym "Self-propelled Vehicle" .
+
+:VehicleComputer a owl:Class ;
+    rdfs:label "Vehicle Computer" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :HardwareClock ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :HardwareWatchdogTimer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-run ;
+            owl:someValuesFrom :RealTimeOperatingSystem ],
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :BootLoader ] ;
+    :definition "An embedded computing system within a vehicle that monitors, controls, or supports vehicle functions by processing data, communicating with other components, and interacting with sensors, actuators, and external interfaces." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Electronic_control_unit>,
+        <https://industrial.panasonic.com/ww/ds/ss/technical/ap9>,
+        <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> .
 
 :VehicleOperatingMode a owl:Class ;
     rdfs:label "Vehicle Operating Mode" ;
-    rdfs:subClassOf :OperatingMode .
+    rdfs:subClassOf :OperatingMode ;
+    :definition "The current functional state or control regime of a vehicle that determines how it is configured, how its systems behave, and what kind of operation it is performing at a given time." .
 
 :Vendor a owl:Class ;
     rdfs:label "Vendor" ;
@@ -46621,4 +46611,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
