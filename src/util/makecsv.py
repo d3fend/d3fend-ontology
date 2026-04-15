@@ -46,9 +46,9 @@ def recurse_node(node, depth=1, indent_char=",", log=False, tactic=""):
                         "WARNING: EXCLUDED Technique - NO DEFINITION FOR: "
                         + child["rdfs:label"]
                     )
-                except:
+                except Exception:
                     print("tactic:" + str(tactic))
-                    print("child:" + child)
+                    print("child:" + str(child))
                     print("depth:" + str(depth))
                     raise
 
@@ -94,5 +94,5 @@ with open("build/d3fend.csv", "w") as f:
                 template[depth] = line[2]  # technique name
                 template[5] = line[3]  # definition
                 d3fend_writer.writerow(template)
-            except:
+            except Exception:
                 print(line)
