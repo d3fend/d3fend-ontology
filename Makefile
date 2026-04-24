@@ -20,10 +20,13 @@ ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.ja
 DOCKER_NO_CACHE ?= false
 DOCKER_BUILD_NOCACHE_FLAG := $(if $(filter true,$(DOCKER_NO_CACHE)),--no-cache,)
 ONTOLOGY_BASE_IMAGE_REPO ?= d3fend-ontology-base
-ONTOLOGY_BASE_HASH ?= $(shell { printf '%s\n' '$(ROBOT_URL)'; cat Dockerfile Makefile Pipfile Pipfile.lock; if [ -d .local ]; then find .local -type f \( -name '*.crt' -o -name '*.pem' \) | sort | while read -r f; do printf '%s\n' "$$f"; cat "$$f"; done; fi; } | shasum -a 256 | cut -c1-12)
+ONTOLOGY_BASE_INPUTS := Dockerfile Makefile Pipfile Pipfile.lock $(sort $(wildcard .local/*.crt .local/*.pem))
+ONTOLOGY_BASE_HASH ?= $(shell { printf '%s\n' '$(ROBOT_URL)'; cat $(ONTOLOGY_BASE_INPUTS); } | shasum -a 256 | cut -c1-12)
 ONTOLOGY_BASE_IMAGE ?= $(ONTOLOGY_BASE_IMAGE_REPO):$(ONTOLOGY_BASE_HASH)
 ONTOLOGY_BASE_LATEST_TAG ?= $(ONTOLOGY_BASE_IMAGE_REPO):latest
 ONTOLOGY_IMAGE_TAG ?= d3fend-ontology:latest
+ONTOLOGY_BASE_TAG_ARGS := -t "$(ONTOLOGY_BASE_IMAGE)" -t "$(ONTOLOGY_BASE_LATEST_TAG)"
+ONTOLOGY_DOCKER_BUILD_ARGS := --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg ROBOT_URL=$(ROBOT_URL)
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -140,21 +143,20 @@ docker-build-base-image: ## build the reusable ontology base image
 	@BASE_IMAGE_TAG="$(ONTOLOGY_BASE_IMAGE)"; \
 	if [ "$(DOCKER_NO_CACHE)" = "true" ]; then \
 		echo "DOCKER_NO_CACHE=true: rebuilding ontology base image ($$BASE_IMAGE_TAG) ..."; \
-		docker build $(DOCKER_BUILD_NOCACHE_FLAG) --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg ROBOT_URL=$(ROBOT_URL) --target ontology-base -t "$$BASE_IMAGE_TAG" -t "$(ONTOLOGY_BASE_LATEST_TAG)" .; \
+		docker build $(DOCKER_BUILD_NOCACHE_FLAG) $(ONTOLOGY_DOCKER_BUILD_ARGS) --target ontology-base $(ONTOLOGY_BASE_TAG_ARGS) .; \
 	else \
 		if docker image inspect "$$BASE_IMAGE_TAG" >/dev/null 2>&1; then \
 			echo "Using cached ontology base image ($$BASE_IMAGE_TAG)"; \
 		else \
 			echo "Building ontology base image ($$BASE_IMAGE_TAG) ..."; \
-			docker build --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg ROBOT_URL=$(ROBOT_URL) --target ontology-base -t "$$BASE_IMAGE_TAG" -t "$(ONTOLOGY_BASE_LATEST_TAG)" .; \
+			docker build $(ONTOLOGY_DOCKER_BUILD_ARGS) --target ontology-base $(ONTOLOGY_BASE_TAG_ARGS) .; \
 		fi; \
 	fi
 
 docker-build-image: docker-build-base-image ## build the ontology image
 	@docker build $(DOCKER_BUILD_NOCACHE_FLAG) \
 		--cache-from "$(ONTOLOGY_BASE_IMAGE)" \
-		--build-arg BUILDKIT_INLINE_CACHE=1 \
-		--build-arg ROBOT_URL=$(ROBOT_URL) \
+		$(ONTOLOGY_DOCKER_BUILD_ARGS) \
 		-t "$(ONTOLOGY_IMAGE_TAG)" .
 
 download-attack:
