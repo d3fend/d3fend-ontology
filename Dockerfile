@@ -32,6 +32,8 @@ RUN pip3 install pipenv==2022.8.5
 
 FROM ontology-toolchain AS ontology-base
 
+ARG ROBOT_URL
+
 # Install deps in a cache-friendly layer (only depends on Pipfile.lock/Makefile)
 COPY --from=src /src/Makefile /app/Makefile
 COPY --from=src /src/Pipfile /app/Pipfile
