@@ -2225,6 +2225,12 @@ Agglomerative clustering starts with each data point as its own cluster. The alg
 3. Scikit-learn. (30 Jun 2023). Scikit-learn Documentation: Agglomerative Clustering.
 [Link](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html).""" .
 
+:AircraftComputer a owl:Class ;
+    rdfs:label "Aircraft Computer" ;
+    rdfs:subClassOf :VehicleComputer ;
+    :definition "A vehicle computer installed on a fixed-wing or rotary-wing aircraft, executing real-time flight or mission logic and communicating over avionics buses such as ARINC 429, ARINC 664/AFDX, or MIL-STD-1553." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Avionics> .
+
 :AlethicLogic a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Alethic Logic" ;
@@ -15183,6 +15189,14 @@ For threats at higher energy levels or involving ionizing radiation, such as nuc
             owl:someValuesFrom :ElectronicCombinationLock ] ;
     rdfs:comment "An event occuring when combination lock's bolt changes position." ;
     rdfs:seeAlso "NRC Regulatory Guide 5.12 Rev1" .
+
+:ElectronicControlUnit a owl:Class ;
+    rdfs:label "Electronic Control Unit" ;
+    rdfs:subClassOf :VehicleComputer ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Electronic_control_unit> ;
+    :definition "A vehicle computer embedded in a ground vehicle, executing real-time control logic over one or more vehicle subsystems and communicating with peer ECUs over an in-vehicle network such as CAN, CAN-FD, LIN, or automotive Ethernet." ;
+    :synonym "ECU",
+        "Electronic Control Module" .
 
 :ElectronicLockMonitoring a :ElectronicLockMonitoring,
         owl:Class,
@@ -28363,9 +28377,18 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:isDefinedBy <http://dbpedia.org/resource/Spacecraft> ;
     :definition "A spacecraft is a vehicle that is designed to fly and operate in outer space. Spacecraft are used for a variety of purposes, including communications, Earth observation, meteorology, navigation, space colonization, planetary exploration, and transportation of humans and cargo." .
 
+:SpacecraftComputer a owl:Class ;
+    rdfs:label "Spacecraft Computer" ;
+    rdfs:subClassOf :VehicleComputer ;
+    :definition "A vehicle computer installed on a spacecraft, executing real-time control or data-handling logic under spaceflight conditions (vacuum, radiation, extended communication latency) and communicating over buses such as MIL-STD-1553, SpaceWire, or CAN." ;
+    rdfs:seeAlso <https://science.nasa.gov/learn/basics-of-space-flight/chapter11-1/> ;
+    :synonym "Command and Data Subsystem (CDS)",
+        "Onboard Computer" .
+
 :SpacecraftSafeMode a owl:Class ;
     rdfs:label "Spacecraft Safe Mode" ;
-    rdfs:subClassOf :SafeMode ;
+    rdfs:subClassOf :SafeMode,
+        :VehicleOperatingMode ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Safe_mode_in_spacecraft> ;
     :definition "Safe mode is an operating mode of a modern uncrewed spacecraft during which all non-essential systems are shut down and only essential functions such as thermal management, radio reception and attitude control are active." .
 
@@ -40091,22 +40114,22 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
     rdfs:subClassOf :PhysicalArtifact,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
+            owl:someValuesFrom :Actuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :TransducerSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
             owl:someValuesFrom :VehicleComputer ],
         [ a owl:Restriction ;
             owl:onProperty :has-operating-mode ;
             owl:someValuesFrom :VehicleOperatingMode ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :Actuator ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
             owl:someValuesFrom :BusNetwork ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :TransducerSensor ] ;
+            owl:someValuesFrom :GNSSReceiver ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Vehicle> ;
     :definition "A vehicle is an electronically controlled machine designed for self-propulsion, usually to transport people, cargo, or both." ;
     :synonym "Self-propelled Vehicle" .
@@ -40128,16 +40151,43 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
             owl:someValuesFrom :RealTimeOperatingSystem ],
         [ a owl:Restriction ;
             owl:onProperty :runs ;
-            owl:someValuesFrom :BootLoader ] ;
+            owl:someValuesFrom :VehicleSoftware ] ;
     :definition "An embedded computing system within a vehicle that monitors, controls, or supports vehicle functions by processing data, communicating with other components, and interacting with sensors, actuators, and external interfaces." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Electronic_control_unit>,
         <https://industrial.panasonic.com/ww/ds/ss/technical/ap9>,
         <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> .
 
+:VehicleControlSoftware a owl:Class ;
+    rdfs:label "Vehicle Control Software" ;
+    rdfs:subClassOf :VehicleSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :instructs ;
+            owl:someValuesFrom :VehicleControlSoftwareProcess ] ;
+    :definition "A specialized subset of vehicle software strictly responsible for the direct management of the vehicle's physical state, orientation, and safety-critical dynamics. It functions as the logic layer between high-level mission objectives and the physical actuators." .
+
+:VehicleControlSoftwareProcess a owl:Class ;
+    rdfs:label "Vehicle Control Software Process" ;
+    rdfs:subClassOf :ApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :Actuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :VehicleOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :TransducerSensor ] ;
+    :definition "A specialized subset of vehicle software strictly responsible for the direct management of the vehicle's physical state, orientation, and safety-critical dynamics. It functions as the logic layer between high-level mission objectives and the physical actuators." .
+
 :VehicleOperatingMode a owl:Class ;
     rdfs:label "Vehicle Operating Mode" ;
     rdfs:subClassOf :OperatingMode ;
     :definition "The current functional state or control regime of a vehicle that determines how it is configured, how its systems behave, and what kind of operation it is performing at a given time." .
+
+:VehicleSoftware a owl:Class ;
+    rdfs:label "Vehicle Software" ;
+    rdfs:subClassOf :SystemSoftware ;
+    :definition "Any software residing on a vehicle's onboard compute platforms." .
 
 :Vendor a owl:Class ;
     rdfs:label "Vendor" ;
