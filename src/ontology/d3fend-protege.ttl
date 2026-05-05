@@ -15643,7 +15643,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0003 a owl:Class ;
     rdfs:label "Modify Authentication Process - SPARTA" ;
     skos:prefLabel "Modify Authentication Process" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FlightSoftware ] ;
     :attack-id "EX-0003" ;
     :definition "The adversary alters how the spacecraft validates authority so that future inputs are accepted on their terms. Modifications can target code (patching flight binaries, hot-patching functions in memory, hooking command handlers), data (changing key identifiers, policy tables, or counter initialization), or control flow (short-circuiting MAC checks, widening anti-replay windows, bypassing interlocks on specific opcodes). Common choke points include telecommand verification routines, bootloader or update verifiers, gateway processors that bridge payload and bus traffic, and maintenance dictionaries invoked in special modes. Subtle variants preserve outward behavior, producing normal-looking acknowledgments and counters, while internally accepting a broader set of origins, opcodes, or timetags. Others introduce conditional logic so the backdoor only activates under specific geometry or timing, masking during routine audit. Once resident, the modified process becomes the new trust oracle, enabling recurring execution for the attacker and, in some cases, denying legitimate control by causing authentic inputs to fail verification or to be deprioritized." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0003/> .
@@ -15867,7 +15870,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.02 a owl:Class ;
     rdfs:label "Internal Routing Tables - SPARTA" ;
     skos:prefLabel "Internal Routing Tables" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationRuntimeVariable ] ;
     :attack-id "EX-0012.02" ;
     :definition "Threat actors may rewrite the maps that tell software where to send and receive things. In publish/subscribe or message-queued flight frameworks, tables map message IDs to subscribers, opcodes to handlers, and pipes to processes; at interfaces, address/port maps define how traffic traverses bridges and gateways (e.g., SpaceWire node/port routes, 1553 RT/subaddress mappings, CAN IDs). By altering these structures, commands can be misdelivered, dropped, duplicated, or routed through unintended paths; telemetry can be redirected or blackholed; and handler bindings can be swapped so an opcode triggers the wrong function. Schedule/routing hybrids, used to sequence activities and distribute results, can be edited to reorder execution or to create feedback loops that occupy bandwidth and processor time. The result is control over who hears what and when, achieved by changing the lookup tables that underpin command/telemetry distribution rather than the code that processes them." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/02/> .
