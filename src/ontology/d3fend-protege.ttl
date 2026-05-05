@@ -15862,7 +15862,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.01 a owl:Class ;
     rdfs:label "Registers - SPARTA" ;
     skos:prefLabel "Registers" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :MemoryAddress ] ;
     :attack-id "EX-0012.01" ;
     :definition "Threat actors may target the internal registers of the victim spacecraft in order to modify specific values as the FSW is functioning or prevent certain subsystems from working. Most aspects of the spacecraft rely on internal registers to store important data and temporary values. By modifying these registers at certain points in time, threat actors can disrupt the workflow of the subsystems or onboard payload, causing them to malfunction or behave in an undesired manner." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/01/> .
@@ -15884,7 +15887,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.03 a owl:Class ;
     rdfs:label "Memory Write/Loads - SPARTA" ;
     skos:prefLabel "Memory Write/Loads" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :MemoryBlock ] ;
     :attack-id "EX-0012.03" ;
     :definition "The adversary uses legitimate direct-memory commands or load services to place chosen bytes at chosen addresses. Many spacecraft support raw read/write operations, block loads into RAM or non-volatile stores, and table/file loaders that copy content into working memory. With knowledge of address maps and data structures, an attacker can patch function pointers or vtables, alter limit and configuration records, seed scripts or procedures into interpreter buffers, adjust DMA descriptors, or overwrite portions of executable images resident in RAM. Loads may be sized and paced to fit link and queue constraints, then activated by a subsequent command, mode change, or natural reference by the software." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/03/> .
@@ -15892,7 +15898,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.04 a owl:Class ;
     rdfs:label "App/Subscriber Tables - SPARTA" ;
     skos:prefLabel "App/Subscriber Tables" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationRuntimeVariable ] ;
     :attack-id "EX-0012.04" ;
     :definition "In publish/subscribe flight frameworks, applications and subsystems register interest in specific message classes via subscriber (or application) tables. These tables map message IDs/topics to subscribers, define delivery pipes/queues, and often include filters, priorities, and rate limits. By altering these mappings, an adversary can quietly reshape information flow: critical consumers stop receiving health or sensor messages; non-critical tasks get flooded; handlers are rebound so an opcode or message ID reaches the wrong task; or duplicates create feedback loops that consume bandwidth and CPU. Because subscription state is usually read at init or refreshed on command, subtle edits can persist across reboots or take effect at predictable times. Similar effects appear in legacy MIL-STD-1553 deployments by modifying Remote Terminal (RT), subaddress, or mode-code configurations so that messages are misaddressed or dropped at the bus interface. The net result is control-by-misdirection: the software still “works,” but the right data no longer reaches the right recipient at the right time." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/04/> .
@@ -15900,7 +15912,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.05 a owl:Class ;
     rdfs:label "Scheduling Algorithm - SPARTA" ;
     skos:prefLabel "Scheduling Algorithm" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :JobSchedule ] ;
     :attack-id "EX-0012.05" ;
     :definition "Spacecraft typically rely on real-time scheduling, fixed-priority or deadline/periodic schemes, driven by timers, tick sources, and per-task parameters. Threat actors target these parameters and associated tables to skew execution order and timing. Edits may change priorities, periods, or deadlines; adjust CPU budgets and watchdog thresholds; alter ready-queue disciplines; or reconfigure timer tick rates and clock sources. They may also modify task affinities, message-queue depths, and interrupt masks so preemption and latency characteristics shift. Small changes can have large effects: high-rate control loops see added jitter, estimator updates miss deadlines, command/telemetry handling starves, or low-priority maintenance tasks monopolize cores due to mis-set periods.  Manipulated schedules can create intermittent, state-dependent malfunctions that are hard to distinguish from environmental load. The essence of the technique is to weaponize time, reshaping when work happens so that otherwise correct code produces unsafe or exploitable behavior." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/05/> .
@@ -15908,7 +15926,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.06 a owl:Class ;
     rdfs:label "Science/Payload Data - SPARTA" ;
     skos:prefLabel "Science/Payload Data" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :File ] ;
     :attack-id "EX-0012.06" ;
     :definition "Payload data, and the metadata that gives it meaning, can be altered in place to steal value, mislead users, or degrade mission outputs. Targets include raw detector frames, packetized Level-0 streams, onboard preprocessed products, and file catalogs/directories on mass memory. Adjacent metadata such as timestamps, pointing/attitude tags, calibration coefficients, compression settings, and quality flags are equally potent; slight bias in a calibration table or time tag can skew entire downlink campaigns while appearing routine. An adversary may rewrite frame headers, reorder packets, substitute segments from prior passes, or flip quality bits so ground pipelines silently discard or misclassify products. Recorder index manipulation can orphan files or cause downlinks to serve stale or fabricated content. Because many missions perform some processing or filtering onboard, tampering upstream of downlink propagates forward as “authoritative” truth, jeopardizing mission objectives without obvious protocol anomalies." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/06/> .
@@ -15916,7 +15937,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.07 a owl:Class ;
     rdfs:label "Propulsion Subsystem - SPARTA" ;
     skos:prefLabel "Propulsion Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ] ;
     :attack-id "EX-0012.07" ;
     :definition "Propulsion relies on parameters and sensed values that govern burns, pressure management, and safing. Editable items include thruster calibration and minimum impulse bit, valve timing and duty limits, inhibit masks, delta-V tables, plume keep-out constraints, tank pressure/temperature thresholds, leak-detection limits, and momentum-management coupling with attitude control. By modifying these, an adversary can provoke over-correction, waste propellant through repeated trims, bias orbit maintenance, or trigger protective sequences at inopportune times. False pressure or temperature readings can cause autonomous venting or lockouts; tweaked alignment matrices or misapplied gimbal limits can yield off-axis thrust and attitude excursions; altered desaturation rules can induce frequent wheel unloads that sap resources. Because consumables are finite and margins tight, even modest parameter drift can shorten mission life or violate keep-out and conjunction constraints while presenting as “normal” control activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/07/> .
@@ -15924,7 +15948,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.08 a owl:Class ;
     rdfs:label "Attitude Determination & Control Subsystem - SPARTA" ;
     skos:prefLabel "Attitude Determination & Control Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ] ;
     :attack-id "EX-0012.08" ;
     :definition "ADCS depends on tightly coupled models and parameters: star-tracker catalogs and masks, sensor alignments and bias terms, gyro scale factors and drift rates, estimator covariances and process/measurement noise, controller gains and saturation limits, wheel/CMG torque constants, magnetic torquer maps, and sun sensor thresholds. Editing these values skews estimation or control, producing slow bias, limit cycles, loss of lock, or abrupt safing triggers. For example, a small change to a star-tracker mask can force frequent dropouts; an inflated gyro bias drives the filter away from truth; softened actuator limits or mis-set gains let disturbances accumulate; altered sun-point entry criteria cause unnecessary mode switches. Secondary impacts propagate to power, thermal, and communications because pointing and geometry underpin array generation, radiator view factors, and antenna gain. The technique turns the spacecraft against itself by nudging the parameters that close the loop between what the vehicle believes and how it responds." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/08/> .
@@ -15932,7 +15959,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.09 a owl:Class ;
     rdfs:label "Electrical Power Subsystem - SPARTA" ;
     skos:prefLabel "Electrical Power Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ] ;
     :attack-id "EX-0012.09" ;
     :definition "Adversaries alter parameters and sensed values that govern power generation, storage, and distribution so the spacecraft draws or allocates energy in harmful ways. Editable items include bus voltage/current limits, MPPT setpoints and sweep behavior, array and SADA modes, battery charge/discharge thresholds and temperature derates, state-of-charge estimation constants, latching current limiter (LCL) trip/retry settings, load-shed priorities, heater duty limits, and survival/keep-alive rules. By changing these, a threat actor can drive excess consumption (e.g., disabling load shed, raising heater floors), misreport remaining energy (skewed SoC), or push batteries outside healthy ranges, producing brownouts, repeated safing, or premature capacity loss. Manipulating thresholds and hysteresis can also create oscillations where loads repeatedly drop and re-engage, wasting energy and stressing components. The effect is accelerated depletion or misallocation of finite power, degrading mission operations and potentially preventing recovery after eclipse or anomalies." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/09/> .
@@ -15940,7 +15970,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.10 a owl:Class ;
     rdfs:label "Command & Data Handling Subsystem - SPARTA" ;
     skos:prefLabel "Command & Data Handling Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationRuntimeVariable ] ;
     :attack-id "EX-0012.10" ;
     :definition "C&DH relies on tables and runtime values that define how commands are parsed, queued, and dispatched and how telemetry is collected, stored, and forwarded. Targets include opcode-to-handler maps, argument limits and schemas, queue depths and priorities, message ID routing, publish/subscribe bindings, timeline/schedule entries, file catalog indices, compression and packetization settings, and event/telemetry filters. Edits to these artifacts reshape control and visibility: commands are delayed, dropped, or misrouted; telemetry is suppressed or redirected; timelines slip; and housekeeping/data products are repackaged in ways that confuse ground processing. Because many frameworks treat these values as authoritative configuration, small changes can silently propagate across subsystems, degrading responsiveness, creating backlogs, or severing the logical pathways that keep the vehicle coordinated, without modifying the underlying code." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/10/> .
@@ -15950,7 +15986,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Watchdog Timer (WDT)" ;
     rdfs:subClassOf :EX-0012,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :MemoryAddress ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :WatchdogTimer ] ;
     :attack-id "EX-0012.11" ;
     :definition "Watchdogs supervise liveness by requiring software to “pet” within defined windows or the system resets. Threat actors manipulate WDT behavior by changing timeout durations, windowed-WDT bounds, reset actions, enable/mask bits, or the source that performs the petting (e.g., moving it into a low-level ISR so higher layers can be stalled indefinitely). Software WDTs can be disabled or starved; hardware WDTs are influenced via control registers, strap pins, or supervisor commands that alter prescalers and reset ladders. Outcomes include preventing intended resets so runaway tasks consume power and bandwidth, or forcing repeated resets at tactically chosen moments, e.g., during updates or handovers, to keep the system in a degraded or easily predictable state. The technique converts a safety mechanism into a tool for either unbounded execution or rhythmic disruption, depending on how the WDT parameters are rewritten." ;
