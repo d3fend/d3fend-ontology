@@ -121,6 +121,11 @@
     rdfs:subPropertyOf :semantic-relation ;
     :definition "x broader-transitive y: The entity x represents a more general concept than entity y, including indirect or hierarchical relationships where x encompasses y through intermediate entities." .
 
+:captures a owl:ObjectProperty ;
+    :definition "x captures y: The entity x acquires, records, or stores a copy of communications data y from any source or state (e.g., in transit, at rest, or from storage) such that x can subsequently access, analyze, or use y." ;
+    :label "captures" ;
+    :subPropertyOf :associated-with .
+
 :carried-by a owl:ObjectProperty ;
     rdfs:label "carried-by" ;
     rdfs:subPropertyOf :associated-with ;
@@ -629,6 +634,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "instructs" ;
     rdfs:subPropertyOf :associated-with ;
     :definition "x instructs y: A subject x delivers machine instructions to object y." .
+
+:intercepts a owl:ObjectProperty ;
+    :definition "x intercepts y: The entity x captures communications data y while y is in transit between other communicating parties, where x is not an intended endpoint of that communication." ;
+    :label "intercepts" ;
+    :subPropertyOf :captures .
 
 :interprets a owl:ObjectProperty ;
     rdfs:label "interprets" ;
@@ -16439,7 +16449,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :EXF-0003 a owl:Class ;
     rdfs:label "Signal Interception - SPARTA" ;
     skos:prefLabel "Signal Interception" ;
-    rdfs:subClassOf :SPARTAExfiltrationTechnique ;
+    rdfs:subClassOf :SPARTAExfiltrationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "EXF-0003" ;
     :definition "The adversary captures mission traffic in transit, on ground networks or over the space link, so that payload products, housekeeping, and command/ack exchanges can be reconstructed offline. Vantage points include tapped ground LANs/WANs between MOC and stations, baseband interfaces (IF/IQ), RF/optical receptions within the antenna field of view, and crosslink monitors. Depending on protection, the haul ranges from plaintext frames to encrypted bitstreams whose headers, rates, and schedules still yield valuable context (APIDs, VCIDs, pass timing, file manifest cues). Intercepted sessions can guide later replay, cloning, or targeted downlink requests." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0003/> .
@@ -26458,7 +26471,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.01 a owl:Class ;
     rdfs:label "Uplink Intercept Eavesdropping - SPARTA" ;
     skos:prefLabel "Uplink Intercept Eavesdropping" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.01" ;
     :definition "Uplink reconnaissance focuses on capturing the command path from ground to spacecraft to learn telecommand framing, authentication fields, timing, and anti-replay behavior. Valuable artifacts include emission designators, symbol rates, polarization sense, Doppler profiles, and any preambles or ranging tones that gate command acceptance. Even if payload and TT&C share spectrum, their authentication postures often differ, knowledge an adversary can exploit. Partial captures, console screenshots, or training recordings reduce the effort needed to build an SDR pipeline that “looks right” on the air. Where missions authenticate without encrypting the uplink, traffic analysis can reveal command cadence and maintenance windows." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/01/> .
@@ -26466,7 +26482,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.02 a owl:Class ;
     rdfs:label "Downlink Intercept - SPARTA" ;
     skos:prefLabel "Downlink Intercept" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.02" ;
     :definition "Downlink collection aims to harvest housekeeping telemetry, event logs, ephemerides, payload data, and operator annotations that reveal system state and procedures. Even when payload content is encrypted, ancillary channels (beacons, health/status, low-rate engineering downlink) can disclose mode transitions, battery and thermal margins, safing events, and next-pass predictions. Community ground networks and public dashboards may inadvertently provide stitched datasets that make trend analysis trivial. Captured framing and coding parameters also help an adversary build testbeds and refine timing for later actions." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/02/> .
