@@ -29963,14 +29963,26 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Module Firmware - ATTACK ICS" ;
     skos:prefLabel "Module Firmware" ;
     rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
-        :ATTACKICSPersistenceTechnique ;
+        :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Firmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDeviceFirmwareCommand ] ;
     :attack-id "T0839" ;
     :definition "Adversaries may install malicious or vulnerable firmware onto modular hardware devices. Control system devices often contain modular hardware devices. These devices may have their own set of firmware that is separate from the firmware of the main control system equipment." .
 
 :T0840 a owl:Class ;
     rdfs:label "Network Connection Enumeration - ATTACK ICS" ;
     skos:prefLabel "Network Connection Enumeration" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTDeviceIdentificationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0840" ;
     :definition "Adversaries may perform network connection enumeration to discover information about device communication patterns. If an adversary can inspect the state of a network connection with tools, such as Netstat(Citation: Netstat), in conjunction with [System Firmware](https://attack.mitre.org/techniques/T0857), then they can determine the role of certain devices on the network  (Citation: MITRE). The adversary can also use [Network Sniffing](https://attack.mitre.org/techniques/T0842) to watch network traffic for details about the source, destination, protocol, and content." .
 
@@ -29986,14 +29998,26 @@ When system firmware verification fails a set of predefined responses is typical
 :T0842 a owl:Class ;
     rdfs:label "Network Sniffing - ATTACK ICS" ;
     skos:prefLabel "Network Sniffing" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :DNSLookup ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0842" ;
     :definition "Network sniffing is the practice of using a network interface on a computer system to monitor or capture information (Citation: Enterprise ATT&CK January 2018) regardless of whether it is the specified destination for the information." .
 
 :T0843 a owl:Class ;
     rdfs:label "Program Download - ATTACK ICS" ;
     skos:prefLabel "Program Download" ;
-    rdfs:subClassOf :ATTACKICSLateralMovementTechnique ;
+    rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDownloadControlProgramCommand ] ;
     :attack-id "T0843" ;
     :definition "Adversaries may perform a program download to transfer a user program to a controller." .
 
@@ -30010,7 +30034,13 @@ When system firmware verification fails a set of predefined responses is typical
 :T0845 a owl:Class ;
     rdfs:label "Program Upload - ATTACK ICS" ;
     skos:prefLabel "Program Upload" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadDeviceConfigurationCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTControlProgram ] ;
     :attack-id "T0845" ;
     :definition "Adversaries may attempt to upload a program from a PLC to gather information about an industrial process. Uploading a program may allow them to acquire and study the underlying logic. Methods of program upload include vendor software, which enables the user to upload and read a program running on a PLC. This software can be used to upload the target program to a workstation, jump box, or an interfacing device." .
 
