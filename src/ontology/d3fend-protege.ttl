@@ -5084,7 +5084,7 @@ Depending on the complexity of the data considered, outliers may not be obvious 
 
 :AuthorizationService a owl:Class ;
     rdfs:label "Authorization Service" ;
-    rdfs:subClassOf :NetworkService,
+    rdfs:subClassOf :NetworkServiceApplicationProcess,
         :ServiceApplicationProcess ;
     rdfs:isDefinedBy <https://www.sciencedirect.com/referencework/9780122272400/encyclopedia-of-information-systems> ;
     :definition "An authorization service ensures that the user is authorized to have access to a particular resource. Authorization can be done through role-based access control (RBAC) or list-based access control (LBAC)." ;
@@ -14409,7 +14409,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DHCPService a owl:Class ;
     rdfs:label "DHCP Service" ;
-    rdfs:subClassOf :NetworkService,
+    rdfs:subClassOf :NetworkServiceApplicationProcess,
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
             owl:someValuesFrom :DHCPNetworkTraffic ] ;
@@ -14614,7 +14614,7 @@ Unidirectional network link enforcement is a security measure used to separate c
 
 :DirectoryService a owl:Class ;
     rdfs:label "Directory Service" ;
-    rdfs:subClassOf :NetworkService ;
+    rdfs:subClassOf :NetworkServiceApplicationProcess ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Directory_service> ;
     :definition "In computing, directory service or name service maps the names of network resources to their respective network addresses. It is a shared information infrastructure for locating, managing, administering and organizing everyday items and network resources, which can include volumes, folders, files, printers, users, groups, devices, telephone numbers and other objects. A directory service is a critical component of a network operating system. A directory server or name server is a server which provides such a service. Each resource on the network is considered an object by the directory server. Information about a particular resource is stored as a collection of attributes associated with that resource or object." .
 
@@ -17172,7 +17172,7 @@ File format specifications often define expected values for specific fields. A c
 
 :FileShareService a owl:Class ;
     rdfs:label "File Share Service" ;
-    rdfs:subClassOf :NetworkService ;
+    rdfs:subClassOf :NetworkServiceApplicationProcess ;
     :definition "A file sharing service (or file share service) provides the ability to share data across a network." ;
     rdfs:seeAlso <http://dbpedia.org/resource/File_sharing> .
 
@@ -20688,7 +20688,7 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
 :MailService a owl:Class ;
     rdfs:label "Mail Service" ;
     skos:altLabel "Email Service" ;
-    rdfs:subClassOf :NetworkService ;
+    rdfs:subClassOf :NetworkServiceApplicationProcess ;
     :definition "A mail service provides the ability to send and receive mail across a computer network.  The mail service runs on message transfer agents (i.e., mail servers) and is accessed by users through an email client." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Email>,
         <http://dbpedia.org/resource/Message_transfer_agent> .
@@ -21646,8 +21646,8 @@ Network Resource Access Control involves managing and regulating access to resou
     rdfs:subClassOf :CyberSensor ;
     :definition "A Network Sensor monitors network traffic and communication patterns." .
 
-:NetworkService a owl:Class ;
-    rdfs:label "Network Service" ;
+:NetworkServiceApplicationProcess a owl:Class ;
+    rdfs:label "Network Service Application Process" ;
     rdfs:subClassOf :ServiceApplicationProcess ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_service> ;
     :definition "In computer networking, a network service is an application running at the network application layer and above, that provides data storage, manipulation, presentation, communication or other capability which is often implemented using a client-server or peer-to-peer architecture based on application layer network protocols. Clients and servers will often have a user interface, and sometimes other hardware associated with it." .
@@ -26741,7 +26741,7 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 :RemoteAuthenticationService a owl:Class ;
     rdfs:label "Remote Authentication Service" ;
     rdfs:subClassOf :AuthenticationService,
-        :NetworkService ;
+        :NetworkServiceApplicationProcess ;
     :definition "A remote authentication service provides for the authentication of a user across a network (i.e., remotely)." .
 
 :RemoteAuthorizationService a owl:Class ;
@@ -29761,35 +29761,68 @@ When system firmware verification fails a set of predefined responses is typical
 :T0819 a owl:Class ;
     rdfs:label "Exploit Public-Facing Application - ATTACK ICS" ;
     skos:prefLabel "Exploit Public-Facing Application" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :NetworkServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundInternetNetworkTraffic ] ;
     :attack-id "T0819" ;
     :definition "Adversaries may leverage weaknesses to exploit internet-facing software for initial access into an industrial network. Internet-facing software may be user applications, underlying networking implementations, an assets operating system, weak defenses, etc. Targets of this technique may be intentionally exposed for the purpose of remote management and visibility." .
 
 :T0820 a owl:Class ;
     rdfs:label "Exploitation for Evasion - ATTACK ICS" ;
     skos:prefLabel "Exploitation for Evasion" ;
-    rdfs:subClassOf :ATTACKICSEvasionTechnique ;
+    rdfs:subClassOf :ATTACKICSEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessCodeSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :StackFrame ] ;
     :attack-id "T0820" ;
     :definition "Adversaries may exploit a software vulnerability to take advantage of a programming error in a program, service, or within the operating system software or kernel itself to evade detection. Vulnerabilities may exist in software that can be used to disable or circumvent security features." .
 
 :T0821 a owl:Class ;
-    rdfs:label "Modify Controller Tasking - ATTACK ICS" ;
-    skos:prefLabel "Modify Controller Tasking" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:label "Modify controller Tasking - ATTACK ICS" ;
+    skos:prefLabel "Modify controller Tasking" ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlLogicProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTModifyControlProgramCommand ] ;
     :attack-id "T0821" ;
     :definition "Adversaries may modify the tasking of a controller to allow for the execution of their own programs. This can allow an adversary to manipulate the execution flow and behavior of a controller." .
 
 :T0822 a owl:Class ;
     rdfs:label "External Remote Services - ATTACK ICS" ;
     skos:prefLabel "External Remote Services" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Authentication ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundInternetNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkSession ] ;
     :attack-id "T0822" ;
     :definition "Adversaries may leverage external remote services as a point of initial access into your network. These services allow users to connect to internal network resources from external locations. Examples are VPNs, Citrix, and other access mechanisms. Remote service gateways often manage connections and credential authentication for these services. (Citation: Daniel Oakley, Travis Smith, Tripwire)" .
 
 :T0823 a owl:Class ;
     rdfs:label "Graphical User Interface - ATTACK ICS" ;
     skos:prefLabel "Graphical User Interface" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :HMIApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :GraphicalUserInterface ] ;
     :attack-id "T0823" ;
     :definition "Adversaries may attempt to gain access to a machine via a Graphical User Interface (GUI) to enhance execution capabilities. Access to a GUI allows a user to interact with a computer in a more visual manner than a CLI. A GUI allows users to move a cursor and click on interface objects, with a mouse and keyboard as the main input devices, as opposed to just using the keyboard." .
 
