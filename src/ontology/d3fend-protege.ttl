@@ -30150,7 +30150,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0853 a owl:Class ;
     rdfs:label "Scripting - ATTACK ICS" ;
     skos:prefLabel "Scripting" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :attack-id "T0853" ;
     :definition "Adversaries may use scripting languages to execute arbitrary code in the form of a pre-written script or in the form of user-supplied code to an interpreter. Scripting languages are programming languages that differ from compiled languages, in that scripting languages use an interpreter, instead of a compiler. These interpreters read and compile part of the source code just before it is executed, as opposed to compilers, which compile each and every line of code to an executable file. Scripting allows software developers to run their code on any system where the interpreter exists. This way, they can distribute one package, instead of precompiling executables for many different systems. Scripting languages, such as Python, have their interpreters shipped as a default with many Linux distributions." .
 
@@ -30166,7 +30169,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0855 a owl:Class ;
     rdfs:label "Unauthorized Command Message - ATTACK ICS" ;
     skos:prefLabel "Unauthorized Command Message" ;
-    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique ;
+    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTControlCommand ] ;
     :attack-id "T0855" ;
     :definition "Adversaries may send unauthorized command messages to instruct control system assets to perform actions outside of their intended functionality, or without the logical preconditions to trigger their expected function. Command messages are used in ICS networks to give direct instructions to control systems devices. If an adversary can send an unauthorized command message to a control system, then it can instruct the control systems device to perform an action outside the normal bounds of the device's actions. An adversary could potentially instruct a control systems device to perform an action that will cause an [Impact](https://attack.mitre.org/tactics/TA0105). (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
@@ -30174,7 +30180,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Spoof Reporting Message - ATTACK ICS" ;
     skos:prefLabel "Spoof Reporting Message" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
-        :ATTACKICSImpairProcessControlTechnique ;
+        :ATTACKICSImpairProcessControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDiagnosticsMessage ] ;
     :attack-id "T0856" ;
     :definition "Adversaries may spoof reporting messages in control system environments for evasion and to impair process control. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. Reporting messages are important for monitoring the normal operation of a system or identifying important events such as deviations from expected values." .
 
@@ -30182,7 +30191,13 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "System Firmware - ATTACK ICS" ;
     skos:prefLabel "System Firmware" ;
     rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
-        :ATTACKICSPersistenceTechnique ;
+        :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :OTHumanMachineInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "T0857" ;
     :definition "System firmware on modern assets is often designed with an update feature. Older device firmware may be factory installed and require special reprograming equipment. When available, the firmware update feature enables vendors to remotely patch bugs and perform upgrades. Device firmware updates are often delegated to the user and may be done using a software update package. It may also be possible to perform this task over the network." .
 
@@ -30191,6 +30206,12 @@ When system firmware verification fails a set of predefined responses is typical
     skos:prefLabel "Change Operating Mode" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
         :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :OTModeSwitch ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTModifyDeviceOperatingModeCommand ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :OTControllerOperatingMode ] ;
