@@ -30362,7 +30362,13 @@ When system firmware verification fails a set of predefined responses is typical
 :T0869 a owl:Class ;
     rdfs:label "Standard Application Layer Protocol - ATTACK ICS" ;
     skos:prefLabel "Standard Application Layer Protocol" ;
-    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique ;
+    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTProtocolMessage ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OutboundNetworkTraffic ] ;
     :attack-id "T0869" ;
     :definition "Adversaries may establish command and control capabilities over commonly used application layer protocols such as HTTP(S), OPC, RDP, telnet, DNP3, and modbus. These protocols may be used to disguise adversary actions as benign network traffic. Standard protocols may be seen on their associated port or in some cases over a non-standard port.  Adversaries may use these protocols to reach out of the network for command and control, or in some cases to other infected devices within the network." .
 
@@ -30378,7 +30384,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0871 a owl:Class ;
     rdfs:label "Execution through API - ATTACK ICS" ;
     skos:prefLabel "Execution through API" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :attack-id "T0871" ;
     :definition "Adversaries may attempt to leverage Application Program Interfaces (APIs) used for communication between control software and the hardware. Specific functionality is often coded into APIs which can be called by software to engage specific functions on a device or other software." .
 
@@ -30392,7 +30401,13 @@ When system firmware verification fails a set of predefined responses is typical
 :T0873 a owl:Class ;
     rdfs:label "Project File Infection - ATTACK ICS" ;
     skos:prefLabel "Project File Infection" ;
-    rdfs:subClassOf :ATTACKICSPersistenceTechnique ;
+    rdfs:subClassOf :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTChangeControlProgramCommand ] ;
     :attack-id "T0873" ;
     :definition "Adversaries may attempt to infect project files with malicious code. These project files may consist of objects, program organization units, variables such as tags, documentation, and other configurations needed for PLC programs to function. (Citation: Beckhoff) Using built in functions of the engineering software, adversaries may be able to download an infected program to a PLC in the operating environment enabling further [Execution](https://attack.mitre.org/tactics/TA0104) and [Persistence](https://attack.mitre.org/tactics/TA0110) techniques. (Citation: PLCdev)" .
 
@@ -30400,7 +30415,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Hooking - ATTACK ICS" ;
     skos:prefLabel "Hooking" ;
     rdfs:subClassOf :ATTACKICSExecutionTechnique,
-        :ATTACKICSPrivilegeEscalationTechnique ;
+        :ATTACKICSPrivilegeEscalationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessCodeSegment ] ;
     :attack-id "T0874" ;
     :definition "Adversaries may hook into application programming interface (API) functions used by processes to redirect calls for execution and privilege escalation means. Windows processes often leverage these API functions to perform tasks that require reusable system resources. Windows API functions are typically stored in dynamic-link libraries (DLLs) as exported functions. (Citation: Enterprise ATT&CK)" .
 
@@ -30417,7 +30435,13 @@ When system firmware verification fails a set of predefined responses is typical
 :T0877 a owl:Class ;
     rdfs:label "I/O Image - ATTACK ICS" ;
     skos:prefLabel "I/O Image" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadValueCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTLogicVariable ] ;
     :attack-id "T0877" ;
     :definition "Adversaries may seek to capture process values related to the inputs and outputs of a PLC. During the scan cycle, a PLC reads the status of all inputs and stores them in an image table. (Citation: Nanjundaiah, Vaidyanath) The image table is the PLCs internal storage location where values of inputs/outputs for one scan are stored while it executes the user program. After the PLC has solved the entire logic program, it updates the output image table. The contents of this output image table are written to the corresponding output points in I/O Modules." .
 
