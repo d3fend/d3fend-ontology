@@ -30609,28 +30609,76 @@ When system firmware verification fails a set of predefined responses is typical
 :T0892 a owl:Class ;
     rdfs:label "Change Credential - ATTACK ICS" ;
     skos:prefLabel "Change Credential" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Credential ] ;
     :attack-id "T0892" ;
     :definition "Adversaries may modify software and device credentials to prevent operator and responder access. Depending on the device, the modification or addition of this password could prevent any device configuration actions from being accomplished and may require a factory reset or replacement of hardware. These credentials are often built-in features provided by the device vendors as a means to restrict access to management interfaces." .
 
 :T0893 a owl:Class ;
     rdfs:label "Data from Local System - ATTACK ICS" ;
     skos:prefLabel "Data from Local System" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DatabaseFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access;
+            owl:someValuesFrom :ConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTReadCommand ] ;
     :attack-id "T0893" ;
     :definition "Adversaries may target and collect data from local system sources, such as file systems, configuration files, or local databases. This can include sensitive data such as specifications, schematics, or diagrams of control system layouts, devices, and processes." .
 
 :T0894 a owl:Class ;
     rdfs:label "System Binary Proxy Execution - ATTACK ICS" ;
     skos:prefLabel "System Binary Proxy Execution" ;
-    rdfs:subClassOf :ATTACKICSEvasionTechnique ;
+    rdfs:subClassOf :ATTACKICSEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ShellCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateThread ],
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :SharedLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-add ;
+            owl:someValuesFrom :Software ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SystemConfigurationDatabase ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessSegment ] ;
     :attack-id "T0894" ;
     :definition "Adversaries may bypass process and/or signature-based defenses by proxying execution of malicious content with signed, or otherwise trusted, binaries. Binaries used in this technique are often Microsoft-signed files, indicating that they have been either downloaded from Microsoft or are already native in the operating system. (Citation: LOLBAS Project) Binaries signed with trusted digital certificates can typically execute on Windows systems protected by digital signature validation. Several Microsoft signed binaries that are default on Windows installations can be used to proxy execution of other files or commands. Similarly, on Linux systems adversaries may abuse trusted binaries such as split to proxy execution of malicious commands. (Citation: split man page)(Citation: GTFO split)" .
 
 :T0895 a owl:Class ;
     rdfs:label "Autorun Image - ATTACK ICS" ;
     skos:prefLabel "Autorun Image" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0895" ;
     :definition "Adversaries may leverage AutoRun functionality or scripts to execute malicious code. Devices configured to enable AutoRun functionality or legacy operating systems may be susceptible to abuse of these features to run malicious code stored on various forms of removeable media (i.e., USB, Disk Images [.ISO]). Commonly, AutoRun or AutoPlay are disabled in many operating systems configurations to mitigate against this technique. If a device is configured to enable AutoRun or AutoPlay, adversaries may execute code on the device by mounting the removable media to the device, either through physical or virtual means. This may be especially relevant for virtual machine environments where disk images may be dynamically mapped to a guest system on a hypervisor." .
 
