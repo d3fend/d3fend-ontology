@@ -14146,13 +14146,24 @@ Q-learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Q-learning#Deep_Q-l
     rdfs:seeAlso <https://docs.microsoft.com/en-us/windows/security/identity-protection/access-control/local-accounts> .
 
 :DefenseEvasionTechnique a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Defense Evasion Technique" ;
     rdfs:subClassOf :ATTACKEnterpriseTechnique,
         :OffensiveTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enables ;
             owl:someValuesFrom :TA0005 ] ;
+    rdfs:comment "This ATT&CK tactic class was superseded in ATT&CK v19.0 by StealthTechnique and DefenseImpairmentTechnique." ;
     :definition "The adversary is trying to avoid being detected." .
+
+:DefenseImpairmentTechnique a owl:Class ;
+    rdfs:label "Defense Impairment Technique" ;
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :TA0112 ] ;
+    :definition "The adversary is trying to break security mechanisms, pipelines, and tooling so defenders can’t see or trust what’s happening." .
 
 :DefensiveAction a owl:Class ;
     rdfs:label "Defensive Action" ;
@@ -28814,6 +28825,15 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
     :kb-article """## References
 Wolfram MathWorld. (n.d.). Statistics. [Link](https://mathworld.wolfram.com/Statistics.html)""" .
 
+:StealthTechnique a owl:Class ;
+    rdfs:label "Stealth Technique" ;
+    rdfs:subClassOf :ATTACKEnterpriseTechnique,
+        :OffensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :TA0005 ] ;
+    :definition "The adversary is trying to hide and conceal their actions, appearing as normal behavior." .
+
 :Step a owl:Class ;
     rdfs:label "Step" ;
     rdfs:subClassOf :Plan,
@@ -29532,31 +29552,40 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may automate collection of industrial environment information using tools or scripts. This automated collection may leverage native control protocols and tools available in the control systems environment. For example, the OPC protocol may be used to enumerate and gather information. Access to a system or interface with these native protocols may allow collection and enumeration of other attached, communicating servers and devices." .
 
 :T0803 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Block Command Message - ATTACK ICS" ;
     skos:prefLabel "Block Command Message" ;
     rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :blocks ;
             owl:someValuesFrom :OTDeviceConfigurationCommand ] ;
+    rdfs:comment "This technique has been revoked by T1691.001" ;
     :attack-id "T0803" ;
-    :definition "Adversaries may block a command message from reaching its intended target to prevent command execution. In OT networks, command messages are sent to provide instructions to control system devices. A blocked command message can inhibit response functions from correcting a disruption or unsafe condition. (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)  (Citation: Electricity Information Sharing and Analysis Center; SANS Industrial Control Systems March 2016)" .
+    :definition "Adversaries may block a command message from reaching its intended target to prevent command execution. In OT networks, command messages are sent to provide instructions to control system devices. A blocked command message can inhibit response functions from correcting a disruption or unsafe condition. (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)  (Citation: Electricity Information Sharing and Analysis Center; SANS Industrial Control Systems March 2016)" ;
+    rdfs:seeAlso :T1691.001 .
 
 :T0804 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Block Reporting Message - ATTACK ICS" ;
     skos:prefLabel "Block Reporting Message" ;
     rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:comment "This technique has been revoked by T1691.002" ;
     :attack-id "T0804" ;
-    :definition "Adversaries may block or prevent a reporting message from reaching its intended target. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. By blocking these reporting messages, an adversary can potentially hide their actions from an operator." .
+    :definition "Adversaries may block or prevent a reporting message from reaching its intended target. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. By blocking these reporting messages, an adversary can potentially hide their actions from an operator." ;
+    rdfs:seeAlso :T1691.002 .
 
 :T0805 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Block Serial COM - ATTACK ICS" ;
     skos:prefLabel "Block Serial COM" ;
     rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :blocks ;
             owl:someValuesFrom :OTProtocolMessage ] ;
+    rdfs:comment "This technique has been revoked by T1695.001" ;
     :attack-id "T0805" ;
-    :definition "Adversaries may block access to serial COM to prevent instructions or configurations from reaching target devices. Serial Communication ports (COM) allow communication with control system devices. Devices can receive command and configuration messages over such serial COM. Devices also use serial COM to send command and reporting messages. Blocking device serial COM may also block command messages and block reporting messages." .
+    :definition "Adversaries may block access to serial COM to prevent instructions or configurations from reaching target devices. Serial Communication ports (COM) allow communication with control system devices. Devices can receive command and configuration messages over such serial COM. Devices also use serial COM to send command and reporting messages. Blocking device serial COM may also block command messages and block reporting messages." ;
+    rdfs:seeAlso :T1695.001 .
 
 :T0806 a owl:Class ;
     rdfs:label "Brute Force I/O - ATTACK ICS" ;
@@ -29582,11 +29611,11 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :OTEmbeddedComputer ],
         [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :CommandLineInterface ],
-        [ a owl:Restriction ;
             owl:onProperty :may-produce ;
-            owl:someValuesFrom :RemoteTerminalSession ] ;
+            owl:someValuesFrom :RemoteTerminalSession ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CommandLineInterface ] ;
     :attack-id "T0807" ;
     :definition "Adversaries may utilize command-line interfaces (CLIs) to interact with systems and execute commands. CLIs provide a means of interacting with computer systems and are a common feature across many types of platforms and devices within control systems environments. (Citation: Enterprise ATT&CK January 2018) Adversaries may also use CLIs to install and run new software, including malicious tools that may be installed over the course of an operation." .
 
@@ -29635,17 +29664,20 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may target and collect data from information repositories. This can include sensitive data such as specifications, schematics, or diagrams of control system layouts, devices, and processes. Examples of information repositories include reference databases in the process environment, as well as databases in the corporate network that might contain information about the ICS.(Citation: Cybersecurity & Infrastructure Security Agency March 2018)" .
 
 :T0812 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Default Credentials - ATTACK ICS" ;
     skos:prefLabel "Default Credentials" ;
     rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
         [ a owl:Restriction ;
             owl:onProperty :uses ;
-            owl:someValuesFrom :DefaultUserAccount ] ,
+            owl:someValuesFrom :DefaultUserAccount ],
         [ a owl:Restriction ;
             owl:onProperty :uses ;
             owl:someValuesFrom :Password ] ;
+    rdfs:comment "This technique has been revoked by T1694.001" ;
     :attack-id "T0812" ;
-    :definition "Adversaries may leverage manufacturer or supplier set default credentials on control system devices. These default credentials may have administrative permissions and may be necessary for initial configuration of the device. It is general best practice to change the passwords for these accounts as soon as possible, but some manufacturers may have devices that have passwords or usernames that cannot be changed. (Citation: Keith Stouffer May 2015)" .
+    :definition "Adversaries may leverage manufacturer or supplier set default credentials on control system devices. These default credentials may have administrative permissions and may be necessary for initial configuration of the device. It is general best practice to change the passwords for these accounts as soon as possible, but some manufacturers may have devices that have passwords or usernames that cannot be changed. (Citation: Keith Stouffer May 2015)" ;
+    rdfs:seeAlso :T1694.001 .
 
 :T0813 a owl:Class ;
     rdfs:label "Denial of Control - ATTACK ICS" ;
@@ -29839,12 +29871,15 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may modify alarm settings to prevent alerts that may inform operators of their presence or to prevent responses to dangerous and unintended scenarios. Reporting messages are a standard part of data acquisition in control systems. Reporting messages are used as a way to transmit system state information and acknowledgements that specific actions have occurred. These messages provide vital information for the management of a physical process, and keep operators, engineers, and administrators aware of the state of system devices and physical processes." .
 
 :T0839 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Module Firmware - ATTACK ICS" ;
     skos:prefLabel "Module Firmware" ;
     rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
         :ATTACKICSPersistenceTechnique ;
+    rdfs:comment "This technique has been revoked by T1693.002" ;
     :attack-id "T0839" ;
-    :definition "Adversaries may install malicious or vulnerable firmware onto modular hardware devices. Control system devices often contain modular hardware devices. These devices may have their own set of firmware that is separate from the firmware of the main control system equipment." .
+    :definition "Adversaries may install malicious or vulnerable firmware onto modular hardware devices. Control system devices often contain modular hardware devices. These devices may have their own set of firmware that is separate from the firmware of the main control system equipment." ;
+    rdfs:seeAlso :T1693.002 .
 
 :T0840 a owl:Class ;
     rdfs:label "Network Connection Enumeration - ATTACK ICS" ;
@@ -29876,6 +29911,27 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T0843" ;
     :definition "Adversaries may perform a program download to transfer a user program to a controller." .
 
+:T0843.001 a owl:Class ;
+    rdfs:label "Download All - ATTACK ICS" ;
+    skos:prefLabel "Download All" ;
+    rdfs:subClassOf :T0843 ;
+    :attack-id "T0843.001" ;
+    :definition "Adversaries may execute a full program download to a PLC to overwrite the entire PLC program and configuration to deploy a new project or make major changes. This typically requires stopping the PLC and adversely impacting control processes." .
+
+:T0843.002 a owl:Class ;
+    rdfs:label "Online Edit - ATTACK ICS" ;
+    skos:prefLabel "Online Edit" ;
+    rdfs:subClassOf :T0843 ;
+    :attack-id "T0843.002" ;
+    :definition "Adversaries may execute an online edit of a PLC to update parts of an existing program. It does not require stopping the PLC which allows it to continue running during transfer and reconfiguration without interruption to process control. Adversaries may leverage this approach to minimize downtime and evade detection." .
+
+:T0843.003 a owl:Class ;
+    rdfs:label "Program Append - ATTACK ICS" ;
+    skos:prefLabel "Program Append" ;
+    rdfs:subClassOf :T0843 ;
+    :attack-id "T0843.003" ;
+    :definition "Adversaries may execute a program append to a PLC to update parts of an existing program. It may or may not require stopping the PLC which may allow it to continue running during transfer and reconfiguration without interruption to process control. Adversaries may leverage this approach to minimize downtime and evade detection." .
+
 :T0844 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Program Organization Units - ATTACK ICS" ;
@@ -29899,6 +29955,27 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
     :attack-id "T0846" ;
     :definition "Adversaries may attempt to get a listing of other systems by IP address, hostname, or other logical identifier on a network that may be used for subsequent Lateral Movement or Discovery techniques. Functionality could exist within adversary tools to enable this, but utilities available on the operating system or vendor software could also be used. (Citation: Enterprise ATT&CK January 2018)" .
+
+:T0846.001 a owl:Class ;
+    rdfs:label "Port Scan - ATTACK ICS" ;
+    skos:prefLabel "Port Scan" ;
+    rdfs:subClassOf :T0846 ;
+    :attack-id "T0846.001" ;
+    :definition "Adversaries may perform a port scan on a system, device, or network to identify live hosts, enumerate open ports and running services, identify operating systems, and map out the network.(Citation: NIST SP 800-82r3) The results of a port scan may inform adversary [Discovery](https://attack.mitre.org/tactics/TA0102), [Lateral Movement](https://attack.mitre.org/tactics/TA0109), and vulnerability exploitation decisions ([Exploitation for Evasion](https://attack.mitre.org/techniques/T0820), [Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T0890), [Exploitation of Remote Services](https://attack.mitre.org/techniques/T0866))." .
+
+:T0846.002 a owl:Class ;
+    rdfs:label "Broadcast Discovery - ATTACK ICS" ;
+    skos:prefLabel "Broadcast Discovery" ;
+    rdfs:subClassOf :T0846 ;
+    :attack-id "T0846.002" ;
+    :definition "Adversaries may perform broadcast discovery requests to enumerate systems and devices on a network. Broadcast discovery works by one system or device sending messages to all systems and devices on a network (or subnet) and then waiting for a response. If a response is received that means the system or device that responded is live and can communicate over that protocol. Adversaries may leverage different protocols supported on the network for sending broadcast messages." .
+
+:T0846.003 a owl:Class ;
+    rdfs:label "Multicast Discovery - ATTACK ICS" ;
+    skos:prefLabel "Multicast Discovery" ;
+    rdfs:subClassOf :T0846 ;
+    :attack-id "T0846.003" ;
+    :definition "Adversaries may perform multicast discovery requests which is when one system or device sends messages to all systems and devices in a pre-defined group on a network (or subnet) and then waits for a response. If a response is received that means the system or device that responded is live and can communicate over that protocol.  Multicast discovery tends to be stealthier than broadcast discovery because every system or device on the network (or subnet) is not being messaged." .
 
 :T0847 a owl:Class ;
     rdfs:label "Replication Through Removable Media - ATTACK ICS" ;
@@ -29962,27 +30039,36 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may perform serial connection enumeration to gather situational awareness after gaining access to devices in the OT network. Control systems devices often communicate to each other via various types of serial communication mediums. These serial communications are used to facilitate informational communication, as well as commands.  Serial Connection Enumeration differs from I/O Module Discovery, as I/O modules are auxiliary systems to the main system, and devices that are connected via serial connection are normally discrete systems." .
 
 :T0855 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Unauthorized Command Message - ATTACK ICS" ;
     skos:prefLabel "Unauthorized Command Message" ;
     rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique ;
+    rdfs:comment "This technique has been revoked by T1692.001" ;
     :attack-id "T0855" ;
-    :definition "Adversaries may send unauthorized command messages to instruct control system assets to perform actions outside of their intended functionality, or without the logical preconditions to trigger their expected function. Command messages are used in ICS networks to give direct instructions to control systems devices. If an adversary can send an unauthorized command message to a control system, then it can instruct the control systems device to perform an action outside the normal bounds of the device's actions. An adversary could potentially instruct a control systems device to perform an action that will cause an [Impact](https://attack.mitre.org/tactics/TA0105). (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
+    :definition "Adversaries may send unauthorized command messages to instruct control system assets to perform actions outside of their intended functionality, or without the logical preconditions to trigger their expected function. Command messages are used in ICS networks to give direct instructions to control systems devices. If an adversary can send an unauthorized command message to a control system, then it can instruct the control systems device to perform an action outside the normal bounds of the device's actions. An adversary could potentially instruct a control systems device to perform an action that will cause an [Impact](https://attack.mitre.org/tactics/TA0105). (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" ;
+    rdfs:seeAlso :T1692.001 .
 
 :T0856 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Spoof Reporting Message - ATTACK ICS" ;
     skos:prefLabel "Spoof Reporting Message" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
         :ATTACKICSImpairProcessControlTechnique ;
+    rdfs:comment "This technique has been revoked by T1692.002" ;
     :attack-id "T0856" ;
-    :definition "Adversaries may spoof reporting messages in control system environments for evasion and to impair process control. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. Reporting messages are important for monitoring the normal operation of a system or identifying important events such as deviations from expected values." .
+    :definition "Adversaries may spoof reporting messages in control system environments for evasion and to impair process control. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. Reporting messages are important for monitoring the normal operation of a system or identifying important events such as deviations from expected values." ;
+    rdfs:seeAlso :T1692.002 .
 
 :T0857 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "System Firmware - ATTACK ICS" ;
     skos:prefLabel "System Firmware" ;
     rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
         :ATTACKICSPersistenceTechnique ;
+    rdfs:comment "This technique has been revoked by T1693.001" ;
     :attack-id "T0857" ;
-    :definition "System firmware on modern assets is often designed with an update feature. Older device firmware may be factory installed and require special reprograming equipment. When available, the firmware update feature enables vendors to remotely patch bugs and perform upgrades. Device firmware updates are often delegated to the user and may be done using a software update package. It may also be possible to perform this task over the network." .
+    :definition "System firmware on modern assets is often designed with an update feature. Older device firmware may be factory installed and require special reprograming equipment. When available, the firmware update feature enables vendors to remotely patch bugs and perform upgrades. Device firmware updates are often delegated to the user and may be done using a software update package. It may also be possible to perform this task over the network." ;
+    rdfs:seeAlso :T1693.001 .
 
 :T0858 a owl:Class ;
     rdfs:label "Change Operating Mode - ATTACK ICS" ;
@@ -30104,6 +30190,13 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T0873" ;
     :definition "Adversaries may attempt to infect project files with malicious code. These project files may consist of objects, program organization units, variables such as tags, documentation, and other configurations needed for PLC programs to function. (Citation: Beckhoff) Using built in functions of the engineering software, adversaries may be able to download an infected program to a PLC in the operating environment enabling further [Execution](https://attack.mitre.org/tactics/TA0104) and [Persistence](https://attack.mitre.org/tactics/TA0110) techniques. (Citation: PLCdev)" .
 
+:T0873.001 a owl:Class ;
+    rdfs:label "Siemens Project File Format - ATTACK ICS" ;
+    skos:prefLabel "Siemens Project File Format" ;
+    rdfs:subClassOf :T0873 ;
+    :attack-id "T0873.001" ;
+    :definition "Adversaries may infect Siemens PLC project files (i.e., Step 7, WinCC, etc.) to achieve [Execution](https://attack.mitre.org/tactics/TA0104), [Persistence](https://attack.mitre.org/tactics/TA0110), and [Lateral Movement](https://attack.mitre.org/tactics/TA0109) objectives. Adversaries may modify an existing project file or bring their own project files into the environment.(Citation: Nicolas Falliere, Liam O Murchu, Eric Chien February 2011)" .
+
 :T0874 a owl:Class ;
     rdfs:label "Hooking - ATTACK ICS" ;
     skos:prefLabel "Hooking" ;
@@ -30223,12 +30316,15 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may exploit software vulnerabilities in an attempt to elevate privileges. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. Security constructs such as permission levels will often hinder access to information and use of certain techniques, so adversaries will likely need to perform privilege escalation to include use of software exploitation to circumvent those restrictions. (Citation: The MITRE Corporation)" .
 
 :T0891 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Hardcoded Credentials - ATTACK ICS" ;
     skos:prefLabel "Hardcoded Credentials" ;
     rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
         :ATTACKICSPersistenceTechnique ;
+    rdfs:comment "This technique has been revoked by T1694.002" ;
     :attack-id "T0891" ;
-    :definition "Adversaries may leverage credentials that are hardcoded in software or firmware to gain an unauthorized interactive user session to an asset. Examples credentials that may be hardcoded in an asset include:" .
+    :definition "Adversaries may leverage credentials that are hardcoded in software or firmware to gain an unauthorized interactive user session to an asset. Examples credentials that may be hardcoded in an asset include:" ;
+    rdfs:seeAlso :T1694.002 .
 
 :T0892 a owl:Class ;
     rdfs:label "Change Credential - ATTACK ICS" ;
@@ -30419,7 +30515,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1006 a owl:Class ;
     rdfs:label "Direct Volume Access" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :Volume ] ;
@@ -30450,7 +30546,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1009 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Binary Padding" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1027.001" ;
     :attack-id "T1009" ;
     :definition "Adversaries can use binary padding to add junk data and change the on-disk representation of malware without affecting the functionality or behavior of the binary. This will often increase the size of the binary beyond what some security tools are capable of handling due to file size limitations." ;
@@ -30507,7 +30603,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1014 a owl:Class ;
     rdfs:label "Rootkit" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :BootSector ],
@@ -30729,7 +30825,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1027 a owl:Class ;
     rdfs:label "Obfuscated Files or Information" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1027" ;
     :definition "Adversaries may attempt to make an executable or file difficult to discover or analyze by encrypting, encoding, or otherwise obfuscating its contents on the system or in transit. This is common behavior that can be used across different platforms and the network to evade defenses." .
 
@@ -30851,6 +30947,12 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1027.017" ;
     :definition "Adversaries may smuggle data and files past content filters by hiding malicious payloads inside of seemingly benign SVG files.(Citation: Trustwave SVG Smuggling 2025) SVGs, or Scalable Vector Graphics, are vector-based image files constructed using XML. As such, they can legitimately include `<script>` tags that enable adversaries to include malicious JavaScript payloads. However, SVGs may appear less suspicious to users than other types of executable files, as they are often treated as image files." .
 
+:T1027.018 a owl:Class ;
+    rdfs:label "Invisible Unicode" ;
+    rdfs:subClassOf :T1027 ;
+    :attack-id "T1027.018" ;
+    :definition "Adversaries may abuse invisible or non-printing Unicode characters to conceal malicious content within files, scripts, or text. By inserting characters that do not visibly render, adversaries may hide data, alter how content is interpreted, or make malicious code appear as benign text or whitespace. Adversaries may encode these malicious payloads, using binary, Base64, or custom schemes, to be reconstructed at runtime through scripting features such as [JavaScript](https://attack.mitre.org/techniques/T1059/007) Proxy traps, `eval()`, or other dynamic execution methods. This technique enables adversaries to evade visual inspection and basic static analysis by hiding malicious encoded content in innocuous text.(Citation: PUAs Unicode - Eriksen)(Citation: Tycoon2FA - Unicode)(Citation: Unicode - Veracode)" .
+
 :T1028 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Windows Remote Management" ;
@@ -30941,7 +31043,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1036 a owl:Class ;
     rdfs:label "Masquerading" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1036" ;
     :definition "Adversaries may attempt to manipulate features of their artifacts to make them appear legitimate or benign to users and/or security tools. Masquerading occurs when the name or location of an object, legitimate or malicious, is manipulated or abused for the sake of evading defenses and observation. This may include manipulating file metadata, tricking users into misidentifying the file type, and giving legitimate task or service names." .
 
@@ -31100,9 +31202,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1038 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "DLL Search Order Hijacking" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1574.001" ;
     :attack-id "T1038" ;
     :definition "Windows systems use a common method to look for required DLLs to load into a program. (Citation: Microsoft DLL Search) Adversaries may take advantage of the Windows DLL search order and programs that ambiguously specify DLLs to gain privilege escalation and persistence. " ;
@@ -31169,7 +31271,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1045 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Software Packing" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1027.002" ;
     :attack-id "T1045" ;
     :definition "Software packing is a method of compressing or encrypting an executable. Packing an executable changes the file signature in an attempt to avoid signature-based detection. Most decompression techniques decompress the executable code in memory." ;
@@ -31347,7 +31449,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1054 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Indicator Blocking" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1562.006" ;
     :attack-id "T1054" ;
     :definition "An adversary may attempt to block indicators or events typically captured by sensors from being gathered and analyzed. This could include maliciously redirecting (Citation: Microsoft Lamin Sept 2017) or even disabling host-based sensors, such as Event Tracing for Windows (ETW),(Citation: Microsoft About Event Tracing 2018) by tampering settings that control the collection and flow of event telemetry. (Citation: Medium Event Tracing Tampering 2018) These settings may be stored on the system in configuration files and/or in the Registry as well as being accessible via administrative utilities such as [PowerShell](https://attack.mitre.org/techniques/T1086) or [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047)." ;
@@ -31355,8 +31457,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1055 a owl:Class ;
     rdfs:label "Process Injection" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     :attack-id "T1055" ;
     :definition "Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges. Process injection is a method of executing arbitrary code in the address space of a separate live process. Running code in the context of another process may allow access to the process's memory, system/network resources, and possibly elevated privileges. Execution via process injection may also evade detection from security products since the execution is masked under a legitimate process." .
 
@@ -31668,8 +31770,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1064 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Scripting" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "**This technique has been deprecated. Please use [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) where appropriate.**" ;
     :attack-id "T1064" ;
     :definition "**This technique has been deprecated. Please use [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059) where appropriate.**" .
@@ -31686,7 +31788,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1066 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Indicator Removal from Tools" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1027.005" ;
     :attack-id "T1066" ;
     :definition "If a malicious tool is detected and quarantined or otherwise curtailed, an adversary may be able to determine why the malicious tool was detected (the indicator), modify the tool by removing the indicator, and use the updated version that is no longer detected by the target's defensive systems or subsequent targets that may use similar systems." ;
@@ -31742,27 +31844,33 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1070 a owl:Class ;
     rdfs:label "Indicator Removal" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1070" ;
     :definition "Adversaries may delete or modify artifacts generated within systems to remove evidence of their presence or hinder defenses. Various artifacts may be created by an adversary or something that can be attributed to an adversary’s actions. Typically these artifacts are used as defensive indicators related to monitored events, such as strings from downloaded files, logs that are generated from user actions, and other data analyzed by defenders. Location, format, and type of artifact (such as command or login history) are often specific to each platform." .
 
 :T1070.001 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Clear Windows Event Logs" ;
     rdfs:subClassOf :T1070,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :EventLog ] ;
+    rdfs:comment "This technique has been revoked by T1685.005" ;
     :attack-id "T1070.001" ;
-    :definition "Adversaries may clear Windows Event Logs to hide the activity of an intrusion. Windows Event Logs are a record of a computer's alerts and notifications. There are three system-defined sources of events: System, Application, and Security, with five event types: Error, Warning, Information, Success Audit, and Failure Audit." .
+    :definition "Adversaries may clear Windows Event Logs to hide the activity of an intrusion. Windows Event Logs are a record of a computer's alerts and notifications. There are three system-defined sources of events: System, Application, and Security, with five event types: Error, Warning, Information, Success Audit, and Failure Audit." ;
+    rdfs:seeAlso :T1685.005 .
 
 :T1070.002 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Clear Linux or Mac System Logs" ;
     rdfs:subClassOf :T1070,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :OperatingSystemLogFile ] ;
+    rdfs:comment "This technique has been revoked by T1685.006" ;
     :attack-id "T1070.002" ;
-    :definition "Adversaries may clear system logs to hide evidence of an intrusion. macOS and Linux both keep track of system or user-initiated actions via system logs. The majority of native system logging is stored under the <code>/var/log/</code> directory. Subfolders in this directory categorize logs by their related functions, such as:(Citation: Linux Logs)" .
+    :definition "Adversaries may clear system logs to hide evidence of an intrusion. macOS and Linux both keep track of system or user-initiated actions via system logs. The majority of native system logging is stored under the <code>/var/log/</code> directory. Subfolders in this directory categorize logs by their related functions, such as:(Citation: Linux Logs)" ;
+    rdfs:seeAlso :T1685.006 .
 
 :T1070.003 a owl:Class ;
     rdfs:label "Clear Command History" ;
@@ -31904,7 +32012,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1073 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "DLL Side-Loading" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1574.002" ;
     :attack-id "T1073" ;
     :definition "Programs may specify DLLs that are loaded at runtime. Programs that improperly or vaguely specify a required DLL may be open to a vulnerability in which an unintended DLL is loaded. Side-loading vulnerabilities specifically occur when Windows Side-by-Side (WinSxS) manifests (Citation: MSDN Manifests) are not explicit enough about characteristics of the DLL to be loaded. Adversaries may take advantage of a legitimate program that is vulnerable to side-loading to load a malicious DLL. (Citation: Stewart 2014)" ;
@@ -31969,10 +32077,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1078 a owl:Class ;
     rdfs:label "Valid Accounts" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :InitialAccessTechnique,
+    rdfs:subClassOf :InitialAccessTechnique,
         :PersistenceTechnique,
         :PrivilegeEscalationTechnique,
+        :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :Authentication ],
@@ -32084,8 +32192,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1085 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Rundll32" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.011" ;
     :attack-id "T1085" ;
     :definition "The rundll32.exe program can be called to execute an arbitrary binary. Adversaries may take advantage of this functionality to proxy execution of code to avoid triggering security tools that may not monitor execution of the rundll32.exe process because of whitelists or false positives from Windows using rundll32.exe for normal operations." ;
@@ -32144,8 +32252,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1088 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Bypass User Account Control" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1548.002" ;
     :attack-id "T1088" ;
     :definition "Windows User Account Control (UAC) allows a program to elevate its privileges to perform a task under administrator-level permissions by prompting the user for confirmation. The impact to the user ranges from denying the operation under high enforcement to allowing the user to perform the action if they are in the local administrators group and click through the prompt or allowing them to enter an administrator password to complete the action. (Citation: TechNet How UAC Works)" ;
@@ -32154,7 +32262,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1089 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Disabling Security Tools" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1562.001" ;
     :attack-id "T1089" ;
     :definition "Adversaries may disable security tools to avoid possible detection of their tools and activities. This can take the form of killing security software or event logging processes, deleting Registry keys so that tools do not start at run time, or other methods to interfere with security scanning or event reporting." ;
@@ -32224,7 +32332,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1093 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Process Hollowing" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1055.012" ;
     :attack-id "T1093" ;
     :definition "Process hollowing occurs when a process is created in a suspended state then its memory is unmapped and replaced with malicious code. Similar to [Process Injection](https://attack.mitre.org/techniques/T1055), execution of the malicious code is masked under a legitimate process and may evade defenses and detection analysis. (Citation: Leitch Hollowing) (Citation: Elastic Process Injection July 2017)" ;
@@ -32251,7 +32359,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1096 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "NTFS File Attributes" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1564.004" ;
     :attack-id "T1096" ;
     :definition "Every New Technology File System (NTFS) formatted partition contains a Master File Table (MFT) that maintains a record for every file/directory on the partition. (Citation: SpectorOps Host-Based Jul 2017) Within MFT entries are file attributes, (Citation: Microsoft NTFS File Attributes Aug 2010) such as Extended Attributes (EA) and Data [known as Alternate Data Streams (ADSs) when more than one Data attribute is present], that can be used to store arbitrary data (and even complete files). (Citation: SpectorOps Host-Based Jul 2017) (Citation: Microsoft File Streams) (Citation: MalwareBytes ADS July 2015) (Citation: Microsoft ADS Mar 2014)" ;
@@ -32333,7 +32441,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1099 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Timestomp" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1070.006" ;
     :attack-id "T1099" ;
     :definition "Adversaries may take actions to hide the deployment of new, or modification of existing files to obfuscate their activities. Timestomping is a technique that modifies the timestamps of a file (the modify, access, create, and change times), often to mimic files that are in the same folder. This is done, for example, on files that have been modified or created by the adversary so that they do not appear conspicuous to forensic investigators or file analysis tools. Timestomping may be used along with file name [Masquerading](https://attack.mitre.org/techniques/T1036) to hide malware and tools. (Citation: WindowsIR Anti-Forensic Techniques)" ;
@@ -32425,7 +32533,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1107 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "File Deletion" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1070.004" ;
     :attack-id "T1107" ;
     :definition "Adversaries may delete files left behind by the actions of their intrusion activity. Malware, tools, or other non-native files dropped or created on a system by an adversary may leave traces to indicate to what was done within a network and how. Removal of these files can occur during an intrusion, or as part of a post-intrusion process to minimize the adversary's footprint." ;
@@ -32434,8 +32542,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1108 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Redundant Access" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :StealthTechnique ;
     rdfs:comment "**This technique has been deprecated. Please use [Create Account](https://attack.mitre.org/techniques/T1136), [Web Shell](https://attack.mitre.org/techniques/T1505/003), and [External Remote Services](https://attack.mitre.org/techniques/T1133) where appropriate.**" ;
     :attack-id "T1108" ;
     :definition "**This technique has been deprecated. Please use [Create Account](https://attack.mitre.org/techniques/T1136), [Web Shell](https://attack.mitre.org/techniques/T1505/003), and [External Remote Services](https://attack.mitre.org/techniques/T1133) where appropriate.**" .
@@ -32443,8 +32551,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1109 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Component Firmware" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1542.002" ;
     :attack-id "T1109" ;
     :definition "Some adversaries may employ sophisticated means to compromise computer components and install malicious firmware that will execute adversary code outside of the operating system and main system firmware or BIOS. This technique may be similar to [System Firmware](https://attack.mitre.org/techniques/T1019) but conducted upon other system components that may not have the same capability or level of integrity checking. Malicious device firmware could provide both a persistent level of access to systems despite potential typical failures to maintain access and hard disk re-images, as well as a way to evade host software-based defenses and integrity checks." ;
@@ -32524,7 +32632,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1112 a owl:Class ;
     rdfs:label "Modify Registry" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :DefenseImpairmentTechnique,
         :PersistenceTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
@@ -32592,7 +32700,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1116 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Code Signing" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1553.002" ;
     :attack-id "T1116" ;
     :definition "Code signing provides a level of authenticity on a binary from the developer and a guarantee that the binary has not been tampered with. (Citation: Wikipedia Code Signing) However, adversaries are known to use code signing certificates to masquerade malware and tools as legitimate binaries (Citation: Janicab). The certificates used during an operation may be created, forged, or stolen by the adversary. (Citation: Securelist Digital Certificates) (Citation: Symantec Digital Certificates)" ;
@@ -32601,8 +32709,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1117 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Regsvr32" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.010" ;
     :attack-id "T1117" ;
     :definition "Regsvr32.exe is a command-line program used to register and unregister object linking and embedding controls, including dynamic link libraries (DLLs), on Windows systems. Regsvr32.exe can be used to execute arbitrary binaries. (Citation: Microsoft Regsvr32)" ;
@@ -32611,8 +32719,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1118 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "InstallUtil" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.004" ;
     :attack-id "T1118" ;
     :definition "InstallUtil is a command-line utility that allows for installation and uninstallation of resources by executing specific installer components specified in .NET binaries. (Citation: MSDN InstallUtil) InstallUtil is located in the .NET directories on a Windows system: <code>C:\\Windows\\Microsoft.NET\\Framework\\v<version>\\InstallUtil.exe</code> and <code>C:\\Windows\\Microsoft.NET\\Framework64\\v<version>\\InstallUtil.exe</code>. InstallUtil.exe is digitally signed by Microsoft." ;
@@ -32637,8 +32745,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1121 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Regsvcs/Regasm" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.009" ;
     :attack-id "T1121" ;
     :definition "Regsvcs and Regasm are Windows command-line utilities that are used to register .NET Component Object Model (COM) assemblies. Both are digitally signed by Microsoft. (Citation: MSDN Regsvcs) (Citation: MSDN Regasm)" ;
@@ -32647,8 +32755,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1122 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Component Object Model Hijacking" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1546.015" ;
     :attack-id "T1122" ;
     :definition "The Component Object Model (COM) is a system within Windows to enable interaction between software components through the operating system. (Citation: Microsoft Component Object Model) Adversaries can use this system to insert malicious code that can be executed in place of legitimate software through hijacking the COM references and relationships as a means for persistence. Hijacking a COM object requires a change in the Windows Registry to replace a reference to a legitimate system component which may cause that component to not work when executed. When that system component is executed through normal system operation the adversary's code will be executed instead. (Citation: GDATA COM Hijacking) An adversary is likely to hijack objects that are used frequently enough to maintain a consistent level of persistence, but are unlikely to break noticeable functionality within the system as to avoid system instability that could lead to detection." ;
@@ -32690,7 +32798,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1126 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Network Share Connection Removal" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1070.005" ;
     :attack-id "T1126" ;
     :definition "Adversaries may remove share connections that are no longer useful in order to clean up traces of their operation. Windows shared drive and [Windows Admin Shares](https://attack.mitre.org/techniques/T1077) connections can be removed when no longer needed. [Net](https://attack.mitre.org/software/S0039) is an example utility that can be used to remove network share connections with the <code>net use \\\\system\\share /delete</code> command. (Citation: Technet Net Use)" ;
@@ -32698,7 +32806,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1127 a owl:Class ;
     rdfs:label "Trusted Developer Utilities Proxy Execution" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     :attack-id "T1127" ;
     :definition "Adversaries may take advantage of trusted developer utilities to proxy execution of malicious payloads. There are many utilities used for software development related tasks that can be used to execute code in various forms to assist in development, debugging, and reverse engineering.(Citation: engima0x3 DNX Bypass)(Citation: engima0x3 RCSI Bypass)(Citation: Exploit Monday WinDbg)(Citation: LOLBAS Tracker) These utilities may often be signed with legitimate certificates that allow them to execute on a system and proxy execution of malicious code through a trusted process that effectively bypasses application control solutions." .
 
@@ -32745,7 +32854,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1130 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Install Root Certificate" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1553.004" ;
     :attack-id "T1130" ;
     :definition "Root certificates are used in public key cryptography to identify a root certificate authority (CA). When a root certificate is installed, the system or application will trust certificates in the root's chain of trust that have been signed by the root certificate. (Citation: Wikipedia Root Certificate) Certificates are commonly used for establishing secure TLS/SSL communications within a web browser. When a user attempts to browse a website that presents a certificate that is not trusted an error message will be displayed to warn the user of the security risk. Depending on the security settings, the browser may not allow the user to establish a connection to the website." ;
@@ -32799,8 +32908,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1134 a owl:Class ;
     rdfs:label "Access Token Manipulation" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     :attack-id "T1134" ;
     :definition "Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token." .
 
@@ -32994,7 +33103,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1140 a owl:Class ;
     rdfs:label "Deobfuscate/Decode Files or Information" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :invokes ;
             owl:someValuesFrom :CreateProcess ],
@@ -33031,7 +33140,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1143 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Hidden Window" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1564.003" ;
     :attack-id "T1143" ;
     :definition "Adversaries may implement hidden windows to conceal malicious activity from the plain sight of users. In some cases, windows that would typically be displayed when an application carries out an operation can be hidden. This may be utilized by system administrators to avoid disrupting user work environments when carrying out administrative tasks. Adversaries may abuse operating system functionality to hide otherwise visible windows from users so as not to alert the user to adversary activity on the system." ;
@@ -33040,7 +33149,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1144 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Gatekeeper Bypass" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1553.001" ;
     :attack-id "T1144" ;
     :definition "In macOS and OS X, when applications or programs are downloaded from the internet, there is a special attribute set on the file called <code>com.apple.quarantine</code>. This attribute is read by Apple's Gatekeeper defense program at execution time and provides a prompt to the user to allow or deny execution. " ;
@@ -33058,7 +33167,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1146 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Clear Command History" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1070.003" ;
     :attack-id "T1146" ;
     :definition "In addition to clearing system logs, an adversary may clear the command history of a compromised account to conceal the actions undertaken during an intrusion. macOS and Linux both keep track of the commands users type in their terminal so that users can retrace what they've done. These logs can be accessed in a few different ways. While logged in, this command history is tracked in a file pointed to by the environment variable <code>HISTFILE</code>. When a user logs off a system, this information is flushed to a file in the user's home directory called <code>~/.bash_history</code>. The benefit of this is that it allows users to go back to commands they've used before in different sessions. Since everything typed on the command-line is saved, passwords passed in on the command line are also saved. Adversaries can abuse this by searching these files for cleartext passwords. Additionally, adversaries can use a variety of methods to prevent their own commands from appear in these logs such as <code>unset HISTFILE</code>, <code>export HISTFILESIZE=0</code>, <code>history -c</code>, <code>rm ~/.bash_history</code>." ;
@@ -33067,7 +33176,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1147 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Hidden Users" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1564.002" ;
     :attack-id "T1147" ;
     :definition "Every user account in macOS has a userID associated with it. When creating a user, you can specify the userID for that account. There is a property value in <code>/Library/Preferences/com.apple.loginwindow</code> called <code>Hide500Users</code> that prevents users with userIDs 500 and lower from appearing at the login screen. By using the [Create Account](https://attack.mitre.org/techniques/T1136) technique with a userID under 500 and enabling this property (setting it to Yes), an adversary can hide their user accounts much more easily: <code>sudo dscl . -create /Users/username UniqueID 401</code> (Citation: Cybereason OSX Pirrit)." ;
@@ -33076,7 +33185,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1148 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "HISTCONTROL" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1562.003" ;
     :attack-id "T1148" ;
     :definition "The <code>HISTCONTROL</code> environment variable keeps track of what should be saved by the <code>history</code> command and eventually into the <code>~/.bash_history</code> file when a user logs out. This setting can be configured to ignore commands that start with a space by simply setting it to \"ignorespace\". <code>HISTCONTROL</code> can also be set to ignore duplicate commands by setting it to \"ignoredups\". In some Linux systems, this is set by default to \"ignoreboth\" which covers both of the previous examples. This means that “ ls” will not be saved, but “ls” would be saved by history. <code>HISTCONTROL</code> does not exist by default on macOS, but can be set by the user and will be respected. Adversaries can use this to operate without leaving traces by simply prepending a space to all of their terminal commands." ;
@@ -33085,7 +33194,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1149 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "LC_MAIN Hijacking" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "**This technique has been deprecated and should no longer be used.**" ;
     :attack-id "T1149" ;
     :definition "**This technique has been deprecated and should no longer be used.**" .
@@ -33093,9 +33202,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1150 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Plist Modification" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1547.011" ;
     :attack-id "T1150" ;
     :definition "Property list (plist) files contain all of the information that macOS and OS X uses to configure applications and services. These files are UTF-8 encoded and formatted like XML documents via a series of keys surrounded by < >. They detail when programs should execute, file paths to the executables, program arguments, required OS permissions, and many others. plists are located in certain locations depending on their purpose such as <code>/Library/Preferences</code> (which execute with elevated privileges) and <code>~/Library/Preferences</code> (which execute with a user's privileges). " ;
@@ -33104,8 +33213,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1151 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Space after Filename" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1036.006" ;
     :attack-id "T1151" ;
     :definition "Adversaries can hide a program's true filetype by changing the extension of a file. With certain file types (specifically this does not work with .app extensions), appending a space to the end of a filename will change how the file is processed by the operating system. For example, if there is a Mach-O executable file called evil.bin, when it is double clicked by a user, it will launch Terminal.app and execute. If this file is renamed to evil.txt, then when double clicked by a user, it will launch with the default text editing application (not executing the binary). However, if the file is renamed to \"evil.txt \" (note the space at the end), then when double clicked by a user, the true file type is determined by the OS and handled appropriately and the binary will be executed (Citation: Mac Backdoors are back). " ;
@@ -33114,9 +33223,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1152 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Launchctl" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :PersistenceTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1569.001" ;
     :attack-id "T1152" ;
     :definition "Launchctl controls the macOS launchd process which handles things like launch agents and launch daemons, but can execute other commands or programs itself. Launchctl supports taking subcommands on the command-line, interactively, or even redirected from standard input. By loading or reloading launch agents or launch daemons, adversaries can install persistence or execute changes they made  (Citation: Sofacy Komplex Trojan). Running a command from launchctl is as simple as <code>launchctl submit -l <labelName> -- /Path/to/thing/to/execute \"arg\" \"arg\" \"arg\"</code>. Loading, unloading, or reloading launch agents or launch daemons can require elevated privileges. " ;
@@ -33171,8 +33280,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1158 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Hidden Files and Directories" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1564.001" ;
     :attack-id "T1158" ;
     :definition "To prevent normal users from accidentally changing special files on a system, most operating systems have the concept of a ‘hidden’ file. These files don’t show up when a user browses the file system with a GUI or when using normal commands on the command line. Users must explicitly ask to show the hidden files either via a series of Graphical User Interface (GUI) prompts or with command line switches (<code>dir /a</code> for Windows and <code>ls –a</code> for Linux and macOS)." ;
@@ -33284,8 +33393,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1170 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Mshta" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.005" ;
     :attack-id "T1170" ;
     :definition "Mshta.exe is a utility that executes Microsoft HTML Applications (HTA). HTA files have the file extension <code>.hta</code>. (Citation: Wikipedia HTML Application) HTAs are standalone applications that execute using the same models and technologies of Internet Explorer, but outside of the browser. (Citation: MSDN HTML Applications)" ;
@@ -33399,8 +33508,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1181 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Extra Window Memory Injection" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1055.011" ;
     :attack-id "T1181" ;
     :definition "Before creating a window, graphical Windows-based processes must prescribe to or register a windows class, which stipulate appearance and behavior (via windows procedures, which are functions that handle input/output of data). (Citation: Microsoft Window Classes) Registration of new windows classes can include a request for up to 40 bytes of extra window memory (EWM) to be appended to the allocated memory of each instance of that class. This EWM is intended to store data specific to that window and has specific application programming interface (API) functions to set and get its value. (Citation: Microsoft GetWindowLong function) (Citation: Microsoft SetWindowLong function)" ;
@@ -33419,9 +33528,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1183 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Image File Execution Options Injection" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1546.012" ;
     :attack-id "T1183" ;
     :definition "Image File Execution Options (IFEO) enable a developer to attach a debugger to an application. When a process is created, a debugger present in an application’s IFEO will be prepended to the application’s name, effectively launching the new process under the debugger (e.g., “C:\\dbg\\ntsd.exe -g  notepad.exe”). (Citation: Microsoft Dev Blog IFEO Mar 2010)" ;
@@ -33448,7 +33557,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1186 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Process Doppelgänging" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1055.013" ;
     :attack-id "T1186" ;
     :definition "Windows Transactional NTFS (TxF) was introduced in Vista as a method to perform safe file operations. (Citation: Microsoft TxF) To ensure data integrity, TxF enables only one transacted handle to write to a file at a given time. Until the write handle transaction is terminated, all other handles are isolated from the writer and may only read the committed version of the file that existed at the time the handle was opened. (Citation: Microsoft Basic TxF Concepts) To avoid corruption, TxF performs an automatic rollback if the system or application fails during a write transaction. (Citation: Microsoft Where to use TxF)" ;
@@ -33511,8 +33620,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1191 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "CMSTP" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.003" ;
     :attack-id "T1191" ;
     :definition "The Microsoft Connection Manager Profile Installer (CMSTP.exe) is a command-line program used to install Connection Manager service profiles. (Citation: Microsoft Connection Manager Oct 2009) CMSTP.exe accepts an installation information file (INF) as a parameter and installs a service profile leveraged for remote access connections." ;
@@ -33584,8 +33693,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1196 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Control Panel Items" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.002" ;
     :attack-id "T1196" ;
     :definition "Windows Control Panel items are utilities that allow users to view and adjust computer settings. Control Panel items are registered executable (.exe) or Control Panel (.cpl) files, the latter are actually renamed dynamic-link library (.dll) files that export a CPlApplet function. (Citation: Microsoft Implementing CPL) (Citation: TrendMicro CPL Malware Jan 2014) Control Panel items can be executed directly from the command line, programmatically via an application programming interface (API) call, or by simply double-clicking the file. (Citation: Microsoft Implementing CPL) (Citation: TrendMicro CPL Malware Jan 2014) (Citation: TrendMicro CPL Malware Dec 2013)" ;
@@ -33593,8 +33702,9 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1197 a owl:Class ;
     rdfs:label "BITS Jobs" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :ExecutionTechnique,
         :PersistenceTechnique,
+        :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
             owl:someValuesFrom :IntranetIPCNetworkTraffic ],
@@ -33610,8 +33720,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1198 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "SIP and Trust Provider Hijacking" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1553.003" ;
     :attack-id "T1198" ;
     :definition "In user mode, Windows Authenticode (Citation: Microsoft Authenticode) digital signatures are used to verify a file's origin and integrity, variables that may be used to establish trust in signed code (ex: a driver with a valid Microsoft signature may be handled as safe). The signature validation process is handled via the WinVerifyTrust application programming interface (API) function,  (Citation: Microsoft WinVerifyTrust) which accepts an inquiry and coordinates with the appropriate trust provider, which is responsible for validating parameters of a signature. (Citation: SpectorOps Subverting Trust Sept 2017)" ;
@@ -33647,7 +33757,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1202 a owl:Class ;
     rdfs:label "Indirect Command Execution" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1202" ;
     :definition "Adversaries may abuse utilities that allow for command execution to bypass security restrictions that limit the use of command-line interpreters. Various Windows utilities may be used to execute commands, possibly without invoking [cmd](https://attack.mitre.org/software/S0106). For example, [Forfiles](https://attack.mitre.org/software/S0193), the Program Compatibility Assistant (pcalua.exe), components of the Windows Subsystem for Linux (WSL), as well as other utilities may invoke the execution of programs and commands from a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059), Run window, or via scripts. (Citation: VectorSec ForFiles Aug 2017) (Citation: Evi1cg Forfiles Nov 2017)" .
 
@@ -33711,8 +33821,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1205 a owl:Class ;
     rdfs:label "Traffic Signaling" ;
     rdfs:subClassOf :CommandAndControlTechnique,
-        :DefenseEvasionTechnique,
         :PersistenceTechnique,
+        :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :NetworkTraffic ] ;
@@ -33745,7 +33855,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1207 a owl:Class ;
     rdfs:label "Rogue Domain Controller" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :DefenseImpairmentTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :SystemConfigurationDatabase ],
@@ -33792,8 +33902,8 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may exploit remote services to gain unauthorized access to internal systems once inside of a network. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. A common goal for post-compromise exploitation of remote services is for lateral movement to enable access to a remote system." .
 
 :T1211 a owl:Class ;
-    rdfs:label "Exploitation for Defense Evasion" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:label "Exploitation for Stealth" ;
+    rdfs:subClassOf :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :ProcessCodeSegment ],
@@ -33895,7 +34005,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1216 a owl:Class ;
     rdfs:label "System Script Proxy Execution" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1216" ;
     :definition "Adversaries may use trusted scripts, often signed with certificates, to proxy the execution of malicious files. Several Microsoft signed scripts that have been downloaded from Microsoft or are default on Windows installations can be used to proxy execution of other files.(Citation: LOLBAS Project) This behavior may be abused by adversaries to execute malicious files that could bypass application control and signature validation on systems.(Citation: GitHub Ultimate AppLocker Bypass List)" .
 
@@ -33919,7 +34029,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1218 a owl:Class ;
     rdfs:label "System Binary Proxy Execution" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1218" ;
     :definition "Adversaries may bypass process and/or signature-based defenses by proxying execution of malicious content with signed, or otherwise trusted, binaries. Binaries used in this technique are often Microsoft-signed files, indicating that they have been either downloaded from Microsoft or are already native in the operating system.(Citation: LOLBAS Project) Binaries signed with trusted digital certificates can typically execute on Windows systems protected by digital signature validation. Several Microsoft signed binaries that are default on Windows installations can be used to proxy execution of other files or commands." .
 
@@ -34084,7 +34194,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1220 a owl:Class ;
     rdfs:label "XSL Script Processing" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :adds ;
             owl:someValuesFrom :File ],
@@ -34099,13 +34209,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1221 a owl:Class ;
     rdfs:label "Template Injection" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1221" ;
     :definition "Adversaries may create or modify references in user document templates to conceal malicious code or force authentication attempts. For example, Microsoft’s Office Open XML (OOXML) specification defines an XML-based format for Office documents (.docx, xlsx, .pptx) to replace older binary formats (.doc, .xls, .ppt). OOXML files are packed together ZIP archives compromised of various XML files, referred to as parts, containing properties that collectively define how a document is rendered.(Citation: Microsoft Open XML July 2017)" .
 
 :T1222 a owl:Class ;
     rdfs:label "File and Directory Permissions Modification" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :DefenseImpairmentTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :AccessControlConfiguration ] ;
@@ -34113,13 +34223,13 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may modify file or directory permissions/attributes to evade access control lists (ACLs) and access protected files.(Citation: Hybrid Analysis Icacls1 June 2018)(Citation: Hybrid Analysis Icacls2 May 2018) File and directory permissions are commonly managed by ACLs configured by the file or directory owner, or users with the appropriate permissions. File and directory ACL implementations vary by platform, but generally explicitly designate which users or groups can perform which actions (read, write, execute, etc.)." .
 
 :T1222.001 a owl:Class ;
-    rdfs:label "Windows File and Directory Permissions Modification" ;
+    rdfs:label "Windows Permissions" ;
     rdfs:subClassOf :T1222 ;
     :attack-id "T1222.001" ;
     :definition "Adversaries may modify file or directory permissions/attributes to evade access control lists (ACLs) and access protected files.(Citation: Hybrid Analysis Icacls1 June 2018)(Citation: Hybrid Analysis Icacls2 May 2018) File and directory permissions are commonly managed by ACLs configured by the file or directory owner, or users with the appropriate permissions. File and directory ACL implementations vary by platform, but generally explicitly designate which users or groups can perform which actions (read, write, execute, etc.)." .
 
 :T1222.002 a owl:Class ;
-    rdfs:label "Linux and Mac File and Directory Permissions Modification" ;
+    rdfs:label "Linux and Mac Permissions" ;
     rdfs:subClassOf :T1222 ;
     :attack-id "T1222.002" ;
     :definition "Adversaries may modify file or directory permissions/attributes to evade access control lists (ACLs) and access protected files.(Citation: Hybrid Analysis Icacls1 June 2018)(Citation: Hybrid Analysis Icacls2 May 2018) File and directory permissions are commonly managed by ACLs configured by the file or directory owner, or users with the appropriate permissions. File and directory ACL implementations vary by platform, but generally explicitly designate which users or groups can perform which actions (read, write, execute, etc.)." .
@@ -34127,8 +34237,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1223 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Compiled HTML File" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1218.001" ;
     :attack-id "T1223" ;
     :definition "Compiled HTML files (.chm) are commonly distributed as part of the Microsoft HTML Help system. CHM files are compressed compilations of various content such as HTML documents, images, and scripting/web related programming languages such VBA, JScript, Java, and ActiveX. (Citation: Microsoft HTML Help May 2018) CHM content is displayed using underlying components of the Internet Explorer browser (Citation: Microsoft HTML Help ActiveX) loaded by the HTML Help executable program (hh.exe). (Citation: Microsoft HTML Help Executable Program)" ;
@@ -34600,9 +34710,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Abuse Accessibility Features - ATTACK Mobile" ;
     skos:prefLabel "Abuse Accessibility Features" ;
     rdfs:subClassOf :ATTACKMobileCollectionTechnique,
-        :ATTACKMobileCredentialAccessTechnique,
-        :ATTACKMobileDefenseEvasionTechnique,
-        :ATTACKMobileImpactTechnique ;
+        :ATTACKMobileCredentialAccessTechnique ;
     rdfs:comment "**This technique has been deprecated. Please use [Input Capture](https://attack.mitre.org/techniques/T1417), [Input Injection](https://attack.mitre.org/techniques/T1516), and [Input Prompt](https://attack.mitre.org/techniques/T1411) where appropriate.**" ;
     :attack-id "T1453" ;
     :definition "**This technique has been deprecated. Please use [Input Capture](https://attack.mitre.org/techniques/T1417), [Input Injection](https://attack.mitre.org/techniques/T1516), and [Input Prompt](https://attack.mitre.org/techniques/T1411) where appropriate.**" .
@@ -34731,7 +34839,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1480 a owl:Class ;
     rdfs:label "Execution Guardrails" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1480" ;
     :definition "Adversaries may use execution guardrails to constrain execution or actions based on adversary supplied and environment specific conditions that are expected to be present on the target. Guardrails ensure that a payload only executes against an intended target and reduces collateral damage from an adversary’s campaign.(Citation: FireEye Kevin Mandia Guardrails) Values an adversary can provide about a target system or environment to use as guardrails may include specific network share names, attached physical devices, files, joined Active Directory (AD) domains, and local/external IP addresses.(Citation: FireEye Outlook Dec 2019)" .
 
@@ -34792,7 +34900,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1484 a owl:Class ;
     rdfs:label "Domain or Tenant Policy Modification" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :DefenseImpairmentTechnique,
         :PrivilegeEscalationTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
@@ -34961,8 +35069,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1497 a owl:Class ;
     rdfs:label "Virtualization/Sandbox Evasion" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        :StealthTechnique ;
     :attack-id "T1497" ;
     :definition "Adversaries may employ various means to detect and avoid virtualization and analysis environments. This may include changing behaviors based on the results of checks for the presence of artifacts indicative of a virtual machine environment (VME) or sandbox. If the adversary detects a VME, they may alter their malware to disengage from the victim or conceal the core functions of the implant. They may also search for VME artifacts before dropping secondary or additional payloads. Adversaries may use the information learned from [Virtualization/Sandbox Evasion](https://attack.mitre.org/techniques/T1497) during automated discovery to shape follow-on behaviors.(Citation: Deloitte Environment Awareness)" .
 
@@ -35051,7 +35159,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1500 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Compile After Delivery" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1027.004" ;
     :attack-id "T1500" ;
     :definition "Adversaries may attempt to make payloads difficult to discover and analyze by delivering files to victims as uncompiled code. Similar to [Obfuscated Files or Information](https://attack.mitre.org/techniques/T1027), text-based source code files may subvert analysis and scrutiny from protections targeting executables/binaries. These payloads will need to be compiled before execution; typically via native utilities such as csc.exe or GCC/MinGW.(Citation: ClearSky MuddyWater Nov 2018)" ;
@@ -35069,8 +35177,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1502 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Parent PID Spoofing" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PrivilegeEscalationTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1134.004" ;
     :attack-id "T1502" ;
     :definition "Adversaries may spoof the parent process identifier (PPID) of a new process to evade process-monitoring defenses or to elevate privileges. New processes are typically spawned directly from their parent, or calling, process unless explicitly specified. One way of explicitly assigning the PPID of a new process is via the <code>CreateProcess</code> API call, which supports a parameter that defines the PPID to use.(Citation: DidierStevens SelectMyParent Nov 2009) This functionality is used by Windows features such as User Account Control (UAC) to correctly set the PPID after a requested elevated process is spawned by SYSTEM (typically via <code>svchost.exe</code> or <code>consent.exe</code>) rather than the current user context.(Citation: Microsoft UAC Nov 2018)" ;
@@ -35165,8 +35273,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1506 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Web Session Cookie" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :LateralMovementTechnique ;
+    rdfs:subClassOf :LateralMovementTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1550.004" ;
     :attack-id "T1506" ;
     :definition "Adversaries can use stolen session cookies to authenticate to web applications and services. This technique bypasses some multi-factor authentication protocols since the session is already authenticated.(Citation: Pass The Cookie)" ;
@@ -35370,8 +35478,8 @@ When system firmware verification fails a set of predefined responses is typical
 :T1527 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Application Access Token" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :LateralMovementTechnique ;
+    rdfs:subClassOf :LateralMovementTechnique,
+        :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1550.001" ;
     :attack-id "T1527" ;
     :definition "Adversaries may use application access tokens to bypass the typical authentication process and access restricted accounts, information, or services on remote systems. These tokens are typically stolen from users and used in lieu of login credentials." ;
@@ -35432,14 +35540,14 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1535 a owl:Class ;
     rdfs:label "Unused/Unsupported Cloud Regions" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1535" ;
     :definition "Adversaries may create cloud instances in unused geographic service regions in order to evade detection. Access is usually obtained through compromising accounts used to manage cloud infrastructure." .
 
 :T1536 a owl:Class ;
     owl:deprecated true ;
     rdfs:label "Revert Cloud Instance" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     rdfs:comment "This technique has been revoked by T1578.004" ;
     :attack-id "T1536" ;
     :definition "An adversary may revert changes made to a cloud instance after they have performed malicious activities in attempt to evade detection and remove evidence of their presence. In highly virtualized environments, such as cloud-based infrastructure, this may be accomplished by restoring virtual machine (VM) or data storage snapshots through the cloud management dashboard or cloud APIs." ;
@@ -35491,8 +35599,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1542 a owl:Class ;
     rdfs:label "Pre-OS Boot" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique ;
+    rdfs:subClassOf :PersistenceTechnique,
+        :StealthTechnique ;
     :attack-id "T1542" ;
     :definition "Adversaries may abuse Pre-OS Boot mechanisms as a way to establish persistence on a system. During the booting process of a computer, firmware and various startup services are loaded before the operating system. These programs control flow of execution before the operating system takes control.(Citation: Wikipedia Booting)" .
 
@@ -35963,8 +36071,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1548 a owl:Class ;
     rdfs:label "Abuse Elevation Control Mechanism" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :PrivilegeEscalationTechnique ;
     :attack-id "T1548" ;
     :definition "Adversaries may circumvent mechanisms designed to control elevate privileges to gain higher-level permissions. Most modern systems contain native elevation control mechanisms that are intended to limit privileges that a user can perform on a machine. Authorization has to be granted to specific users in order to perform tasks that can be considered of higher risk.(Citation: TechNet How UAC Works)(Citation: sudo man page 2018) An adversary can perform several methods to take advantage of built-in control mechanisms in order to escalate privileges on a system.(Citation: OSX Keydnap malware)(Citation: Fortinet Fareit)" .
 
@@ -36036,8 +36143,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1550 a owl:Class ;
     rdfs:label "Use Alternate Authentication Material" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :LateralMovementTechnique,
+    rdfs:subClassOf :LateralMovementTechnique,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :AuthenticationService ] ;
@@ -36163,7 +36269,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1553 a owl:Class ;
     rdfs:label "Subvert Trust Controls" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
     :attack-id "T1553" ;
     :definition "Adversaries may undermine security controls that will either warn users of untrusted activity or prevent execution of untrusted programs. Operating systems and security products may contain mechanisms to identify programs or websites as possessing some level of trust. Examples of such features would include a program being allowed to run because it is signed by a valid code signing certificate, a program prompting the user with a warning because it has an attribute set from being downloaded from the Internet, or getting an indication that you are about to connect to an untrusted site." .
 
@@ -36290,7 +36396,7 @@ When system firmware verification fails a set of predefined responses is typical
 :T1556 a owl:Class ;
     rdfs:label "Modify Authentication Process" ;
     rdfs:subClassOf :CredentialAccessTechnique,
-        :DefenseEvasionTechnique,
+        :DefenseImpairmentTechnique,
         :PersistenceTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
@@ -36378,7 +36484,7 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may attempt to position themselves between two or more networked devices using an adversary-in-the-middle (AiTM) technique to support follow-on behaviors such as [Network Sniffing](https://attack.mitre.org/techniques/T1040), [Transmitted Data Manipulation](https://attack.mitre.org/techniques/T1565/002), or replay attacks ([Exploitation for Credential Access](https://attack.mitre.org/techniques/T1212)). By abusing features of common networking protocols that can determine the flow of network traffic (e.g. ARP, DNS, LLMNR, etc.), adversaries may force a device to communicate through an adversary controlled system so they can collect information or perform additional actions.(Citation: Rapid7 MiTM Basics)" .
 
 :T1557.001 a owl:Class ;
-    rdfs:label "LLMNR/NBT-NS Poisoning and SMB Relay" ;
+    rdfs:label "Name Resolution Poisoning and SMB Relay" ;
     rdfs:subClassOf :T1557,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
@@ -36559,21 +36665,28 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may corrupt or wipe the disk data structures on a hard drive necessary to boot a system; targeting specific critical systems or in large numbers in a network to interrupt availability to system and network resources." .
 
 :T1562 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Impair Defenses" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
+    rdfs:comment "This technique has been revoked by T1685" ;
     :attack-id "T1562" ;
-    :definition "Adversaries may maliciously modify components of a victim environment in order to hinder or disable defensive mechanisms. This not only involves impairing preventative defenses, such as firewalls and anti-virus, but also detection capabilities that defenders can use to audit activity and identify malicious behavior. This may also span both native defenses as well as supplemental capabilities installed by users and administrators." .
+    :definition "Adversaries may maliciously modify components of a victim environment in order to hinder or disable defensive mechanisms. This not only involves impairing preventative defenses, such as firewalls and anti-virus, but also detection capabilities that defenders can use to audit activity and identify malicious behavior. This may also span both native defenses as well as supplemental capabilities installed by users and administrators." ;
+    rdfs:seeAlso :T1685 .
 
 :T1562.001 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable or Modify Tools" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
             owl:onProperty :disables ;
             owl:someValuesFrom :OperatingSystemProcess ] ;
+    rdfs:comment "This technique has been revoked by T1685" ;
     :attack-id "T1562.001" ;
-    :definition "Adversaries may modify and/or disable security tools to avoid possible detection of their malware/tools and activities. This may take many forms, such as killing security software processes or services, modifying / deleting Registry keys or configuration files so that tools do not operate properly, or other methods to interfere with security tools scanning or reporting information. Adversaries may also disable updates to prevent the latest security patches from reaching tools on victim systems.(Citation: SCADAfence_ransomware)" .
+    :definition "Adversaries may modify and/or disable security tools to avoid possible detection of their malware/tools and activities. This may take many forms, such as killing security software processes or services, modifying / deleting Registry keys or configuration files so that tools do not operate properly, or other methods to interfere with security tools scanning or reporting information. Adversaries may also disable updates to prevent the latest security patches from reaching tools on victim systems.(Citation: SCADAfence_ransomware)" ;
+    rdfs:seeAlso :T1685 .
 
 :T1562.002 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable Windows Event Logging" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
@@ -36582,10 +36695,13 @@ When system firmware verification fails a set of predefined responses is typical
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :OperatingSystemConfigurationComponent ] ;
+    rdfs:comment "This technique has been revoked by T1685.001" ;
     :attack-id "T1562.002" ;
-    :definition "Adversaries may disable Windows event logging to limit data that can be leveraged for detections and audits. Windows event logs record user and system activity such as login attempts, process creation, and much more.(Citation: Windows Log Events) This data is used by security tools and analysts to generate detections." .
+    :definition "Adversaries may disable Windows event logging to limit data that can be leveraged for detections and audits. Windows event logs record user and system activity such as login attempts, process creation, and much more.(Citation: Windows Log Events) This data is used by security tools and analysts to generate detections." ;
+    rdfs:seeAlso :T1685.001 .
 
 :T1562.003 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Impair Command History Logging" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
@@ -36597,34 +36713,46 @@ When system firmware verification fails a set of predefined responses is typical
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :ProcessEnvironmentVariable ] ;
+    rdfs:comment "This technique has been revoked by T1690" ;
     :attack-id "T1562.003" ;
-    :definition "Adversaries may impair command history logging to hide commands they run on a compromised system. Various command interpreters keep track of the commands users type in their terminal so that users can retrace what they've done." .
+    :definition "Adversaries may impair command history logging to hide commands they run on a compromised system. Various command interpreters keep track of the commands users type in their terminal so that users can retrace what they've done." ;
+    rdfs:seeAlso :T1690 .
 
 :T1562.004 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable or Modify System Firewall" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :SystemFirewallConfiguration ] ;
+    rdfs:comment "This technique has been revoked by T1686" ;
     :attack-id "T1562.004" ;
-    :definition "Adversaries may disable or modify system firewalls in order to bypass controls limiting network usage. Changes could be disabling the entire mechanism as well as adding, deleting, or modifying particular rules. This can be done numerous ways depending on the operating system, including via command-line, editing Windows Registry keys, and Windows Control Panel." .
+    :definition "Adversaries may disable or modify system firewalls in order to bypass controls limiting network usage. Changes could be disabling the entire mechanism as well as adding, deleting, or modifying particular rules. This can be done numerous ways depending on the operating system, including via command-line, editing Windows Registry keys, and Windows Control Panel." ;
+    rdfs:seeAlso :T1686 .
 
 :T1562.006 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Indicator Blocking" ;
     rdfs:subClassOf :T1562 ;
+    rdfs:comment "This technique has been revoked by T1685" ;
     :attack-id "T1562.006" ;
-    :definition "An adversary may attempt to block indicators or events typically captured by sensors from being gathered and analyzed. This could include maliciously redirecting(Citation: Microsoft Lamin Sept 2017) or even disabling host-based sensors, such as Event Tracing for Windows (ETW)(Citation: Microsoft About Event Tracing 2018), by tampering settings that control the collection and flow of event telemetry.(Citation: Medium Event Tracing Tampering 2018) These settings may be stored on the system in configuration files and/or in the Registry as well as being accessible via administrative utilities such as [PowerShell](https://attack.mitre.org/techniques/T1059/001) or [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047)." .
+    :definition "An adversary may attempt to block indicators or events typically captured by sensors from being gathered and analyzed. This could include maliciously redirecting(Citation: Microsoft Lamin Sept 2017) or even disabling host-based sensors, such as Event Tracing for Windows (ETW)(Citation: Microsoft About Event Tracing 2018), by tampering settings that control the collection and flow of event telemetry.(Citation: Medium Event Tracing Tampering 2018) These settings may be stored on the system in configuration files and/or in the Registry as well as being accessible via administrative utilities such as [PowerShell](https://attack.mitre.org/techniques/T1059/001) or [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047)." ;
+    rdfs:seeAlso :T1685 .
 
 :T1562.007 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable or Modify Cloud Firewall" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :CloudConfiguration ] ;
+    rdfs:comment "This technique has been revoked by T1686.001" ;
     :attack-id "T1562.007" ;
-    :definition "Adversaries may disable or modify a firewall within a cloud environment to bypass controls that limit access to cloud resources. Cloud firewalls are separate from system firewalls that are described in [Disable or Modify System Firewall](https://attack.mitre.org/techniques/T1562/004)." .
+    :definition "Adversaries may disable or modify a firewall within a cloud environment to bypass controls that limit access to cloud resources. Cloud firewalls are separate from system firewalls that are described in [Disable or Modify System Firewall](https://attack.mitre.org/techniques/T1562/004)." ;
+    rdfs:seeAlso :T1686.001 .
 
 :T1562.008 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable or Modify Cloud Logs" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
@@ -36633,11 +36761,14 @@ When system firmware verification fails a set of predefined responses is typical
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :CloudConfiguration ] ;
+    rdfs:comment "This technique has been revoked by T1685.002" ;
     :attack-id "T1562.008" ;
     :comment "We have modelled the definition not the name; this technique modifies the cloud logging configuration but not tampering with the logs themselves." ;
-    :definition "An adversary may disable or modify cloud logging capabilities and integrations to limit what data is collected on their activities and avoid detection. Cloud environments allow for collection and analysis of audit and application logs that provide insight into what activities a user does within the environment. If an adversary has sufficient permissions, they can disable or modify logging to avoid detection of their activities." .
+    :definition "An adversary may disable or modify cloud logging capabilities and integrations to limit what data is collected on their activities and avoid detection. Cloud environments allow for collection and analysis of audit and application logs that provide insight into what activities a user does within the environment. If an adversary has sufficient permissions, they can disable or modify logging to avoid detection of their activities." ;
+    rdfs:seeAlso :T1685.002 .
 
 :T1562.009 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Safe Mode Boot" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
@@ -36649,41 +36780,55 @@ When system firmware verification fails a set of predefined responses is typical
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :EndpointHealthBeacon ] ;
+    rdfs:comment "This technique has been revoked by T1688" ;
     :attack-id "T1562.009" ;
-    :definition "Adversaries may abuse Windows safe mode to disable endpoint defenses. Safe mode starts up the Windows operating system with a limited set of drivers and services. Third-party security software such as endpoint detection and response (EDR) tools may not start after booting Windows in safe mode. There are two versions of safe mode: Safe Mode and Safe Mode with Networking. It is possible to start additional services after a safe mode boot.(Citation: Microsoft Safe Mode)(Citation: Sophos Snatch Ransomware 2019)" .
+    :definition "Adversaries may abuse Windows safe mode to disable endpoint defenses. Safe mode starts up the Windows operating system with a limited set of drivers and services. Third-party security software such as endpoint detection and response (EDR) tools may not start after booting Windows in safe mode. There are two versions of safe mode: Safe Mode and Safe Mode with Networking. It is possible to start additional services after a safe mode boot.(Citation: Microsoft Safe Mode)(Citation: Sophos Snatch Ransomware 2019)" ;
+    rdfs:seeAlso :T1688 .
 
 :T1562.010 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Downgrade Attack" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
             owl:someValuesFrom :LegacySystem ] ;
+    rdfs:comment "This technique has been revoked by T1689" ;
     :attack-id "T1562.010" ;
-    :definition "Adversaries may downgrade or use a version of system features that may be outdated, vulnerable, and/or does not support updated security controls. Downgrade attacks typically take advantage of a system’s backward compatibility to force it into less secure modes of operation." .
+    :definition "Adversaries may downgrade or use a version of system features that may be outdated, vulnerable, and/or does not support updated security controls. Downgrade attacks typically take advantage of a system’s backward compatibility to force it into less secure modes of operation." ;
+    rdfs:seeAlso :T1689 .
 
 :T1562.011 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Spoof Security Alerting" ;
     rdfs:subClassOf :T1562 ;
+    rdfs:comment "This technique has been revoked by T1685.003" ;
     :attack-id "T1562.011" ;
-    :definition "Adversaries may spoof security alerting from tools, presenting false evidence to impair defenders’ awareness of malicious activity.(Citation: BlackBasta) Messages produced by defensive tools contain information about potential security events as well as the functioning status of security software and the system. Security reporting messages are important for monitoring the normal operation of a system and identifying important events that can signal a security incident." .
+    :definition "Adversaries may spoof security alerting from tools, presenting false evidence to impair defenders’ awareness of malicious activity.(Citation: BlackBasta) Messages produced by defensive tools contain information about potential security events as well as the functioning status of security software and the system. Security reporting messages are important for monitoring the normal operation of a system and identifying important events that can signal a security incident." ;
+    rdfs:seeAlso :T1685.003 .
 
 :T1562.012 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable or Modify Linux Audit System" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
             owl:onProperty :disables ;
             owl:someValuesFrom :KernelAPISensor ] ;
+    rdfs:comment "This technique has been revoked by T1685.004" ;
     :attack-id "T1562.012" ;
-    :definition "Adversaries may disable or modify the Linux audit system to hide malicious activity and avoid detection. Linux admins use the Linux Audit system to track security-relevant information on a system. The Linux Audit system operates at the kernel-level and maintains event logs on application and system activity such as process, network, file, and login events based on pre-configured rules." .
+    :definition "Adversaries may disable or modify the Linux audit system to hide malicious activity and avoid detection. Linux admins use the Linux Audit system to track security-relevant information on a system. The Linux Audit system operates at the kernel-level and maintains event logs on application and system activity such as process, network, file, and login events based on pre-configured rules." ;
+    rdfs:seeAlso :T1685.004 .
 
 :T1562.013 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disable or Modify Network Device Firewall" ;
     rdfs:subClassOf :T1562,
         [ a owl:Restriction ;
             owl:onProperty :disables ;
             owl:someValuesFrom :Firewall ] ;
+    rdfs:comment "This technique has been revoked by T1686.002" ;
     :attack-id "T1562.013" ;
-    :definition "Adversaries may disable network device-based firewall mechanisms entirely or add, delete, or modify particular rules in order to bypass controls limiting network usage." .
+    :definition "Adversaries may disable network device-based firewall mechanisms entirely or add, delete, or modify particular rules in order to bypass controls limiting network usage." ;
+    rdfs:seeAlso :T1686.002 .
 
 :T1563 a owl:Class ;
     rdfs:label "Remote Service Session Hijacking" ;
@@ -36717,7 +36862,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1564 a owl:Class ;
     rdfs:label "Hide Artifacts" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1564" ;
     :definition "Adversaries may attempt to hide artifacts associated with their behaviors to evade detection. Operating systems may have features to hide various artifacts, such as important system files and administrative task execution, to avoid disrupting user work environments and prevent users from changing files or features on the system. Adversaries may abuse these features to hide artifacts such as files, directories, user accounts, or other system activity to evade detection.(Citation: Sofacy Komplex Trojan)(Citation: Cybereason OSX Pirrit)(Citation: MalwareBytes ADS July 2015)" .
 
@@ -37097,9 +37242,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1574 a owl:Class ;
     rdfs:label "Hijack Execution Flow" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :PersistenceTechnique,
-        :PrivilegeEscalationTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        :StealthTechnique ;
     :attack-id "T1574" ;
     :definition "Adversaries may execute their own malicious payloads by hijacking the way operating systems run programs. Hijacking execution flow can be for the purposes of persistence, since this hijacked execution may reoccur over time. Adversaries may also use these mechanisms to elevate privileges or evade defenses, such as application control or other restrictions on execution." .
 
@@ -37255,7 +37399,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1578 a owl:Class ;
     rdfs:label "Modify Cloud Compute Infrastructure" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
     :attack-id "T1578" ;
     :definition "An adversary may attempt to modify a cloud account's compute service infrastructure to evade defenses. A modification to the compute service infrastructure can include the creation, deletion, or modification of one or more components such as compute instances, virtual machines, and snapshots." .
 
@@ -37846,7 +37990,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1599 a owl:Class ;
     rdfs:label "Network Boundary Bridging" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
     :attack-id "T1599" ;
     :definition "Adversaries may bridge network boundaries by compromising perimeter network devices or internal devices responsible for network segmentation. Breaching these devices may enable an adversary to bypass restrictions on traffic routing that otherwise separate trusted and untrusted networks." .
 
@@ -37858,7 +38002,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1600 a owl:Class ;
     rdfs:label "Weaken Encryption" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
     :attack-id "T1600" ;
     :definition "Adversaries may compromise a network device’s encryption capability in order to bypass encryption that would otherwise protect data communications. (Citation: Cisco Synful Knock Evolution)" .
 
@@ -37876,7 +38020,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1601 a owl:Class ;
     rdfs:label "Modify System Image" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
     :attack-id "T1601" ;
     :definition "Adversaries may make changes to the operating system of embedded network devices to weaken defenses and provide new capabilities for themselves.  On such devices, the operating systems are typically monolithic and most of the device functionality and capabilities are contained within a single file." .
 
@@ -38009,8 +38153,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1610 a owl:Class ;
     rdfs:label "Deploy Container" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique ;
     :attack-id "T1610" ;
     :definition "Adversaries may deploy a container into an environment to facilitate execution or evade defenses. In some cases, adversaries may deploy a new container to execute processes associated with a particular image or deployment, such as processes that execute or download malware. In others, an adversary may deploy a new container configured without network rules, user limitations, etc. to bypass existing defenses within the environment. In Kubernetes environments, an adversary may attempt to deploy a privileged or vulnerable container into a specific node in order to [Escape to Host](https://attack.mitre.org/techniques/T1611) and access other containers running on the node. (Citation: AppSecco Kubernetes Namespace Breakout 2020)" .
 
@@ -38022,7 +38165,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1612 a owl:Class ;
     rdfs:label "Build Image on Host" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1612" ;
     :definition "Adversaries may build a container image directly on a host to bypass defenses that monitor for the retrieval of malicious images from a public registry. A remote <code>build</code> request may be sent to the Docker API that includes a Dockerfile that pulls a vanilla base image, such as alpine, from a public or local registry and then builds a custom image upon it.(Citation: Docker Build Image)" .
 
@@ -38096,7 +38239,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1620 a owl:Class ;
     rdfs:label "Reflective Code Loading" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :StealthTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :ProcessSegment ] ;
@@ -38114,8 +38257,8 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1622 a owl:Class ;
     rdfs:label "Debugger Evasion" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
-        :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        :StealthTechnique ;
     :attack-id "T1622" ;
     :definition "Adversaries may employ various means to detect and avoid debuggers. Debuggers are typically used by defenders to trace and/or analyze the execution of potential malware payloads.(Citation: ProcessHacker Github)" .
 
@@ -38479,7 +38622,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1647 a owl:Class ;
     rdfs:label "Plist File Modification" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
     :attack-id "T1647" ;
     :definition "Adversaries may modify property list files (plist files) to enable other malicious activity, while also potentially evading and bypassing system defenses. macOS applications use plist files, such as the <code>info.plist</code> file, to store properties and configuration settings that inform the operating system how to handle the application at runtime. Plist files are structured metadata in key-value pairs formatted in XML based on Apple's Core Foundation DTD. Plist files can be saved in text or binary format.(Citation: fileinfo plist file description) " .
 
@@ -38552,10 +38695,13 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may match or approximate the name or location of legitimate files or resources when naming/placing them. This is done for the sake of evading defenses and observation. This may be done by giving artifacts the name and icon of a legitimate, trusted application (i.e., Settings), or using a package name that matches legitimate, trusted applications (i.e., `com.google.android.gm`)." .
 
 :T1656 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Impersonation" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
+    rdfs:comment "This technique has been revoked by T1684.001" ;
     :attack-id "T1656" ;
-    :definition "Adversaries may impersonate a trusted person or organization in order to persuade and trick a target into performing some action on their behalf. For example, adversaries may communicate with victims (via [Phishing for Information](https://attack.mitre.org/techniques/T1598), [Phishing](https://attack.mitre.org/techniques/T1566), or [Internal Spearphishing](https://attack.mitre.org/techniques/T1534)) while impersonating a known sender such as an executive, colleague, or third-party vendor. Established trust can then be leveraged to accomplish an adversary’s ultimate goals, possibly against multiple victims." .
+    :definition "Adversaries may impersonate a trusted person or organization in order to persuade and trick a target into performing some action on their behalf. For example, adversaries may communicate with victims (via [Phishing for Information](https://attack.mitre.org/techniques/T1598), [Phishing](https://attack.mitre.org/techniques/T1566), or [Internal Spearphishing](https://attack.mitre.org/techniques/T1534)) while impersonating a known sender such as an executive, colleague, or third-party vendor. Established trust can then be leveraged to accomplish an adversary’s ultimate goals, possibly against multiple victims." ;
+    rdfs:seeAlso :T1684.001 .
 
 :T1657 a owl:Class ;
     rdfs:label "Financial Theft" ;
@@ -38621,7 +38767,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1666 a owl:Class ;
     rdfs:label "Modify Cloud Resource Hierarchy" ;
-    rdfs:subClassOf :DefenseEvasionTechnique,
+    rdfs:subClassOf :DefenseImpairmentTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :CloudConfiguration ] ;
@@ -38660,10 +38806,13 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may achieve persistence by leveraging OAuth application integrations in a software-as-a-service environment. Adversaries may create a custom application, add a legitimate application into the environment, or even co-opt an existing integration to achieve malicious ends.(Citation: Push Security SaaS Persistence 2022)(Citation: SaaS Attacks GitHub Evil Twin Integrations)" .
 
 :T1672 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Email Spoofing" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
+    rdfs:comment "This technique has been revoked by T1684.002" ;
     :attack-id "T1672" ;
-    :definition "Adversaries may fake, or spoof, a sender’s identity by modifying the value of relevant email headers in order to establish contact with victims under false pretenses.(Citation: Proofpoint TA427 April 2024) In addition to actual email content, email headers (such as the FROM header, which contains the email address of the sender) may also be modified. Email clients display these headers when emails appear in a victim's inbox, which may cause modified emails to appear as if they were from the spoofed entity." .
+    :definition "Adversaries may fake, or spoof, a sender’s identity by modifying the value of relevant email headers in order to establish contact with victims under false pretenses.(Citation: Proofpoint TA427 April 2024) In addition to actual email content, email headers (such as the FROM header, which contains the email address of the sender) may also be modified. Email clients display these headers when emails appear in a victim's inbox, which may cause modified emails to appear as if they were from the spoofed entity." ;
+    rdfs:seeAlso :T1684.002 .
 
 :T1673 a owl:Class ;
     rdfs:label "Virtual Machine Discovery" ;
@@ -38699,13 +38848,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1678 a owl:Class ;
     rdfs:label "Delay Execution" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1678" ;
     :definition "Adversaries may employ various time-based methods to evade detection and analysis. These techniques often exploit system clocks, delays, or timing mechanisms to obscure malicious activity, blend in with benign activity, and avoid scrutiny. Adversaries can perform this behavior within virtualization/sandbox environments or natively on host systems." .
 
 :T1679 a owl:Class ;
     rdfs:label "Selective Exclusion" ;
-    rdfs:subClassOf :DefenseEvasionTechnique ;
+    rdfs:subClassOf :StealthTechnique ;
     :attack-id "T1679" ;
     :definition "Adversaries may intentionally exclude certain files, folders, directories, file types, or system components from encryption or tampering during a ransomware or malicious payload execution. Some file extensions that adversaries may avoid encrypting include `.dll`, `.exe`, and `.lnk`.(Citation: Palo Alto Unit 42 Medusa Group Medusa Ransomware January 2024)" .
 
@@ -38720,6 +38869,254 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ReconnaissanceTechnique ;
     :attack-id "T1681" ;
     :definition "Threat actors may seek information/indicators from closed or open threat intelligence sources gathered about their own campaigns, as well as those conducted by other adversaries that may align with their target industries, capabilities/objectives, or other operational concerns. These reports may include descriptions of behavior, detailed breakdowns of attacks, atomic indicators such as malware hashes or IP addresses, timelines of a group’s activity, and more. Adversaries may change their behavior when planning their future operations." .
+
+:T1682 a owl:Class ;
+    rdfs:label "Query Public AI Services" ;
+    rdfs:subClassOf :ReconnaissanceTechnique ;
+    :attack-id "T1682" ;
+    :definition "Adversaries may query publicly accessible artificial intelligence (AI) services, such as large language models (LLMs), to support targeting and operations. In addition to searching websites or databases directly (i.e., [Search Open Websites/Domains](https://attack.mitre.org/techniques/T1593)), adversaries may use AI services to synthesize, aggregate, and analyze publicly available information at scale. This may include identifying individuals or organizations to target, researching organizational structures and personnel, identifying technologies used by target organizations, researching business relationships to develop plausible pretexts for [Social Engineering](https://attack.mitre.org/techniques/T1684) approaches, identifying contact information for use in [Phishing](https://attack.mitre.org/techniques/T1566) or [Phishing for Information](https://attack.mitre.org/techniques/T1598), or gathering derogatory or sensitive information about individuals that may be used for extortion or coercion.(Citation: MSFT-AI)(Citation: GTIG AI Threat Tracker)" .
+
+:T1683 a owl:Class ;
+    rdfs:label "Generate Content" ;
+    rdfs:subClassOf :ResourceDevelopmentTechnique ;
+    :attack-id "T1683" ;
+    :definition "Adversaries may create or generate content to support targeting and operations. This content may be used to establish personas, impersonate known individuals or organizations, and support [Social Engineering](https://attack.mitre.org/techniques/T1684), fraud, or influence activities. Written materials, audio, images, video, or other media may be developed and tailored to the target and objective.(Citation: IBM AI-Generated Content)" .
+
+:T1683.001 a owl:Class ;
+    rdfs:label "Written Content" ;
+    rdfs:subClassOf :T1683 ;
+    :attack-id "T1683.001" ;
+    :definition "Adversaries may create or tailor written materials to support targeting and malicious operations. Content may include phishing lures, fraudulent financial communications, fabricated job postings, fabricated employment credentials and documentation, decoy documents, social media persona content, and supporting narratives used to sustain fabricated personas over time.(Citation: GenAI Phishing)(Citation: GTIG AI Threat Tracker) Content may be authored manually, commissioned through third parties, or produced using AI-assisted tools." .
+
+:T1683.002 a owl:Class ;
+    rdfs:label "Audio-Visual Content" ;
+    rdfs:subClassOf :T1683 ;
+    :attack-id "T1683.002" ;
+    :definition "Adversaries may create or manipulate audio, image, and video content to support targeting and malicious operations. Adversaries may also use synthetic voice recordings, real-time altered audio or video during live interactions, fabricated profile photos and identity documents, or video content depicting fabricated or impersonated individuals.(Citation: Nov AI Threat Tracker)" .
+
+:T1684 a owl:Class ;
+    rdfs:label "Social Engineering" ;
+    rdfs:subClassOf :StealthTechnique ;
+    :attack-id "T1684" ;
+    :definition "Adversaries may use social engineering techniques to influence users to take actions that result in unauthorized access, approval of changes, disclosure of sensitive information, or execution of adversary-supplied instructions (i.e., introduction of malicious payloads or software), while minimizing technical indicators." .
+
+:T1684.001 a owl:Class ;
+    rdfs:label "Impersonation" ;
+    rdfs:subClassOf :T1684 ;
+    :attack-id "T1684.001" ;
+    :definition "Adversaries may impersonate a trusted person or organization in order to persuade and trick a target into performing some action on their behalf. For example, adversaries may communicate with victims (via [Phishing for Information](https://attack.mitre.org/techniques/T1598), [Phishing](https://attack.mitre.org/techniques/T1566), or [Internal Spearphishing](https://attack.mitre.org/techniques/T1534)) while impersonating a known sender such as an executive, colleague, or third-party vendor. Established trust can then be leveraged to accomplish an adversary’s ultimate goals, possibly against multiple victims." .
+
+:T1684.002 a owl:Class ;
+    rdfs:label "Email Spoofing" ;
+    rdfs:subClassOf :T1684 ;
+    :attack-id "T1684.002" ;
+    :definition "Adversaries may fake, or spoof, a sender’s identity by modifying the value of relevant email headers in order to establish contact with victims under false pretenses.(Citation: Proofpoint TA427 April 2024) In addition to actual email content, email headers (such as the FROM header, which contains the email address of the sender) may also be modified. Email clients display these headers when emails appear in a victim's inbox, which may cause modified emails to appear as if they were from the spoofed entity." .
+
+:T1685 a owl:Class ;
+    rdfs:label "Disable or Modify Tools" ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    :attack-id "T1685" ;
+    :definition "Adversaries may disable, degrade, or tamper with security tools or applications (e.g., endpoint detection and response (EDR) tools, intrusion detection systems (IDS), antivirus, logging agents, sensors, etc.) to impair or reduce visibility of defensive capabilities. This may include stopping specific services, killing processes, modifying or deleting tool configuration files and Registry keys, or preventing tools from updating. This may also include impairing defenses more broadly by disrupting preventative, detection, and response mechanisms across host, network, and cloud environments.(Citation: SCADAfence_ransomware)" .
+
+:T1685.001 a owl:Class ;
+    rdfs:label "Disable or Modify Windows Event Log" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.001" ;
+    :definition "Adversaries may disable or modify the Windows Event Log to limit data that can be leveraged for detections and audits. Windows Event Log records user and system activity such as login attempts and process creation.(Citation: EventLog_Core_Technologies) This data is used by security tools and analysts to generate detections." .
+
+:T1685.002 a owl:Class ;
+    rdfs:label "Disable or Modify Cloud Log" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.002" ;
+    :definition "An adversary may disable or modify cloud logging capabilities and integrations to limit what data is collected on their activities and avoid detection. Cloud environments allow for collection and analysis of audit and application logs that provide insight into what activities a user does within the environment. If an adversary has sufficient permissions, they can disable or modify logging to avoid detection of their activities." .
+
+:T1685.003 a owl:Class ;
+    rdfs:label "Modify or Spoof Tool UI" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.003" ;
+    :definition "Adversaries may spoof or manipulate security tool user interfaces (UIs) to falsely indicate tools are functioning normally and delay detection and response." .
+
+:T1685.004 a owl:Class ;
+    rdfs:label "Disable or Modify Linux Audit System Log" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.004" ;
+    :definition "Adversaries may disable or modify the Linux Audit system to hide malicious activity and avoid detection. Linux admins use the Linux Audit system to track security-relevant information on a system. The Linux Audit system operates at the kernel-level and maintains event logs on application and system activity such as process, network, file, and login events based on pre-configured rules." .
+
+:T1685.005 a owl:Class ;
+    rdfs:label "Clear Windows Event Logs" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.005" ;
+    :definition "Adversaries may clear Windows Event Logs to hide the activity of an intrusion. Windows Event Logs are a record of a computer's alerts and notifications. There are three system-defined sources of events: System, Application, and Security, with five event types: Error, Warning, Information, Success Audit, and Failure Audit." .
+
+:T1685.006 a owl:Class ;
+    rdfs:label "Clear Linux or Mac System Logs" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.006" ;
+    :definition "Adversaries may clear system logs to hide evidence of an intrusion. macOS and Linux both keep track of system or user-initiated actions via system logs. The majority of native system logging is stored under the `/var/log/` directory. Subfolders in this directory categorize logs by their related functions, such as:(Citation: Linux Logs)" .
+
+:T1686 a owl:Class ;
+    rdfs:label "Disable or Modify System Firewall" ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    :attack-id "T1686" ;
+    :definition "Adversaries may disable or modify host-based or network firewalls to impair defensive mechanisms and enable further action. Once an adversary has gathered sufficient privileges, they can tamper with firewall services, policies, or rule sets to remove restrictions on inbound or outbound traffic. For example, this may include turning off firewall profiles, altering existing rules to permit previously blocked ports or protocols, or adding new rules that create covert communication paths (e.g., adding a new firewall rule for a well-known protocol (such as RDP) using a non-traditional and potentially less securitized port.(Citation: change_rdp_port_conti)" .
+
+:T1686.001 a owl:Class ;
+    rdfs:label "Cloud Firewall" ;
+    rdfs:subClassOf :T1686 ;
+    :attack-id "T1686.001" ;
+    :definition "Adversaries may disable or modify a firewall within a cloud environment to bypass controls that limit access to cloud resources." .
+
+:T1686.002 a owl:Class ;
+    rdfs:label "Network Device Firewall" ;
+    rdfs:subClassOf :T1686 ;
+    :attack-id "T1686.002" ;
+    :definition "Adversaries may disable network device-based firewall mechanisms entirely or add, delete, or modify particular rules in order to bypass controls limiting network usage." .
+
+:T1686.003 a owl:Class ;
+    rdfs:label "Windows Host Firewall" ;
+    rdfs:subClassOf :T1686 ;
+    :attack-id "T1686.003" ;
+    :definition "Adversaries may disable or modify the Windows host firewall to bypass controls limiting network usage. This can include disabling the Windows host firewall entirely, suppressing specific profiles (domain, private, public), or adding, deleting, and modifying firewall rules to allow or restrict traffic.(Citation: Nearest Neighbor Volexity)" .
+
+:T1687 a owl:Class ;
+    rdfs:label "Exploitation for Defense Impairment" ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    :attack-id "T1687" ;
+    :definition "Adversaries may exploit vulnerabilities in security software, infrastructure, or defensive components to degrade, disable, or otherwise continue to impair their ability to prevent, detect, or respond to malicious activity." .
+
+:T1688 a owl:Class ;
+    rdfs:label "Safe Mode Boot" ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    :attack-id "T1688" ;
+    :definition "Adversaries may abuse Windows safe mode to disable endpoint defenses. Safe mode starts up the Windows operating system with a limited set of drivers and services. Third-party security software such as endpoint detection and response (EDR) tools may not start after booting Windows in safe mode. There are two versions of safe mode: Safe Mode and Safe Mode with Networking. It is possible to start additional services after a safe mode boot.(Citation: Microsoft Windows Startup Settings)(Citation: Sophos Safe Mode Boot)" .
+
+:T1689 a owl:Class ;
+    rdfs:label "Downgrade Attack" ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    :attack-id "T1689" ;
+    :definition "Adversaries may downgrade or use a version of system features that may be outdated, vulnerable, and/or does not support updated security controls. Downgrade attacks typically take advantage of a system’s backward compatibility to force it into less secure modes of operation." .
+
+:T1690 a owl:Class ;
+    rdfs:label "Prevent Command History Logging" ;
+    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    :attack-id "T1690" ;
+    :definition "Adversaries may impair command history logging to hide commands they run on a compromised system. Various command interpreters keep track of the commands users type in their terminal so that users can retrace what they have done." .
+
+:T1691 a owl:Class ;
+    rdfs:label "Block Operational Technology Message - ATTACK ICS" ;
+    skos:prefLabel "Block Operational Technology Message" ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    :attack-id "T1691" ;
+    :definition "Adversaries may block messages between systems and devices in an OT/ICS environment to disrupt processes. Messages typically fall into two categories: (1) reporting messages that contain telemetry data about the current state of systems, devices, and processes and (2) command messages that contain instructions to control systems, devices, and processes. Both types of messages are critical for the proper functioning of industrial control processes and failure of the messages to reach their intended destinations could inhibit response functions or create an unsafe condition that could have physical impacts.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)(Citation: Electricity Information Sharing and Analysis Center; SANS Industrial Control Systems March 2016)" .
+
+:T1691.001 a owl:Class ;
+    rdfs:label "Command Message - ATTACK ICS" ;
+    skos:prefLabel "Command Message" ;
+    rdfs:subClassOf :T1691 ;
+    :attack-id "T1691.001" ;
+    :definition "Adversaries may block a command message from reaching its intended target to prevent command execution. In OT networks, command messages are sent to provide instructions to control system devices. A blocked command message can inhibit response functions from correcting a disruption or unsafe condition.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)(Citation: Electricity Information Sharing and Analysis Center; SANS Industrial Control Systems March 2016)" .
+
+:T1691.002 a owl:Class ;
+    rdfs:label "Reporting Message - ATTACK ICS" ;
+    skos:prefLabel "Reporting Message" ;
+    rdfs:subClassOf :T1691 ;
+    :attack-id "T1691.002" ;
+    :definition "Adversaries may block or prevent a reporting message from reaching its intended target. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. By blocking these reporting messages, an adversary can potentially hide their actions from an operator." .
+
+:T1692 a owl:Class ;
+    rdfs:label "Unauthorized Message - ATTACK ICS" ;
+    skos:prefLabel "Unauthorized Message" ;
+    rdfs:subClassOf :ATTACKICSEvasionTechnique,
+        :ATTACKICSImpairProcessControlTechnique ;
+    :attack-id "T1692" ;
+    :definition "Adversaries may send unauthorized messages to ICS systems and devices to evade defenses or manipulate processes. Unauthorized messages can be categorized as either reporting messages that contain telemetry data about the current state of systems, devices, and processes or as command messages which instruct systems and devices on how to operate. By injecting unauthorized messages, adversaries can make it appear as if everything is working correctly when it isn’t, trigger alarms to misdirect personnel or impact processes, and manipulate controls to disrupt processes.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
+
+:T1692.001 a owl:Class ;
+    rdfs:label "Command Message - ATTACK ICS" ;
+    skos:prefLabel "Command Message" ;
+    rdfs:subClassOf :T1692 ;
+    :attack-id "T1692.001" ;
+    :definition "Adversaries may send unauthorized command messages to instruct control system assets to perform actions outside of their intended functionality, or without the logical preconditions to trigger their expected function. Command messages are used in ICS networks to give direct instructions to control systems devices. If an adversary can send an unauthorized command message to a control system, then it can instruct the control systems device to perform an action outside the normal bounds of the device's actions. An adversary could potentially instruct a control systems device to perform an action that will cause an [Impact](https://attack.mitre.org/tactics/TA0105).(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
+
+:T1692.002 a owl:Class ;
+    rdfs:label "Reporting Message - ATTACK ICS" ;
+    skos:prefLabel "Reporting Message" ;
+    rdfs:subClassOf :T1692 ;
+    :attack-id "T1692.002" ;
+    :definition "Adversaries may spoof reporting messages in control system environments for evasion and to impair process control. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. Reporting messages are important for monitoring the normal operation of a system or identifying important events such as deviations from expected values." .
+
+:T1693 a owl:Class ;
+    rdfs:label "Modify Firmware - ATTACK ICS" ;
+    skos:prefLabel "Modify Firmware" ;
+    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
+        :ATTACKICSInhibitResponseFunctionTechnique,
+        :ATTACKICSPersistenceTechnique ;
+    :attack-id "T1693" ;
+    :definition "Firmware is low-level software embedded in hardware that enables systems and devices to function properly and is commonly found in ICS environments. Adversaries may modify firmware on a system or device by installing malicious or vulnerable versions that enable them to achieve objectives such as [Persistence](https://attack.mitre.org/tactics/TA0110), [Impair Process Control](https://attack.mitre.org/tactics/TA0106), and [Inhibit Response Function](https://attack.mitre.org/tactics/TA0107)." .
+
+:T1693.001 a owl:Class ;
+    rdfs:label "System Firmware - ATTACK ICS" ;
+    skos:prefLabel "System Firmware" ;
+    rdfs:subClassOf :T1693 ;
+    :attack-id "T1693.001" ;
+    :definition "System firmware on modern assets is often designed with an update feature. Older device firmware may be factory installed and require special reprograming equipment. When available, the firmware update feature enables vendors to remotely patch bugs and perform upgrades. Device firmware updates are often delegated to the user and may be done using a software update package. It may also be possible to perform this task over the network." .
+
+:T1693.002 a owl:Class ;
+    rdfs:label "Module Firmware - ATTACK ICS" ;
+    skos:prefLabel "Module Firmware" ;
+    rdfs:subClassOf :T1693 ;
+    :attack-id "T1693.002" ;
+    :definition "Adversaries may install malicious or vulnerable firmware onto modular hardware devices. Control system devices often contain modular hardware devices. These devices may have their own set of firmware that is separate from the firmware of the main control system equipment." .
+
+:T1694 a owl:Class ;
+    rdfs:label "Insecure Credentials - ATTACK ICS" ;
+    skos:prefLabel "Insecure Credentials" ;
+    rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
+        :ATTACKICSPersistenceTechnique ;
+    :attack-id "T1694" ;
+    :definition "Adversaries may target insecure credentials as a means to persist on a system or device or move laterally from one system or device to another. Insecure credentials may appear as default credentials which are pre-configured credentials on a system, device, or software that are well-known in documentation or hard-coded credentials which are built into the system, device, or software that cannot be changed or not easily changed because of the impact on control processes.(Citation: NIST SP 800-82r3)(Citation: ICS-ALERT-13-164-01)(Citation: OT IceFall)" .
+
+:T1694.001 a owl:Class ;
+    rdfs:label "Default Credentials - ATTACK ICS" ;
+    skos:prefLabel "Default Credentials" ;
+    rdfs:subClassOf :T1694 ;
+    :attack-id "T1694.001" ;
+    :definition "Adversaries may leverage manufacturer or supplier set default credentials on control system devices. These default credentials may have administrative permissions and may be necessary for initial configuration of the device. It is general best practice to change the passwords for these accounts as soon as possible, but some manufacturers may have devices that have passwords or usernames that cannot be changed.(Citation: Keith Stouffer May 2015)" .
+
+:T1694.002 a owl:Class ;
+    rdfs:label "Hardcoded Credentials - ATTACK ICS" ;
+    skos:prefLabel "Hardcoded Credentials" ;
+    rdfs:subClassOf :T1694 ;
+    :attack-id "T1694.002" ;
+    :definition "Adversaries may leverage credentials that are hardcoded in software or firmware to gain an unauthorized interactive user session to an asset. Examples credentials that may be hardcoded in an asset include:" .
+
+:T1695 a owl:Class ;
+    rdfs:label "Block Communications - ATTACK ICS" ;
+    skos:prefLabel "Block Communications" ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    :attack-id "T1695" ;
+    :definition "Operational technology communications occur over serial COM, Ethernet, Wi-Fi, cellular (4G/5G), and satellite mediums. Adversaries may block communications to prevent reporting messages and command messages from reaching their intended target devices disrupting processes, operations, and causing cyber-physical impacts.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
+
+:T1695.001 a owl:Class ;
+    rdfs:label "Serial COM - ATTACK ICS" ;
+    skos:prefLabel "Serial COM" ;
+    rdfs:subClassOf :T1695 ;
+    :attack-id "T1695.001" ;
+    :definition "Adversaries may block access to serial COM to prevent instructions or configurations from reaching target devices. Serial Communication ports (COM) allow communication with control system devices. Devices can receive command and configuration messages over such serial COM. Devices also use serial COM to send command and reporting messages. Blocking device serial COM may also block command messages and block reporting messages." .
+
+:T1695.002 a owl:Class ;
+    rdfs:label "Ethernet - ATTACK ICS" ;
+    skos:prefLabel "Ethernet" ;
+    rdfs:subClassOf :T1695 ;
+    :attack-id "T1695.002" ;
+    :definition "Adversaries may block access to Ethernet communications to prevent instructions or configurations messages from reaching target systems and devices. Ethernet connections allow for communications between IT and OT systems and devices. Blocking Ethernet communications may also block command and reporting messages.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
+
+:T1695.003 a owl:Class ;
+    rdfs:label "Wi-Fi - ATTACK ICS" ;
+    skos:prefLabel "Wi-Fi" ;
+    rdfs:subClassOf :T1695 ;
+    :attack-id "T1695.003" ;
+    :definition "Adversaries may block access to Wi-Fi communications to prevent messages from reaching target systems and devices. Wi-Fi connections allow for communications between IT and OT systems and devices. Blocking Wi-Fi communications may also block command and reporting messages.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
 :t-SNEClustering a owl:Class,
         owl:NamedIndividual ;
@@ -38773,10 +39170,10 @@ Persistence consists of techniques that adversaries use to keep access to system
 
 Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network. Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and vulnerabilities. Examples of elevated access include:
 
-SYSTEM/root level
-local administrator
-user account with admin-like access
-user accounts with access to specific system or perform specific function
+* SYSTEM/root level
+* local administrator
+* user account with admin-like access
+* user accounts with access to specific system or perform specific function
 
 These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.""" ;
     :display-order 4 .
@@ -38784,12 +39181,12 @@ These techniques often overlap with Persistence techniques, as OS features that 
 :TA0005 a :OffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
-    rdfs:label "Defense Evasion" ;
+    rdfs:label "Stealth" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
-    :definition """The adversary is trying to avoid being detected.
+    :definition """The adversary is trying to hide and conceal their actions, appearing as normal behavior.
 
-Defense Evasion consists of techniques that adversaries use to avoid detection throughout their compromise. Techniques used for defense evasion include uninstalling/disabling security software or obfuscating/encrypting data and scripts. Adversaries also leverage and abuse trusted processes to hide and masquerade their malware. Other tactics' techniques are cross-listed here when those techniques include the added benefit of subverting defenses.""" ;
+Stealth consists of techniques that reduce the likelihood of detection by blending in with legitimate activity or minimizing observable signals. These techniques are characterized by concealment behaviors, such as avoiding, obfuscating, or mimicking normal operations, without modifying security controls or compromising collection and monitoring feeds. The goal is to remain indistinguishable from benign activity while leaving defensive systems intact.""" ;
     :display-order 5 .
 
 :TA0006 a :OffensiveTactic,
@@ -38801,7 +39198,7 @@ Defense Evasion consists of techniques that adversaries use to avoid detection t
     :definition """The adversary is trying to steal account names and passwords.
 
 Credential Access consists of techniques for stealing credentials like account names and passwords. Techniques used to get credentials include keylogging or credential dumping. Using legitimate credentials can give adversaries access to systems, make them harder to detect, and provide the opportunity to create more accounts to help achieve their goals.""" ;
-    :display-order 6 .
+    :display-order 7 .
 
 :TA0007 a :OffensiveTactic,
         owl:Class,
@@ -38811,8 +39208,8 @@ Credential Access consists of techniques for stealing credentials like account n
         :OffensiveTactic ;
     :definition """The adversary is trying to figure out your environment.
 
-Discovery consists of techniques an adversary may use to gain knowledge about the system and internal network. These techniques help adversaries observe the environment and orient themselves before deciding how to act. They also allow adversaries to explore what they can control and what's around their entry point in order to discover how it could benefit their current objective. Native operating system tools are often used toward this post-compromise information-gathering objective.""" ;
-    :display-order 7 .
+Discovery consists of techniques an adversary may use to gain knowledge about the system and internal network. These techniques help adversaries observe the environment and orient themselves before deciding how to act. They also allow adversaries to explore what they can control and what’s around their entry point in order to discover how it could benefit their current objective. Native operating system tools are often used toward this post-compromise information-gathering objective.""" ;
+    :display-order 8 .
 
 :TA0008 a :OffensiveTactic,
         owl:Class,
@@ -38822,8 +39219,8 @@ Discovery consists of techniques an adversary may use to gain knowledge about th
         :OffensiveTactic ;
     :definition """The adversary is trying to move through your environment.
 
-Lateral Movement consists of techniques that adversaries use to enter and control remote systems on a network. Following through on their primary objective often requires exploring the network to find their target and subsequently gaining access to it. Reaching their objective often involves pivoting through multiple systems and accounts to gain. Adversaries might install their own remote access tools to accomplish Lateral Movement or use legitimate credentials with native network and operating system tools, which may be stealthier.""" ;
-    :display-order 8 .
+Lateral Movement consists of techniques that adversaries use to enter and control remote systems on a network. Following through on their primary objective often requires exploring the network to find their target, then pivoting through multiple systems and accounts to gain access to it. Adversaries might install their own remote access tools to accomplish Lateral Movement or use legitimate credentials with native network and operating system tools, which may be stealthier.""" ;
+    :display-order 9 .
 
 :TA0009 a :OffensiveTactic,
         owl:Class,
@@ -38834,7 +39231,7 @@ Lateral Movement consists of techniques that adversaries use to enter and contro
     :definition """The adversary is trying to gather data of interest to their goal.
 
 Collection consists of techniques adversaries may use to gather information and the sources information is collected from that are relevant to following through on the adversary's objectives. Frequently, the next goal after collecting data is to either steal (exfiltrate) the data or to use the data to gain more information about the target environment. Common target sources include various drive types, browsers, audio, video, and email. Common collection methods include capturing screenshots and keyboard input.""" ;
-    :display-order 9 .
+    :display-order 10 .
 
 :TA0010 a :OffensiveTactic,
         owl:Class,
@@ -38844,19 +39241,19 @@ Collection consists of techniques adversaries may use to gather information and 
         :OffensiveTactic ;
     :definition """The adversary is trying to steal data.
 
-Exfiltration consists of techniques that adversaries may use to steal data from your network. Once they've collected data, adversaries often package it to avoid detection while removing it. This can include compression and encryption. Techniques for getting data out of a target network typically include transferring it over their command and control channel or an alternate channel and may also include putting size limits on the transmission.""" ;
-    :display-order 11 .
+Exfiltration consists of techniques that adversaries may use to steal data from your network. Once they’ve collected data, adversaries often package it to avoid detection while removing it. This can include compression and encryption. Techniques for getting data out of a target network typically include transferring it over their command and control channel or an alternate channel and may also include putting size limits on the transmission.""" ;
+    :display-order 12 .
 
 :TA0011 a :OffensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
-    rdfs:label "Command And Control" ;
+    rdfs:label "Command and Control" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
     :definition """The adversary is trying to communicate with compromised systems to control them.
 
-Command and Control consists of techniques that adversaries may use to communicate with systems under their control within a victim network. Adversaries commonly attempt to mimic normal, expected traffic to avoid detection. There are many ways an adversary can establish command and control with various levels of stealth depending on the victim's network structure and defenses.""" ;
-    :display-order 10 .
+Command and Control consists of techniques that adversaries may use to communicate with systems under their control within a victim network. Adversaries commonly attempt to mimic normal, expected traffic to avoid detection. There are many ways an adversary can establish command and control with various levels of stealth depending on the victim’s network structure and defenses.""" ;
+    :display-order 11 .
 
 :TA0027 a :OffensiveTactic,
         owl:Class,
@@ -38954,8 +39351,8 @@ Command and Control consists of techniques that adversaries may use to communica
         :OffensiveTactic ;
     :definition """The adversary is trying to manipulate, interrupt, or destroy your systems and data.
 
-Impact consists of techniques that adversaries use to disrupt availability or compromise integrity by manipulating business and operational processes. Techniques used for impact can include destroying or tampering with data. In some cases, business processes can look fine, but may have been altered to benefit the adversaries' goals. These techniques might be used by adversaries to follow through on their end goal or to provide cover for a confidentiality breach.""" ;
-    :display-order 12 .
+Impact consists of techniques that adversaries use to disrupt availability or compromise integrity by manipulating business and operational processes. Techniques used for impact can include destroying or tampering with data. In some cases, business processes can look fine, but may have been altered to benefit the adversaries’ goals. These techniques might be used by adversaries to follow through on their end goal or to provide cover for a confidentiality breach.""" ;
+    :display-order 13 .
 
 :TA0041 a :OffensiveTactic,
         owl:Class,
@@ -39081,6 +39478,17 @@ Reconnaissance consists of techniques that involve adversaries actively or passi
     skos:prefLabel "Privilege Escalation" ;
     rdfs:subClassOf :ATTACKICSTactic,
         :OffensiveTactic .
+
+:TA0112 a :OffensiveTactic,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Defense Impairment" ;
+    rdfs:subClassOf :ATTACKEnterpriseTactic,
+        :OffensiveTactic ;
+    :definition """The adversary is trying to break security mechanisms, pipelines, and tooling so defenders can’t see or trust what’s happening.
+
+Defense Impairment consists of techniques that degrade, disable, or undermine the effectiveness and trustworthiness of security controls and monitoring mechanisms. These techniques are characterized by direct interference with defensive systems. The goal is to reduce defenders’ ability to detect, interpret, or respond to adversary activity.""" ;
+    :display-order 6 .
 
 :TabletComputer a owl:Class ;
     rdfs:label "Tablet Computer" ;
@@ -46654,4 +47062,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
