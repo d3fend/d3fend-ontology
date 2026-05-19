@@ -6353,7 +6353,10 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
     rdfs:subClassOf :ComputerPlatform,
-        :NetworkNode ;
+        :NetworkNode,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ComputerPort ] ;
     :definition "A network node running on a computer platform." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/network_endpoint> .
 
@@ -6771,12 +6774,6 @@ To ensure that content is safe, it's composition must be validated according to 
     :definition "A control correlation identifier (CCI) catalog provides a catalog of CCIs for a given release date." ;
     rdfs:seeAlso <https://public.cyber.mil/stigs/cci/> .
 
-:ControlServer a owl:Class ;
-    rdfs:label "Control Server" ;
-    rdfs:subClassOf :Server, :OTController ;
-    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/control_server> ;
-    :definition "A controller that also acts as a server that hosts the control software that communicates with lower-level control devices, such as remote terminal units (RTUs) and programmable logic controllers (PLCs), over an OT network. In a SCADA system, this is often called a SCADA server, MTU, or supervisory controller." .
-
 :ControlFlowGraph a owl:Class ;
     rdfs:label "Control Flow Graph" ;
     rdfs:subClassOf :DigitalInformation ;
@@ -6836,6 +6833,13 @@ CFI is most effective when combined with complementary defenses such as stack ca
     rdfs:label "Control Flow Policy" ;
     rdfs:subClassOf :ControlFlowGraph ;
     :definition "A control flow policy is a subset of the possible control flow transfers computed from a program's control flow graph. It defines only the expected and allowed control flow transfers and is enforced by control flow integrity." .
+
+:ControlServer a owl:Class ;
+    rdfs:label "Control Server" ;
+    rdfs:subClassOf :OTController,
+        :Server ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/control_server> ;
+    :definition "A controller that also acts as a server that hosts the control software that communicates with lower-level control devices, such as remote terminal units (RTUs) and programmable logic controllers (PLCs), over an OT network. In a SCADA system, this is often called a SCADA server, MTU, or supervisory controller." .
 
 :ConvolutionalNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
@@ -30409,7 +30413,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :OTProtocolMessage ] ,
+            owl:someValuesFrom :OTProtocolMessage ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :OutboundNetworkTraffic ] ;
@@ -30666,10 +30670,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ATTACKICSCollectionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-access ;
-            owl:someValuesFrom :DatabaseFile ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-access;
             owl:someValuesFrom :ConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DatabaseFile ],
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
             owl:someValuesFrom :OTReadCommand ] ;
