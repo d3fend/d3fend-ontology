@@ -2220,6 +2220,12 @@ Agglomerative clustering starts with each data point as its own cluster. The alg
 3. Scikit-learn. (30 Jun 2023). Scikit-learn Documentation: Agglomerative Clustering.
 [Link](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html).""" .
 
+:AircraftComputer a owl:Class ;
+    rdfs:label "Aircraft Computer" ;
+    rdfs:subClassOf :VehicleComputer ;
+    :definition "A vehicle computer installed on a fixed-wing or rotary-wing aircraft, executing real-time flight or mission logic and communicating over avionics buses such as ARINC 429, ARINC 664/AFDX, or MIL-STD-1553." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Avionics> .
+
 :AlethicLogic a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Alethic Logic" ;
@@ -4008,6 +4014,9 @@ In a more general sense, ASP includes all applications of answer sets to knowled
     rdfs:label "Application" ;
     rdfs:subClassOf :Software,
         [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :EventLog ],
+        [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :ApplicationConfiguration ] ;
     :definition "A program that gives a computer instructions that provide the user with tools to accomplish a task; \"he has tried several different word processing applications\".  Distinct from system software that is intrinsically part of the operating system.  An application can be made up of executable files, configuration files, shared libraries, etc." ;
@@ -5075,7 +5084,7 @@ Depending on the complexity of the data considered, outliers may not be obvious 
 
 :AuthorizationService a owl:Class ;
     rdfs:label "Authorization Service" ;
-    rdfs:subClassOf :NetworkService,
+    rdfs:subClassOf :NetworkServiceApplicationProcess,
         :ServiceApplicationProcess ;
     rdfs:isDefinedBy <https://www.sciencedirect.com/referencework/9780122272400/encyclopedia-of-information-systems> ;
     :definition "An authorization service ensures that the user is authorized to have access to a particular resource. Authorization can be done through role-based access control (RBAC) or list-based access control (LBAC)." ;
@@ -5089,6 +5098,14 @@ Depending on the complexity of the data considered, outliers may not be obvious 
     :definition "Autoencoders are specific type of deep learning architecture used for learning representation of data, typically for the purpose of dimensionality reduction. This is achieved by designing deep learning architecture that aims that copying input layer at its output layer." ;
     :kb-article """## References
 SOCR. (n.d.). ABIDE Autoencoder. [Link](https://socr.umich.edu/HTML5/ABIDE_Autoencoder/#:~:text=In%20simple%20words%2C%20autoencoders%20are,layer%20at%20its%20output%20layer.)""" .
+
+:AutomotiveElectronicControlUnit a owl:Class ;
+    rdfs:label "Automotive Electronic Control Unit" ;
+    rdfs:subClassOf :VehicleComputer ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Electronic_control_unit> ;
+    :definition "A vehicle computer embedded in a ground vehicle, executing real-time control logic over one or more vehicle subsystems and communicating with peer ECUs over an in-vehicle network such as CAN, CAN-FD, LIN, or automotive Ethernet." ;
+    :synonym "ECU",
+        "Electronic Control Module" .
 
 :AutoregressiveModel a owl:Class,
         owl:NamedIndividual ;
@@ -6741,6 +6758,12 @@ To ensure that content is safe, it's composition must be validated according to 
             owl:someValuesFrom :CCIControl ] ;
     :definition "A control correlation identifier (CCI) catalog provides a catalog of CCIs for a given release date." ;
     rdfs:seeAlso <https://public.cyber.mil/stigs/cci/> .
+
+:ControlServer a owl:Class ;
+    rdfs:label "Control Server" ;
+    rdfs:subClassOf :Server, :OTController ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/control_server> ;
+    :definition "A controller that also acts as a server that hosts the control software that communicates with lower-level control devices, such as remote terminal units (RTUs) and programmable logic controllers (PLCs), over an OT network. In a SCADA system, this is often called a SCADA server, MTU, or supervisory controller." .
 
 :ControlFlowGraph a owl:Class ;
     rdfs:label "Control Flow Graph" ;
@@ -14392,7 +14415,7 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
 
 :DHCPService a owl:Class ;
     rdfs:label "DHCP Service" ;
-    rdfs:subClassOf :NetworkService,
+    rdfs:subClassOf :NetworkServiceApplicationProcess,
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
             owl:someValuesFrom :DHCPNetworkTraffic ] ;
@@ -14597,7 +14620,7 @@ Unidirectional network link enforcement is a security measure used to separate c
 
 :DirectoryService a owl:Class ;
     rdfs:label "Directory Service" ;
-    rdfs:subClassOf :NetworkService ;
+    rdfs:subClassOf :NetworkServiceApplicationProcess ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Directory_service> ;
     :definition "In computing, directory service or name service maps the names of network resources to their respective network addresses. It is a shared information infrastructure for locating, managing, administering and organizing everyday items and network resources, which can include volumes, folders, files, printers, users, groups, devices, telephone numbers and other objects. A directory service is a critical component of a network operating system. A directory server or name server is a server which provides such a service. Each resource on the network is considered an object by the directory server. Information about a particular resource is stored as a collection of attributes associated with that resource or object." .
 
@@ -15624,7 +15647,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0003 a owl:Class ;
     rdfs:label "Modify Authentication Process - SPARTA" ;
     skos:prefLabel "Modify Authentication Process" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique ;
+    rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FlightSoftware ] ;
     :attack-id "EX-0003" ;
     :definition "The adversary alters how the spacecraft validates authority so that future inputs are accepted on their terms. Modifications can target code (patching flight binaries, hot-patching functions in memory, hooking command handlers), data (changing key identifiers, policy tables, or counter initialization), or control flow (short-circuiting MAC checks, widening anti-replay windows, bypassing interlocks on specific opcodes). Common choke points include telecommand verification routines, bootloader or update verifiers, gateway processors that bridge payload and bus traffic, and maintenance dictionaries invoked in special modes. Subtle variants preserve outward behavior, producing normal-looking acknowledgments and counters, while internally accepting a broader set of origins, opcodes, or timetags. Others introduce conditional logic so the backdoor only activates under specific geometry or timing, masking during routine audit. Once resident, the modified process becomes the new trust oracle, enabling recurring execution for the attacker and, in some cases, denying legitimate control by causing authentic inputs to fail verification or to be deprioritized." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0003/> .
@@ -15840,7 +15866,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.01 a owl:Class ;
     rdfs:label "Registers - SPARTA" ;
     skos:prefLabel "Registers" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :RuntimeVariable ] ;
     :attack-id "EX-0012.01" ;
     :definition "Threat actors may target the internal registers of the victim spacecraft in order to modify specific values as the FSW is functioning or prevent certain subsystems from working. Most aspects of the spacecraft rely on internal registers to store important data and temporary values. By modifying these registers at certain points in time, threat actors can disrupt the workflow of the subsystems or onboard payload, causing them to malfunction or behave in an undesired manner." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/01/> .
@@ -15848,7 +15877,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.02 a owl:Class ;
     rdfs:label "Internal Routing Tables - SPARTA" ;
     skos:prefLabel "Internal Routing Tables" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationRuntimeVariable ] ;
     :attack-id "EX-0012.02" ;
     :definition "Threat actors may rewrite the maps that tell software where to send and receive things. In publish/subscribe or message-queued flight frameworks, tables map message IDs to subscribers, opcodes to handlers, and pipes to processes; at interfaces, address/port maps define how traffic traverses bridges and gateways (e.g., SpaceWire node/port routes, 1553 RT/subaddress mappings, CAN IDs). By altering these structures, commands can be misdelivered, dropped, duplicated, or routed through unintended paths; telemetry can be redirected or blackholed; and handler bindings can be swapped so an opcode triggers the wrong function. Schedule/routing hybrids, used to sequence activities and distribute results, can be edited to reorder execution or to create feedback loops that occupy bandwidth and processor time. The result is control over who hears what and when, achieved by changing the lookup tables that underpin command/telemetry distribution rather than the code that processes them." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/02/> .
@@ -15858,11 +15893,8 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Memory Write/Loads" ;
     rdfs:subClassOf :EX-0012,
         [ a owl:Restriction ;
-            owl:onProperty :may-produce ;
-            owl:someValuesFrom :Telecommand ],
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :MemoryExtent ] ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :RawMemoryAccessFunction ] ;
     :attack-id "EX-0012.03" ;
     :definition "The adversary uses legitimate direct-memory commands or load services to place chosen bytes at chosen addresses. Many spacecraft support raw read/write operations, block loads into RAM or non-volatile stores, and table/file loaders that copy content into working memory. With knowledge of address maps and data structures, an attacker can patch function pointers or vtables, alter limit and configuration records, seed scripts or procedures into interpreter buffers, adjust DMA descriptors, or overwrite portions of executable images resident in RAM. Loads may be sized and paced to fit link and queue constraints, then activated by a subsequent command, mode change, or natural reference by the software." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/03/> .
@@ -15870,7 +15902,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.04 a owl:Class ;
     rdfs:label "App/Subscriber Tables - SPARTA" ;
     skos:prefLabel "App/Subscriber Tables" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationRuntimeVariable ] ;
     :attack-id "EX-0012.04" ;
     :definition "In publish/subscribe flight frameworks, applications and subsystems register interest in specific message classes via subscriber (or application) tables. These tables map message IDs/topics to subscribers, define delivery pipes/queues, and often include filters, priorities, and rate limits. By altering these mappings, an adversary can quietly reshape information flow: critical consumers stop receiving health or sensor messages; non-critical tasks get flooded; handlers are rebound so an opcode or message ID reaches the wrong task; or duplicates create feedback loops that consume bandwidth and CPU. Because subscription state is usually read at init or refreshed on command, subtle edits can persist across reboots or take effect at predictable times. Similar effects appear in legacy MIL-STD-1553 deployments by modifying Remote Terminal (RT), subaddress, or mode-code configurations so that messages are misaddressed or dropped at the bus interface. The net result is control-by-misdirection: the software still “works,” but the right data no longer reaches the right recipient at the right time." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/04/> .
@@ -15878,7 +15916,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.05 a owl:Class ;
     rdfs:label "Scheduling Algorithm - SPARTA" ;
     skos:prefLabel "Scheduling Algorithm" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :OperatingSystemConfiguration ] ;
     :attack-id "EX-0012.05" ;
     :definition "Spacecraft typically rely on real-time scheduling, fixed-priority or deadline/periodic schemes, driven by timers, tick sources, and per-task parameters. Threat actors target these parameters and associated tables to skew execution order and timing. Edits may change priorities, periods, or deadlines; adjust CPU budgets and watchdog thresholds; alter ready-queue disciplines; or reconfigure timer tick rates and clock sources. They may also modify task affinities, message-queue depths, and interrupt masks so preemption and latency characteristics shift. Small changes can have large effects: high-rate control loops see added jitter, estimator updates miss deadlines, command/telemetry handling starves, or low-priority maintenance tasks monopolize cores due to mis-set periods.  Manipulated schedules can create intermittent, state-dependent malfunctions that are hard to distinguish from environmental load. The essence of the technique is to weaponize time, reshaping when work happens so that otherwise correct code produces unsafe or exploitable behavior." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/05/> .
@@ -15886,7 +15930,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.06 a owl:Class ;
     rdfs:label "Science/Payload Data - SPARTA" ;
     skos:prefLabel "Science/Payload Data" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :DigitalInformation ] ;
     :attack-id "EX-0012.06" ;
     :definition "Payload data, and the metadata that gives it meaning, can be altered in place to steal value, mislead users, or degrade mission outputs. Targets include raw detector frames, packetized Level-0 streams, onboard preprocessed products, and file catalogs/directories on mass memory. Adjacent metadata such as timestamps, pointing/attitude tags, calibration coefficients, compression settings, and quality flags are equally potent; slight bias in a calibration table or time tag can skew entire downlink campaigns while appearing routine. An adversary may rewrite frame headers, reorder packets, substitute segments from prior passes, or flip quality bits so ground pipelines silently discard or misclassify products. Recorder index manipulation can orphan files or cause downlinks to serve stale or fabricated content. Because many missions perform some processing or filtering onboard, tampering upstream of downlink propagates forward as “authoritative” truth, jeopardizing mission objectives without obvious protocol anomalies." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/06/> .
@@ -15894,7 +15941,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.07 a owl:Class ;
     rdfs:label "Propulsion Subsystem - SPARTA" ;
     skos:prefLabel "Propulsion Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ] ;
     :attack-id "EX-0012.07" ;
     :definition "Propulsion relies on parameters and sensed values that govern burns, pressure management, and safing. Editable items include thruster calibration and minimum impulse bit, valve timing and duty limits, inhibit masks, delta-V tables, plume keep-out constraints, tank pressure/temperature thresholds, leak-detection limits, and momentum-management coupling with attitude control. By modifying these, an adversary can provoke over-correction, waste propellant through repeated trims, bias orbit maintenance, or trigger protective sequences at inopportune times. False pressure or temperature readings can cause autonomous venting or lockouts; tweaked alignment matrices or misapplied gimbal limits can yield off-axis thrust and attitude excursions; altered desaturation rules can induce frequent wheel unloads that sap resources. Because consumables are finite and margins tight, even modest parameter drift can shorten mission life or violate keep-out and conjunction constraints while presenting as “normal” control activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/07/> .
@@ -15902,7 +15952,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.08 a owl:Class ;
     rdfs:label "Attitude Determination & Control Subsystem - SPARTA" ;
     skos:prefLabel "Attitude Determination & Control Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ] ;
     :attack-id "EX-0012.08" ;
     :definition "ADCS depends on tightly coupled models and parameters: star-tracker catalogs and masks, sensor alignments and bias terms, gyro scale factors and drift rates, estimator covariances and process/measurement noise, controller gains and saturation limits, wheel/CMG torque constants, magnetic torquer maps, and sun sensor thresholds. Editing these values skews estimation or control, producing slow bias, limit cycles, loss of lock, or abrupt safing triggers. For example, a small change to a star-tracker mask can force frequent dropouts; an inflated gyro bias drives the filter away from truth; softened actuator limits or mis-set gains let disturbances accumulate; altered sun-point entry criteria cause unnecessary mode switches. Secondary impacts propagate to power, thermal, and communications because pointing and geometry underpin array generation, radiator view factors, and antenna gain. The technique turns the spacecraft against itself by nudging the parameters that close the loop between what the vehicle believes and how it responds." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/08/> .
@@ -15910,7 +15963,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.09 a owl:Class ;
     rdfs:label "Electrical Power Subsystem - SPARTA" ;
     skos:prefLabel "Electrical Power Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ] ;
     :attack-id "EX-0012.09" ;
     :definition "Adversaries alter parameters and sensed values that govern power generation, storage, and distribution so the spacecraft draws or allocates energy in harmful ways. Editable items include bus voltage/current limits, MPPT setpoints and sweep behavior, array and SADA modes, battery charge/discharge thresholds and temperature derates, state-of-charge estimation constants, latching current limiter (LCL) trip/retry settings, load-shed priorities, heater duty limits, and survival/keep-alive rules. By changing these, a threat actor can drive excess consumption (e.g., disabling load shed, raising heater floors), misreport remaining energy (skewed SoC), or push batteries outside healthy ranges, producing brownouts, repeated safing, or premature capacity loss. Manipulating thresholds and hysteresis can also create oscillations where loads repeatedly drop and re-engage, wasting energy and stressing components. The effect is accelerated depletion or misallocation of finite power, degrading mission operations and potentially preventing recovery after eclipse or anomalies." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/09/> .
@@ -15918,7 +15974,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0012.10 a owl:Class ;
     rdfs:label "Command & Data Handling Subsystem - SPARTA" ;
     skos:prefLabel "Command & Data Handling Subsystem" ;
-    rdfs:subClassOf :EX-0012 ;
+    rdfs:subClassOf :EX-0012,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ApplicationRuntimeVariable ] ;
     :attack-id "EX-0012.10" ;
     :definition "C&DH relies on tables and runtime values that define how commands are parsed, queued, and dispatched and how telemetry is collected, stored, and forwarded. Targets include opcode-to-handler maps, argument limits and schemas, queue depths and priorities, message ID routing, publish/subscribe bindings, timeline/schedule entries, file catalog indices, compression and packetization settings, and event/telemetry filters. Edits to these artifacts reshape control and visibility: commands are delayed, dropped, or misrouted; telemetry is suppressed or redirected; timelines slip; and housekeeping/data products are repackaged in ways that confuse ground processing. Because many frameworks treat these values as authoritative configuration, small changes can silently propagate across subsystems, degrading responsiveness, creating backlogs, or severing the logical pathways that keep the vehicle coordinated, without modifying the underlying code." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/10/> .
@@ -17119,7 +17181,7 @@ File format specifications often define expected values for specific fields. A c
 
 :FileShareService a owl:Class ;
     rdfs:label "File Share Service" ;
-    rdfs:subClassOf :NetworkService ;
+    rdfs:subClassOf :NetworkServiceApplicationProcess ;
     :definition "A file sharing service (or file share service) provides the ability to share data across a network." ;
     rdfs:seeAlso <http://dbpedia.org/resource/File_sharing> .
 
@@ -17352,6 +17414,22 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
     rdfs:subClassOf :SecondaryStorage ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Flash_memory> ;
     :definition "Flash memory is an electronic non-volatile computer memory storage medium that can be electrically erased and reprogrammed." .
+
+:FlightSoftware a owl:Class ;
+    rdfs:label "Flight Software" ;
+    rdfs:subClassOf :VehicleControlSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :Telecommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SoftwareWatchdogTimer ] ;
+    :definition "Flight Software (FSW) is software that runs on a processor embedded in a spacecraft's avionics. It is responsible for managing on-board activities, data processing and spacecraft health and safety. The name “flight software” reflects the location where it executes, i.e. in the spacecraft , to differentiate from “ground software”, which runs in the ground segment." ;
+    rdfs:seeAlso <https://phxcubesat.asu.edu/subsystems/flight-software>,
+        <https://www.spiedigitallibrary.org/conference-proceedings-of-spie/13546/135462R/An-evaluation-of-flight-software-platforms-for-small-satellite-missions/10.1117/12.3062481.full> ;
+    :synonym "FSW",
+        "OBSW",
+        "On-board software" .
 
 :Forecasting a owl:Class ;
     rdfs:label "Forecasting" ;
@@ -20622,7 +20700,7 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
 :MailService a owl:Class ;
     rdfs:label "Mail Service" ;
     skos:altLabel "Email Service" ;
-    rdfs:subClassOf :NetworkService ;
+    rdfs:subClassOf :NetworkServiceApplicationProcess ;
     :definition "A mail service provides the ability to send and receive mail across a computer network.  The mail service runs on message transfer agents (i.e., mail servers) and is accessed by users through an email client." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Email>,
         <http://dbpedia.org/resource/Message_transfer_agent> .
@@ -21580,8 +21658,8 @@ Network Resource Access Control involves managing and regulating access to resou
     rdfs:subClassOf :CyberSensor ;
     :definition "A Network Sensor monitors network traffic and communication patterns." .
 
-:NetworkService a owl:Class ;
-    rdfs:label "Network Service" ;
+:NetworkServiceApplicationProcess a owl:Class ;
+    rdfs:label "Network Service Application Process" ;
     rdfs:subClassOf :ServiceApplicationProcess ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_service> ;
     :definition "In computer networking, a network service is an application running at the network application layer and above, that provides data storage, manipulation, presentation, communication or other capability which is often implemented using a client-server or peer-to-peer architecture based on application layer network protocols. Clients and servers will often have a user interface, and sometimes other hardware associated with it." .
@@ -21996,32 +22074,6 @@ Programmatically checking if a pointer is NULL before use.
             owl:someValuesFrom :ImageFile ] ;
     :definition "A document file in a format associated with an d3f:OfficeApplication." ;
     rdfs:seeAlso :OfficeApplication .
-
-:OnboardComputer a owl:Class ;
-    rdfs:label "Onboard Computer" ;
-    rdfs:subClassOf :OTEmbeddedComputer,
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
-            owl:someValuesFrom :HardwareClock ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :FlashMemory ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :HardwareWatchdogTimer ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :BootLoader ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :FlightSoftware ],
-        [ a owl:Restriction ;
-            owl:onProperty :runs ;
-            owl:someValuesFrom :RealTimeOperatingSystem ] ;
-    rdfs:isDefinedBy <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> ;
-    :definition "A self-contained, embedded computing unit installed within a vehicle or other autonomous platform that executes real-time control, data-handling, and mission-management software. It interfaces directly with the platform's sensors, actuators, and communication links, processes and stores operational data, and issues commands to subsystems, enabling the system to function independently of external computing resources." ;
-    rdfs:seeAlso <https://blog.satsearch.co/2020-03-11-an-overview-of-on-board-computer-obc-systems-available-on-the-global-space-marketplace> ;
-    :synonym "OBC" .
 
 :One-timePassword a :One-timePassword,
         owl:Class,
@@ -23221,7 +23273,10 @@ GE-SRTP: PROGRAM LOAD (DOWNLOAD TO PLC)""" ;
 
 :OTEmbeddedComputer a owl:Class ;
     rdfs:label "OT Embedded Computer" ;
-    rdfs:subClassOf :EmbeddedComputer ;
+    rdfs:subClassOf :EmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :may-run ;
+            owl:someValuesFrom :Real-timeOperatingSystem ] ;
     :definition "A ruggedized computational device, embedded in industrial control systems, designed to handle real-time tasks and environmental stressors common in OT." .
 
 :OTEngineeringSoftware a owl:Class ;
@@ -26698,7 +26753,7 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 :RemoteAuthenticationService a owl:Class ;
     rdfs:label "Remote Authentication Service" ;
     rdfs:subClassOf :AuthenticationService,
-        :NetworkService ;
+        :NetworkServiceApplicationProcess ;
     :definition "A remote authentication service provides for the authentication of a user across a network (i.e., remotely)." .
 
 :RemoteAuthorizationService a owl:Class ;
@@ -28413,37 +28468,28 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :Vehicle,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :OnboardComputer ],
-        [ a owl:Restriction ;
-            owl:onProperty :contains ;
             owl:someValuesFrom :Receiver ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
             owl:someValuesFrom :Transmitter ],
         [ a owl:Restriction ;
-            owl:onProperty :has-operating-mode ;
-            owl:someValuesFrom :OperatingMode ],
-        [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :BusNetwork ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :HardwareCryptographicModule ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :Software-definedRadioComputer ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-contain ;
-            owl:someValuesFrom :TransducerSensor ] ;
+            owl:someValuesFrom :Software-definedRadioComputer ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Spacecraft> ;
     :definition "A spacecraft is a vehicle that is designed to fly and operate in outer space. Spacecraft are used for a variety of purposes, including communications, Earth observation, meteorology, navigation, space colonization, planetary exploration, and transportation of humans and cargo." .
 
+:SpacecraftComputer a owl:Class ;
+    rdfs:label "Spacecraft Computer" ;
+    rdfs:subClassOf :VehicleComputer ;
+    :definition "A vehicle computer installed on a spacecraft, executing real-time control or data-handling logic under spaceflight conditions (vacuum, radiation, extended communication latency) and communicating over buses such as MIL-STD-1553, SpaceWire, or CAN." ;
+    rdfs:seeAlso <https://science.nasa.gov/learn/basics-of-space-flight/chapter11-1/> ;
+    :synonym "Command and Data Subsystem (CDS)",
+        "Onboard Computer" .
+
 :SpacecraftSafeMode a owl:Class ;
     rdfs:label "Spacecraft Safe Mode" ;
-    rdfs:subClassOf :SafeMode ;
+    rdfs:subClassOf :SafeMode,
+        :VehicleOperatingMode ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Safe_mode_in_spacecraft> ;
     :definition "Safe mode is an operating mode of a modern uncrewed spacecraft during which all non-essential systems are shut down and only essential functions such as thermal management, radio reception and attitude control are active." .
 
@@ -29537,28 +29583,46 @@ When system firmware verification fails a set of predefined responses is typical
 :T0800 a owl:Class ;
     rdfs:label "Activate Firmware Update Mode - ATTACK ICS" ;
     skos:prefLabel "Activate Firmware Update Mode" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDeviceFirmwareCommand ] ;
     :attack-id "T0800" ;
     :definition "Adversaries may activate firmware update mode on devices to prevent expected response functions from engaging in reaction to an emergency or process malfunction. For example, devices such as protection relays may have an operation mode designed for firmware installation. This mode may halt process monitoring and related functions to allow new firmware to be loaded. A device left in update mode may be placed in an inactive holding state if no firmware is provided to it. By entering and leaving a device in this mode, the adversary may deny its usual functionalities." .
 
 :T0801 a owl:Class ;
     rdfs:label "Monitor Process State - ATTACK ICS" ;
     skos:prefLabel "Monitor Process State" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTLogicVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadCommand ] ;
     :attack-id "T0801" ;
     :definition "Adversaries may gather information about the physical process state. This information may be used to gain more information about the process itself or used as a trigger for malicious actions. The sources of process state information may vary such as, OPC tags, historian data, specific PLC block information, or network traffic." .
 
 :T0802 a owl:Class ;
     rdfs:label "Automated Collection - ATTACK ICS" ;
     skos:prefLabel "Automated Collection" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTControlCommand ] ;
     :attack-id "T0802" ;
     :definition "Adversaries may automate collection of industrial environment information using tools or scripts. This automated collection may leverage native control protocols and tools available in the control systems environment. For example, the OPC protocol may be used to enumerate and gather information. Access to a system or interface with these native protocols may allow collection and enumeration of other attached, communicating servers and devices." .
 
 :T0803 a owl:Class ;
     rdfs:label "Block Command Message - ATTACK ICS" ;
     skos:prefLabel "Block Command Message" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :blocks ;
+            owl:someValuesFrom :OTDeviceConfigurationCommand ] ;
     :attack-id "T0803" ;
     :definition "Adversaries may block a command message from reaching its intended target to prevent command execution. In OT networks, command messages are sent to provide instructions to control system devices. A blocked command message can inhibit response functions from correcting a disruption or unsafe condition. (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)  (Citation: Electricity Information Sharing and Analysis Center; SANS Industrial Control Systems March 2016)" .
 
@@ -29572,21 +29636,42 @@ When system firmware verification fails a set of predefined responses is typical
 :T0805 a owl:Class ;
     rdfs:label "Block Serial COM - ATTACK ICS" ;
     skos:prefLabel "Block Serial COM" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :blocks ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "T0805" ;
     :definition "Adversaries may block access to serial COM to prevent instructions or configurations from reaching target devices. Serial Communication ports (COM) allow communication with control system devices. Devices can receive command and configuration messages over such serial COM. Devices also use serial COM to send command and reporting messages. Blocking device serial COM may also block command messages and block reporting messages." .
 
 :T0806 a owl:Class ;
     rdfs:label "Brute Force I/O - ATTACK ICS" ;
     skos:prefLabel "Brute Force I/O" ;
-    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique ;
+    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :OTControlLogicProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTProcessVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTChangeDataCommand ] ;
     :attack-id "T0806" ;
     :definition "Adversaries may repetitively or successively change I/O point values to perform an action. Brute Force I/O may be achieved by changing either a range of I/O point values or a single point value repeatedly to manipulate a process function. The adversary's goal and the information they have about the target environment will influence which of the options they choose. In the case of brute forcing a range of point values, the adversary may be able to achieve an impact without targeting a specific point. In the case where a single point is targeted, the adversary may be able to generate instability on the process function associated with that particular point." .
 
 :T0807 a owl:Class ;
     rdfs:label "Command-Line Interface - ATTACK ICS" ;
     skos:prefLabel "Command-Line Interface" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTEmbeddedComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :RemoteTerminalSession ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CommandLineInterface ] ;
     :attack-id "T0807" ;
     :definition "Adversaries may utilize command-line interfaces (CLIs) to interact with systems and execute commands. CLIs provide a means of interacting with computer systems and are a common feature across many types of platforms and devices within control systems environments. (Citation: Enterprise ATT&CK January 2018) Adversaries may also use CLIs to install and run new software, including malicious tools that may be installed over the course of an operation." .
 
@@ -29602,7 +29687,13 @@ When system firmware verification fails a set of predefined responses is typical
 :T0809 a owl:Class ;
     rdfs:label "Data Destruction - ATTACK ICS" ;
     skos:prefLabel "Data Destruction" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTEmbeddedComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDeleteDataCommand ] ;
     :attack-id "T0809" ;
     :definition "Adversaries may perform data destruction over the course of an operation. The adversary may drop or create malware, tools, or other non-native files on a target system to accomplish this, potentially leaving behind traces of malicious activities. Such non-native files and other data may be removed over the course of an intrusion to maintain a small footprint or as a standard part of the post-intrusion cleanup process. (Citation: Enterprise ATT&CK January 2018)" .
 
@@ -29618,28 +29709,49 @@ When system firmware verification fails a set of predefined responses is typical
 :T0811 a owl:Class ;
     rdfs:label "Data from Information Repositories - ATTACK ICS" ;
     skos:prefLabel "Data from Information Repositories" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :OTProcessDataHistorian ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadCommand ] ;
     :attack-id "T0811" ;
     :definition "Adversaries may target and collect data from information repositories. This can include sensitive data such as specifications, schematics, or diagrams of control system layouts, devices, and processes. Examples of information repositories include reference databases in the process environment, as well as databases in the corporate network that might contain information about the ICS.(Citation: Cybersecurity & Infrastructure Security Agency March 2018)" .
 
 :T0812 a owl:Class ;
     rdfs:label "Default Credentials - ATTACK ICS" ;
     skos:prefLabel "Default Credentials" ;
-    rdfs:subClassOf :ATTACKICSLateralMovementTechnique ;
+    rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :DefaultUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Password ] ;
     :attack-id "T0812" ;
     :definition "Adversaries may leverage manufacturer or supplier set default credentials on control system devices. These default credentials may have administrative permissions and may be necessary for initial configuration of the device. It is general best practice to change the passwords for these accounts as soon as possible, but some manufacturers may have devices that have passwords or usernames that cannot be changed. (Citation: Keith Stouffer May 2015)" .
 
 :T0813 a owl:Class ;
     rdfs:label "Denial of Control - ATTACK ICS" ;
     skos:prefLabel "Denial of Control" ;
-    rdfs:subClassOf :ATTACKICSImpactTechnique ;
+    rdfs:subClassOf :ATTACKICSImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :OTControlLogicProcess ] ;
     :attack-id "T0813" ;
     :definition "Adversaries may cause a denial of control to temporarily prevent operators and engineers from interacting with process controls. An adversary may attempt to deny process control access to cause a temporary loss of communication with the control device or to prevent operator adjustment of process controls. An affected process may still be operating during the period of control loss, but not necessarily in a desired state. (Citation: Corero) (Citation: Michael J. Assante and Robert M. Lee) (Citation: Tyson Macaulay)" .
 
 :T0814 a owl:Class ;
     rdfs:label "Denial of Service - ATTACK ICS" ;
     skos:prefLabel "Denial of Service" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :OTControlLogicProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTNetworkTraffic ] ;
     :attack-id "T0814" ;
     :definition "Adversaries may perform Denial-of-Service (DoS) attacks to disrupt expected device functionality. Examples of DoS attacks include overwhelming the target device with a high volume of requests in a short time period and sending the target device a request it does not know how to handle. Disrupting device state may temporarily render it unresponsive, possibly lasting until a reboot can occur. When placed in this state, devices may be unable to send and receive requests, and may not perform expected response functions in reaction to other events in the environment." .
 
@@ -29653,14 +29765,26 @@ When system firmware verification fails a set of predefined responses is typical
 :T0816 a owl:Class ;
     rdfs:label "Device Restart/Shutdown - ATTACK ICS" ;
     skos:prefLabel "Device Restart/Shutdown" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :OTEmbeddedComputer ] ;
     :attack-id "T0816" ;
     :definition "Adversaries may forcibly restart or shutdown a device in an ICS environment to disrupt and potentially negatively impact physical processes. Methods of device restart and shutdown exist in some devices as built-in, standard functionalities. These functionalities can be executed using interactive device web interfaces, CLIs, and network protocol commands." .
 
 :T0817 a owl:Class ;
     rdfs:label "Drive-by Compromise - ATTACK ICS" ;
     skos:prefLabel "Drive-by Compromise" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :URL ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InternetWebNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Browser ] ;
     :attack-id "T0817" ;
     :definition "Adversaries may gain access to a system during a drive-by compromise, when a user visits a website as part of a regular browsing session. With this technique, the user's web browser is targeted and exploited simply by visiting the compromised website." .
 
@@ -29676,35 +29800,68 @@ When system firmware verification fails a set of predefined responses is typical
 :T0819 a owl:Class ;
     rdfs:label "Exploit Public-Facing Application - ATTACK ICS" ;
     skos:prefLabel "Exploit Public-Facing Application" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :NetworkServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundInternetNetworkTraffic ] ;
     :attack-id "T0819" ;
     :definition "Adversaries may leverage weaknesses to exploit internet-facing software for initial access into an industrial network. Internet-facing software may be user applications, underlying networking implementations, an assets operating system, weak defenses, etc. Targets of this technique may be intentionally exposed for the purpose of remote management and visibility." .
 
 :T0820 a owl:Class ;
     rdfs:label "Exploitation for Evasion - ATTACK ICS" ;
     skos:prefLabel "Exploitation for Evasion" ;
-    rdfs:subClassOf :ATTACKICSEvasionTechnique ;
+    rdfs:subClassOf :ATTACKICSEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessCodeSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :StackFrame ] ;
     :attack-id "T0820" ;
     :definition "Adversaries may exploit a software vulnerability to take advantage of a programming error in a program, service, or within the operating system software or kernel itself to evade detection. Vulnerabilities may exist in software that can be used to disable or circumvent security features." .
 
 :T0821 a owl:Class ;
-    rdfs:label "Modify Controller Tasking - ATTACK ICS" ;
-    skos:prefLabel "Modify Controller Tasking" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:label "Modify controller Tasking - ATTACK ICS" ;
+    skos:prefLabel "Modify controller Tasking" ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlLogicProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTModifyControlProgramCommand ] ;
     :attack-id "T0821" ;
     :definition "Adversaries may modify the tasking of a controller to allow for the execution of their own programs. This can allow an adversary to manipulate the execution flow and behavior of a controller." .
 
 :T0822 a owl:Class ;
     rdfs:label "External Remote Services - ATTACK ICS" ;
     skos:prefLabel "External Remote Services" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Authentication ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundInternetNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkSession ] ;
     :attack-id "T0822" ;
     :definition "Adversaries may leverage external remote services as a point of initial access into your network. These services allow users to connect to internal network resources from external locations. Examples are VPNs, Citrix, and other access mechanisms. Remote service gateways often manage connections and credential authentication for these services. (Citation: Daniel Oakley, Travis Smith, Tripwire)" .
 
 :T0823 a owl:Class ;
     rdfs:label "Graphical User Interface - ATTACK ICS" ;
     skos:prefLabel "Graphical User Interface" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :HMIApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :GraphicalUserInterface ] ;
     :attack-id "T0823" ;
     :definition "Adversaries may attempt to gain access to a machine via a Graphical User Interface (GUI) to enhance execution capabilities. Access to a GUI allows a user to interact with a computer in a more visual manner than a CLI. A GUI allows users to move a cursor and click on interface objects, with a mouse and keyboard as the main input devices, as opposed to just using the keyboard." .
 
@@ -29757,7 +29914,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0830 a owl:Class ;
     rdfs:label "Adversary-in-the-Middle - ATTACK ICS" ;
     skos:prefLabel "Adversary-in-the-Middle" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0830" ;
     :definition "Adversaries with privileged network access may seek to modify network traffic in real time using adversary-in-the-middle (AiTM) attacks. (Citation: Gabriel Sanchez October 2017) This type of attack allows the adversary to intercept traffic to and/or from a particular device on the network. If a AiTM attack is established, then the adversary has the ability to block, log, modify, or inject traffic into the communication stream. There are several ways to accomplish this attack, but some of the most-common are Address Resolution Protocol (ARP) poisoning and the use of a proxy. (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
@@ -29788,21 +29948,36 @@ When system firmware verification fails a set of predefined responses is typical
 :T0834 a owl:Class ;
     rdfs:label "Native API - ATTACK ICS" ;
     skos:prefLabel "Native API" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :SystemCall ] ;
     :attack-id "T0834" ;
     :definition "Adversaries may directly interact with the native OS application programming interface (API) to access system functions. Native APIs provide a controlled means of calling low-level OS services within the kernel, such as those involving hardware/devices, memory, and processes. (Citation: The MITRE Corporation May 2017) These native APIs are leveraged by the OS during system boot (when other system components are not yet initialized) as well as carrying out tasks and requests during routine operations." .
 
 :T0835 a owl:Class ;
     rdfs:label "Manipulate I/O Image - ATTACK ICS" ;
     skos:prefLabel "Manipulate I/O Image" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTChangeDataCommand ] ;
     :attack-id "T0835" ;
     :definition "Adversaries may manipulate the I/O image of PLCs through various means to prevent them from functioning as expected. Methods of I/O image manipulation may include overriding the I/O table via direct memory manipulation or using the override function used for testing PLC programs. (Citation: Dr. Kelvin T. Erickson December 2010) During the scan cycle, a PLC reads the status of all inputs and stores them in an image table. (Citation: Nanjundaiah, Vaidyanath) The image table is the PLCs internal storage location where values of inputs/outputs for one scan are stored while it executes the user program. After the PLC has solved the entire logic program, it updates the output image table. The contents of this output image table are written to the corresponding output points in I/O Modules." .
 
 :T0836 a owl:Class ;
     rdfs:label "Modify Parameter - ATTACK ICS" ;
     skos:prefLabel "Modify Parameter" ;
-    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique ;
+    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTLogicVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTWriteCommand ] ;
     :attack-id "T0836" ;
     :definition "Adversaries may modify parameters used to instruct industrial control system devices. These devices operate via programs that dictate how and when to perform actions based on such parameters. Such parameters can determine the extent to which an action is performed and may specify additional options. For example, a program on a control system device dictating motor processes may take a parameter defining the total number of seconds to run that motor." .
 
@@ -29816,7 +29991,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0838 a owl:Class ;
     rdfs:label "Modify Alarm Settings - ATTACK ICS" ;
     skos:prefLabel "Modify Alarm Settings" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTModifyDeviceConfigurationCommand ] ;
     :attack-id "T0838" ;
     :definition "Adversaries may modify alarm settings to prevent alerts that may inform operators of their presence or to prevent responses to dangerous and unintended scenarios. Reporting messages are a standard part of data acquisition in control systems. Reporting messages are used as a way to transmit system state information and acknowledgements that specific actions have occurred. These messages provide vital information for the management of a physical process, and keep operators, engineers, and administrators aware of the state of system devices and physical processes." .
 
@@ -29824,14 +30002,26 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Module Firmware - ATTACK ICS" ;
     skos:prefLabel "Module Firmware" ;
     rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
-        :ATTACKICSPersistenceTechnique ;
+        :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Firmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDeviceFirmwareCommand ] ;
     :attack-id "T0839" ;
     :definition "Adversaries may install malicious or vulnerable firmware onto modular hardware devices. Control system devices often contain modular hardware devices. These devices may have their own set of firmware that is separate from the firmware of the main control system equipment." .
 
 :T0840 a owl:Class ;
     rdfs:label "Network Connection Enumeration - ATTACK ICS" ;
     skos:prefLabel "Network Connection Enumeration" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTDeviceIdentificationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0840" ;
     :definition "Adversaries may perform network connection enumeration to discover information about device communication patterns. If an adversary can inspect the state of a network connection with tools, such as Netstat(Citation: Netstat), in conjunction with [System Firmware](https://attack.mitre.org/techniques/T0857), then they can determine the role of certain devices on the network  (Citation: MITRE). The adversary can also use [Network Sniffing](https://attack.mitre.org/techniques/T0842) to watch network traffic for details about the source, destination, protocol, and content." .
 
@@ -29847,14 +30037,26 @@ When system firmware verification fails a set of predefined responses is typical
 :T0842 a owl:Class ;
     rdfs:label "Network Sniffing - ATTACK ICS" ;
     skos:prefLabel "Network Sniffing" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :DNSLookup ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0842" ;
     :definition "Network sniffing is the practice of using a network interface on a computer system to monitor or capture information (Citation: Enterprise ATT&CK January 2018) regardless of whether it is the specified destination for the information." .
 
 :T0843 a owl:Class ;
     rdfs:label "Program Download - ATTACK ICS" ;
     skos:prefLabel "Program Download" ;
-    rdfs:subClassOf :ATTACKICSLateralMovementTechnique ;
+    rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDownloadControlProgramCommand ] ;
     :attack-id "T0843" ;
     :definition "Adversaries may perform a program download to transfer a user program to a controller." .
 
@@ -29871,28 +30073,58 @@ When system firmware verification fails a set of predefined responses is typical
 :T0845 a owl:Class ;
     rdfs:label "Program Upload - ATTACK ICS" ;
     skos:prefLabel "Program Upload" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadDeviceConfigurationCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTControlProgram ] ;
     :attack-id "T0845" ;
     :definition "Adversaries may attempt to upload a program from a PLC to gather information about an industrial process. Uploading a program may allow them to acquire and study the underlying logic. Methods of program upload include vendor software, which enables the user to upload and read a program running on a PLC. This software can be used to upload the target program to a workstation, jump box, or an interfacing device." .
 
 :T0846 a owl:Class ;
     rdfs:label "Remote System Discovery - ATTACK ICS" ;
     skos:prefLabel "Remote System Discovery" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateSocket ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTDeviceIdentificationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0846" ;
     :definition "Adversaries may attempt to get a listing of other systems by IP address, hostname, or other logical identifier on a network that may be used for subsequent Lateral Movement or Discovery techniques. Functionality could exist within adversary tools to enable this, but utilities available on the operating system or vendor software could also be used. (Citation: Enterprise ATT&CK January 2018)" .
 
 :T0847 a owl:Class ;
     rdfs:label "Replication Through Removable Media - ATTACK ICS" ;
     skos:prefLabel "Replication Through Removable Media" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :RemovableMediaDevice ] ;
     :attack-id "T0847" ;
     :definition "Adversaries may move onto systems, such as those separated from the enterprise network, by copying malware to removable media which is inserted into the control systems environment. The adversary may rely on unknowing trusted third parties, such as suppliers or contractors with access privileges, to introduce the removable media. This technique enables initial access to target devices that never connect to untrusted networks, but are physically accessible." .
 
 :T0848 a owl:Class ;
     rdfs:label "Rogue Master - ATTACK ICS" ;
     skos:prefLabel "Rogue Master" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ControlServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0848" ;
     :definition "Adversaries may setup a rogue master to leverage control server functions to communicate with outstations. A rogue master can be used to send legitimate control messages to other control system devices, affecting processes in unintended ways. It may also be used to disrupt network communications by capturing and receiving the network traffic meant for the actual master. Impersonating a master may also allow an adversary to avoid detection." .
 
@@ -29916,21 +30148,45 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Rootkit - ATTACK ICS" ;
     skos:prefLabel "Rootkit" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
-        :ATTACKICSInhibitResponseFunctionTechnique ;
+        :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :BootSector ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Firmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Kernel ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :KernelModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T0851" ;
     :definition "Adversaries may deploy rootkits to hide the presence of programs, files, network connections, services, drivers, and other system components. Rootkits are programs that hide the existence of malware by intercepting and modifying operating-system API calls that supply system information. Rootkits or rootkit-enabling functionality may reside at the user or kernel level in the operating system, or lower. (Citation: Enterprise ATT&CK January 2018)" .
 
 :T0852 a owl:Class ;
     rdfs:label "Screen Capture - ATTACK ICS" ;
     skos:prefLabel "Screen Capture" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DisplayServer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :GetScreenCapture ] ;
     :attack-id "T0852" ;
     :definition "Adversaries may attempt to perform screen capture of devices in the control system environment. Screenshots may be taken of workstations, HMIs, or other devices that display environment-relevant process, device, reporting, alarm, or related data. These device displays may reveal information regarding the ICS process, layout, control, and related schematics. In particular, an HMI can provide a lot of important industrial process information. (Citation: ICS-CERT October 2017) Analysis of screen captures may provide the adversary with an understanding of intended operations and interactions between critical devices." .
 
 :T0853 a owl:Class ;
     rdfs:label "Scripting - ATTACK ICS" ;
     skos:prefLabel "Scripting" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :attack-id "T0853" ;
     :definition "Adversaries may use scripting languages to execute arbitrary code in the form of a pre-written script or in the form of user-supplied code to an interpreter. Scripting languages are programming languages that differ from compiled languages, in that scripting languages use an interpreter, instead of a compiler. These interpreters read and compile part of the source code just before it is executed, as opposed to compilers, which compile each and every line of code to an executable file. Scripting allows software developers to run their code on any system where the interpreter exists. This way, they can distribute one package, instead of precompiling executables for many different systems. Scripting languages, such as Python, have their interpreters shipped as a default with many Linux distributions." .
 
@@ -29946,7 +30202,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0855 a owl:Class ;
     rdfs:label "Unauthorized Command Message - ATTACK ICS" ;
     skos:prefLabel "Unauthorized Command Message" ;
-    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique ;
+    rdfs:subClassOf :ATTACKICSImpairProcessControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTControlCommand ] ;
     :attack-id "T0855" ;
     :definition "Adversaries may send unauthorized command messages to instruct control system assets to perform actions outside of their intended functionality, or without the logical preconditions to trigger their expected function. Command messages are used in ICS networks to give direct instructions to control systems devices. If an adversary can send an unauthorized command message to a control system, then it can instruct the control systems device to perform an action outside the normal bounds of the device's actions. An adversary could potentially instruct a control systems device to perform an action that will cause an [Impact](https://attack.mitre.org/tactics/TA0105). (Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
@@ -29954,7 +30213,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Spoof Reporting Message - ATTACK ICS" ;
     skos:prefLabel "Spoof Reporting Message" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
-        :ATTACKICSImpairProcessControlTechnique ;
+        :ATTACKICSImpairProcessControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDiagnosticsMessage ] ;
     :attack-id "T0856" ;
     :definition "Adversaries may spoof reporting messages in control system environments for evasion and to impair process control. In control systems, reporting messages contain telemetry data (e.g., I/O values) pertaining to the current state of equipment and the industrial process. Reporting messages are important for monitoring the normal operation of a system or identifying important events such as deviations from expected values." .
 
@@ -29962,7 +30224,13 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "System Firmware - ATTACK ICS" ;
     skos:prefLabel "System Firmware" ;
     rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
-        :ATTACKICSPersistenceTechnique ;
+        :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :OTHumanMachineInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "T0857" ;
     :definition "System firmware on modern assets is often designed with an update feature. Older device firmware may be factory installed and require special reprograming equipment. When available, the firmware update feature enables vendors to remotely patch bugs and perform upgrades. Device firmware updates are often delegated to the user and may be done using a software update package. It may also be possible to perform this task over the network." .
 
@@ -29971,6 +30239,12 @@ When system firmware verification fails a set of predefined responses is typical
     skos:prefLabel "Change Operating Mode" ;
     rdfs:subClassOf :ATTACKICSEvasionTechnique,
         :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :OTModeSwitch ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTModifyDeviceOperatingModeCommand ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :OTControllerOperatingMode ] ;
@@ -29981,21 +30255,45 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Valid Accounts - ATTACK ICS" ;
     skos:prefLabel "Valid Accounts" ;
     rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
-        :ATTACKICSPersistenceTechnique ;
+        :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Authentication ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Authorization ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :UserAccount ] ;
     :attack-id "T0859" ;
     :definition "Adversaries may steal the credentials of a specific user or service account using credential access techniques. In some cases, default credentials for control system devices may be publicly available. Compromised credentials may be used to bypass access controls placed on various resources on hosts and within the network, and may even be used for persistent access to remote systems. Compromised and default credentials may also grant an adversary increased privilege to specific systems and devices or access to restricted areas of the network. Adversaries may choose not to use malware or tools, in conjunction with the legitimate access those credentials provide, to make it harder to detect their presence or to control devices and send legitimate commands in an unintended way." .
 
 :T0860 a owl:Class ;
     rdfs:label "Wireless Compromise - ATTACK ICS" ;
     skos:prefLabel "Wireless Compromise" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :IOModule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :OTSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :WirelessLink ] ;
     :attack-id "T0860" ;
     :definition "Adversaries may perform wireless compromise as a method of gaining communications and unauthorized access to a wireless network. Access to a wireless network may be gained through the compromise of a wireless device. (Citation: Alexander Bolshev, Gleb Cherbov July 2014) (Citation: Alexander Bolshev March 2014) Adversaries may also utilize radios and other wireless communication devices on the same frequency as the wireless network. Wireless compromise can be done as an initial access vector from a remote distance." .
 
 :T0861 a owl:Class ;
     rdfs:label "Point & Tag Identification - ATTACK ICS" ;
     skos:prefLabel "Point & Tag Identification" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTReadDeviceConfigurationCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTLogicVariable ] ;
     :attack-id "T0861" ;
     :definition "Adversaries may collect point and tag values to gain a more comprehensive understanding of the process environment. Points may be values such as inputs, memory locations, outputs or other process specific variables. (Citation: Dennis L. Sloatman September 2016) Tags are the identifiers given to points for operator convenience." .
 
@@ -30009,21 +30307,36 @@ When system firmware verification fails a set of predefined responses is typical
 :T0863 a owl:Class ;
     rdfs:label "User Execution - ATTACK ICS" ;
     skos:prefLabel "User Execution" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T0863" ;
     :definition "Adversaries may rely on a targeted organizations user interaction for the execution of malicious code. User interaction may consist of installing applications, opening email attachments, or granting higher permissions to documents." .
 
 :T0864 a owl:Class ;
     rdfs:label "Transient Cyber Asset - ATTACK ICS" ;
     skos:prefLabel "Transient Cyber Asset" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :OTEngineeringWorkstation ] ;
     :attack-id "T0864" ;
     :definition "Adversaries may target devices that are transient across ICS networks and external networks. Normally, transient assets are brought into an environment by authorized personnel and do not remain in that environment on a permanent basis. (Citation: North American Electric Reliability Corporation June 2021) Transient assets are commonly needed to support management functions and may be more common in systems where a remotely managed asset is not feasible, external connections for remote access do not exist, or 3rd party contractor/vendor access is required." .
 
 :T0865 a owl:Class ;
     rdfs:label "Spearphishing Attachment - ATTACK ICS" ;
     skos:prefLabel "Spearphishing Attachment" ;
-    rdfs:subClassOf :ATTACKICSInitialAccessTechnique ;
+    rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Email ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundInternetMailTraffic ] ;
     :attack-id "T0865" ;
     :definition "Adversaries may use a spearphishing attachment, a variant of spearphishing, as a form of a social engineering attack against specific targets. Spearphishing attachments are different from other forms of spearphishing in that they employ malware attached to an email. All forms of spearphishing are electronically delivered and target a specific individual, company, or industry. In this scenario, adversaries attach a file to the spearphishing email and usually rely upon [User Execution](https://attack.mitre.org/techniques/T0863) to gain execution and access. (Citation: Enterprise ATT&CK October 2019)" .
 
@@ -30031,28 +30344,64 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Exploitation of Remote Services - ATTACK ICS" ;
     skos:prefLabel "Exploitation of Remote Services" ;
     rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
-        :ATTACKICSLateralMovementTechnique ;
+        :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :Server ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessCodeSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :StackFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTProtocolMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :IntranetNetworkTraffic ] ;
     :attack-id "T0866" ;
     :definition "Adversaries may exploit a software vulnerability to take advantage of a programming error in a program, service, or within the operating system software or kernel itself to enable remote service abuse. A common goal for post-compromise exploitation of remote services is for initial access into and lateral movement throughout the ICS environment to enable access to targeted systems. (Citation: Enterprise ATT&CK)" .
 
 :T0867 a owl:Class ;
     rdfs:label "Lateral Tool Transfer - ATTACK ICS" ;
     skos:prefLabel "Lateral Tool Transfer" ;
-    rdfs:subClassOf :ATTACKICSLateralMovementTechnique ;
+    rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :Server ] ;
     :attack-id "T0867" ;
     :definition "Adversaries may transfer tools or other files from one system to another to stage adversary tools or other files over the course of an operation. (Citation: Enterprise ATT&CK) Copying of files may also be performed laterally between internal victim systems to support Lateral Movement with remote Execution using inherent file sharing protocols such as file sharing over SMB to connected network shares. (Citation: Enterprise ATT&CK)" .
 
 :T0868 a owl:Class ;
     rdfs:label "Detect Operating Mode - ATTACK ICS" ;
     skos:prefLabel "Detect Operating Mode" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :detects ;
+            owl:someValuesFrom :OperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-evaluate ;
+            owl:someValuesFrom :OTModeSwitch ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTReadDeviceConfigurationCommand ] ;
     :attack-id "T0868" ;
     :definition "Adversaries may gather information about a PLCs or controllers current operating mode. Operating modes dictate what change or maintenance functions can be manipulated and are often controlled by a key switch on the PLC (e.g.,  run, prog [program], and remote). Knowledge of these states may be valuable to an adversary to determine if they are able to reprogram the PLC. Operating modes and the mechanisms by which they are selected often vary by vendor and product line. Some commonly implemented operating modes are described below:" .
 
 :T0869 a owl:Class ;
     rdfs:label "Standard Application Layer Protocol - ATTACK ICS" ;
     skos:prefLabel "Standard Application Layer Protocol" ;
-    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique ;
+    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTProtocolMessage ] ,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OutboundNetworkTraffic ] ;
     :attack-id "T0869" ;
     :definition "Adversaries may establish command and control capabilities over commonly used application layer protocols such as HTTP(S), OPC, RDP, telnet, DNP3, and modbus. These protocols may be used to disguise adversary actions as benign network traffic. Standard protocols may be seen on their associated port or in some cases over a non-standard port.  Adversaries may use these protocols to reach out of the network for command and control, or in some cases to other infected devices within the network." .
 
@@ -30068,7 +30417,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T0871 a owl:Class ;
     rdfs:label "Execution through API - ATTACK ICS" ;
     skos:prefLabel "Execution through API" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :attack-id "T0871" ;
     :definition "Adversaries may attempt to leverage Application Program Interfaces (APIs) used for communication between control software and the hardware. Specific functionality is often coded into APIs which can be called by software to engage specific functions on a device or other software." .
 
@@ -30082,7 +30434,13 @@ When system firmware verification fails a set of predefined responses is typical
 :T0873 a owl:Class ;
     rdfs:label "Project File Infection - ATTACK ICS" ;
     skos:prefLabel "Project File Infection" ;
-    rdfs:subClassOf :ATTACKICSPersistenceTechnique ;
+    rdfs:subClassOf :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTChangeControlProgramCommand ] ;
     :attack-id "T0873" ;
     :definition "Adversaries may attempt to infect project files with malicious code. These project files may consist of objects, program organization units, variables such as tags, documentation, and other configurations needed for PLC programs to function. (Citation: Beckhoff) Using built in functions of the engineering software, adversaries may be able to download an infected program to a PLC in the operating environment enabling further [Execution](https://attack.mitre.org/tactics/TA0104) and [Persistence](https://attack.mitre.org/tactics/TA0110) techniques. (Citation: PLCdev)" .
 
@@ -30090,7 +30448,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Hooking - ATTACK ICS" ;
     skos:prefLabel "Hooking" ;
     rdfs:subClassOf :ATTACKICSExecutionTechnique,
-        :ATTACKICSPrivilegeEscalationTechnique ;
+        :ATTACKICSPrivilegeEscalationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :ProcessCodeSegment ] ;
     :attack-id "T0874" ;
     :definition "Adversaries may hook into application programming interface (API) functions used by processes to redirect calls for execution and privilege escalation means. Windows processes often leverage these API functions to perform tasks that require reusable system resources. Windows API functions are typically stored in dynamic-link libraries (DLLs) as exported functions. (Citation: Enterprise ATT&CK)" .
 
@@ -30107,14 +30468,29 @@ When system firmware verification fails a set of predefined responses is typical
 :T0877 a owl:Class ;
     rdfs:label "I/O Image - ATTACK ICS" ;
     skos:prefLabel "I/O Image" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTReadValueCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :OTLogicVariable ] ;
     :attack-id "T0877" ;
     :definition "Adversaries may seek to capture process values related to the inputs and outputs of a PLC. During the scan cycle, a PLC reads the status of all inputs and stores them in an image table. (Citation: Nanjundaiah, Vaidyanath) The image table is the PLCs internal storage location where values of inputs/outputs for one scan are stored while it executes the user program. After the PLC has solved the entire logic program, it updates the output image table. The contents of this output image table are written to the corresponding output points in I/O Modules." .
 
 :T0878 a owl:Class ;
     rdfs:label "Alarm Suppression - ATTACK ICS" ;
     skos:prefLabel "Alarm Suppression" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :OTDiagnosticsMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :OTControlLogicProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTDiagnosticsMessage ] ;
     :attack-id "T0878" ;
     :definition "Adversaries may target protection function alarms to prevent them from notifying operators of critical conditions. Alarm messages may be a part of an overall reporting system and of particular interest for adversaries. Disruption of the alarm system does not imply the disruption of the reporting system as a whole." .
 
@@ -30156,14 +30532,26 @@ When system firmware verification fails a set of predefined responses is typical
 :T0884 a owl:Class ;
     rdfs:label "Connection Proxy - ATTACK ICS" ;
     skos:prefLabel "Connection Proxy" ;
-    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique ;
+    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :IntranetNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OutboundInternetNetworkTraffic ] ;
     :attack-id "T0884" ;
     :definition "Adversaries may use a connection proxy to direct network traffic between systems or act as an intermediary for network communications." .
 
 :T0885 a owl:Class ;
     rdfs:label "Commonly Used Port - ATTACK ICS" ;
     skos:prefLabel "Commonly Used Port" ;
-    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique ;
+    rdfs:subClassOf :ATTACKICSCommandAndControlTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "T0885" ;
     :definition "Adversaries may communicate over a commonly used port to bypass firewalls or network detection systems and to blend in with normal network activity, to avoid more detailed inspection. They may use the protocol associated with the port, or a completely different protocol. They may use commonly open ports, such as the examples provided below." .
 
@@ -30171,7 +30559,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Remote Services - ATTACK ICS" ;
     skos:prefLabel "Remote Services" ;
     rdfs:subClassOf :ATTACKICSInitialAccessTechnique,
-        :ATTACKICSLateralMovementTechnique ;
+        :ATTACKICSLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :IntranetNetworkTraffic ] ;
     :attack-id "T0886" ;
     :definition "Adversaries may leverage remote services to move between assets and network segments. These services are often used to allow operators to interact with systems remotely within the network, some examples are RDP, SMB, SSH, and other similar mechanisms. (Citation: Blake Johnson, Dan Caban, Marina Krotofil, Dan Scali, Nathan Brubaker, Christopher Glyer December 2017) (Citation: Dragos December 2017) (Citation: Joe Slowik April 2019)" .
 
@@ -30179,28 +30570,61 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Wireless Sniffing - ATTACK ICS" ;
     skos:prefLabel "Wireless Sniffing" ;
     rdfs:subClassOf :ATTACKICSCollectionTechnique,
-        :ATTACKICSDiscoveryTechnique ;
+        :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :WirelessLink ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :WirelessLink ] ;
     :attack-id "T0887" ;
     :definition "Adversaries may seek to capture radio frequency (RF) communication used for remote control and reporting in distributed environments. RF communication frequencies vary between 3 kHz to 300 GHz, although are commonly between 300 MHz to 6 GHz. (Citation: Candell, R., Hany, M., Lee, K. B., Liu,Y., Quimby, J., Remley, K. April 2018)  The wavelength and frequency of the signal affect how the signal propagates through open air, obstacles (e.g. walls and trees) and the type of radio required to capture them. These characteristics are often standardized in the protocol and hardware and may have an effect on how the signal is captured. Some examples of wireless protocols that may be found in cyber-physical environments are: WirelessHART, Zigbee, WIA-FA, and 700 MHz Public Safety Spectrum." .
 
 :T0888 a owl:Class ;
     rdfs:label "Remote System Information Discovery - ATTACK ICS" ;
     skos:prefLabel "Remote System Information Discovery" ;
-    rdfs:subClassOf :ATTACKICSDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKICSDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :OperatingSystemConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateSocket ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTDeviceDescriptionMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0888" ;
     :definition "An adversary may attempt to get detailed information about remote systems and their peripherals, such as make/model, role, and configuration. Adversaries may use information from Remote System Information Discovery to aid in targeting and shaping follow-on behaviors. For example, the system's operational role and model information can dictate whether it is a relevant target for the adversary's operational objectives. In addition, the system's configuration may be used to scope subsequent technique usage." .
 
 :T0889 a owl:Class ;
     rdfs:label "Modify Program - ATTACK ICS" ;
     skos:prefLabel "Modify Program" ;
-    rdfs:subClassOf :ATTACKICSPersistenceTechnique ;
+    rdfs:subClassOf :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OTModifyControlProgramCommand ] ;
     :attack-id "T0889" ;
     :definition "Adversaries may modify or add a program on a controller to affect how it interacts with the physical process, peripheral devices and other hosts on the network. Modification to controller programs can be accomplished using a Program Download in addition to other types of program modification such as online edit and program append." .
 
 :T0890 a owl:Class ;
     rdfs:label "Exploitation for Privilege Escalation - ATTACK ICS" ;
     skos:prefLabel "Exploitation for Privilege Escalation" ;
-    rdfs:subClassOf :ATTACKICSPrivilegeEscalationTechnique ;
+    rdfs:subClassOf :ATTACKICSPrivilegeEscalationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :StackFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessCodeSegment ] ;
     :attack-id "T0890" ;
     :definition "Adversaries may exploit software vulnerabilities in an attempt to elevate privileges. Exploitation of a software vulnerability occurs when an adversary takes advantage of a programming error in a program, service, or within the operating system software or kernel itself to execute adversary-controlled code. Security constructs such as permission levels will often hinder access to information and use of certain techniques, so adversaries will likely need to perform privilege escalation to include use of software exploitation to circumvent those restrictions. (Citation: The MITRE Corporation)" .
 
@@ -30208,35 +30632,86 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Hardcoded Credentials - ATTACK ICS" ;
     skos:prefLabel "Hardcoded Credentials" ;
     rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
-        :ATTACKICSPersistenceTechnique ;
+        :ATTACKICSPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :Credential ] ;
     :attack-id "T0891" ;
     :definition "Adversaries may leverage credentials that are hardcoded in software or firmware to gain an unauthorized interactive user session to an asset. Examples credentials that may be hardcoded in an asset include:" .
 
 :T0892 a owl:Class ;
     rdfs:label "Change Credential - ATTACK ICS" ;
     skos:prefLabel "Change Credential" ;
-    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique ;
+    rdfs:subClassOf :ATTACKICSInhibitResponseFunctionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Credential ] ;
     :attack-id "T0892" ;
     :definition "Adversaries may modify software and device credentials to prevent operator and responder access. Depending on the device, the modification or addition of this password could prevent any device configuration actions from being accomplished and may require a factory reset or replacement of hardware. These credentials are often built-in features provided by the device vendors as a means to restrict access to management interfaces." .
 
 :T0893 a owl:Class ;
     rdfs:label "Data from Local System - ATTACK ICS" ;
     skos:prefLabel "Data from Local System" ;
-    rdfs:subClassOf :ATTACKICSCollectionTechnique ;
+    rdfs:subClassOf :ATTACKICSCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DatabaseFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access;
+            owl:someValuesFrom :ConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :OTReadCommand ] ;
     :attack-id "T0893" ;
     :definition "Adversaries may target and collect data from local system sources, such as file systems, configuration files, or local databases. This can include sensitive data such as specifications, schematics, or diagrams of control system layouts, devices, and processes." .
 
 :T0894 a owl:Class ;
     rdfs:label "System Binary Proxy Execution - ATTACK ICS" ;
     skos:prefLabel "System Binary Proxy Execution" ;
-    rdfs:subClassOf :ATTACKICSEvasionTechnique ;
+    rdfs:subClassOf :ATTACKICSEvasionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ShellCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateThread ],
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :SharedLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-add ;
+            owl:someValuesFrom :Software ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SystemConfigurationDatabase ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessSegment ] ;
     :attack-id "T0894" ;
     :definition "Adversaries may bypass process and/or signature-based defenses by proxying execution of malicious content with signed, or otherwise trusted, binaries. Binaries used in this technique are often Microsoft-signed files, indicating that they have been either downloaded from Microsoft or are already native in the operating system. (Citation: LOLBAS Project) Binaries signed with trusted digital certificates can typically execute on Windows systems protected by digital signature validation. Several Microsoft signed binaries that are default on Windows installations can be used to proxy execution of other files or commands. Similarly, on Linux systems adversaries may abuse trusted binaries such as split to proxy execution of malicious commands. (Citation: split man page)(Citation: GTFO split)" .
 
 :T0895 a owl:Class ;
     rdfs:label "Autorun Image - ATTACK ICS" ;
     skos:prefLabel "Autorun Image" ;
-    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :invokes ;
+            owl:someValuesFrom :CreateProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T0895" ;
     :definition "Adversaries may leverage AutoRun functionality or scripts to execute malicious code. Devices configured to enable AutoRun functionality or legacy operating systems may be susceptible to abuse of these features to run malicious code stored on various forms of removeable media (i.e., USB, Disk Images [.ISO]). Commonly, AutoRun or AutoPlay are disabled in many operating systems configurations to mitigate against this technique. If a device is configured to enable AutoRun or AutoPlay, adversaries may execute code on the device by mounting the removable media to the device, either through physical or virtual means. This may be especially relevant for virtual machine environments where disk images may be dynamically mapped to a guest system on a hypervisor." .
 
@@ -33468,7 +33943,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :ProcessSegment ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :OutboundInternetNetworkTraffic ],
+            owl:someValuesFrom :InternetWebNetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :URL ] ;
@@ -39994,7 +40469,7 @@ Geolocation data for each user logon attempt is collected and used to create a b
     :kb-article """## How it works
 
 Access is determined based on the attributes associated with subjects (requesters) and the objects being accessed. Each object and subject has a set of associated attributes, such as location, time of creation, and access rights. Access to an object is authorized or denied depending on whether the required. """ ;
-    :kb-reference :Reference-GuidetoOTSecurity ;
+    :kb-reference :Reference-GuideToOTSecurity ;
     :synonym "Role Based Access Controls" .
 
 :UserInitConfigurationFile a owl:Class ;
@@ -40179,13 +40654,55 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
 
 :Vehicle a owl:Class ;
     rdfs:label "Vehicle" ;
-    rdfs:subClassOf :PhysicalArtifact ;
+    rdfs:subClassOf :PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Actuator ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :TransducerSensor ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :VehicleComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-operating-mode ;
+            owl:someValuesFrom :VehicleOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :GNSSReceiver ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Vehicle> ;
-    :definition "A vehicle is a machine designed for self-propulsion, usually to transport people, cargo, or both." .
+    :definition "A vehicle is an electronically controlled machine designed for self-propulsion, usually to transport people, cargo, or both." ;
+    :synonym "Self-propelled Vehicle" .
+
+:VehicleComputer a owl:Class ;
+    rdfs:label "Vehicle Computer" ;
+    rdfs:subClassOf :OTEmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :VehicleSoftware ] ;
+    :definition "An embedded computing system within a vehicle that monitors, controls, or supports vehicle functions by processing data, communicating with other components, and interacting with sensors, actuators, and external interfaces." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Electronic_control_unit>,
+        <https://industrial.panasonic.com/ww/ds/ss/technical/ap9>,
+        <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Onboard_Computers> .
+
+:VehicleControlSoftware a owl:Class ;
+    rdfs:label "Vehicle Control Software" ;
+    rdfs:subClassOf :OTControlProgram,
+        :VehicleSoftware ;
+    :definition "A specialized subset of vehicle software strictly responsible for the direct management of the vehicle's physical state, orientation, and safety-critical dynamics. It functions as the logic layer between high-level mission objectives and the physical actuators." .
 
 :VehicleOperatingMode a owl:Class ;
     rdfs:label "Vehicle Operating Mode" ;
-    rdfs:subClassOf :OperatingMode .
+    rdfs:subClassOf :OperatingMode ;
+    :definition "The current functional state or control regime of a vehicle that determines how it is configured, how its systems behave, and what kind of operation it is performing at a given time." .
+
+:VehicleSoftware a owl:Class ;
+    rdfs:label "Vehicle Software" ;
+    rdfs:subClassOf :Application ;
+    :definition "Any software residing on a vehicle's onboard compute platforms." .
 
 :Vendor a owl:Class ;
     rdfs:label "Vendor" ;
@@ -42582,7 +43099,6 @@ The analytic needs to be tuned. The 1.5 in the query is the number of standard d
     :has-link "https://car.mitre.org/analytics/CAR-2021-01-007/"^^xsd:anyURI ;
     :kb-abstract "In an attempt to avoid detection after compromising a machine, threat actors often try to disable Windows Defender. This is often done using “sc” [service control], a legitimate tool provided by Microsoft for managing services. This action interferes with event detection and may lead to a security event going undetected, thereby potentially leading to further compromise of the network." ;
     :kb-author "MITRE" ;
-    :kb-mitre-analysis "d" ;
     :kb-organization "MITRE" ;
     :kb-reference-of :ProcessSpawnAnalysis ;
     :kb-reference-title "CAR-2021-01-007: Detecting Tampering of Windows Defender Command Prompt" ;
@@ -43794,8 +44310,6 @@ specific types of information (e.g., classified matter, National Security Inform
         :PhysicalLocking,
         :UserGroupPermissions ;
     :kb-reference-title "Guide to Operational Technology (OT) Security" .
-
-:Reference-GuidetoOTSecurity a owl:NamedIndividual .
 
 :Reference-GuideToStorageEncryptionTechnologiesForEndUserDevices a :GuidelineReference,
         owl:NamedIndividual ;
@@ -46733,4 +47247,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
