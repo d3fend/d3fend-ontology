@@ -1,7 +1,7 @@
 import argparse
 import string
 
-from rdflib import URIRef, Literal, RDF, RDFS, Namespace
+from rdflib import BNode, URIRef, Literal, RDF, RDFS, Namespace
 from stix2 import MemoryStore, Filter
 
 from build import get_graph, _xmlns as _XMLNS
@@ -13,6 +13,61 @@ d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
 skos = Namespace("http://www.w3.org/2004/02/skos/core#")
 
 SUPPORTED_FRAMEWORKS = {"enterprise", "ics", "mobile"}
+
+ENTERPRISE_TACTIC_CLASSES = {
+    "CollectionTechnique",
+    "CommandAndControlTechnique",
+    "CredentialAccessTechnique",
+    "DefenseEvasionTechnique",
+    "DefenseImpairmentTechnique",
+    "DiscoveryTechnique",
+    "ExecutionTechnique",
+    "ExfiltrationTechnique",
+    "ImpactTechnique",
+    "InitialAccessTechnique",
+    "LateralMovementTechnique",
+    "PersistenceTechnique",
+    "PrivilegeEscalationTechnique",
+    "ReconnaissanceTechnique",
+    "ResourceDevelopmentTechnique",
+    "StealthTechnique",
+}
+
+ICS_TACTIC_CLASSES = {
+    "ATTACKICSCollectionTechnique",
+    "ATTACKICSCommandAndControlTechnique",
+    "ATTACKICSDiscoveryTechnique",
+    "ATTACKICSEvasionTechnique",
+    "ATTACKICSExecutionTechnique",
+    "ATTACKICSImpactTechnique",
+    "ATTACKICSImpairProcessControlTechnique",
+    "ATTACKICSInhibitResponseFunctionTechnique",
+    "ATTACKICSInitialAccessTechnique",
+    "ATTACKICSLateralMovementTechnique",
+    "ATTACKICSPersistenceTechnique",
+    "ATTACKICSPrivilegeEscalationTechnique",
+}
+
+MOBILE_TACTIC_CLASSES = {
+    "ATTACKMobileCollectionTechnique",
+    "ATTACKMobileCommandAndControlTechnique",
+    "ATTACKMobileCredentialAccessTechnique",
+    "ATTACKMobileDefenseEvasionTechnique",
+    "ATTACKMobileDiscoveryTechnique",
+    "ATTACKMobileExecutionTechnique",
+    "ATTACKMobileExfiltrationTechnique",
+    "ATTACKMobileImpactTechnique",
+    "ATTACKMobileInitialAccessTechnique",
+    "ATTACKMobileLateralMovementTechnique",
+    "ATTACKMobilePersistenceTechnique",
+    "ATTACKMobilePrivilegeEscalationTechnique",
+}
+
+TACTIC_CLASSES_BY_FRAMEWORK = {
+    "enterprise": ENTERPRISE_TACTIC_CLASSES,
+    "ics": ICS_TACTIC_CLASSES,
+    "mobile": MOBILE_TACTIC_CLASSES,
+}
 
 
 def get_framework_labels(original_label, framework):
@@ -34,6 +89,136 @@ def get_framework_labels(original_label, framework):
         return original_label + " - ATTACK Mobile", original_label
     else:
         return original_label, None
+
+
+def clean_description(text):
+    return "\n".join(line.rstrip() for line in text.strip().splitlines())
+
+
+def get_attack_id(stix_object, framework):
+    return next(
+        (
+            ref.get("external_id")
+            for ref in stix_object["external_references"]
+            if ref.get("source_name") == "mitre-attack"
+            or ref.get("source_name") == f"mitre-{framework}-attack"
+        ),
+        None,
+    )
+
+
+def get_tactic_class_name(phase_name, framework):
+    class_base = string.capwords(phase_name.replace("-", " ")).replace(" ", "")
+    if framework == "enterprise":
+        return class_base + "Technique"
+
+    prefix = "ATTACK" + (
+        framework.upper() if framework == "ics" else framework.capitalize()
+    )
+    return prefix + class_base + "Technique"
+
+
+def get_framework_tactic_uris(framework):
+    return {d3fend[class_name] for class_name in TACTIC_CLASSES_BY_FRAMEWORK[framework]}
+
+
+def get_enterprise_matrix_tactics(thesrc):
+    matrix = next(
+        (
+            obj
+            for obj in thesrc.query([Filter("type", "=", "x-mitre-matrix")])
+            if obj.get("name") == "Enterprise ATT&CK"
+        ),
+        None,
+    )
+    if matrix is None:
+        return []
+
+    tactics = []
+    for tactic_ref in matrix.get("tactic_refs", []):
+        tactic = thesrc.get(tactic_ref)
+        if tactic is not None:
+            tactics.append(tactic)
+
+    return tactics
+
+
+def ensure_enterprise_tactic_class(graph, tactic):
+    shortname = tactic.get("x_mitre_shortname")
+    tactic_id = get_attack_id(tactic, "enterprise")
+    if shortname is None or tactic_id is None:
+        return
+
+    tactic_class = d3fend[get_tactic_class_name(shortname, "enterprise")]
+    if (tactic_class, RDF.type, owl.Class) in graph:
+        return
+
+    graph.add((tactic_class, RDF.type, owl.Class))
+    graph.add((tactic_class, RDFS.label, Literal(f"{tactic['name']} Technique")))
+    graph.add((tactic_class, RDFS.subClassOf, d3fend["ATTACKEnterpriseTechnique"]))
+    graph.add((tactic_class, RDFS.subClassOf, d3fend["OffensiveTechnique"]))
+
+    restriction = BNode()
+    graph.add((tactic_class, RDFS.subClassOf, restriction))
+    graph.add((restriction, RDF.type, owl.Restriction))
+    graph.add((restriction, owl.onProperty, d3fend["enables"]))
+    graph.add((restriction, owl.someValuesFrom, d3fend[tactic_id]))
+
+    first_line = clean_description(tactic.get("description", "")).split("\n")[0]
+    if first_line:
+        graph.add((tactic_class, d3fend["definition"], Literal(first_line)))
+
+
+def sync_enterprise_tactics(graph, thesrc):
+    tactics = get_enterprise_matrix_tactics(thesrc)
+    active_tactic_classes = set()
+    for index, tactic in enumerate(tactics):
+        tactic_id = get_attack_id(tactic, "enterprise")
+        if tactic_id is None:
+            continue
+        shortname = tactic.get("x_mitre_shortname")
+        if shortname is not None:
+            active_tactic_classes.add(get_tactic_class_name(shortname, "enterprise"))
+
+        tactic_uri = d3fend[tactic_id]
+        graph.add((tactic_uri, RDF.type, d3fend["OffensiveTactic"]))
+        graph.add((tactic_uri, RDF.type, owl.Class))
+        graph.add((tactic_uri, RDF.type, owl.NamedIndividual))
+        graph.add((tactic_uri, RDFS.subClassOf, d3fend["ATTACKEnterpriseTactic"]))
+        graph.add((tactic_uri, RDFS.subClassOf, d3fend["OffensiveTactic"]))
+
+        for label in list(graph.objects(tactic_uri, RDFS.label)):
+            graph.remove((tactic_uri, RDFS.label, label))
+        graph.add((tactic_uri, RDFS.label, Literal(tactic["name"])))
+
+        for definition in list(graph.objects(tactic_uri, d3fend["definition"])):
+            graph.remove((tactic_uri, d3fend["definition"], definition))
+        description = clean_description(tactic.get("description", ""))
+        if description:
+            graph.add((tactic_uri, d3fend["definition"], Literal(description)))
+
+        for display_order in list(graph.objects(tactic_uri, d3fend["display-order"])):
+            graph.remove((tactic_uri, d3fend["display-order"], display_order))
+        graph.add((tactic_uri, d3fend["display-order"], Literal(index - 1)))
+
+        ensure_enterprise_tactic_class(graph, tactic)
+
+    if "DefenseEvasionTechnique" not in active_tactic_classes:
+        legacy_class = d3fend["DefenseEvasionTechnique"]
+        if (legacy_class, RDF.type, owl.Class) in graph:
+            graph.add((legacy_class, owl.deprecated, Literal(True)))
+            if graph.value(legacy_class, RDFS.comment) is None:
+                graph.add(
+                    (
+                        legacy_class,
+                        RDFS.comment,
+                        Literal(
+                            "This ATT&CK tactic class was superseded in ATT&CK "
+                            "v19.0 by StealthTechnique and "
+                            "DefenseImpairmentTechnique."
+                        ),
+                    )
+                )
 
 
 def _print(*args):
@@ -79,15 +264,7 @@ def get_stix_data(thesrc, graph, framework="enterprise"):
     for tech in query_results:
         deprecated = tech.get("x_mitre_deprecated", False)
         revoked = tech.get("revoked", False)
-        attack_id = next(
-            (
-                ref.get("external_id")
-                for ref in tech["external_references"]
-                if ref.get("source_name") == "mitre-attack"
-                or ref.get("source_name") == f"mitre-{framework}-attack"
-            ),
-            None,
-        )
+        attack_id = get_attack_id(tech, framework)
         superclasses = superclasses_dict[attack_id]
         attack_uri = URIRef(_XMLNS + attack_id)
         current_label = graph.value(attack_uri, RDFS.label)
@@ -208,32 +385,13 @@ def get_revoked_by(thesrc):
 def generate_superclass(all_techniques, framework):
     superclass = {}
     for tech in all_techniques:
-        attack_id = next(
-            (
-                ref.get("external_id")
-                for ref in tech["external_references"]
-                if ref.get("source_name") == "mitre-attack"
-                or ref.get("source_name") == f"mitre-{framework}-attack"
-            ),
-            None,
-        )
+        attack_id = get_attack_id(tech, framework)
         if tech["x_mitre_is_subtechnique"]:
             superclass[attack_id] = attack_id.split(".")[0]
         else:
             classes = []
             for obj in tech["kill_chain_phases"]:
-                phase_name = string.capwords(obj["phase_name"].replace("-", " "))
-                class_base = phase_name.replace(" ", "") + "Technique"
-                if framework == "enterprise":
-                    name = class_base
-                else:
-                    prefix = "ATTACK" + (
-                        framework.upper()
-                        if framework == "ics"
-                        else framework.capitalize()
-                    )
-                    name = prefix + class_base
-                classes.append(name)
+                classes.append(get_tactic_class_name(obj["phase_name"], framework))
             superclass[attack_id] = classes
 
     return superclass
@@ -296,15 +454,7 @@ def add_to_ttl(tech, graph, framework="enterprise"):
 
 def update_definition(graph, tech, framework):
     tech = tech["data"]
-    attack_id = next(
-        (
-            ref.get("external_id")
-            for ref in tech["external_references"]
-            if ref.get("source_name") == "mitre-attack"
-            or ref.get("source_name") == f"mitre-{framework}-attack"
-        ),
-        None,
-    )
+    attack_id = get_attack_id(tech, framework)
     attack_uri = URIRef(_XMLNS + attack_id)
     new = 0
 
@@ -352,15 +502,10 @@ def ensure_superclasses(graph, attack_uri, subclass, framework, subtechnique):
         if (attack_uri, RDFS.subClassOf, target) not in graph:
             graph.add((attack_uri, RDFS.subClassOf, target))
 
-    if framework == "enterprise":
-        prefix = _XMLNS + "ATTACKEnterprise"
-        for obj in list(graph.objects(attack_uri, RDFS.subClassOf)):
-            if (
-                isinstance(obj, URIRef)
-                and str(obj).startswith(prefix)
-                and obj not in desired
-            ):
-                graph.remove((attack_uri, RDFS.subClassOf, obj))
+    tactic_uris = get_framework_tactic_uris(framework)
+    for obj in list(graph.objects(attack_uri, RDFS.subClassOf)):
+        if isinstance(obj, URIRef) and obj in tactic_uris and obj not in desired:
+            graph.remove((attack_uri, RDFS.subClassOf, obj))
 
 
 def update_and_add(graph, data, framework="enterprise"):
@@ -435,6 +580,8 @@ def main(attack_version, frameworks=None, do_counters=True):
         print(f"\nProcessing {framework} STIX file: {stix_file}")
         src = MemoryStore()
         src.load_from_file(stix_file)
+        if framework == "enterprise":
+            sync_enterprise_tactics(d3fend_graph, src)
         data = get_stix_data(src, d3fend_graph, framework)
         counters = update_and_add(d3fend_graph, data, framework)
         for key in total_counters:
