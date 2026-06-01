@@ -5291,11 +5291,6 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
 IEEE Std 1003.1-2017: A file that refers to a device. A block special file is normally distinguished from a character special file by providing access to the device in a manner such that the hardware characteristics of the device are not visible.""" ;
     rdfs:seeAlso <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_79> .
 
-:BlockStoragePort a owl:Class ;
-    rdfs:label "Block Storage Port" ;
-    rdfs:subClassOf :ExternalStoragePort ;
-    :definition "An external storage port that exposes a host storage controller (SATA or SAS) to an external device." .
-
 :BookReference a owl:Class ;
     rdfs:label "Book Reference" ;
     rdfs:subClassOf :TechniqueReference ;
@@ -13788,12 +13783,6 @@ Dead code identification is typically performed by algorithms that implement pro
 Code can also be deemed unreachable for certain run-time conditions. Different deployed systems and environments may contain some code that is unreachable for the given environment. This technique does not consider run-time conditions for unreachable code.""" ;
     :kb-reference :Reference-DeadCodeElimination .
 
-:DebugPort a owl:Class ;
-    rdfs:label "Debug Port" ;
-    rdfs:subClassOf :HardwarePort ;
-    :definition "A hardware port providing low-level access to a device's processor, memory, firmware, or operating system for development, diagnostics, or manufacturing test; generally privileged and intended to be inaccessible in production deployments." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Computer_port_(hardware)> .
-
 :Deceive a :DefensiveTactic,
         owl:Class,
         owl:NamedIndividual ;
@@ -15528,9 +15517,10 @@ Programming languages can have multiple senses of equality that may include, but
 
 :eSATAPort a owl:Class ;
     rdfs:label "eSATA Port" ;
-    rdfs:subClassOf :BlockStoragePort ;
-    :definition "A block storage port implementing the External SATA (eSATA) physical interface." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/ESATA> .
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port that exposes the Serial ATA storage interface through a shielded external connector, allowing external mass-storage devices to attach directly to the host's SATA controller without a protocol bridge. In its base form it carries data only and supplies no power." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/ESATA> ;
+    :synonym "External SATA" .
 
 :Estimation a owl:Class,
         owl:NamedIndividual ;
@@ -16706,12 +16696,6 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
     rdfs:subClassOf :TechniqueReference ;
     :pref-label "External Knowledge Base" ;
     :todo "Consider working  on alias or new preferred name... meh on \"Knowledge Content Entity\",  not sure \"External\" is helpful in conveying core concept; examples would be DBPedia, ATT&CK, CAPEC, CVE, ..., we included CAR; maybe even STIG or are they better as Guidance?" .
-
-:ExternalStoragePort a owl:Class ;
-    rdfs:label "External Storage Port" ;
-    rdfs:subClassOf :HardwarePort ;
-    :definition "A hardware port providing direct attachment of external block storage media using a storage-stack protocol rather than a generic peripheral bus." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Computer_port_(hardware)> .
 
 :ExternalThing a owl:Class ;
     rdfs:label "External Thing" .
@@ -18033,11 +18017,6 @@ Administrators collect information on hardware devices such as peripherals, NICs
     :kb-reference :Reference-AdvancedDeviceMatchingSystem ;
     :synonym "Hardware Component Discovery",
         "Hardware Component Inventorying" .
-
-:HardwareDebugPort a owl:Class ;
-    rdfs:label "Hardware Debug Port" ;
-    rdfs:subClassOf :DebugPort ;
-    :definition "A debug port that exposes processor-level control such as halt, step, register, and memory access." .
 
 :HardwareDevice a owl:Class ;
     rdfs:label "Hardware Device" ;
@@ -19665,8 +19644,8 @@ Potential for false positives from anomalies that are not associated with malici
 
 :JTAGPort a owl:Class ;
     rdfs:label "JTAG Port" ;
-    rdfs:subClassOf :HardwareDebugPort ;
-    :definition "A hardware debug port implementing the Joint Test Action Group (JTAG) physical interface." ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port implementing the IEEE 1149.1 boundary-scan and debug interface, providing low-level access to a chip's internal state for testing, debugging, and firmware programming. It typically reaches the device's processor and memory below the operating system." ;
     rdfs:seeAlso <http://dbpedia.org/resource/JTAG> .
 
 :K-CenterClustering a owl:Class,
@@ -20955,12 +20934,6 @@ This technique monitors for indicators of whether a return address is outside me
 ## Considerations
 Kernel malware can manipulate memory contents, for example modifying pointers to hide processes, and thereby impact the accuracy of memory allocation information used to perform the analysis.""" ;
     :kb-reference :Reference-InferentialExploitAttemptDetection_CrowdstrikeInc .
-
-:MemoryCardSlot a owl:Class ;
-    rdfs:label "Memory Card Slot" ;
-    rdfs:subClassOf :ExternalStoragePort ;
-    :definition "An external storage port that accepts a removable solid-state memory card." ;
-    rdfs:seeAlso <http://dbpedia.org/resource/Memory_card> .
 
 :MemoryDeletionEvent a owl:Class ;
     rdfs:label "Memory Deletion Event" ;
@@ -27368,10 +27341,15 @@ Example RPC Protocols:
 
 :RS-232Port a owl:Class ;
     rdfs:label "RS-232 Port" ;
-    rdfs:subClassOf :LegacyPeripheralPort,
-        :SerialConsolePort ;
-    :definition "A serial data port implementing the RS-232 physical interface for asynchronous serial communication between a computing device and another device." ;
+    rdfs:subClassOf :SerialPort ;
+    :definition "A serial port implementing the RS-232 (EIA/TIA-232) signaling standard, using single-ended voltage levels for short-range point-to-point communication, commonly via a DE-9 connector. It is widely used as a console or configuration interface on industrial controllers, network equipment, and other legacy devices." ;
     rdfs:seeAlso <http://dbpedia.org/resource/RS-232> .
+
+:RS-485Port a owl:Class ;
+    rdfs:label "RS-485 Port" ;
+    rdfs:subClassOf :SerialPort ;
+    :definition "A serial port implementing the RS-485 (TIA-485) standard, using differential signaling to support multi-drop communication among many devices over longer distances and in electrically noisy environments. It is the physical layer beneath common industrial fieldbuses such as Modbus RTU and Profibus." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/RS-485> .
 
 :RTCUpdateEvent a owl:Class ;
     rdfs:label "RTC Update Event" ;
@@ -27567,8 +27545,8 @@ List of known unauthorized script files or regular expression patterns must be k
 
 :SDCardSlot a owl:Class ;
     rdfs:label "SD Card Slot" ;
-    rdfs:subClassOf :MemoryCardSlot ;
-    :definition "A memory card slot implementing the Secure Digital (SD) card physical interface." ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port that accepts Secure Digital flash memory cards (including microSD via adapter), providing access to the card's storage through the host's SD/MMC controller. It is common on laptops, cameras, and embedded or IoT devices." ;
     rdfs:seeAlso <http://dbpedia.org/resource/SD_card> .
 
 :Second-stageBootLoader a owl:Class ;
@@ -27833,15 +27811,16 @@ Legitimate emails from a sender may receive a lower trust rating over time if th
 Yu, L., Zhang, W., Wang, J., & Yu, Y. (2017). SeqGAN: Sequence Generative Adversarial Nets with Policy Gradient. ArXiv preprint ArXiv:1609.05473. [Link](https://arxiv.org/abs/1609.05473)""" ;
     :synonym "Sequence GAN" .
 
-:SerialConsolePort a owl:Class ;
-    rdfs:label "Serial Console Port" ;
-    rdfs:subClassOf :DebugPort ;
-    :definition "A debug port that exposes a text-based administrative console over an asynchronous serial link." .
-
 :SerializationFunction a owl:Class ;
     rdfs:label "Serialization Function" ;
     rdfs:subClassOf :Subroutine ;
     :definition "A function which has an operation that serializes data." .
+
+:SerialPort a owl:Class ;
+    rdfs:label "Serial Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port that exchanges data with an external device one bit at a time over a serial interface, typically asynchronously. It defines the physical and electrical connection, distinct from the higher-level protocol (such as Modbus or DNP3) carried over it." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Serial_port> .
 
 :Server a owl:Class ;
     rdfs:label "Server" ;
@@ -29207,8 +29186,8 @@ About Support Vector Machine (SVM). IBM SPSS Modeler SaaS Documentation. [Link](
 
 :SWDPort a owl:Class ;
     rdfs:label "SWD Port" ;
-    rdfs:subClassOf :HardwareDebugPort ;
-    :definition "A hardware debug port implementing the Serial Wire Debug (SWD) interface, used for the debugging of ARM processors." ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port implementing ARM Serial Wire Debug, a two-pin interface providing processor-level access equivalent to JTAG over fewer signals. It is the predominant debug interface on modern ARM-based microcontrollers and embedded systems." ;
     rdfs:seeAlso <https://developer.arm.com/documentation/100893/1-0/Debug-and-trace-interface/Serial-Wire-Debug-signals> .
 
 :Switch a owl:Class ;
@@ -40539,6 +40518,12 @@ Note: This resource should not be considered a definitive or exhaustive coding g
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :TunnelOpenEvent ] ;
     :definition "An event where the lifecycle of a network tunnel is extended, ensuring continued encapsulated communication and avoiding session expiration." .
+
+:UARTPort a owl:Class ;
+    rdfs:label "UART Port" ;
+    rdfs:subClassOf :SerialPort ;
+    :definition "A serial port exposing a device's UART at logic-level (TTL) voltages, without the level-shifting of RS-232 or the differential signaling of RS-485. It is commonly present as a debug or console header on embedded systems and network equipment, often providing access to a bootloader prompt or operating-system shell." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/RS-485> .
 
 :UDPEvent a owl:Class ;
     rdfs:label "UDP Event" ;
