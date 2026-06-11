@@ -2,14 +2,14 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=1.3.0
-D3FEND_RELEASE_DATE ?="2025-12-16T00:12:00.000Z"
+D3FEND_VERSION ?=1.4.0
+D3FEND_RELEASE_DATE ?="2026-03-31T00:12:00.000Z"
 
-ATTACK_VERSION ?= 18.1
+ATTACK_VERSION ?= 19.0
 
 CAPEC_VERSION := 3.9
 
-SPARTA_VERSION := 3.1
+SPARTA_VERSION := 3.2
 ATLAS_VERSION := 5.1.1
 ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
 
@@ -17,6 +17,11 @@ JENA_VERSION := 5.6.0
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
 ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.jar"
+DOCKER_NO_CACHE ?= false
+DOCKER_BUILD_NOCACHE_FLAG := $(if $(filter true,$(DOCKER_NO_CACHE)),--no-cache,)
+ONTOLOGY_BASE_IMAGE ?= d3fend-ontology-base:latest
+ONTOLOGY_IMAGE_TAG ?= d3fend-ontology:latest
+ONTOLOGY_DOCKER_BUILD_ARGS ?= --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg ROBOT_URL=$(ROBOT_URL)
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -109,7 +114,7 @@ install-system-deps:
 	$(END)
 
 install-python-deps:
-	pipenv install
+	pipenv install --dev
 	$(END)
 
 bindir:
@@ -128,6 +133,18 @@ bin/robot.jar: bindir
 
 install-deps: install-python-deps bin/robot.jar bin/jena ## install software deps
 	$(END)
+
+docker-build-base-image: ## build the reusable ontology base image
+	@docker build $(DOCKER_BUILD_NOCACHE_FLAG) \
+		$(ONTOLOGY_DOCKER_BUILD_ARGS) \
+		--target ontology-base \
+		-t "$(ONTOLOGY_BASE_IMAGE)" .
+
+docker-build-image: docker-build-base-image ## build the ontology image
+	@docker build $(DOCKER_BUILD_NOCACHE_FLAG) \
+		--cache-from "$(ONTOLOGY_BASE_IMAGE)" \
+		$(ONTOLOGY_DOCKER_BUILD_ARGS) \
+		-t "$(ONTOLOGY_IMAGE_TAG)" .
 
 download-attack:
 	mkdir -p data
@@ -471,6 +488,8 @@ dist: distdir
 	cp build/d3fend-full.owl dist/private/d3fend-full.owl
 	cp build/d3fend-public-mapped.owl dist/public/d3fend-mapped.owl
 	cp build/d3fend-public-with-controls.ttl dist/public/d3fend.ttl # For now, roll in the CCI & NIST controls extensions to base .ttl release
+	# TODO: Sadly some ontology tooling, possibly owlapi or robot, changing input files, thus we add a step here
+	pipenv run ttlfmt dist/public/d3fend.ttl
 	cp build/d3fend-public-with-controls.owl dist/public/d3fend.owl # For now, roll in the CCI & NIST controls extensions to base .owl release
 	cp build/d3fend-public-with-controls.json dist/public/d3fend.json
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
@@ -493,12 +512,12 @@ help: ##print out this message
 format: ## Format ttl to canonical, stable format for effective diffing (accomplished before any commits)
 	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
 
-# requires https://pre-commit.com/#install
+# requires `make install-python-deps`
 pre-commit-install:
-	pre-commit install
+	pipenv run pre-commit install
 
 pre-commit:
-	pre-commit run --all-files
+	pipenv run pre-commit run --all-files
 
 
 .PHONY: all help clean build dist test robot
