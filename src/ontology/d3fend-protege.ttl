@@ -4027,6 +4027,30 @@ In a more general sense, ASP includes all applications of answer sets to knowled
 1. Answer set programming. (2023, April 27). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Answer_set_programming)""" ;
     :synonym "ASP" .
 
+:Antenna a owl:Class ;
+    rdfs:label "Antenna" ;
+    rdfs:subClassOf :HardwareDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :receives ;
+            owl:someValuesFrom :ElectromagneticSignal ],
+        [ a owl:Restriction ;
+            owl:onProperty :transmits ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Antenna_(radio)> ;
+    :definition "An antenna is a hardware device that interconverts guided electrical signals and free-space electromagnetic waves, radiating energy into space when driven by a transmitter and intercepting incident waves to deliver signals to a receiver. As a reciprocal transducer, its geometry and feed determine its operating frequency, gain, polarization, and radiation pattern." ;
+    :synonym "Aerial" .
+
+:AntennaController a owl:Class ;
+    rdfs:label "Antenna Controller" ;
+    rdfs:subClassOf :OTController,
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :Antenna ] ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
+    :definition "An antenna controller is an OT controller that regulates the mechanical pointing and tracking of an antenna, driving azimuth, elevation, and (where present) polarization positioners in response to command inputs and real-time position feedback in order to acquire and hold a desired beam direction." ;
+    :synonym "Antenna Control Unit (ACU)",
+        "Antenna Pointing Controller" .
+
 :Application a owl:Class ;
     rdfs:label "Application" ;
     rdfs:subClassOf :Software,
@@ -18595,7 +18619,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0007 a owl:Class ;
     rdfs:label "Compromise Ground System - SPARTA" ;
     skos:prefLabel "Compromise Ground System" ;
-    rdfs:subClassOf :SPARTAInitialAccessTechnique ;
+    rdfs:subClassOf :SPARTAInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :AntennaController ] ;
     :attack-id "IA-0007" ;
     :definition "Compromising the ground segment gives an adversary the most direct path to first execution against a spacecraft. Ground systems encompass operator workstations and mission control mission control software, scheduling/orchestration services, front-end processors and modems, antenna control, key-loading tools and HSMs, data gateways (SLE/CSP), identity providers, and cloud-hosted mission services. Once inside, a threat actor can prepare on-orbit updates, craft and queue valid telecommands, replay captured traffic within acceptance windows, or manipulate authentication material and counters to pass checks. The same foothold enables deep reconnaissance: enumerating mission networks and enclaves, discovering which satellites are operated from a site, mapping logical topology between MOC and stations, identifying in-band “birds” reachable from a given aperture, and learning pass plans, dictionaries, and automation hooks. From there, initial access to the spacecraft is a matter of timing and presentation, injecting commands, procedures, or update packages that align with expected operations so the first execution event appears indistinguishable from normal activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/> .
