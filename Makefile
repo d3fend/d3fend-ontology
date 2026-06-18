@@ -5,7 +5,7 @@ SHELL=/bin/bash
 D3FEND_VERSION ?=1.4.0
 D3FEND_RELEASE_DATE ?="2026-03-31T00:12:00.000Z"
 
-ATTACK_VERSION ?= 18.1
+ATTACK_VERSION ?= 19.0
 
 CAPEC_VERSION := 3.9
 
@@ -17,6 +17,11 @@ JENA_VERSION := 5.6.0
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
 ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.jar"
+DOCKER_NO_CACHE ?= false
+DOCKER_BUILD_NOCACHE_FLAG := $(if $(filter true,$(DOCKER_NO_CACHE)),--no-cache,)
+ONTOLOGY_BASE_IMAGE ?= d3fend-ontology-base:latest
+ONTOLOGY_IMAGE_TAG ?= d3fend-ontology:latest
+ONTOLOGY_DOCKER_BUILD_ARGS ?= --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg ROBOT_URL=$(ROBOT_URL)
 
 # define standard colors
 ifneq (,$(findstring xterm,${TERM}))
@@ -128,6 +133,18 @@ bin/robot.jar: bindir
 
 install-deps: install-python-deps bin/robot.jar bin/jena ## install software deps
 	$(END)
+
+docker-build-base-image: ## build the reusable ontology base image
+	@docker build $(DOCKER_BUILD_NOCACHE_FLAG) \
+		$(ONTOLOGY_DOCKER_BUILD_ARGS) \
+		--target ontology-base \
+		-t "$(ONTOLOGY_BASE_IMAGE)" .
+
+docker-build-image: docker-build-base-image ## build the ontology image
+	@docker build $(DOCKER_BUILD_NOCACHE_FLAG) \
+		--cache-from "$(ONTOLOGY_BASE_IMAGE)" \
+		$(ONTOLOGY_DOCKER_BUILD_ARGS) \
+		-t "$(ONTOLOGY_IMAGE_TAG)" .
 
 download-attack:
 	mkdir -p data
