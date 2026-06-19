@@ -1,0 +1,39 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+# Quality report: OCSF <-> D3FEND crosswalk reciprocity (issue #571).
+#
+# PRECONDITION: run against a MERGED graph = the D3FEND ontology UNION the OCSF
+# crosswalk triples (the OCSF classes that reference a D3FEND event entity).
+# Against the D3FEND ontology alone, every OCSF link reports as one-directional,
+# which is expected -- this is the merged-CI reciprocity check #571 was opened
+# for, NOT a default-report-profile entry. Wire it into the dev loop that has the
+# pinned OCSF schema materialized as RDF; ocsf/ocsf-schema#1582 made the link reciprocal at the
+# event-class grain, but nothing asserts the reciprocity survives an OCSF/D3FEND
+# bump.
+#
+# Flags each D3FEND -> OCSF seeAlso that has no reciprocal OCSF -> D3FEND link.
+# Reciprocity is matched by class local-name, because the OCSF reference URL form
+# (.../event/d3f:ProcessEvent) and the D3FEND class IRI form (...owl#ProcessEvent)
+# differ; the link round-trips when the local names agree. Paired profile
+# severity: ERROR (one-directional drift should gate the merged-CI build).
+
+SELECT DISTINCT ?entity ?property ?value
+WHERE {
+    ?entity rdfs:seeAlso ?ocsf .
+    FILTER(isIRI(?ocsf) && CONTAINS(STR(?ocsf), "ocsf.io"))
+    BIND(rdfs:seeAlso AS ?property)
+    BIND(STR(?ocsf) AS ?value)
+
+    # D3FEND class local-name (the part after the last # / or :)
+    BIND(REPLACE(STR(?entity), "^.*[#/:]", "") AS ?d3f_name)
+
+    # The violation: the OCSF target carries no back-link to a D3FEND entity
+    # whose local-name matches this class.
+    FILTER NOT EXISTS {
+        ?ocsf ?backref ?back .
+        FILTER(isIRI(?back) && CONTAINS(STR(?back), "d3fend"))
+        FILTER(REPLACE(STR(?back), "^.*[#/:]", "") = ?d3f_name)
+    }
+} ORDER BY ?entity
