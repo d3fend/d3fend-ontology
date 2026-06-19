@@ -4027,28 +4027,9 @@ In a more general sense, ASP includes all applications of answer sets to knowled
 1. Answer set programming. (2023, April 27). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Answer_set_programming)""" ;
     :synonym "ASP" .
 
-:Antenna a owl:Class ;
-    rdfs:label "Antenna" ;
-    rdfs:subClassOf :HardwareDevice,
-        [ a owl:Restriction ;
-            owl:onProperty :receives ;
-            owl:someValuesFrom :ElectromagneticSignal ],
-        [ a owl:Restriction ;
-            owl:onProperty :transmits ;
-            owl:someValuesFrom :ElectromagneticSignal ] ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Antenna_(radio)> ;
-    :definition "An antenna is a hardware device that interconverts guided electrical signals and free-space electromagnetic waves, radiating energy into space when driven by a transmitter and intercepting incident waves to deliver signals to a receiver. As a reciprocal transducer, its geometry and feed determine its operating frequency, gain, polarization, and radiation pattern." ;
-    :synonym "Aerial" .
-
 :AntennaController a owl:Class ;
     rdfs:label "Antenna Controller" ;
-    rdfs:subClassOf :OTController,
-        [ a owl:Restriction ;
-            owl:onProperty :connected-to ;
-            owl:someValuesFrom :Antenna ],
-        [ a owl:Restriction ;
-            owl:onProperty :controls ;
-            owl:someValuesFrom :Antenna ] ;
+    rdfs:subClassOf :OTController ;
     rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
     :definition "An antenna controller is an OT controller that regulates the mechanical pointing and tracking of an antenna, driving azimuth, elevation, and (where present) polarization positioners in response to command inputs and real-time position feedback in order to acquire and hold a desired beam direction." ;
     :synonym "Antenna Control Unit (ACU)",
@@ -5719,6 +5700,24 @@ Classification and Regression Tree (CART) Algorithm. Analytics Steps. [Link](htt
         [ a owl:Restriction ;
             owl:onProperty :published ;
             owl:someValuesFrom xsd:dateTime ] .
+
+:CCSDSSpacePacket a owl:Class ;
+    rdfs:label "CCSDS Space Packet" ;
+    rdfs:subClassOf :NetworkPacket,
+        [ a owl:Restriction ;
+            owl:onProperty :carried-by ;
+            owl:someValuesFrom :CCSDSTransferFrame ] ;
+    rdfs:comment "Defined by the CCSDS Space Packet Protocol (133.0-B). Identified by its Application Process Identifier (APID) in the packet primary header." ;
+    :definition "A network packet structured according to the CCSDS Space Packet Protocol, identified by an application process identifier (APID) and carried within the data field of one or more space data link transfer frames." .
+
+:CCSDSTransferFrame a owl:Class ;
+    rdfs:label "CCSDS Transfer Frame" ;
+    rdfs:subClassOf :NetworkFrame,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SpacePacket ] ;
+    rdfs:comment "Defined by the CCSDS Space Data Link Protocols: TM (132.0-B), TC (232.0-B), AOS (732.0-B), and USLP (732.1-B)." ;
+    :definition "A network frame structured according to a CCSDS space data link protocol and exchanged over a space link, identified by a spacecraft identifier and virtual channel, delimited by an attached synchronization marker, and optionally protected by a frame error control field." .
 
 :CentralProcessingUnit a owl:Class ;
     rdfs:label "Central Processing Unit" ;
@@ -13517,7 +13516,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     rdfs:subClassOf :DE-0002,
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
-            owl:someValuesFrom :MissionControlSoftware ] ;
+            owl:someValuesFrom :MissionControlSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Telemetry ] ;
     :attack-id "DE-0002.01" ;
     :definition "Threat actors may utilize access to the ground system to inhibit its ability to accurately process, render, or interpret spacecraft telemetry, effectively leaving ground controllers unaware of the spacecraft’s true state or activity. This may involve traditional denial-based techniques, such as disabling telemetry software, corrupting processing pipelines, or crashing display interfaces. In addition, more subtle deception-based techniques may be used to falsify telemetry data within the ground system ,  such as modifying command counters, acknowledgments, housekeeping data, or sensor outputs ,  to provide the appearance of nominal operation. These actions can suppress alerts, mask unauthorized activity, or prevent both automated and manual mitigations from being initiated based on misleading ground-side information. Because telemetry is the primary method by which ground controllers monitor the health, behavior, and safety of the spacecraft, any disruption or falsification of this data directly undermines situational awareness and operational control." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/01/> .
@@ -17563,6 +17565,28 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
             owl:onProperty :deletes ;
             owl:someValuesFrom :MemoryBlock ] .
 
+:Front-EndProcessor a owl:Class ;
+    rdfs:label "Front-End Processor" ;
+    rdfs:subClassOf :Host,
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :Front-EndProcessorApplication ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Front-end_processor> ;
+    :definition "A front-end processor is a computer that offloads communications, protocol, and signal or frame handling on behalf of a host system, mediating between that host and a communications medium or a set of remote or field devices and delivering processed data to the host. Examples span communications front-end processors for hosts, protocol front-ends for control servers in industrial systems, and telemetry and command processors in satellite ground systems." ;
+    :synonym "Communications Processor",
+        "FEP" .
+
+:Front-EndProcessorApplication a owl:Class ;
+    rdfs:label "Front-End Processor Application" ;
+    rdfs:subClassOf :DigitalSignalProcessingApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :definition "A front-end processor application is a digital signal processing application that realizes in software the framing, synchronization, coding, protocol, and gateway functions conventionally performed by a dedicated front-end processor appliance. Because the function is decoupled from purpose-built hardware, it can execute on general-purpose, virtualized, or cloud compute and consume digitized samples delivered over a network rather than an analog signal off a physical interface." ;
+    :synonym "Software FEP",
+        "vFEP",
+        "Virtual Front-End Processor" .
+
 :FTPDeleteEvent a owl:Class ;
     rdfs:label "FTP Delete Event" ;
     rdfs:subClassOf :FTPEvent,
@@ -18625,7 +18649,16 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
     rdfs:subClassOf :SPARTAInitialAccessTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
-            owl:someValuesFrom :AntennaController ] ;
+            owl:someValuesFrom :AntennaController ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Front-EndProcessor ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :MissionControlSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SpaceFront-EndProcessorApplication ] ;
     :attack-id "IA-0007" ;
     :definition "Compromising the ground segment gives an adversary the most direct path to first execution against a spacecraft. Ground systems encompass operator workstations and mission control mission control software, scheduling/orchestration services, front-end processors and modems, antenna control, key-loading tools and HSMs, data gateways (SLE/CSP), identity providers, and cloud-hosted mission services. Once inside, a threat actor can prepare on-orbit updates, craft and queue valid telecommands, replay captured traffic within acceptance windows, or manipulate authentication material and counters to pass checks. The same foothold enables deep reconnaissance: enumerating mission networks and enclaves, discovering which satellites are operated from a site, mapping logical topology between MOC and stations, identifying in-band “birds” reachable from a given aperture, and learning pass plans, dictionaries, and automation hooks. From there, initial access to the spacecraft is a matter of timing and presentation, injecting commands, procedures, or update packages that align with expected operations so the first execution event appears indistinguishable from normal activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/> .
@@ -18641,7 +18674,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0007.02 a owl:Class ;
     rdfs:label "Malicious Commanding via Valid GS - SPARTA" ;
     skos:prefLabel "Malicious Commanding via Valid GS" ;
-    rdfs:subClassOf :IA-0007 ;
+    rdfs:subClassOf :IA-0007,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "IA-0007.02" ;
     :definition "Adversaries may use a compromised, mission-owned ground system to transmit legitimate-looking commands to the target spacecraft. Because the ground equipment is already configured for the mission, correct waveforms, framing, dictionaries, and scheduling, the attacker’s traffic blends with routine operations. Initial access unfolds by inserting commands or procedures into existing timelines, modifying rate/size limits or command queues, or invoking maintenance dictionaries and rapid-response workflows that accept broader command sets. Pre-positioned scripts can chain actions across multiple passes and stations, while telemetry routing provides immediate feedback to refine follow-on steps. Exfiltration can be embedded in standard downlink channels or forwarded through gateways as ordinary mission data. The distinguishing feature is that command origin appears valid, transmitted from approved apertures using expected parameters, so the first execution event is not a protocol anomaly but a misuse of legitimate command authority obtained through the compromised ground system." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/02/> .
@@ -24633,7 +24669,16 @@ Wolfram MathWorld. (n.d.). Correlation Coefficient. [Link](https://mathworld.wol
     rdfs:subClassOf :SPARTAPersistenceTechnique,
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
-            owl:someValuesFrom :MissionControlSoftware ] ;
+            owl:someValuesFrom :AntennaController ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Front-endProcessor ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :MissionControlSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SpaceFront-endProcessorApplication ] ;
     :attack-id "PER-0003" ;
     :definition "The adversary maintains long-lived access by residing within mission ground infrastructure that already has end-to-end reach to the spacecraft. Persistence can exist in operator workstations and mission control software, schedulers/orchestrators, station control (antenna/mount, modem/baseband), automation scripts and procedure libraries, identity and ticketing systems, and cloud-hosted mission services. With this foothold, the actor can repeatedly queue commands, updates, or file transfers during routine passes; mirror legitimate operator behavior to blend in; and refresh their tooling as software is upgraded. Presence on the ground also supports durable reconnaissance (pass plans, dictionaries, key/counter states) and continuous staging so each window to the vehicle can be exploited without re-establishing access." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/PER-0003/> .
@@ -28548,6 +28593,17 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :Telemetry ;
     :definition "Spacecraft telemetry is the downlink counterpart to telecommand, conveying spacecraft housekeeping state, payload measurements, and event reports to the ground segment." ;
     rdfs:seeAlso <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Telemetry_Telecommand> .
+
+:SpaceFront-EndProcessorApplication a owl:Class ;
+    rdfs:label "Space Front-End Processor Application" ;
+    rdfs:subClassOf :Front-EndProcessorApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :CCSDSSpacePacket ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :CCSDSTransferFrame ] ;
+    :definition "A front-end processor application that implements the CCSDS space data link and space packet protocols, framing forward-link telecommands and extracting return-link telemetry exchanged with a spacecraft over a space link." .
 
 :SPARTADefenseEvasionTechnique a owl:Class ;
     rdfs:label "Defense Evasion Technique - SPARTA" ;
