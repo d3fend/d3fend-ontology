@@ -1,0 +1,35 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+# Quality report: D3FEND DigitalArtifact / DigitalEvent classes with no OCSF
+# crosswalk link (an rdfs:seeAlso to an OCSF IRI).
+#
+# The OCSF crosswalk (#494, #495; OCSF-side ocsf/ocsf-schema#1582) annotates a small set of mostly-interior
+# anchor classes; this report enumerates the artifact and event classes left
+# without a direct OCSF seeAlso, so crosswalk coverage is a repo-runnable check
+# rather than a one-off measurement. As of D3FEND v1.4.0, 69 seeAlso links cover
+# ~68 classes, while ~600 DigitalArtifact leaf classes carry none (a ~97.7%
+# leaf-orphan rate); the high-value objects (file, process, network_connection,
+# device, user, dns_query) are the ones to link first.
+#
+# Sibling of the shipped missing-*.rq family; touches no axioms, changes no
+# entailments. Paired profile severity: WARN (advisory coverage gap, not a
+# build-breaking defect).
+
+SELECT DISTINCT ?entity ?property ?value
+WHERE {
+    { ?entity rdfs:subClassOf* d3f:DigitalArtifact }
+    UNION
+    { ?entity rdfs:subClassOf* d3f:DigitalEvent }
+
+    FILTER(isIRI(?entity))
+    OPTIONAL { ?entity rdfs:label ?property }
+    BIND("missing OCSF seeAlso" AS ?value)
+
+    # The violation: no rdfs:seeAlso resolving to an OCSF IRI
+    FILTER NOT EXISTS {
+        ?entity rdfs:seeAlso ?ocsf .
+        FILTER(isIRI(?ocsf) && CONTAINS(STR(?ocsf), "ocsf.io"))
+    }
+} ORDER BY ?entity
