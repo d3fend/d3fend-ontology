@@ -243,6 +243,18 @@ reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
 		--fail-on none > reports/inconsistent-iri-report.txt
 	$(END)
 
+reports/missing-ocsf-seealso-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/missing-ocsf-seealso-profile.txt \
+		--fail-on none > reports/missing-ocsf-seealso-report.txt
+	$(END)
+
+reports/seealso-non-iri-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/seealso-non-iri-profile.txt \
+		--fail-on none > reports/seealso-non-iri-report.txt
+	$(END)
+
 reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
 		--profile src/queries/unallowed-thing-profile.txt \
@@ -410,7 +422,7 @@ reportsdir:
 	mkdir -p reports/
 	$(END)
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-ocsf-seealso-report.txt reports/seealso-non-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
 
 
