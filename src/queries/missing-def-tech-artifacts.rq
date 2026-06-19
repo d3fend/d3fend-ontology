@@ -1,0 +1,58 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+# Quality report: D3FEND DefensiveTechnique classes with no digital-artifact
+# relation. A defensive technique that relates to no d3f:Artifact (via any
+# sub-property of d3f:may-be-associated-with) cannot share an artifact with any
+# offensive technique, so it can never appear in the inferred offense-defense
+# matrix. This is the defensive-side analog of the shipped
+# missing-off-tech-artifacts.rq, and a machine-checkable acceptance criterion
+# for new defensive techniques (issue #569).
+#
+# Sibling of missing-off-tech-artifacts.rq; touches no axioms, changes no
+# entailments. Paired profile severity: WARN (advisory coverage gap, not a
+# build-breaking defect).
+
+SELECT DISTINCT ?entity ?property ?value
+
+WHERE {
+
+    # Select defensive techniques where:
+    #   Ignore the top-level base techniques
+    #   Ignore parents whose children have DA relationships defined
+    #   Ignore children whose parents have DA relationships defined
+
+    ?entity rdfs:subClassOf* d3f:DefensiveTechnique .
+    OPTIONAL{ ?entity rdfs:label ?property  }
+    OPTIONAL{ ?entity d3f:d3fend-id ?value  }
+
+    # The violation: the technique has no artifact relation of its own.
+    FILTER NOT EXISTS {
+        ?entity ?p ?da .
+        ?da rdfs:subClassOf* d3f:Artifact .
+        ?p rdfs:subPropertyOf* d3f:may-be-associated-with .
+    }
+
+    # Filter the top-level base techniques.
+    FILTER NOT EXISTS {
+        ?entity rdfs:subClassOf d3f:DefensiveTechnique .
+    }
+
+    # Filter the parents whose children have DAs defined.
+    FILTER NOT EXISTS {
+        ?subt rdfs:subClassOf* ?entity .
+        ?subt ?sp ?sda .
+        ?sda rdfs:subClassOf* d3f:Artifact .
+        ?sp rdfs:subPropertyOf* d3f:may-be-associated-with .
+    }
+
+    # Filter the children whose parents have DAs defined.
+    FILTER NOT EXISTS {
+        ?pentity ?pp ?pda .
+        ?pda rdfs:subClassOf* d3f:Artifact .
+        ?pp rdfs:subPropertyOf* d3f:may-be-associated-with .
+        ?entity rdfs:subClassOf* ?pentity .
+    }
+
+} ORDER BY ?value
