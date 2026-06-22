@@ -243,6 +243,23 @@ reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
 		--fail-on none > reports/inconsistent-iri-report.txt
 	$(END)
 
+# OCSF crosswalk coverage check (issue #571): DigitalArtifact/DigitalEvent classes
+# with no rdfs:seeAlso to an OCSF IRI. WARN-level advisory coverage gap, not a defect.
+reports/missing-ocsf-seealso-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/missing-ocsf-seealso-profile.txt \
+		--fail-on none > reports/missing-ocsf-seealso-report.txt
+	$(END)
+
+# rdfs:seeAlso to a string literal instead of an IRI (issue #439). ERROR-level data
+# defect; --fail-on none for now since pre-existing violations exist (tighten to
+# ERROR once #439's cases are fixed).
+reports/seealso-non-iri-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/seealso-non-iri-profile.txt \
+		--fail-on none > reports/seealso-non-iri-report.txt
+	$(END)
+
 reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
 		--profile src/queries/unallowed-thing-profile.txt \
@@ -410,7 +427,7 @@ reportsdir:
 	mkdir -p reports/
 	$(END)
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-ocsf-seealso-report.txt reports/seealso-non-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
 
 
@@ -419,6 +436,8 @@ REPORT_FILES = default-robot-report.txt \
                bogus-direct-subclassing-of-tactic-technique-report.txt \
                missing-attack-id-report.txt \
                inconsistent-iri-report.txt \
+               missing-ocsf-seealso-report.txt \
+               seealso-non-iri-report.txt \
                missing-off-tech-artifacts-report.txt
 
 
