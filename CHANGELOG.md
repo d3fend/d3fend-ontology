@@ -1,5 +1,19 @@
 # D3FEND Ontology Change Log
 
+## Version - 1.4.0 - 2026-03-31
+
+ - Expand space and SDR modeling with spacecraft, satellites, GNSS artifacts, transponders, onboard computers, software-defined radio devices/configurations, waveform applications, FPGA bitstreams, and related RF state change events. (#532, #472)
+ - Add timer and clock artifacts and event taxonomies, including hardware/software clocks, watchdog timers, system time, and the derived-from relationship. (#509)
+ - Add Control Flow Integrity, Radiation Hardening, Bus Message Authentication, and Boot ROM countermeasures, with new references, restrictions, and supporting artifact updates. (#496, #515, #517, #507)
+ - Add EX-0016 Jamming mappings and the jams relationship. (#530)
+ - Update SPARTA to v3.2 and expand SPARTA artifact mappings across the ontology, including Vehicle Operating Mode. (#529, #531)
+ - Update MITRE ATT&CK frameworks to 18.1 and expand cloud ATT&CK restrictions for cloud resource hierarchy changes, cloud instance/snapshot actions, temporary elevated cloud access, and cloud firewall/log modifications. (#479, #492, #493, #491, #484, #483)
+ - Add ATT&CK restrictions for conditional access policy changes, forged web credentials, authentication certificate theft/forgery, MFA request generation, network device firewall and Linux audit disabling, data encryption for impact, and system recovery inhibition. (#489, #487, #488, #490, #486, #485, #480, #481)
+ - Pun offensive techniques with restrictions during build, including ATT&CK Mobile, ATT&CK ICS, SPARTA, and ATLAS techniques. (#533)
+ - Add OCSF seeAlso links and refine OCSF event mappings. (#495)
+ - Clean up object property and accesses definitions, assert disjointness for D3FEND core classes, and fix the OTControllerOperatingMode label. (#508, #501, #476)
+ - Improve ontology build tooling by refreshing pre-commit hooks, forcing clean ttlformat serialization, and accelerating Docker builds through tighter cache invalidation and .dockerignore rules.
+
 ## Version - 1.3.0 - 2025-12-16
 
  - Introduce new OT monitoring and hardening countermeasures, including OT variable access restriction, user/group permissions, unused ports, application exception monitoring, operational process monitoring, operational logic validation, and related artifacts and KB content. (#147, #138, #146)
