@@ -59,6 +59,8 @@ These files are located in the src, build, or dist directories.
 |d3fend-protege.ttl         |Downloaded D3FEND ontology from webprotege.owl (renamed to match this name).|
 |d3fend.{ttl,owl,json}      |D3FEND ontology distribution files.|
 |d3fend-public.owl         |Temp merge of original web protege ontology and restrictions as object property assertions.|
+|d3fend-bfo.owl            |D3FEND public ontology merged with the BFO mapping.|
+|d3fend-cco.owl            |D3FEND public ontology merged with the CCO mapping.|
 |d3fend-res-as-prop.owl     |Temp file containing *just* restrictions as object property assertions between class puns.|
 |d3fend-full.owl      |Final inference-enhanced copy with KBs for use in SPARQL end point. This is what is loaded into production Blazegraph.|
 |d3fend-architecture.owl |File of architectural elements extracted by a filter-architecture-* target.|

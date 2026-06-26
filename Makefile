@@ -376,6 +376,10 @@ build/d3fend-public-cco.owl: build/d3fend-public.owl
 	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-cco.ttl --input build/d3fend-public.owl --output build/d3fend-public-cco.owl
 	$(END)
 
+build/d3fend-public-bfo.owl: build/d3fend-public.owl
+	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-bfo.ttl --input build/d3fend-public.owl --output build/d3fend-public-bfo.owl
+	$(END)
+
 build/d3fend-public.ttl: build/d3fend-public.owl
 	./bin/robot convert --add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" --input build/d3fend-public.owl --output build/d3fend-public.ttl
 
@@ -399,7 +403,7 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 	./bin/robot convert --input build/d3fend-public-with-controls.ttl --output build/d3fend-public-with-controls.owl
 	$(END)
 
-build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
+build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl build/d3fend-public-bfo.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
 build: build/ontology build/d3fend.csv # build the D3FEND Ontology and Extensions
@@ -495,6 +499,7 @@ dist: distdir
 	@cp build/d3fend.csv dist/public/d3fend.csv ||  echo "${RED}WARNING: build/d3fend.csv not found to include in dist. Manually run: ${YELLOW} make build/d3fend.csv ${RESET} ${RESET}"
 	cp build/d3fend-architecture.owl dist/public/d3fend-architecture.owl
 	cp build/d3fend-public-cco.owl dist/public/d3fend-cco.owl
+	cp build/d3fend-public-bfo.owl dist/public/d3fend-bfo.owl
 	chmod 644 dist/public/d3fend.ttl dist/public/d3fend.owl
 	$(END)
 
