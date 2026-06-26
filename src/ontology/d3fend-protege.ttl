@@ -1057,6 +1057,23 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <http://purl.obolibrary.org/obo/BFO_0000063> ;
     :definition "x precedes y: The event or action x occurs before event or action y in time." .
 
+:prescribed-by a owl:ObjectProperty ;
+    rdfs:label "prescribed-by" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:range :Plan ;
+    owl:inverseOf :prescribes ;
+    :definition "x prescribed-by y: y provides a directive specification for x (i.e., y serves as a rule or guide for x)." ;
+    rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001920> .
+
+:prescribes a owl:ObjectProperty ;
+    rdfs:label "prescribes" ;
+    rdfs:subPropertyOf :associated-with ;
+    rdfs:domain :Plan ;
+    owl:inverseOf :prescribed-by ;
+    rdfs:comment "Modeling intent: use to connect plans (like techniques) to the events that would occur when the plan is carried out. This relation does not, by itself, assert that any particular event occurred; only that the plan includes or directs that kind of event. May also be used for design/blueprint-like specifications of artifacts." ;
+    :definition "x prescribes y: x provides a directive specification for y (i.e., x serves as a rule or guide for how y is intended to occur or be made)." ;
+    rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001942> .
+
 :process-ancestor a owl:ObjectProperty,
         owl:TransitiveProperty ;
     rdfs:label "process-ancestor" ;
@@ -35400,7 +35417,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1489 a owl:Class ;
     rdfs:label "Service Stop" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :disables ;
+            owl:someValuesFrom :ServiceApplication ] ;
     :attack-id "T1489" ;
     :definition "Adversaries may stop or disable services on a system to render those services unavailable to legitimate users. Stopping critical services or processes can inhibit or stop response to an incident or aid in the adversary's overall objectives to cause damage to the environment.(Citation: Talos Olympic Destroyer 2018)(Citation: Novetta Blockbuster) " .
 
