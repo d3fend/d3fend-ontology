@@ -1,4 +1,6 @@
 # Install yarrrml-parser
+CWE_URL ?= https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
+
 install-yarrrml-parser:
 	npm install
 
@@ -11,8 +13,8 @@ install-deps: install-yarrrml-parser install-yarrrml-mapper
 
 # Pull CWE file; unzip; convert versioned into stable target 'cwec.xml' for YARRRML (and RML) specification
 download-cwe:
-	curl https://cwe.mitre.org/data/xml/cwec_latest.xml.zip -o cwec_latest.xml.zip
-	unzip cwec_latest.xml.zip
+	curl -L $(CWE_URL) -o cwec_latest.xml.zip
+	unzip -o cwec_latest.xml.zip
 	rm cwec_latest.xml.zip
 	mv -f "$$(find . -type f -name 'cwec_v*.xml')" "cwec_latest.xml"
 
