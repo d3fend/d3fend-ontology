@@ -40011,40 +40011,6 @@ Defense Impairment consists of techniques that degrade, disable, or undermine th
     :definition "A telecommand or telecontrol is a command sent to control a remote system or systems not directly connected (e.g. via wires) to the place from which the telecommand is sent." ;
     :synonym "Remote Control Command" .
 
-:TelecommandAnalysis a owl:Class,
-        owl:NamedIndividual,
-        :TelecommandAnalysis ;
-    rdfs:label "Telecommand Analysis" ;
-    rdfs:subClassOf :NetworkTrafficAnalysis,
-        [ a owl:Restriction ;
-            owl:onProperty :analyzes ;
-            owl:someValuesFrom :Telecommand ] ;
-    :d3fend-id "D3-TCA" ;
-    :definition "The systematic verification of telecommands to identify malicious or anomalous activity." ;
-    :kb-reference :Reference-TrustManagementApproachToSatelliteSystemTelecommandSecurity .
-
-:TelecommandSequenceAnalysis a owl:Class,
-        owl:NamedIndividual,
-        :TelecommandSequenceAnalysis ;
-    rdfs:label "Telecommand Sequence Analysis" ;
-    rdfs:subClassOf :TelecommandAnalysis ;
-    :d3fend-id "D3-TCSA" ;
-    :definition "Analyzing telecommand sequences over time to identify anomalies in execution order or frequency." ;
-    :kb-article """## How it works
-
-This technique utilizes Finite State Machines (FSM) and temporal windows to analyze the sequence of commands between the sender and receiving system. It maintains a rolling history of commands to ensure they follow a strict operational logic. For instance, a 'Firmware Commit' command is flagged as malicious if it is not preceded by a 'Firmware Upload' and a 'Checksum Verify' command within a specific time window. 
-
-Furthermore, it applies temporal heuristics to detect command flooding or cadence shifts. For example, if a drone typically receives one heartbeat command every 100ms, a sudden burst of ten commands in 10ms triggers an automated rate-limiting response. This protects against buffer overflows and ensures that the system's command processor is not overwhelmed by rapid-fire malicious instructions.
-    
-## Considerations
-* Interleaved Streams: In systems with multiple authorized operators, the analyzer must be able to distinguish between different sessions to avoid incorrectly flagging interleaved valid commands as out-of-sequence.
-
-* Latency Overhead: Maintaining and querying an FSM for every command packet adds processing time, which can be critical in high-speed control loops.
-
-* Protocol Rigidity: Strict sequential logic can prevent emergency overrides if the emergency sequence itself wasn't modeled in the FSM.""" ;
-    :kb-reference :Reference-DevelopmentAndImplementationOfAPilotIntentRecognitionModelBasedOnOperationalSequences,
-        :Reference-EdgeApplicationDiscoveringAndManagementStateMachineObjectsInAutomationControllersForMESAndDCSApplications .
-
 :TemporalDifferenceLearning a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Temporal Difference Learning" ;
@@ -44191,16 +44157,6 @@ This patent includes File Content Signatures because in the case of a script fil
     :kb-reference-of :SystemCallAnalysis ;
     :kb-reference-title "Deterministic method for detecting and blocking of exploits on interpreted code" .
 
-:Reference-DevelopmentAndImplementationOfAPilotIntentRecognitionModelBasedOnOperationalSequences a :AcademicPaperReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Development and Implementation of a Pilot Intent Recognition Model Based on Operational Sequences" ;
-    :has-link "https://www.mdpi.com/2226-4310/12/9/780"^^xsd:anyURI ;
-    :kb-abstract "With the advancement of intelligent human-computer interaction (IHCI) technology, the accurate recognition of an operator's intent has become essential for improving the collaborative efficiency in complex tasks. To address the challenges posed by stringent safety requirements and limited data availability in pilot intent recognition within the aviation domain, this paper presents a human intent recognition model based on operational sequence comparison. The model is built based on standard operational sequences and employs multi-dimensional scoring metrics, including operation matching degree, sequence matching degree, and coverage rate, to enable real-time dynamic analysis and intent recognition of flight operations. To evaluate the effectiveness of the model, an experimental platform was developed using Python 3.8 (64-bit) to simulate 46 key buttons in a flight cockpit. Additionally, five categories of typical flight tasks along with three operational test conditions were designed. Data were collected from 10 participants with flight simulation experience to assess the model's performance in terms of recognition accuracy and robustness under various operational scenarios, including segmented operations, abnormal operations, and special sequence operations. The experimental results demonstrated that both the linear weighting model and the feature hierarchical recognition model enabled all three feature scoring metrics to achieve high intent recognition accuracy. This approach effectively overcomes the limitations of traditional methods in capturing complex temporal relationships while also addressing the challenge of limited availability of annotated data. This paper proposes a novel technical approach for intelligent human-computer interaction systems within the aviation domain, demonstrating substantial theoretical significance and promising application potential." ;
-    :kb-author "Xiaodong Mao, Lishi Ding, Xiaofang Sun, Liping Pang, Ye Deng, Xin Wang" ;
-    :kb-mitre-analysis "This paper develops an Intention Recognition Model that validates pilot commands against Standard Operational Sequences. It uses metrics like sequence matching degree and sequential logic to detect abnormal operations in flight cockpits." ;
-    :kb-reference-of :TelecommandSequenceAnalysis ;
-    :kb-reference-title "Development and Implementation of a Pilot Intent Recognition Model Based on Operational Sequences" .
-
 :Reference-DHS-CCTV-Technology-Handbook a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - DHS CCTV Technology Handbook" ;
@@ -44328,17 +44284,6 @@ to retrieve the appropriate public key.  Message transit from author to recipien
         :StandaloneHoneynet ;
     :kb-reference-title "Dynamic selection and generation of a virtual clone for detonation of suspicious content within a honey network" ;
     :todo "MITRE Analysis was not found" .
-
-:Reference-EdgeApplicationDiscoveringAndManagementStateMachineObjectsInAutomationControllersForMESAndDCSApplications a owl:NamedIndividual,
-        :PatentReference ;
-    rdfs:label "Reference - Edge application discovering and management state machine objects in automation controllers for MES and DCS applications - Rockwell Automation Technologies Inc." ;
-    :has-link "https://patents.google.com/patent/US12055924B2/en"^^xsd:anyURI ;
-    :kb-abstract "A state machine management component that executes on an edge device within an industrial facility is capable of discovering state machines defined on industrial controllers and translating the state machine definitions to information models that allow the state machines to be discovered and utilized by remote client applications. The edge-level information models allow the client applications to render or consume the state machine data generated by the controller, graphically render the state machines, submit commands, or set values, to the controller as state machine commands via the edge device. The edge-level system thus allows client applications with no prior knowledge of the control-level state machines to discover, retrieve, and interact with state machines defined on the industrial controllers." ;
-    :kb-author "Joachim Thomsen, Stephen C Briant, Martin Petrick, Frank Jordan, Manuel Sukerman, Daniel J Aardsma, John B Dart, Derrick Tapscott, James Butler" ;
-    :kb-mitre-analysis "This patent describes an edge-level management system that automatically discovers and translates state machine definitions from industrial controllers into standardized information models, allowing remote client applications to monitor and interact with the controller's internal logic without prior configuration." ;
-    :kb-organization "Rockwell Automation Technologies Inc." ;
-    :kb-reference-of :TelecommandSequenceAnalysis ;
-    :kb-reference-title "Edge application discovering and management state machine objects in automation controllers for MES and DCS applications" .
 
 :Reference-EmbeddingContextsForOn-lineThreatsIntoResponsePolicyZones-VerisignInc a owl:NamedIndividual,
         :PatentReference ;
@@ -47194,15 +47139,6 @@ This specification defines the Trusted Platform Module (TPM) a device that enabl
     :kb-mitre-analysis "This patent describes a technique for detecting malicious processes that claim to be the child process of a legitimate parent process. During the spawning of a child process, a child process identifier is generated. The child process identifier is a unique identifier that can be used to identify a child process. The child process identifier is transmitted by the security system of the operating system to the parent process. The parent process keeps track of the child process identifier. When a new child-initiated communications request is received by the parent process, the parent process checks if the requesting child process identifier and the child process identifier that the parent process is tracking are the same. If the identifiers are not the same, the parent process refuses the request." ;
     :kb-organization "Microsoft Technology Licensing LLC" ;
     :kb-reference-title "Trusted Communications With Child Processes" .
-
-:Reference-TrustManagementApproachToSatelliteSystemTelecommandSecurity a :AcademicPaperReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Trust Management Approach to Satellite System Telecommanding Security" ;
-    :has-link "https://arc.aiaa.org/doi/10.2514/1.I010025"^^xsd:anyURI ;
-    :kb-abstract "This paper is concerned with the application of trust-management theory from the distributed information system domain to satellite system telecommanding operations. New standards in satellite system architecture afford more open and efficient mission operations. With these benefits come additional security threats to critical space assets. As one method to mitigate threats to space systems, this research develops, implements, and tests the consolidated trust-management system: a novel approach to satellite system security. The proposed trust-management system is implemented in a CubeSat test environment. Experimental results show promise for the proposed approach for telecommanding security with potential applicability to large, small, and federated satellites." ;
-    :kb-author "Mark C. Duncan, Kenneth M. Hopkinson, Eric D. Trias, Jeffrey W. Humphries" ;
-    :kb-reference-of :TelecommandAnalysis ;
-    :kb-reference-title "Trust Management Approach to Satellite System Telecommanding Security" .
 
 :Reference-TypeSystems_Princeton a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
