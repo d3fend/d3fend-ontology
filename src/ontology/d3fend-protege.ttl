@@ -13615,7 +13615,10 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0003.10 a owl:Class ;
     rdfs:label "GPS Ephemeris - SPARTA" ;
     skos:prefLabel "GPS Ephemeris" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Ephemeris ] ;
     :attack-id "DE-0003.10" ;
     :definition "A satellite with a GPS receiver can use ephemeris data from GPS satellites to estimate its own position in space. A hostile actor could spoof the GPS signals to cause erroneous calculations of the satellite’s position. The received ephemeris data is often telemetered and can be monitored for indications of GPS spoofing. Reception of ephemeris data that changes suddenly without a reasonable explanation (such as a known GPS satellite handoff), could provide an indication of GPS spoofing and warrant further analysis. Threat actors could also change the course of the vehicle and falsify the telemetered data to temporarily convince ground operators the vehicle is still on a proper course." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/10/> .
@@ -16095,7 +16098,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0014.01 a owl:Class ;
     rdfs:label "Time Spoof - SPARTA" ;
     skos:prefLabel "Time Spoof" ;
-    rdfs:subClassOf :EX-0014 ;
+    rdfs:subClassOf :EX-0014,
+        [ a owl:Restriction ;
+            owl:onProperty :spoofs ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
     :attack-id "EX-0014.01" ;
     :definition "Time underpins sequencing, anti-replay, navigation filtering, and data labeling. An attacker that forges or biases the time seen by onboard consumers can reorder stored command execution, break timetag validation, desynchronize counters, and misalign estimation windows. Spoofing vectors include manipulating the distributed time service, introducing a higher-priority/cleaner time source (e.g., GNSS-derived time), or crafting messages that cause clock discipline to slew toward attacker-chosen values. Once time shifts, autonomous routines keyed to epochs, wheel unloads, downlink starts, heater schedules, fire early/late or not at all, and telemetry appears inconsistent to ground analysis. The signature is correct-looking time metadata that steadily or abruptly departs from truth, driving downstream logic to act at the wrong moment." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/01/> .
@@ -16125,7 +16131,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0014,
         [ a owl:Restriction ;
             owl:onProperty :spoofs ;
-            owl:someValuesFrom :GNSSSignal ] ;
+            owl:someValuesFrom :GNSSNavigationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :spoofs ;
+            owl:someValuesFrom :RangingCode ] ;
     :attack-id "EX-0014.04" ;
     :definition "The adversary transmits GNSS-like signals (or manipulates crosslink-distributed time/ephemeris) so the spacecraft’s navigation solution reflects attacker-chosen states. With believable code phases, Doppler, and navigation messages, the victim can be pulled to a false position/velocity/time, causing downstream functions, attitude pointing limits, station visibility prediction, eclipse timing, antenna pointing, and anti-replay windows, to misbehave. Even when GNSS is not the primary navigation source, spoofed PNT can bias timekeeping or seed filters that fuse multiple sensors, leading to mis-scheduling and errant control. The defining feature is externally provided navigation/time that passes validity checks yet encodes a crafted trajectory or epoch." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/04/> .
@@ -16192,7 +16201,13 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0016.03 a owl:Class ;
     rdfs:label "Position, Navigation, and Timing (PNT) Jamming - SPARTA" ;
     skos:prefLabel "Position, Navigation, and Timing (PNT) Jamming" ;
-    rdfs:subClassOf :EX-0016 ;
+    rdfs:subClassOf :EX-0016,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :PNTSolution ],
+        [ a owl:Restriction ;
+            owl:onProperty :jams ;
+            owl:someValuesFrom :GNSSSignal ] ;
     :attack-id "EX-0016.03" ;
     :definition "The attacker raises the noise floor in GNSS bands so satellite navigation signals are not acquired or tracked. Loss of PNT manifests as degraded or unavailable position/velocity/time solutions, which in turn disrupts functions that depend on them, time distribution, attitude aiding, scheduling, anti-replay windows, and visibility prediction. Because GNSS signals at the receiver are extremely weak, modest jammers within the antenna field of view can produce outsized effects; mobile emitters can create intermittent outages aligned with the attacker’s objectives." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0016/03/> .
