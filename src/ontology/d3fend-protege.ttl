@@ -15420,6 +15420,12 @@ Email files may propagate through many storage systems across the an organizatio
         :Password ;
     :definition "A password that is encrypted." .
 
+:EncryptedRangingCode a owl:Class ;
+    rdfs:label "Encrypted Ranging Code" ;
+    rdfs:subClassOf :RangingCode ;
+    :definition "An encrypted ranging code is a ranging code whose sequence is cryptographically protected or otherwise unpredictable (e.g., GPS P(Y) and M-code, Galileo PRS, Galileo SAS spreading-code encryption), so an adversary cannot synthesize or replay it in real time; it provides signal-level (ranging) anti-spoofing." ;
+    rdfs:seeAlso <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> .
+
 :EncryptedTunnels a :EncryptedTunnels,
         owl:Class,
         owl:NamedIndividual ;
@@ -15480,6 +15486,13 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
     :definition "In statistics and machine learning, ensemble methods use multiple learning algorithms to obtain better predictive performance than could be obtained from any of the constituent learning algorithms alone" ;
     :kb-article """## References
 Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_learning).""" .
+
+:Ephemeris a owl:Class ;
+    rdfs:label "Ephemeris" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_Broadcast_Orbits> ;
+    :definition "A broadcast ephemeris is a record of the precise orbital parameters of a single transmitting GNSS satellite, valid over a short fit interval, from which a receiver computes that satellite's instantaneous position and velocity for ranging." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GPS_and_Galileo_Satellite_Coordinates_Computation> .
 
 :EpistemicLogic a owl:Class,
         owl:NamedIndividual ;
@@ -17683,9 +17696,26 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "A type of user account in Microsoft Windows (NT) that has a domain-wide scope.defines that user's access to a logical group of network objects (computers, users, devices) that share the same Active Directory databases; that is, a user's access to the domain." ;
     rdfs:seeAlso <https://networkencyclopedia.com/global-user-account> .
 
+:GNSSNavigationMessage a owl:Class ;
+    rdfs:label "GNSS Navigation Message" ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :Ephemeris ],
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
+    rdfs:isDefinedBy <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> ;
+    :definition "A GNSS (Global Navigation Satellite System) navigation message is the data payload modulated onto a GNSS signal that conveys the information a receiver needs to compute a PNT solution, including the transmitting satellite's broadcast ephemeris, clock-correction parameters, almanac, and constellation time. It is the data-layer attack surface targeted by navigation-message spoofing and the artifact authenticated by schemes such as Galileo OSNMA." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Galileo_Navigation_Message>,
+        <https://gssc.esa.int/navipedia/index.php/GPS_Navigation_Message> .
+
 :GNSSReceiver a owl:Class ;
     rdfs:label "GNSS Receiver" ;
-    rdfs:subClassOf :Receiver ;
+    rdfs:subClassOf :Receiver,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :PNTSolution ] ;
     :definition "A GNSS (Global Navigation Satellite System) receiver is an electronic device that picks up signals from one or more satellite constellations (like GPS, GLONASS, Galileo, BeiDou) to calculate precise location, velocity, and time." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation> .
 
@@ -17706,7 +17736,10 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:subClassOf :ElectromagneticSignal,
         [ a owl:Restriction ;
             owl:onProperty :carries ;
-            owl:someValuesFrom :GNSSTimeRecord ] ;
+            owl:someValuesFrom :GNSSNavigationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :RangingCode ] ;
     :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>,
         <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
@@ -22146,6 +22179,12 @@ Additionally, after the code file is printed, it could be recovered from the sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Open_(system_call)> ;
     :definition "For most file systems, a program initializes access to a file in a file system using the open system call. This allocates resources associated to the file (the file descriptor), and returns a handle that the process will use to refer to that file. In some cases the open is performed by the first access. During the open, the filesystem may allocate memory for buffers, or it may wait until the first operation. Various other errors which may occur during the open include directory update failures, un-permitted multiple connections, media failures, communication link failures and device failures." .
 
+:OpenRangingCode a owl:Class ;
+    rdfs:label "Open Ranging Code" ;
+    rdfs:subClassOf :RangingCode ;
+    :definition "An open ranging code is a ranging code whose sequence is public and predictable (e.g., GPS L1 C/A, Galileo E1 Open Service), making it straightforward for an adversary to generate and therefore susceptible to signal-synthesis spoofing." ;
+    rdfs:seeAlso <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> .
+
 :OperatingMode a owl:Class ;
     rdfs:label "Operating Mode" ;
     rdfs:subClassOf :SystemPlatformVariable ;
@@ -25053,6 +25092,14 @@ Monitoring the time since the last power cycle or restart alerts operators to un
 The source of the variable may be mutable depending on the platform, and the provenance of the value.""" ;
     :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
 
+:PNTSolution a owl:Class ;
+    rdfs:label "PNT Solution" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_Receivers_General_Introduction> ;
+    :definition "A PNT (Position, Navigation, and Timing) solution is the position, velocity, and time estimate a GNSS receiver computes from pseudorange and carrier measurements across multiple satellites. It is the receiver output corrupted by successful spoofing or meaconing and the artifact validated by integrity-monitoring countermeasures." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Code_Based_Positioning_(SPS)> ;
+    :synonym "PVT Solution" .
+
 :Point-biserialCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Point-biserial Correlation Coefficient" ;
@@ -26066,6 +26113,13 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     rdfs:subClassOf :NumericPatternMatching ;
     :d3fend-id "D3A-RM" ;
     :definition "Numeric Range Matching determines if a value lies with an interval of values (i.e., within the range of values.)" .
+
+:RangingCode a owl:Class ;
+    rdfs:label "Ranging Code" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
+    :definition "A ranging code is the pseudorandom spreading sequence modulated onto a GNSS carrier that a receiver correlates against a local replica to measure signal transit time and hence pseudorange." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GNSS_Receivers_General_Introduction> .
 
 :RankCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
