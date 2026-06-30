@@ -13618,7 +13618,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     rdfs:subClassOf :DE-0003,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
-            owl:someValuesFrom :Ephemeris ] ;
+            owl:someValuesFrom :GNSSEphemeris ] ;
     :attack-id "DE-0003.10" ;
     :definition "A satellite with a GPS receiver can use ephemeris data from GPS satellites to estimate its own position in space. A hostile actor could spoof the GPS signals to cause erroneous calculations of the satellite’s position. The received ephemeris data is often telemetered and can be monitored for indications of GPS spoofing. Reception of ephemeris data that changes suddenly without a reasonable explanation (such as a known GPS satellite handoff), could provide an indication of GPS spoofing and warrant further analysis. Threat actors could also change the course of the vehicle and falsify the telemetered data to temporarily convince ground operators the vehicle is still on a proper course." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/10/> .
@@ -15425,7 +15425,7 @@ Email files may propagate through many storage systems across the an organizatio
 
 :EncryptedRangingCode a owl:Class ;
     rdfs:label "Encrypted Ranging Code" ;
-    rdfs:subClassOf :RangingCode ;
+    rdfs:subClassOf :GNSSRangingCode ;
     :definition "An encrypted ranging code is a ranging code whose sequence is cryptographically protected or otherwise unpredictable (e.g., GPS P(Y) and M-code, Galileo PRS, Galileo SAS spreading-code encryption), so an adversary cannot synthesize or replay it in real time; it provides signal-level (ranging) anti-spoofing." ;
     rdfs:seeAlso <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> .
 
@@ -15489,13 +15489,6 @@ Endpoints are configured to periodically generate and transmit a secure heartbea
     :definition "In statistics and machine learning, ensemble methods use multiple learning algorithms to obtain better predictive performance than could be obtained from any of the constituent learning algorithms alone" ;
     :kb-article """## References
 Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_learning).""" .
-
-:Ephemeris a owl:Class ;
-    rdfs:label "Ephemeris" ;
-    rdfs:subClassOf :Record ;
-    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_Broadcast_Orbits> ;
-    :definition "A broadcast ephemeris is a record of the precise orbital parameters of a single transmitting GNSS satellite, valid over a short fit interval, from which a receiver computes that satellite's instantaneous position and velocity for ranging." ;
-    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GPS_and_Galileo_Satellite_Coordinates_Computation> .
 
 :EpistemicLogic a owl:Class,
         owl:NamedIndividual ;
@@ -16134,7 +16127,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
             owl:someValuesFrom :GNSSNavigationMessage ],
         [ a owl:Restriction ;
             owl:onProperty :spoofs ;
-            owl:someValuesFrom :RangingCode ] ;
+            owl:someValuesFrom :GNSSRangingCode ] ;
     :attack-id "EX-0014.04" ;
     :definition "The adversary transmits GNSS-like signals (or manipulates crosslink-distributed time/ephemeris) so the spacecraft’s navigation solution reflects attacker-chosen states. With believable code phases, Doppler, and navigation messages, the victim can be pulled to a false position/velocity/time, causing downstream functions, attitude pointing limits, station visibility prediction, eclipse timing, antenna pointing, and anti-replay windows, to misbehave. Even when GNSS is not the primary navigation source, spoofed PNT can bias timekeeping or seed filters that fuse multiple sensors, leading to mis-scheduling and errant control. The defining feature is externally provided navigation/time that passes validity checks yet encodes a crafted trajectory or epoch." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/04/> .
@@ -17711,12 +17704,19 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "A type of user account in Microsoft Windows (NT) that has a domain-wide scope.defines that user's access to a logical group of network objects (computers, users, devices) that share the same Active Directory databases; that is, a user's access to the domain." ;
     rdfs:seeAlso <https://networkencyclopedia.com/global-user-account> .
 
+:GNSSEphemeris a owl:Class ;
+    rdfs:label "GNSS Ephemeris" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_Broadcast_Orbits> ;
+    :definition "A broadcast GNSS (Global Navigation Satellite System) ephemeris is a record of the precise orbital parameters of a single transmitting GNSS satellite, valid over a short fit interval, from which a receiver computes that satellite's instantaneous position and velocity for ranging." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GPS_and_Galileo_Satellite_Coordinates_Computation> .
+
 :GNSSNavigationMessage a owl:Class ;
     rdfs:label "GNSS Navigation Message" ;
     rdfs:subClassOf :DigitalMessage,
         [ a owl:Restriction ;
             owl:onProperty :carries ;
-            owl:someValuesFrom :Ephemeris ],
+            owl:someValuesFrom :GNSSEphemeris ],
         [ a owl:Restriction ;
             owl:onProperty :carries ;
             owl:someValuesFrom :GNSSTimeRecord ] ;
@@ -17725,14 +17725,14 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Galileo_Navigation_Message>,
         <https://gssc.esa.int/navipedia/index.php/GPS_Navigation_Message> .
 
-:GNSSNavigationMessageAuthentication a :NavigationMessageAuthentication,
+:GNSSNavigationMessageAuthentication a :GNSSNavigationMessageAuthentication,
         owl:Class,
         owl:NamedIndividual ;
     rdfs:label "GNSS Navigation Message Authentication" ;
     rdfs:subClassOf :MessageAuthentication,
         [ a owl:Restriction ;
             owl:onProperty :authenticates ;
-            owl:someValuesFrom :NavigationMessage ] ;
+            owl:someValuesFrom :GNSSNavigationMessage ] ;
     :d3fend-id "D3-NMA" ;
     :definition "Cryptographically verifying that a GNSS navigation message originates from the genuine constellation and has not been altered, by checking digital signatures or message authentication codes embedded in the broadcast data." ;
     :kb-article """## How it works
@@ -17752,6 +17752,13 @@ Because the authenticating key is revealed only after the data it protects has a
 * Cross-Constellation Coverage: Authentication is constellation-specific and not yet universal (operational on Galileo; on roadmaps for GPS and SBAS), so multi-constellation receivers gain only partial coverage during the transition.""" ;
     :kb-reference :Reference-GalileoOSNMAServiceDefinitionDocument ;
     rdfs:seeAlso <https://www.euspa.europa.eu/galileo-osnma> .
+
+:GNSSRangingCode a owl:Class ;
+    rdfs:label "GNSS Ranging Code" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
+    :definition "A GNSS (Gloval Navigation Satellite System) ranging code is the pseudorandom spreading sequence modulated onto a GNSS carrier that a receiver correlates against a local replica to measure signal transit time and hence pseudorange." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GNSS_Receivers_General_Introduction> .
 
 :GNSSReceiver a owl:Class ;
     rdfs:label "GNSS Receiver" ;
@@ -17782,7 +17789,7 @@ Because the authenticating key is revealed only after the data it protects has a
             owl:someValuesFrom :GNSSNavigationMessage ],
         [ a owl:Restriction ;
             owl:onProperty :carries ;
-            owl:someValuesFrom :RangingCode ] ;
+            owl:someValuesFrom :GNSSRangingCode ] ;
     :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>,
         <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
@@ -22224,7 +22231,7 @@ Additionally, after the code file is printed, it could be recovered from the sys
 
 :OpenRangingCode a owl:Class ;
     rdfs:label "Open Ranging Code" ;
-    rdfs:subClassOf :RangingCode ;
+    rdfs:subClassOf :GNSSRangingCode ;
     :definition "An open ranging code is a ranging code whose sequence is public and predictable (e.g., GPS L1 C/A, Galileo E1 Open Service), making it straightforward for an adversary to generate and therefore susceptible to signal-synthesis spoofing." ;
     rdfs:seeAlso <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> .
 
@@ -26156,13 +26163,6 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     rdfs:subClassOf :NumericPatternMatching ;
     :d3fend-id "D3A-RM" ;
     :definition "Numeric Range Matching determines if a value lies with an interval of values (i.e., within the range of values.)" .
-
-:RangingCode a owl:Class ;
-    rdfs:label "Ranging Code" ;
-    rdfs:subClassOf :Record ;
-    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
-    :definition "A ranging code is the pseudorandom spreading sequence modulated onto a GNSS carrier that a receiver correlates against a local replica to measure signal transit time and hence pseudorange." ;
-    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GNSS_Receivers_General_Introduction> .
 
 :RankCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
