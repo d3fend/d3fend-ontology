@@ -1775,6 +1775,44 @@ skos:prefLabel a owl:AnnotationProperty .
 
 ### Classes
 
+:AgentToolConfiguration a owl:Class ;
+    rdfs:label "Agent Tool Configuration" ;
+    rdfs:subClassOf :ConfigurationResource ;
+    :definition "Information that declares the tools, skills, or capabilities an AI agent may invoke, including their names, parameters, and permitted operations. Examples include an MCP (Model Context Protocol) server's tool declarations and a skill file's frontmatter and instructions." .
+
+:AgentToolManifest a owl:Class ;
+    rdfs:label "Agent Tool Manifest" ;
+    skos:altLabel "Skill File",
+        "Tool Manifest" ;
+    rdfs:subClassOf :ConfigurationFile,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :AgentToolConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :loaded-by ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "A configuration file loaded by an AI agent at startup or tool-discovery time that declares available tools, skills, or capabilities. Examples include an MCP (Model Context Protocol) server manifest and a skill file (e.g. SKILL.md)." .
+
+:AgentToolInvocation a owl:Class ;
+    rdfs:label "Agent Tool Invocation" ;
+    skos:altLabel "Tool Call" ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :has-sender ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "A digital message by which an AI agent requests the execution of a tool or skill declared in an Agent Tool Manifest, together with any arguments supplied for that request." .
+
+:InterAgentMessage a owl:Class ;
+    rdfs:label "Inter Agent Message" ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :has-sender ;
+            owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-recipient ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "A digital message exchanged between AI agents, or between an AI agent and a tool it invokes, as part of a multi-agent or agent-to-tool workflow." .
+
 :AcademicPaperReference a owl:Class ;
     rdfs:label "Academic Paper Reference" ;
     rdfs:subClassOf :TechniqueReference ;
