@@ -158,11 +158,6 @@
         :hardens ;
     :definition "x configures y: The entity x sets the operational parameters of entity y, determining how y will operate." .
 
-:conforms-to a owl:ObjectProperty ;
-    rdfs:label "conforms-to" ;
-    rdfs:subPropertyOf :implements ;
-    :definition "x conforms-to y: The entity x conforms-to entity y by adhering to the rules, constraints, or schema specified by y." .
-
 :connected-to a owl:ObjectProperty ;
     rdfs:label "connected-to" ;
     rdfs:subPropertyOf :associated-with ;
@@ -351,8 +346,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :encodes a owl:ObjectProperty ;
     rdfs:label "encodes" ;
-    rdfs:subPropertyOf :implements ;
-    :definition "x encodes y: The entity x encodes entity y by physically representing or organizing information according to the abstract structure or logical model defined by y." .
+    rdfs:subPropertyOf :associated-with ;
+    :definition "x encodes y: The entity x transforms data y to a different form, usually through compression." .
 
 :encrypts a owl:ObjectProperty ;
     rdfs:label "encrypts" ;
@@ -591,12 +586,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "implemented-by" ;
     rdfs:subPropertyOf :associated-with ;
     owl:inverseOf :implements ;
-    :definition """x implemented-by y: The entity x puts the plan, design, or specification of y into effect
-.""" .
+    :definition "x implemented-by y: The entity x is realized or brought into operation by entity y." .
 
 :implements a owl:ObjectProperty ;
     rdfs:label "implements" ;
-    rdfs:subPropertyOf :associated-with ;
+    rdfs:subPropertyOf :may-implement ;
     :definition "x implements y: The entity x realizes entity y by putting its design or specification into effect." .
 
 :initiates a owl:ObjectProperty ;
@@ -892,6 +886,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:domain :Artifact ;
     rdfs:range :Weakness .
 
+:may-implement a owl:ObjectProperty ;
+    rdfs:label "may-implement" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-implement y: The entity x can serve as an implementation mechanism for entity y under some valid configuration, constraint, or usage context." .
+
 :may-interpret a owl:ObjectProperty ;
     rdfs:label "may-interpret" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -1075,7 +1074,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "prescribes" ;
     rdfs:subPropertyOf :associated-with ;
     rdfs:domain :Plan ;
-    owl:inverseOf :prescribed-by ;
     rdfs:comment "Modeling intent: use to connect plans (like techniques) to the events that would occur when the plan is carried out. This relation does not, by itself, assert that any particular event occurred; only that the plan includes or directs that kind of event. May also be used for design/blueprint-like specifications of artifacts." ;
     :definition "x prescribes y: x provides a directive specification for y (i.e., x serves as a rule or guide for how y is intended to occur or be made)." ;
     rdfs:seeAlso <https://www.commoncoreontologies.org/ont00001942> .
@@ -1211,6 +1209,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :associated-with ;
     rdfs:isDefinedBy <http://wordnet-rdf.princeton.edu/id/00350758-v> ;
     :definition "x resumes y: The agent or technique x continues a previous action on entity y. Usually occurs after suspension on y." .
+
+:returns a owl:ObjectProperty ;
+    rdfs:label "returns" ;
+    rdfs:subPropertyOf :associated-with ;
+    :definition "The callable entity x yields an instance of y as its return value when invoked." .
 
 :runs a owl:ObjectProperty ;
     rdfs:label "runs" ;
@@ -2111,15 +2114,6 @@ GeeksforGeeks. (n.d.). Adaptive Resonance Theory (ART). [Link](https://www.geeks
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :UserAccountCreationEvent ] ;
     :definition "An event where a user is added to a group, granting the user the permissions and privileges associated with the group." .
-
-:AdjacencyList a owl:Class ;
-    rdfs:label "Adjacency List" ;
-    rdfs:subClassOf :IndexAddressedStructure,
-        :PointerTraversedStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Graph ] ;
-    :definition "An adjacency list is a data structure that represents a graph by associating each vertex with a list of its adjacent vertices (neighbors)." .
 
 :AdministrativeNetworkActivityAnalysis a :AdministrativeNetworkActivityAnalysis,
         owl:Class,
@@ -5279,10 +5273,10 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
     rdfs:label "Binary Search Tree" ;
     rdfs:subClassOf :BinaryTree,
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :Map ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :Set ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Binary_search_tree> ;
     :definition "A binary search tree (BST), also called an ordered or sorted binary tree, is a rooted binary tree data structure with the key of each internal node being greater than all the keys in the respective node's left subtree and less than the ones in its right subtree." .
@@ -5345,15 +5339,6 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
 
 IEEE Std 1003.1-2017: A file that refers to a device. A block special file is normally distinguished from a character special file by providing access to the device in a manner such that the hardware characteristics of the device are not visible.""" ;
     rdfs:seeAlso <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_79> .
-
-:BloomFilter a owl:Class ;
-    rdfs:label "Bloom Filter" ;
-    rdfs:subClassOf :IndexAddressedStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :ProbabilisticSet ] ;
-    rdfs:isDefinedBy <https://dbpedia.org/page/Bloom_filter> ;
-    :definition "A bloom filter is a space-efficient probabilistic data structure that is used to test whether an element is a member of a set. They can produce false positives, but not false negatives." .
 
 :BookReference a owl:Class ;
     rdfs:label "Book Reference" ;
@@ -5955,17 +5940,6 @@ Change the default password as soon as a new device is received. The default cre
     rdfs:isDefinedBy <http://dbpedia.org/resource/Child_process> ;
     :definition "A child process in computing is a process created by another process (the parent process). This technique pertains to multitasking operating systems, and is sometimes called a subprocess or traditionally a subtask. There are two major procedures for creating a child process: the fork system call (preferred in Unix-like systems and the POSIX standard) and the spawn (preferred in the modern (NT) kernel of Microsoft Windows, as well as in some historical operating systems)." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Parent_process> .
-
-:CircularArray a owl:Class ;
-    rdfs:label "Circular Array" ;
-    rdfs:subClassOf :IndexAddressedStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Queue ],
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Stack ] ;
-    :definition "A circular array is a data structure that stores elements in contiguous memory locations but treats the array as if it were circular. In a circular array, the last element is logically connected to the first element, allowing efficient implementation of data structures like queues and buffers." .
 
 :Classification a owl:Class,
         owl:NamedIndividual ;
@@ -7905,8 +7879,11 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-119,
         :CWE-787,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:someValuesFrom :MemoryAccessFunction ] ;
     :cwe-id "CWE-120" ;
     :definition "The product copies an input buffer to an output buffer without verifying that the size of the input buffer is less than the size of the output buffer, leading to a buffer overflow." ;
     :synonym "Classic Buffer Overflow",
@@ -7945,8 +7922,11 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Out-of-bounds Read" ;
     rdfs:subClassOf :CWE-119,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :IndexAddressedStructure ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:someValuesFrom :MemoryAccessFunction ] ;
     :cwe-id "CWE-125" ;
     :definition "The product reads data past the end, or before the beginning, of the intended buffer." ;
     :synonym "OOB read" .
@@ -7975,8 +7955,11 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Improper Validation of Array Index" ;
     rdfs:subClassOf :CWE-1285,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :IndexAddressedStructure ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:someValuesFrom :IndexValidationFunction ] ;
     :cwe-id "CWE-129" ;
     :definition "The product uses untrusted input when calculating or using an array index, but the product does not validate or incorrectly validates the index to ensure the index references a valid position within the array." ;
     :synonym "array index underflow",
@@ -7993,16 +7976,16 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
 
 :CWE-131 a owl:Class ;
     rdfs:label "Incorrect Calculation of Buffer Size" ;
-    rdfs:subClassOf :CWE-682,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+    rdfs:subClassOf :CWE-682 ;
     :cwe-id "CWE-131" ;
     :definition "The product does not correctly calculate the size to be used when allocating a buffer, which could lead to a buffer overflow." .
 
 :CWE-134 a owl:Class ;
     rdfs:label "Use of Externally-Controlled Format String" ;
-    rdfs:subClassOf :CWE-668 ;
+    rdfs:subClassOf :CWE-668,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :StringFormatFunction ] ;
     :cwe-id "CWE-134" ;
     :definition "The product uses a function that accepts a format string as an argument, but the format string originates from an external source." .
 
@@ -8203,11 +8186,11 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Improper Null Termination" ;
     rdfs:subClassOf :CWE-707,
         [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :DynamicArray ],
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :String ],
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :StaticArray ] ;
+            owl:someValuesFrom :StringHandlingFunction ] ;
     :cwe-id "CWE-170" ;
     :definition "The product does not terminate or incorrectly terminates a string or array with a null character or equivalent terminator." .
 
@@ -8327,16 +8310,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
 
 :CWE-190 a owl:Class ;
     rdfs:label "Integer Overflow or Wraparound" ;
-    rdfs:subClassOf :CWE-682,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :FixedPoint ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Integer ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :MathematicalFunction ] ;
+    rdfs:subClassOf :CWE-682 ;
     :cwe-id "CWE-190" ;
     :definition "The product performs a calculation that can produce an integer overflow or wraparound when the logic assumes that the resulting value will always be larger than the original value. This occurs when an integer value is incremented to a value that is too large to store in the associated representation. When this occurs, the value may become a very small or negative number." ;
     :synonym "Overflow",
@@ -8345,23 +8319,14 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
 
 :CWE-191 a owl:Class ;
     rdfs:label "Integer Underflow (Wrap or Wraparound)" ;
-    rdfs:subClassOf :CWE-682,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :FixedPoint ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Integer ] ;
+    rdfs:subClassOf :CWE-682 ;
     :cwe-id "CWE-191" ;
     :definition "The product subtracts one value from another, such that the result is less than the minimum allowable integer value, which produces a value that is not equal to the correct result." ;
     :synonym "Integer underflow" .
 
 :CWE-192 a owl:Class ;
     rdfs:label "Integer Coercion Error" ;
-    rdfs:subClassOf :CWE-681,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :SimpleDataType ] ;
+    rdfs:subClassOf :CWE-681 ;
     :cwe-id "CWE-192" ;
     :definition "Integer coercion refers to a set of flaws pertaining to the type casting, extension, or truncation of primitive data types." .
 
@@ -8374,43 +8339,25 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
 
 :CWE-194 a owl:Class ;
     rdfs:label "Unexpected Sign Extension" ;
-    rdfs:subClassOf :CWE-681,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Character ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :FloatingPoint ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Integer ] ;
+    rdfs:subClassOf :CWE-681 ;
     :cwe-id "CWE-194" ;
     :definition "The product performs an operation on a number that causes it to be sign extended when it is transformed into a larger data type. When the original number is negative, this can produce unexpected values that lead to resultant weaknesses." .
 
 :CWE-195 a owl:Class ;
     rdfs:label "Signed to Unsigned Conversion Error" ;
-    rdfs:subClassOf :CWE-681,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Integer ] ;
+    rdfs:subClassOf :CWE-681 ;
     :cwe-id "CWE-195" ;
     :definition "The product uses a signed primitive and performs a cast to an unsigned primitive, which can produce an unexpected value if the value of the signed primitive can not be represented using an unsigned primitive." .
 
 :CWE-196 a owl:Class ;
     rdfs:label "Unsigned to Signed Conversion Error" ;
-    rdfs:subClassOf :CWE-681,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Integer ] ;
+    rdfs:subClassOf :CWE-681 ;
     :cwe-id "CWE-196" ;
     :definition "The product uses an unsigned primitive and performs a cast to a signed primitive, which can produce an unexpected value if the value of the unsigned primitive can not be represented using a signed primitive." .
 
 :CWE-197 a owl:Class ;
     rdfs:label "Numeric Truncation Error" ;
-    rdfs:subClassOf :CWE-681,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :SimpleDataType ] ;
+    rdfs:subClassOf :CWE-681 ;
     :cwe-id "CWE-197" ;
     :definition "Truncation errors occur when a primitive is cast to a primitive of a smaller size and data is lost in the conversion." .
 
@@ -8648,7 +8595,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-228,
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :DataType ] ;
+            owl:someValuesFrom :Subroutine ] ;
     :cwe-id "CWE-241" ;
     :definition "The product does not handle or incorrectly handles when a particular element is not the expected type, e.g. it expects a digit (0-9) but is provided with a letter (A-Z)." .
 
@@ -9397,16 +9344,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
 
 :CWE-369 a owl:Class ;
     rdfs:label "Divide By Zero" ;
-    rdfs:subClassOf :CWE-682,
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :FixedPoint ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :FloatingPoint ],
-        [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Integer ] ;
+    rdfs:subClassOf :CWE-682 ;
     :cwe-id "CWE-369" ;
     :definition "The product divides a value by zero." .
 
@@ -9636,11 +9574,14 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
         :CWE-825,
         :CWE-1341,
         [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :MemoryFreeFunction ],
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Pointer ],
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :PointerTraversedStructure ] ;
+            owl:someValuesFrom :MemoryFreeFunction ] ;
     :cwe-id "CWE-415" ;
     :definition "The product calls free() twice on the same memory address." ;
     :synonym "Double-free" .
@@ -9649,8 +9590,14 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Use After Free" ;
     rdfs:subClassOf :CWE-825,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Pointer ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :PointerTraversedStructure ] ;
+            owl:someValuesFrom :MemoryAccessFunction ] ;
     :cwe-id "CWE-416" ;
     :definition "The product reuses or references memory after it has been freed. At some point afterward, the memory may be allocated again and saved in another pointer, while the original pointer references a location somewhere within the new allocation. Any operations using the original pointer are no longer valid because the memory \"belongs\" to the code that operates on the new pointer." ;
     :synonym "Dangling pointer",
@@ -9979,11 +9926,11 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-710,
         :CWE-754,
         [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :PointerDereferencingFunction ],
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Pointer ],
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :PointerTraversedStructure ] ;
+            owl:someValuesFrom :PointerDereferencingFunction ] ;
     :cwe-id "CWE-476" ;
     :definition "The product dereferences a pointer that it expects to be valid but is NULL." ;
     :synonym "nil pointer dereference",
@@ -10426,7 +10373,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-758,
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :Stack ] ;
+            owl:someValuesFrom :PointerReturningFunction ] ;
     :cwe-id "CWE-562" ;
     :definition "A function returns the address of a stack variable, which will cause unintended program behavior, typically in the form of a crash." .
 
@@ -11076,20 +11023,26 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-119,
         :CWE-190,
         [ a owl:Restriction ;
-            owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ] ;
     :cwe-id "CWE-680" ;
     :definition "The product performs a calculation to determine how much memory to allocate, but an integer overflow can occur that causes less memory to be allocated than expected, leading to a buffer overflow." .
 
 :CWE-681 a owl:Class ;
     rdfs:label "Incorrect Conversion between Numeric Types" ;
-    rdfs:subClassOf :CWE-704 ;
+    rdfs:subClassOf :CWE-704,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :NumericTypeConversionFunction ] ;
     :cwe-id "CWE-681" ;
     :definition "When converting from one data type to another, such as long to integer, data can be omitted or translated in a way that produces unexpected values. If the resulting values are used in a sensitive context, then dangerous behaviors may occur." .
 
 :CWE-682 a owl:Class ;
     rdfs:label "Incorrect Calculation" ;
-    rdfs:subClassOf :Weakness ;
+    rdfs:subClassOf :Weakness,
+        [ a owl:Restriction ;
+            owl:onProperty :weakness-of ;
+            owl:someValuesFrom :MathematicalFunction ] ;
     :cwe-id "CWE-682" ;
     :definition "The product performs a calculation that generates incorrect or unintended results that are later used in security-critical decisions or resource management." .
 
@@ -11205,7 +11158,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-664,
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :DataType ] ;
+            owl:someValuesFrom :TypeConversionFunction ] ;
     :cwe-id "CWE-704" ;
     :definition "The product does not correctly convert an object, resource, or structure from one type to a different type." .
 
@@ -11463,8 +11416,14 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Access of Memory Location Before Start of Buffer" ;
     rdfs:subClassOf :CWE-119,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Pointer ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:someValuesFrom :MemoryAccessFunction ] ;
     :cwe-id "CWE-786" ;
     :definition "The product reads or writes to a buffer using an index or pointer that references a memory location prior to the beginning of the buffer." .
 
@@ -11472,8 +11431,11 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Out-of-bounds Write" ;
     rdfs:subClassOf :CWE-119,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :IndexAddressedStructure ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:someValuesFrom :MemoryAccessFunction ] ;
     :cwe-id "CWE-787" ;
     :definition "The product writes data past the end, or before the beginning, of the intended buffer." ;
     :synonym "Memory Corruption" .
@@ -11482,8 +11444,14 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:label "Access of Memory Location After End of Buffer" ;
     rdfs:subClassOf :CWE-119,
         [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Pointer ],
+        [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :IndexAddressedStructure ] ;
+            owl:someValuesFrom :MemoryAccessFunction ] ;
     :cwe-id "CWE-788" ;
     :definition "The product reads or writes to a buffer using an index or pointer that references a memory location after the end of the buffer." .
 
@@ -11613,7 +11581,7 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
     rdfs:subClassOf :CWE-119,
         [ a owl:Restriction ;
             owl:onProperty :weakness-of ;
-            owl:someValuesFrom :PointerTraversedStructure ] ;
+            owl:someValuesFrom :MathematicalFunction ] ;
     :cwe-id "CWE-823" ;
     :definition "The product performs pointer arithmetic on a valid pointer, but it uses an offset that can point outside of the intended range of valid memory locations for the resulting pointer." ;
     :synonym "Untrusted pointer offset" .
@@ -15363,30 +15331,21 @@ Analyzing the interaction of a piece of code with a system while the code is bei
     rdfs:label "Dynamic Array" ;
     rdfs:subClassOf :IndexAddressedStructure,
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :List ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :NdimensionalArray ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :Queue ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :Stack ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :String ] ;
     :definition "A dynamic array is a data structure that stores elements in contiguous memory locations but allows its size to be resized during runtime." .
-
-:EdgeList a owl:Class ;
-    rdfs:label "Edge List" ;
-    rdfs:subClassOf :IndexAddressedStructure,
-        :PointerTraversedStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Graph ] ;
-    :definition "An edge list is a data structure that represents a graph by storing all its edges as a list of pairs (or tuples)." .
 
 :ElectricalSignal a owl:Class ;
     rdfs:label "Electrical Signal" ;
@@ -17176,11 +17135,6 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
     rdfs:subClassOf :FileMetadata ;
     :definition "A sequence of bytes used to identify and validate the footer section within a file." .
 
-:FileFormatSpecification a owl:Class ;
-    rdfs:label "File Format Specification" ;
-    rdfs:subClassOf :DataSpecification ;
-    :definition "A file format specification is a detailed description of the structure, encoding, and organization of data within a specific file format. It defines how data is stored, interpreted, and represented, including the arrangement of headers, metadata, content, and any associated rules or constraints." .
-
 :FileFormatVerification a :FileFormatVerification,
         owl:Class,
         owl:NamedIndividual ;
@@ -17188,10 +17142,7 @@ On Windows systems, deleting a file in File Explorer does not permanently delete
     rdfs:subClassOf :ContentValidation,
         [ a owl:Restriction ;
             owl:onProperty :analyzes ;
-            owl:someValuesFrom :FileSection ],
-        [ a owl:Restriction ;
-            owl:onProperty :verifies ;
-            owl:someValuesFrom :FormattedFile ] ;
+            owl:someValuesFrom :FileSection ] ;
     :d3fend-id "D3-FFV" ;
     :definition "Verifying that a file conforms to its expected format specifications" ;
     :kb-reference :Reference-FileSecurityUsingFileFormatValidation_OPSWATInc .
@@ -17657,7 +17608,7 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
 
 :FixedPoint a owl:Class ;
     rdfs:label "Fixed Point" ;
-    rdfs:subClassOf :SimpleDataType ;
+    rdfs:subClassOf :NumericDataType ;
     :definition "A fixed point representation stores numbers with a fixed number of digits before and after the decimal point." .
 
 :FlashMemory a owl:Class ;
@@ -17684,21 +17635,12 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
 
 :FloatingPoint a owl:Class ;
     rdfs:label "Floating Point" ;
-    rdfs:subClassOf :SimpleDataType ;
+    rdfs:subClassOf :NumericDataType ;
     :definition "A floating point representation stores numbers in a way that allows the decimal point to change its position depending on the value being represented." .
 
 :Forecasting a owl:Class ;
     rdfs:label "Forecasting" ;
     rdfs:subClassOf :AnalyticalPurpose .
-
-:FormattedFile a owl:Class ;
-    rdfs:label "Formatted File" ;
-    rdfs:subClassOf :DataStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :conforms-to ;
-            owl:someValuesFrom :FileFormatSpecification ] ;
-    :definition "A formatted file is a file whose data is arranged according to a specific file format specification. In other words, a formatted file is an actual file saved in a certain format, like a .docx, .jpg, or .csv file, where the data is laid out following the rules for that format." ;
-    rdfs:seeAlso <https://dbpedia.org/page/File_format> .
 
 :ForwardProxyServer a owl:Class ;
     rdfs:label "Forward Proxy Server" ;
@@ -18375,10 +18317,10 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:subClassOf :IndexAddressedStructure,
         :PointerTraversedStructure,
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :Map ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :Set ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Hash_table> ;
     :definition "A hash table, also known as hash map, is a data structure that implements an associative array or dictionary. It is an abstract data type that maps keys to values." .
@@ -19283,10 +19225,20 @@ Filtering policies are developed by administrators to meet business requirements
         :Reference-MethodForControllingComputerNetworkSecurity_CheckpointSoftwareTechnologiesLtd,
         :Reference-NetworkFirewallWithProxy_SecureComputingLLC .
 
+:IndexAddressedAccessFunction a owl:Class ;
+    rdfs:label "Index Addressed Access Function" ;
+    rdfs:subClassOf :Subroutine ;
+    :definition "A callable computational construct that accesses data by using an index, subscript, offset, or computed position within an index-addressed structure." .
+
 :IndexAddressedStructure a owl:Class ;
     rdfs:label "Index Addressed Structure" ;
     rdfs:subClassOf :DataStructure ;
     :definition "A data structure whose elements are primarily located and accessed by applying an key to a logically contiguous collection of storage locations." .
+
+:IndexValidationFunction a owl:Class ;
+    rdfs:label "Index Validation Function" ;
+    rdfs:subClassOf :Subroutine ;
+    :definition "A callable computational construct that checks whether an index, subscript, offset, or computed position is valid for accessing a target structure." .
 
 :IndirectBranchCallAnalysis a :IndirectBranchCallAnalysis,
         owl:Class,
@@ -19450,7 +19402,7 @@ Georgian Impact Blog. (n.d.). Transfer Learning Part 1. [Link](https://medium.co
 
 :Integer a owl:Class ;
     rdfs:label "Integer" ;
-    rdfs:subClassOf :SimpleDataType ;
+    rdfs:subClassOf :NumericDataType ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Integer_(computer_science)> ;
     :definition "Integers represents some range of mathematical integers." .
 
@@ -19551,6 +19503,8 @@ If an attacker manages to stop the processes used to log an attack without setti
     rdfs:isDefinedBy <http://dbpedia.org/resource/Online_identity> ;
     :definition "A social identity that an Internet user establishes in online communities and websites. It may also be an actively constructed presentation of oneself." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Online_identity> .
+
+:InternetWebNetworkTraffic a owl:Class .
 
 :InterprocessCommunication a owl:Class ;
     rdfs:label "Interprocess Communication" ;
@@ -20313,16 +20267,16 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
     rdfs:label "Linked List" ;
     rdfs:subClassOf :PointerTraversedStructure,
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :List ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :Queue ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :Stack ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :String ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Linked_list> ;
     :definition "A linked list is a linear collection of data elements whose order is not given by their physical placement in memory." .
@@ -21035,7 +20989,7 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
 :MathematicalFunction a owl:Class ;
     rdfs:label "Mathematical Function" ;
     rdfs:subClassOf :Subroutine ;
-    :definition "Computes mathematical expressions." .
+    :definition "A callable computational construct that applies a mathematical rule, operation, or formula to input values to produce an output value." .
 
 :Maximum-marginLearning a owl:Class,
         owl:NamedIndividual ;
@@ -21095,6 +21049,11 @@ Wikipedia. (n.d.). Average absolute deviation. [Link](https://en.wikipedia.org/w
     rdfs:subClassOf :Server ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Media_server> ;
     :definition "A media server is a computer appliance or an application software that stores digital media (video, audio or images) and makes it available over a network. Media servers range from servers that provide video on demand to smaller personal computers or NAS (Network Attached Storage) for the home." .
+
+:MemoryAccessFunction a owl:Class ;
+    rdfs:label "Memory Access Function" ;
+    rdfs:subClassOf :Subroutine ;
+    :definition "A callable computational construct that reads from, writes to, or otherwise accesses memory using an address, pointer, reference, handle, or computed location." .
 
 :MemoryAddress a owl:Class ;
     rdfs:label "Memory Address" ;
@@ -22337,12 +22296,25 @@ Programmatically checking if a pointer is NULL before use.
         :Reference-PointerValidationFunction_SEI ;
     :synonym "Nil Pointer Checking" .
 
+:NumericDataType a owl:Class ;
+    rdfs:label "Numeric Data Type" ;
+    rdfs:subClassOf :SimpleDataType ;
+    :definition "A data type that specifies values interpreted as numeric quantities and defines constraints or operations for their representation, comparison, or arithmetic use." .
+
 :NumericPatternMatching a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Numeric Pattern Matching" ;
     rdfs:subClassOf :PatternMatching ;
     :d3fend-id "D3A-NPM" ;
     :definition "Numeric pattern matching uses a pattern specification and sees if the numeric value matches that pattern--simple forms include exact matching and range matching." .
+
+:NumericTypeConversionFunction a owl:Class ;
+    rdfs:label "Numeric Type Conversion Function" ;
+    rdfs:subClassOf :TypeConversionFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :NumericDataType ] ;
+    :definition "A type conversion function that transforms data between numeric data types, including integer, fixed-point, or floating-point representations." .
 
 :ObjectEviction a :ObjectEviction,
         owl:Class,
@@ -25413,12 +25385,17 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
     rdfs:comment "Note, this is not the actual code which performs the dereferencing operation internal to an application runtime." ;
     :definition "A function which has an operation which dereferences a pointer." .
 
+:PointerReturningFunction a owl:Class ;
+    rdfs:label "Pointer Returning Function" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :returns ;
+            owl:someValuesFrom :Pointer ] ;
+    :definition "A callable computational construct whose return value is a pointer to a memory location, object, data structure, function, or other addressable computational entity." .
+
 :PointerTraversedStructure a owl:Class ;
     rdfs:label "Pointer Traversed Structure" ;
-    rdfs:subClassOf :DataStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :Pointer ] ;
+    rdfs:subClassOf :DataStructure ;
     :definition "A data structure whose elements are primarily located and accessed by following stored references (pointers) from one element or node to another, starting from one or more designated entry points." .
 
 :PointerValidation a owl:Class,
@@ -25570,11 +25547,6 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
     :definition "Probabilistic logic extends traditional logic truth tables with probabilistic expressions." ;
     :kb-article """## References
 1. Probabilistic logic. (2023, June 5). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Probabilistic_logic)""" .
-
-:ProbabilisticSet a owl:Class ;
-    rdfs:label "Probabilistic Set" ;
-    rdfs:subClassOf :Set ;
-    :definition "A probabilistic set is a set-like data structure that supports membership queries with probabilistic guarantees." .
 
 :Procedure a owl:Class ;
     rdfs:label "Procedure" ;
@@ -26959,21 +26931,9 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 
 :Record a owl:Class ;
     rdfs:label "Record" ;
-    rdfs:subClassOf :DataStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :RecordType ] ;
+    rdfs:subClassOf :DataStructure ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Record_(computer_science)> ;
     :definition "In computer science, a record (also called struct or compound data) is a basic data structure. A record is a collection of fields, possibly of different data types, typically in fixed number and sequence . The fields of a record may also be called members, particularly in object-oriented programming. Fields may also be called elements, though these risk confusion with the elements of a collection. A tuple may or may not be considered a record, and vice versa, depending on conventions and the specific programming language." .
-
-:RecordType a owl:Class ;
-    rdfs:label "Record Type" ;
-    rdfs:subClassOf :DataType,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Record ] ;
-    :definition "A record type defines the structure and organization of a record." ;
-    :synonym "Compound Data Type" .
 
 :RecurrentNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
@@ -27856,12 +27816,6 @@ If an attacker wants to inject some data into the program, for example as a para
     :synonym "Address Space Layout Randomization",
         "ASLR" .
 
-:Self-BalancingBinarySearchTree a owl:Class ;
-    rdfs:label "Self-Balancing Binary Search Tree" ;
-    rdfs:subClassOf :BinarySearchTree ;
-    rdfs:isDefinedBy <https://dbpedia.org/page/Self-balancing_binary_search_tree> ;
-    :definition "A self-balancing binary search tree (BST) is any node-based binary search tree that automatically keeps its height (maximal number of levels below the root) small in the face of arbitrary item insertions and deletions." .
-
 :Self-organizingMap a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Self-organizing Map" ;
@@ -28458,14 +28412,6 @@ Wikipedia. (n.d.). Singular value decomposition. [Link](https://en.wikipedia.org
     :definition "Skewness is a measure of the asymmetry of the probability distribution of a real-valued random variable about its mean. The standardized moment of a probability distribution function." ;
     :kb-article """## References
 Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
-
-:SkipList a owl:Class ;
-    rdfs:label "Skip List" ;
-    rdfs:subClassOf :PointerTraversedStructure,
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :Map ] ;
-    :definition "A skip list is a probabilistic data structure that organizes elements in a sorted, hierarchical, linked list format to allow efficient search, insertion, and deletion operations." .
 
 :SlowSymbolicLink a owl:Class ;
     rdfs:label "Slow Symbolic Link" ;
@@ -29259,19 +29205,19 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
     rdfs:label "Static Array" ;
     rdfs:subClassOf :IndexAddressedStructure,
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
-            owl:someValuesFrom :List ],
-        [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :NdimensionalArray ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
+            owl:someValuesFrom :List ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :Queue ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :Stack ],
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :may-implement ;
             owl:someValuesFrom :String ] ;
     :definition "A static array is a data structure that stores a fixed number of elements in contiguous memory locations." .
 
@@ -29364,8 +29310,16 @@ Wolfram MathWorld. (n.d.). Statistics. [Link](https://mathworld.wolfram.com/Stat
 
 :StringFormatFunction a owl:Class ;
     rdfs:label "String Format Function" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :String ] ;
+    :definition "A function which creates a new string based on a format specification and corresponding specified values." .
+
+:StringHandlingFunction a owl:Class ;
+    rdfs:label "String Handling Function" ;
     rdfs:subClassOf :Subroutine ;
-    :definition "A function which creates a new string based on a format specification and correspondingi specified values." .
+    :definition "A callable computational construct that reads, writes, compares, copies, formats, validates, terminates, or otherwise processes data represented as a string." .
 
 :StringPatternMatching a owl:Class,
         owl:NamedIndividual ;
@@ -40726,7 +40680,7 @@ Transformer-XL. (n.d.). Papers with Code. [Link](https://paperswithcode.com/meth
     rdfs:label "Tree Structure" ;
     rdfs:subClassOf :PointerTraversedStructure,
         [ a owl:Restriction ;
-            owl:onProperty :encodes ;
+            owl:onProperty :implements ;
             owl:someValuesFrom :Tree ] ;
     :definition "A tree structure is a non-linear data structure that organizes data in a hierarchical form, consisting of nodes connected by edges. It is characterized by having a single root node at the top, with each node potentially having zero or more child nodes, and no cycles." .
 
@@ -40821,6 +40775,14 @@ Note: This resource should not be considered a definitive or exhaustive coding g
             owl:onProperty :preceded-by ;
             owl:someValuesFrom :TunnelOpenEvent ] ;
     :definition "An event where the lifecycle of a network tunnel is extended, ensuring continued encapsulated communication and avoiding session expiration." .
+
+:TypeConversionFunction a owl:Class ;
+    rdfs:label "Type Conversion Function" ;
+    rdfs:subClassOf :Subroutine,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :DataType ] ;
+    :definition "A callable computational construct that transforms data represented according to one data type into data represented according to another data type." .
 
 :UDPEvent a owl:Class ;
     rdfs:label "UDP Event" ;
@@ -47959,4 +47921,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.1
+### Serialized using the ttlser deterministic serializer v1.2.3
