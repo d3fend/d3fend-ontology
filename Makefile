@@ -6,17 +6,58 @@ D3FEND_VERSION ?=1.4.0
 D3FEND_RELEASE_DATE ?="2026-03-31T00:12:00.000Z"
 
 ATTACK_VERSION ?= 19.0
+ATTACK_DATA_BASE_URL ?= https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master
+ATTACK_ENTERPRISE_URL ?= $(ATTACK_DATA_BASE_URL)/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json
+ATTACK_MOBILE_URL ?= $(ATTACK_DATA_BASE_URL)/mobile-attack/mobile-attack-$(ATTACK_VERSION).json
+ATTACK_ICS_URL ?= $(ATTACK_DATA_BASE_URL)/ics-attack/ics-attack-$(ATTACK_VERSION).json
+ATTACK_ITEM_URL_PREFIX ?= https://attack.mitre.org/techniques/
 
 CAPEC_VERSION := 3.9
+CAPEC_ARCHIVE_URL ?= https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
+CAPEC_ITEM_URL_PREFIX ?= https://capec.mitre.org/data/definitions/
 
 SPARTA_VERSION := 3.2
+SPARTA_STIX_URL ?= https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json
+SPARTA_ITEM_URL_PREFIX ?= https://sparta.aerospace.org/technique/
 ATLAS_VERSION := 5.1.1
 ATLAS_NAVIGATOR_DATA_TAG := v1.11.1
+ATLAS_STIX_URL ?= https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/refs/tags/$(ATLAS_NAVIGATOR_DATA_TAG)/dist/stix-atlas.json
+ATLAS_ITEM_URL_PREFIX ?= https://atlas.mitre.org/techniques/
+CWEC_URL ?= https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
+CWE_VERSION ?= current
+CWE_ITEM_URL_PREFIX ?= https://cwe.mitre.org/data/definitions/
+OCSF_VERSION ?= 1.8.0
+OCSF_SCHEMA_DIR ?= data/ocsf-schema
+OCSF_SCHEMA_ARCHIVE_URL ?= https://github.com/ocsf/ocsf-schema/archive/refs/tags/$(OCSF_VERSION).tar.gz
+OCSF_SCHEMA_URL_PREFIX ?= https://schema.ocsf.io/
+NIST_VERSION ?= 5
+NIST_SOURCE_VERSION ?= Revision $(NIST_VERSION)
+NIST_SOURCE ?= data/nist/NIST_SP-800-53_rev$(NIST_VERSION)_catalog.json
+NIST_SOURCE_URL ?= https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev$(NIST_VERSION)/json/NIST_SP-800-53_rev$(NIST_VERSION)_catalog.json
+NIST_ITEM_URL_PREFIX ?= https://csf.tools/reference/nist-sp-800-53/r$(NIST_VERSION)/
+NIST_MAPPING_SOURCE ?= extensions/nist/sp800-53r5-control-catalog-d3fend-mapping.xlsx
+NIST_MAPPING_SHEET ?= SP 800-53 Revision 5--d3fend
+NIST_MAPPING_OUTPUT ?= build/sp800-53r5-control-to-d3fend-mapping.ttl
+NIST_CATALOG_IRI ?= NIST_SP_800-53_R$(NIST_VERSION)
+CCI_SOURCE_VERSION ?= 2025-01-23
+CCI_MAPPING_VERSION ?= 2022-04-05
+CCI_SOURCE_DIR ?= data/cci
+CCI_SOURCE_ARCHIVE ?= $(CCI_SOURCE_DIR)/U_CCI_List.zip
+CCI_SOURCE ?= $(CCI_SOURCE_DIR)/U_CCI_List.xml
+CCI_SOURCE_URL ?= https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip
+CCI_ITEM_URL ?= $(CCI_SOURCE_URL)
+CCI_MAPPING_SOURCE ?= extensions/cci/CCI_Mapping.xlsx
+CCI_MAPPING_SHEET ?= U_CCI_List
+CCI_MAPPING_OUTPUT ?= build/cci-to-d3fend-mapping.ttl
 
 JENA_VERSION := 5.6.0
 JENA_PATH := "bin/jena/apache-jena-${JENA_VERSION}/bin"
 
-ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.8/robot.jar"
+PYTHON ?= python3.11
+PIPENV ?= pipenv
+JAVA ?= java
+
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.10/robot.jar"
 DOCKER_NO_CACHE ?= false
 DOCKER_BUILD_NOCACHE_FLAG := $(if $(filter true,$(DOCKER_NO_CACHE)),--no-cache,)
 ONTOLOGY_BASE_IMAGE ?= d3fend-ontology-base:latest
@@ -114,7 +155,14 @@ install-system-deps:
 	$(END)
 
 install-python-deps:
-	pipenv install --dev
+	PIPENV_PYTHON=$(PYTHON) $(PIPENV) install --dev
+	$(END)
+
+update-python-deps: ## Update Python dependencies and refresh Pipfile.lock
+	PIPENV_PYTHON=$(PYTHON) $(PIPENV) update --dev --python $(PYTHON)
+	$(END)
+
+update-deps: update-python-deps ## Update project dependency locks
 	$(END)
 
 bindir:
@@ -126,12 +174,16 @@ bin/jena: bindir
 	curl https://archive.apache.org/dist/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz | tar xzf - -C bin/jena
 	$(END)
 
+bin/robot: src/util/robot.sh bindir ## install ROBOT launcher wrapper
+	cp src/util/robot.sh bin/robot
+	chmod +x bin/robot
+	$(END)
+
 bin/robot.jar: bindir
-	echo -ne '#!/bin/bash\njava -jar bin/robot.jar "$$@"\n' > bin/robot && chmod +x bin/robot
 	curl -L $(ROBOT_URL) > bin/robot.jar
 	$(END)
 
-install-deps: install-python-deps bin/robot.jar bin/jena ## install software deps
+install-deps: install-python-deps bin/robot bin/robot.jar bin/jena ## install software deps
 	$(END)
 
 docker-build-base-image: ## build the reusable ontology base image
@@ -149,7 +201,9 @@ docker-build-image: docker-build-base-image ## build the ontology image
 download-attack:
 	mkdir -p data
 	echo "Version: $(ATTACK_VERSION)"
-	cd data; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/mobile-attack/mobile-attack-$(ATTACK_VERSION).json; wget https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack-$(ATTACK_VERSION).json
+	curl -L $(ATTACK_ENTERPRISE_URL) -o data/enterprise-attack-$(ATTACK_VERSION).json
+	curl -L $(ATTACK_MOBILE_URL) -o data/mobile-attack-$(ATTACK_VERSION).json
+	curl -L $(ATTACK_ICS_URL) -o data/ics-attack-$(ATTACK_VERSION).json
 	$(END)
 
 update-attack:
@@ -159,7 +213,7 @@ update-attack:
 download-sparta:
 	mkdir -p data
 	echo "Version: $(SPARTA_VERSION)"
-	cd data; wget https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json --no-check-certificate -O sparta_data_v$(SPARTA_VERSION).json
+	curl -L --insecure "$(SPARTA_STIX_URL)" -o data/sparta_data_v$(SPARTA_VERSION).json
 	$(END)
 
 update-sparta:
@@ -169,8 +223,8 @@ update-sparta:
 download-capec:
 	mkdir -p data
 	echo "Version: $(CAPEC_VERSION)"
-	cd data; wget https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
-	unzip data/capec_v$(CAPEC_VERSION).zip -d data
+	curl -L $(CAPEC_ARCHIVE_URL) -o data/capec_v$(CAPEC_VERSION).zip
+	unzip -o data/capec_v$(CAPEC_VERSION).zip -d data
 	$(END)
 
 update-capec:
@@ -179,11 +233,39 @@ update-capec:
 download-atlas:
 	mkdir -p data
 	echo "Version: $(ATLAS_VERSION)"
-	cd data; wget https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/refs/tags/$(ATLAS_NAVIGATOR_DATA_TAG)/dist/stix-atlas.json
+	curl -L $(ATLAS_STIX_URL) -o data/stix-atlas.json
 	$(END)
 
 update-atlas:
 	bash src/util/update_atlas.sh $(ATLAS_VERSION)
+
+download-ocsf:
+	mkdir -p data
+	echo "Version: $(OCSF_VERSION)"
+	rm -rf $(OCSF_SCHEMA_DIR)
+	mkdir -p $(OCSF_SCHEMA_DIR)
+	curl -L $(OCSF_SCHEMA_ARCHIVE_URL) | tar xzf - -C $(OCSF_SCHEMA_DIR) --strip-components=1
+	$(END)
+
+download-nist:
+	mkdir -p $(dir $(NIST_SOURCE))
+	echo "Version: $(NIST_SOURCE_VERSION)"
+	curl -L $(NIST_SOURCE_URL) -o $(NIST_SOURCE)
+	$(END)
+
+download-cci:
+	mkdir -p $(CCI_SOURCE_DIR)
+	echo "Version: $(CCI_SOURCE_VERSION)"
+	curl -L $(CCI_SOURCE_URL) -o $(CCI_SOURCE_ARCHIVE)
+	unzip -o $(CCI_SOURCE_ARCHIVE) U_CCI_List.xml -d $(CCI_SOURCE_DIR)
+	$(END)
+
+download-cwe:
+	$(MAKE) -C extensions/cwe download-cwe CWE_URL=$(CWEC_URL)
+	$(END)
+
+download-data: download-attack download-sparta download-capec download-atlas download-cwe download-ocsf download-nist download-cci ## Download all external source data files
+	$(END)
 
 update-puns:
 	bash src/util/update_puns.sh
@@ -384,11 +466,20 @@ build/d3fend-inferred-relationships.csv:
 	$(END)
 
 build/cci-to-d3fend-mapping.ttl: build/d3fend-public.owl
-	pipenv run python extensions/cci/create_cci_mappings.py
+	pipenv run python extensions/cci/create_cci_mappings.py \
+		--source "$(CCI_MAPPING_SOURCE)" \
+		--sheet "$(CCI_MAPPING_SHEET)" \
+		--output "$(CCI_MAPPING_OUTPUT)" \
+		--mapping-version "$(CCI_MAPPING_VERSION)"
 	$(END)
 
 build/sp800-53r5-control-to-d3fend-mapping.ttl: build/d3fend-public.owl
-	pipenv run python extensions/nist/create_nist_mappings.py
+	pipenv run python extensions/nist/create_nist_mappings.py \
+		--source "$(NIST_MAPPING_SOURCE)" \
+		--sheet "$(NIST_MAPPING_SHEET)" \
+		--output "$(NIST_MAPPING_OUTPUT)" \
+		--version "$(NIST_VERSION)" \
+		--catalog-iri "$(NIST_CATALOG_IRI)"
 	$(END)
 
 build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/sp800-53r5-control-to-d3fend-mapping.ttl ## build D3FEND Extensions
@@ -411,6 +502,31 @@ reportsdir:
 	$(END)
 
 reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+	$(END)
+
+dashboard: reportsdir download-ocsf download-nist download-cci ## Generate static mapping dashboard artifacts in dist/dashboard
+	pipenv run python3 src/util/dashboard_report.py \
+		--ocsf-schema-dir $(OCSF_SCHEMA_DIR) \
+		--ocsf-schema-prefix $(OCSF_SCHEMA_URL_PREFIX) \
+		--ocsf-source-version $(OCSF_VERSION) \
+		--nist-source $(NIST_SOURCE) \
+		--nist-source-version "$(NIST_SOURCE_VERSION)" \
+		--nist-iri-version $(NIST_VERSION) \
+		--nist-item-url-prefix $(NIST_ITEM_URL_PREFIX) \
+		--cci-source $(CCI_SOURCE) \
+		--cci-source-version $(CCI_SOURCE_VERSION) \
+		--cci-mapping-version $(CCI_MAPPING_VERSION) \
+		--cci-item-url $(CCI_ITEM_URL) \
+		--attack-version $(ATTACK_VERSION) \
+		--attack-item-url-prefix $(ATTACK_ITEM_URL_PREFIX) \
+		--atlas-version $(ATLAS_VERSION) \
+		--atlas-item-url-prefix $(ATLAS_ITEM_URL_PREFIX) \
+		--sparta-version $(SPARTA_VERSION) \
+		--sparta-item-url-prefix $(SPARTA_ITEM_URL_PREFIX) \
+		--capec-version $(CAPEC_VERSION) \
+		--capec-item-url-prefix $(CAPEC_ITEM_URL_PREFIX) \
+		--cwe-version $(CWE_VERSION) \
+		--cwe-item-url-prefix $(CWE_ITEM_URL_PREFIX)
 	$(END)
 
 
@@ -475,7 +591,7 @@ test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and use
 	$(END)
 
 test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable for jena libraries
-	@${JENA_PATH}/riot --validate build/d3fend-public-with-controls.owl > reports/test-owl-jena-validation.txt
+	@JAVA="$(JAVA)" ${JENA_PATH}/riot --validate build/d3fend-public-with-controls.owl > reports/test-owl-jena-validation.txt
 	$(END)
 
 test-reasoner:
