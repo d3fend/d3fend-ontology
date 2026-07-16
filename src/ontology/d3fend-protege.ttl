@@ -6771,7 +6771,7 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 
 :DebugInformation a owl:Class ;
     rdfs:label "Debug Information" ;
-    rdfs:subClassOf :FileMetadata,
+    rdfs:subClassOf :ExecutableMetadata,
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :DebugSymbol ] ;
@@ -16844,6 +16844,11 @@ Organizations which download or create high volumes of software make management 
             owl:someValuesFrom :ProgramInstruction ] ;
     :definition "Program code encoded as instructions capable of execution by a physical or virtual machine." .
 
+:ExecutableMetadata a owl:Class ;
+    rdfs:label "Executable Metadata" ;
+    rdfs:subClassOf :FileMetadata ;
+    :definition "File metadata that describes the format, structure, contents, or loading of executable code." .
+
 :ExportTable a owl:Class ;
     rdfs:label "Export Table" ;
     rdfs:subClassOf :FileSection ;
@@ -17580,7 +17585,8 @@ File format specifications often define expected values for specific fields. A c
 
 :FileMagicBytes a owl:Class ;
     rdfs:label "File Magic Bytes" ;
-    rdfs:subClassOf :FileHeaderBlockSignature ;
+    rdfs:subClassOf :ExecutableMetadata,
+        :FileHeaderBlockSignature ;
     :definition "A specific type of header signature located at the beginning of a file, used to identify the file format." .
 
 :FileMagicByteVerification a :FileMagicByteVerification,
@@ -19297,7 +19303,10 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
 
 :ImageDataSegment a owl:Class ;
     rdfs:label "Image Data Segment" ;
-    rdfs:subClassOf :ImageSegment ;
+    rdfs:subClassOf :ImageSegment,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ProgramData ] ;
     :definition "An image data segment (often denoted .data) is a portion of an object file that contains initialized static variables, that is, global variables and static local variables. The size of this segment is determined by the size of the values in the program's source code, and does not change at run time. This segmenting of the memory space into discrete blocks with specific tasks carried over into the programming languages of the day and the concept is still widely in use within modern programming languages." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Data_segment>,
         :ProcessDataSegment .
@@ -25810,6 +25819,11 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
     rdfs:label "Program Code" ;
     rdfs:subClassOf :SoftwareInformation ;
     :definition "Software information expressed as source code, an intermediate representation, or executable code." .
+
+:ProgramData a owl:Class ;
+    rdfs:label "Program Data" ;
+    rdfs:subClassOf :SoftwareInformation ;
+    :definition "Software information used as data by program code rather than as instructions." .
 
 :ProgramInstruction a owl:Class ;
     rdfs:label "Program Instruction" ;
