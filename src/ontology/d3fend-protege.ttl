@@ -925,6 +925,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "x may-run y: The entity x may run the thing y; that is, 'x runs y' may be true." .
 
+:may-spoof a owl:ObjectProperty ;
+    rdfs:label "may-spoof" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-spoof y: They entity x may spoof the thing y; that is, 'x spoofs y' may be true." .
+
 :may-transfer a owl:ObjectProperty ;
     rdfs:label "may-transfer" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -14014,7 +14019,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     skos:prefLabel "GPS Ephemeris" ;
     rdfs:subClassOf :DE-0003,
         [ a owl:Restriction ;
-            owl:onProperty :accesses ;
+            owl:onProperty :spoofs ;
             owl:someValuesFrom :GNSSEphemeris ] ;
     :attack-id "DE-0003.10" ;
     :definition "A satellite with a GPS receiver can use ephemeris data from GPS satellites to estimate its own position in space. A hostile actor could spoof the GPS signals to cause erroneous calculations of the satellite’s position. The received ephemeris data is often telemetered and can be monitored for indications of GPS spoofing. Reception of ephemeris data that changes suddenly without a reasonable explanation (such as a known GPS satellite handoff), could provide an indication of GPS spoofing and warrant further analysis. Threat actors could also change the course of the vehicle and falsify the telemetered data to temporarily convince ground operators the vehicle is still on a proper course." ;
@@ -16073,7 +16078,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Position, Navigation, and Timing (PNT) Geofencing" ;
     rdfs:subClassOf :SPARTAExecutionTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :accesses ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :PNTSolution ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
             owl:someValuesFrom :RuntimeVariable ] ;
     :attack-id "EX-0002" ;
     :definition "Malware or implanted procedures execute only when the spacecraft’s state meets geometric and temporal criteria. Triggers can be defined in orbital elements, inertial or Earth-fixed coordinates, relative geometry, lighting conditions, or time references. The code monitors on-board navigation solutions, ephemerides, or propagated TLEs and arms itself when thresholds are met (e.g., “only fire over region X,” “only activate during LEOP,” or “only run within N seconds of a scheduled downlink.”) Geofencing reduces exposure and aids deniability: triggers are rare, aligned with mission cadence, and hard to reproduce on the ground. More elaborate variants require conjunctions of conditions (position + attitude + clock epoch) or incorporate drift so the trigger slowly evolves with the orbit. The result is effect-on-demand: execution occurs precisely where and when the actor intends, while remaining dormant elsewhere." ;
@@ -16520,10 +16528,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Position, Navigation, and Timing (PNT) Spoofing" ;
     rdfs:subClassOf :EX-0014,
         [ a owl:Restriction ;
-            owl:onProperty :spoofs ;
+            owl:onProperty :may-spoof ;
             owl:someValuesFrom :GNSSNavigationMessage ],
         [ a owl:Restriction ;
-            owl:onProperty :spoofs ;
+            owl:onProperty :may-spoof ;
             owl:someValuesFrom :GNSSRangingCode ] ;
     :attack-id "EX-0014.04" ;
     :definition "The adversary transmits GNSS-like signals (or manipulates crosslink-distributed time/ephemeris) so the spacecraft’s navigation solution reflects attacker-chosen states. With believable code phases, Doppler, and navigation messages, the victim can be pulled to a false position/velocity/time, causing downstream functions, attitude pointing limits, station visibility prediction, eclipse timing, antenna pointing, and anti-replay windows, to misbehave. Even when GNSS is not the primary navigation source, spoofed PNT can bias timekeeping or seed filters that fuse multiple sensors, leading to mis-scheduling and errant control. The defining feature is externally provided navigation/time that passes validity checks yet encodes a crafted trajectory or epoch." ;
