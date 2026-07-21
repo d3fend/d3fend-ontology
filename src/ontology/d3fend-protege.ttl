@@ -2128,6 +2128,31 @@ Network protocols such as RDP, IPMI, SSH, SNMP, VNC, MOSH, NX, TeamViewer, SPICE
     :definition "Administrative network traffic is network traffic related to the remote administration or control of hosts or devices through a standard remote administrative protocol.  Remote shells, terminals, RDP, and VNC are examples of these protocols, which are typically only used by administrators." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Remote_administration> .
 
+:AdvancedEncryptionStandard a owl:Class ;
+    rdfs:label "Advanced Encryption Standard" ;
+    rdfs:subClassOf :BlockCipherFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :KeyMixingFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :KeyScheduleFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :LinearTransformationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PermutationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :RoundFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :SubstitutionBox ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.197-upd1> ;
+    :definition "A symmetric-key block cipher that transforms 128-bit data blocks using keys of 128, 192, or 256 bits." ;
+    :synonym "AES" .
+
 :Agent a owl:Class ;
     rdfs:label "Agent" ;
     rdfs:subClassOf :D3FENDCore ;
@@ -5683,6 +5708,14 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
             owl:someValuesFrom :BitmapImage ] ;
     :definition "A file that contains graphics data represented in a bitmap." .
 
+:BlockCipherFunction a owl:Class ;
+    rdfs:label "Block Cipher Function" ;
+    rdfs:subClassOf :CryptographicPrimitive,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :SymmetricKey ] ;
+    :definition "A symmetric-key cryptographic primitive that transforms fixed-length blocks of data under the control of a cryptographic key." .
+
 :BlockDevice a owl:Class ;
     rdfs:label "Block Device" ;
     skos:altLabel "Block Special File" ;
@@ -6724,6 +6757,12 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:subClassOf :ApplicationConfigurationFile ;
     :definition "A file containing Information used to configure the parameters and initial settings for a compiler." .
 
+:CompressionFunction a owl:Class ;
+    rdfs:label "Compression Function" ;
+    rdfs:subClassOf :CryptographicStateTransformationFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A function used by an iterative cryptographic hash function to combine a message block with an internal chaining value." .
+
 :ComputeDeviceEvent a owl:Class ;
     rdfs:label "Compute Device Event" ;
     rdfs:subClassOf :HardwareDeviceEvent,
@@ -7523,11 +7562,74 @@ Credential Scrubbing involves identifying and eliminating hard-coded credentials
         <https://www.w3.org/TR/webauthn-2/> ;
     :synonym "Phishing Resistant Authentication" .
 
+:CryptographicArithmeticFunction a owl:Class ;
+    rdfs:label "Cryptographic Arithmetic Function" ;
+    rdfs:subClassOf :CryptographicFunctionComponent ;
+    :definition "A cryptographic function component that performs arithmetic over integers, finite fields, polynomial rings, or other mathematical structures." ;
+    rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc8017> .
+
+:CryptographicConstructionFunction a owl:Class ;
+    rdfs:label "Cryptographic Construction Function" ;
+    rdfs:subClassOf :CryptographicFunctionComponent ;
+    :definition "A cryptographic function component that composes lower-level functions into a reusable structure for processing cryptographic state or data." ;
+    rdfs:seeAlso <https://doi.org/10.6028/NIST.FIPS.202> .
+
+:CryptographicDataPreparationFunction a owl:Class ;
+    rdfs:label "Cryptographic Data Preparation Function" ;
+    rdfs:subClassOf :CryptographicFunctionComponent ;
+    :definition "A cryptographic function component that prepares or derives structured data consumed by a cryptographic primitive or scheme." ;
+    rdfs:seeAlso <https://doi.org/10.6028/NIST.FIPS.180-4>,
+        <https://www.rfc-editor.org/rfc/rfc8017> .
+
+:CryptographicFunction a owl:Class ;
+    rdfs:label "Cryptographic Function" ;
+    rdfs:subClassOf :MathematicalFunction ;
+    :definition "A mathematical function used to provide or support cryptographic security services." ;
+    :synonym "Cryptographic Algorithm" .
+
+:CryptographicFunctionComponent a owl:Class ;
+    rdfs:label "Cryptographic Function Component" ;
+    rdfs:subClassOf :CryptographicFunction ;
+    :definition "A reusable mathematical function or construction used as a component of one or more cryptographic functions." .
+
+:CryptographicHashFunction a owl:Class ;
+    rdfs:label "Cryptographic Hash Function" ;
+    rdfs:subClassOf :CryptographicPrimitive ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/cryptographic_hash_function> ;
+    :definition "A cryptographic function that maps a bit string of arbitrary length to a fixed-length hash value." ;
+    :synonym "Cryptographic Hash Algorithm" .
+
 :CryptographicKey a owl:Class ;
     rdfs:label "Cryptographic Key" ;
     rdfs:subClassOf :DigitalInformation ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Public-key_cryptography> ;
     :definition "In cryptography, a key is a piece of information (a parameter) that determines the functional output of a cryptographic algorithm. For encryption algorithms, a key specifies the transformation of plaintext into ciphertext, and vice versa for decryption algorithms. Keys also specify transformations in other cryptographic algorithms, such as digital signature schemes and message authentication codes." .
+
+:CryptographicPrimitive a owl:Class ;
+    rdfs:label "Cryptographic Primitive" ;
+    rdfs:subClassOf :CryptographicFunction ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "A basic mathematical operation used to construct cryptographic schemes." .
+
+:CryptographicScheduleFunction a owl:Class ;
+    rdfs:label "Cryptographic Schedule Function" ;
+    rdfs:subClassOf :CryptographicFunctionComponent ;
+    :definition "A cryptographic function component that expands or arranges input material into a sequence of values consumed during cryptographic processing." ;
+    rdfs:seeAlso <https://doi.org/10.6028/NIST.FIPS.180-4>,
+        <https://doi.org/10.6028/NIST.FIPS.197-upd1> .
+
+:CryptographicScheme a owl:Class ;
+    rdfs:label "Cryptographic Scheme" ;
+    rdfs:subClassOf :CryptographicFunction ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "A cryptographic function that combines one or more primitives and supporting components to provide a security service." .
+
+:CryptographicStateTransformationFunction a owl:Class ;
+    rdfs:label "Cryptographic State Transformation Function" ;
+    rdfs:subClassOf :CryptographicFunctionComponent ;
+    :definition "A cryptographic function component that transforms all or part of an intermediate cryptographic state." ;
+    rdfs:seeAlso <https://doi.org/10.6028/NIST.FIPS.197-upd1>,
+        <https://doi.org/10.6028/NIST.FIPS.202> .
 
 :CustomArchiveFile a owl:Class ;
     rdfs:label "Custom Archive File" ;
@@ -14987,6 +15089,12 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:seeAlso <http://dbpedia.org/resource/Digital_signal_processing> ;
     :synonym "DSP Application" .
 
+:DigitalSignatureScheme a owl:Class ;
+    rdfs:label "Digital Signature Scheme" ;
+    rdfs:subClassOf :CryptographicScheme ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.186-5> ;
+    :definition "A cryptographic scheme for generating and verifying digital signatures." .
+
 :DigitalSystem a owl:Class ;
     rdfs:label "Digital System" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -15828,6 +15936,12 @@ Email files may propagate through many storage systems across the an organizatio
     :d3fend-id "D3-ET" ;
     :definition "Encrypted encapsulation of routable network traffic." ;
     :kb-reference :Reference-SecurityArchitectureForTheInternetProtocol .
+
+:EncryptionScheme a owl:Class ;
+    rdfs:label "Encryption Scheme" ;
+    rdfs:subClassOf :CryptographicScheme ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "A cryptographic scheme consisting of operations that transform plaintext into ciphertext and recover plaintext from ciphertext." .
 
 :Endpoint-basedWebServerAccessMediation a :Endpoint-basedWebServerAccessMediation,
         owl:Class,
@@ -17046,6 +17160,13 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
 
 ## References
 Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
+
+:ExtendableOutputFunction a owl:Class ;
+    rdfs:label "Extendable Output Function" ;
+    rdfs:subClassOf :CryptographicPrimitive ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A cryptographic function whose output can be requested at an application-selected length." ;
+    :synonym "XOF" .
 
 :ExternalContentInclusionFunction a owl:Class ;
     rdfs:label "External Content Inclusion Function" ;
@@ -20295,6 +20416,18 @@ Most current Unix-like systems and Microsoft Windows support loadable kernel mod
     rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_keyboard> ;
     :definition "A computer keyboard is a typewriter-style device which uses an arrangement of buttons or keys to act as mechanical levers or electronic switches. Following the decline of punch cards and paper tape, interaction via teleprinter-style keyboards became the main input method for computers. A keyboard is also used to give commands to the operating system of a computer, such as Windows' Control-Alt-Delete combination. Although on Pre-Windows 95 Microsoft operating systems this forced a re-boot, now it brings up a system security options screen." .
 
+:KeyMixingFunction a owl:Class ;
+    rdfs:label "Key Mixing Function" ;
+    rdfs:subClassOf :CryptographicStateTransformationFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.197-upd1> ;
+    :definition "A function that combines cryptographic key material with an intermediate cryptographic state." .
+
+:KeyScheduleFunction a owl:Class ;
+    rdfs:label "Key Schedule Function" ;
+    rdfs:subClassOf :CryptographicScheduleFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.197-upd1> ;
+    :definition "A function that derives a sequence of round keys or other working key material from a cryptographic key." .
+
 :KioskComputer a owl:Class ;
     rdfs:label "Kiosk Computer" ;
     skos:altLabel "Interactive Kiosk" ;
@@ -20429,6 +20562,12 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
 - Ng, Ritchie. “Evaluating a Linear Regression Model.” Ritchieng.github.io, 8 Jan. 2023, https://www.ritchieng.com/machine-learning-evaluate-linear-regression-model/.
 - Bochkarev, Alexei. "A New Typology Design of Performance Metrics to Measure Errors in Machine Learning Regression Algorithms", 2019, https://www.researchgate.net/publication/330661543_A_New_Typology_Design_of_Performance_Metrics_to_Measure_Errors_in_Machine_Learning_Regression_Algorithms.""" ;
     rdfs:seeAlso :LinearRegression .
+
+:LinearTransformationFunction a owl:Class ;
+    rdfs:label "Linear Transformation Function" ;
+    rdfs:subClassOf :CryptographicStateTransformationFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.197-upd1> ;
+    :definition "A function that applies a linear transformation to a cryptographic state." .
 
 :Link a owl:Class ;
     rdfs:label "Link" ;
@@ -21125,6 +21264,12 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
     rdfs:seeAlso <http://dbpedia.org/resource/Email>,
         <http://dbpedia.org/resource/Message_transfer_agent> .
 
+:MaskGenerationFunction a owl:Class ;
+    rdfs:label "Mask Generation Function" ;
+    rdfs:subClassOf :CryptographicDataPreparationFunction ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "A function that generates a mask of a requested length from an input string." .
+
 :Matching a owl:Class ;
     rdfs:label "Matching" ;
     rdfs:subClassOf :AnalyticalPurpose .
@@ -21144,6 +21289,23 @@ Machine learning." Wikipedia. [Link](https://en.wikipedia.org/wiki/Machine_learn
 Engelen, S., & Hoos, H. (2020). A survey on semi-supervised learning. Machine Learning, 109(2), 299-337. [Link](https://link.springer.com/article/10.1007/s10994-019-05855-6).
 
 Support Vector Machines for Machine Learning. [Link](https://machinelearningmastery.com/support-vector-machines-for-machine-learning/#:~:text=The%20distance%20between%20the%20line,called%20the%20Maximal%2DMargin%20hyperplane.)""" .
+
+:MD5HashFunction a owl:Class ;
+    rdfs:label "MD5 Hash Function" ;
+    rdfs:subClassOf :CryptographicHashFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CompressionFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PaddingEncodingFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :RoundFunction ] ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc1321> ;
+    :definition "A cryptographic hash function that produces a 128-bit hash value." ;
+    rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc6151> ;
+    :synonym "MD5" .
 
 :Mean a owl:Class,
         owl:NamedIndividual ;
@@ -21476,6 +21638,12 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     :definition "The application of security controls to user-to-user and system-to-system communications so messages remain confidential, unaltered, and verifiable while resisting injection, replay, and tampering." ;
     :enables :Harden .
 
+:MessageScheduleFunction a owl:Class ;
+    rdfs:label "Message Schedule Function" ;
+    rdfs:subClassOf :CryptographicScheduleFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A function that expands or arranges message words for processing by a cryptographic function." .
+
 :MessageTransferAgent a owl:Class ;
     rdfs:label "Message Transfer Agent" ;
     skos:altLabel "Mail Transfer Agent",
@@ -21585,6 +21753,12 @@ Model-free (reinforcement learning). Wikipedia. [Link](https://en.wikipedia.org/
     rdfs:subClassOf :ComputerNetworkNode ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Modem> ;
     :definition "A modem -- a portmanteau of \"modulator-demodulator\" -- is a hardware device that converts data into a format suitable for a transmission medium so that it can be transmitted from one computer to another (historically along telephone wires). A modem modulates one or more carrier wave signals to encode digital information for transmission and demodulates signals to decode the transmitted information. The goal is to produce a signal that can be transmitted easily and decoded reliably to reproduce the original digital data. Modems can be used with almost any means of transmitting analog signals from light-emitting diodes to radio. A common type of modem is one that turns the digital data of a computer into modulated electrical signal for transmission over telephone lines and demodulated by another modem at the receiver side to recover the digital data." .
+
+:ModularExponentiationFunction a owl:Class ;
+    rdfs:label "Modular Exponentiation Function" ;
+    rdfs:subClassOf :CryptographicArithmeticFunction ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "A function that raises a value to an exponent modulo an integer." .
 
 :Moments a owl:Class,
         owl:NamedIndividual ;
@@ -24707,6 +24881,13 @@ The OWL languages are characterized by formal semantics. They are built upon the
     :definition "A log of all the network packet data captured from a network by a network sensor (i.e., packet analyzer)," ;
     rdfs:seeAlso <http://dbpedia.org/resource/Packet_analyzer> .
 
+:PaddingEncodingFunction a owl:Class ;
+    rdfs:label "Padding Encoding Function" ;
+    rdfs:subClassOf :CryptographicDataPreparationFunction ;
+    :definition "A function that transforms input data by adding structured padding or encoding required by a cryptographic function or scheme." ;
+    rdfs:seeAlso <https://doi.org/10.6028/NIST.FIPS.180-4>,
+        <https://www.rfc-editor.org/rfc/rfc8017> .
+
 :Page a owl:Class ;
     rdfs:label "Page" ;
     rdfs:subClassOf :MemoryBlock ;
@@ -25073,6 +25254,12 @@ Changes in firmware hash values may indicate that the firmware has been tampered
     rdfs:label "Permission Revoking Event" ;
     rdfs:subClassOf :AccessControlAdministrationEvent ;
     :definition "An administrative event entailing the withdrawal of previously granted access rights, reconfiguring permissions to prevent a subject from performing specific actions on a resource, in accordance with updated access policies." .
+
+:PermutationFunction a owl:Class ;
+    rdfs:label "Permutation Function" ;
+    rdfs:subClassOf :CryptographicStateTransformationFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A bijective function that rearranges or transforms the elements of a cryptographic state." .
 
 :PersistenceTechnique a owl:Class ;
     rdfs:label "Persistence Technique" ;
@@ -26364,6 +26551,14 @@ Proxy-based Web Server Access Mediation involves controlling access to web serve
     :definition "A public key can be disseminated widely as part of an asymmetric cryptography framework and be used to encrypt messages to send to the public key's owner or to authenticate signed messages from that sender." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Public-key_cryptography> .
 
+:PublicKeyCryptographicFunction a owl:Class ;
+    rdfs:label "Public Key Cryptographic Function" ;
+    rdfs:subClassOf :CryptographicPrimitive,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :AsymmetricKey ] ;
+    :definition "A cryptographic primitive that operates using asymmetric cryptographic key material." .
+
 :PythonPackage a owl:Class ;
     rdfs:label "Python Package" ;
     rdfs:subClassOf :SoftwarePackage ;
@@ -27593,6 +27788,11 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
     :definition "Read-only memory (ROM) is a type of non-volatile memory used in computers and other electronic devices. Data stored in ROM cannot be electronically modified after the manufacture of the memory device. Read-only memory is useful for storing software that is rarely changed during the life of the system, also known as firmware." ;
     :synonym "Read-only Memory" .
 
+:RoundFunction a owl:Class ;
+    rdfs:label "Round Function" ;
+    rdfs:subClassOf :CryptographicStateTransformationFunction ;
+    :definition "A function repeatedly applied to a cryptographic state as part of an iterative cryptographic function." .
+
 :Router a owl:Class ;
     rdfs:label "Router" ;
     rdfs:subClassOf :ComputerNetworkNode ;
@@ -27662,6 +27862,52 @@ Example RPC Protocols:
         :Reference-RPCCallInterception_CrowdstrikeInc,
         :Reference-SMBWriteRequest-NamedPipes_MITRE ;
     :synonym "RPC Protocol Analysis" .
+
+:RSAES-OAEP a owl:Class ;
+    rdfs:label "RSAES-OAEP" ;
+    rdfs:subClassOf :EncryptionScheme,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CryptographicHashFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :MaskGenerationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PaddingEncodingFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :RSAFunction ] ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "An RSA encryption scheme that combines RSA primitives with Optimal Asymmetric Encryption Padding." .
+
+:RSAFunction a owl:Class ;
+    rdfs:label "RSA Function" ;
+    rdfs:subClassOf :PublicKeyCryptographicFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :ModularExponentiationFunction ] ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "A public-key cryptographic function based on modular exponentiation with an RSA key." ;
+    :synonym "Rivest-Shamir-Adleman Function" .
+
+:RSASSA-PSS a owl:Class ;
+    rdfs:label "RSASSA-PSS" ;
+    rdfs:subClassOf :DigitalSignatureScheme,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CryptographicHashFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :MaskGenerationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PaddingEncodingFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :RSAFunction ] ;
+    rdfs:isDefinedBy <https://www.rfc-editor.org/rfc/rfc8017> ;
+    :definition "An RSA digital signature scheme using the probabilistic signature scheme encoding method." .
 
 :RTCUpdateEvent a owl:Class ;
     rdfs:label "RTC Update Event" ;
@@ -28373,6 +28619,122 @@ Session identifiers become necessary in cases where the communications infrastru
             owl:someValuesFrom :Thread ] ;
     rdfs:seeAlso <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadcontext> .
 
+:SHA3-224HashFunction a owl:Class ;
+    rdfs:label "SHA3-224 Hash Function" ;
+    rdfs:subClassOf :SHA-3HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A SHA-3 cryptographic hash function that produces a 224-bit hash value." ;
+    :synonym "SHA3-224" .
+
+:SHA3-256HashFunction a owl:Class ;
+    rdfs:label "SHA3-256 Hash Function" ;
+    rdfs:subClassOf :SHA-3HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A SHA-3 cryptographic hash function that produces a 256-bit hash value." ;
+    :synonym "SHA3-256" .
+
+:SHA3-384HashFunction a owl:Class ;
+    rdfs:label "SHA3-384 Hash Function" ;
+    rdfs:subClassOf :SHA-3HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A SHA-3 cryptographic hash function that produces a 384-bit hash value." ;
+    :synonym "SHA3-384" .
+
+:SHA3-512HashFunction a owl:Class ;
+    rdfs:label "SHA3-512 Hash Function" ;
+    rdfs:subClassOf :SHA-3HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A SHA-3 cryptographic hash function that produces a 512-bit hash value." ;
+    :synonym "SHA3-512" .
+
+:SHA-1HashFunction a owl:Class ;
+    rdfs:label "SHA-1 Hash Function" ;
+    rdfs:subClassOf :CryptographicHashFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CompressionFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :MessageScheduleFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PaddingEncodingFunction ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A cryptographic hash function that produces a 160-bit hash value." ;
+    rdfs:seeAlso <https://csrc.nist.gov/projects/hash-functions/nist-policy-on-hash-functions> ;
+    :synonym "SHA-1" .
+
+:SHA-2HashFunction a owl:Class ;
+    rdfs:label "SHA-2 Hash Function" ;
+    rdfs:subClassOf :CryptographicHashFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CompressionFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :MessageScheduleFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PaddingEncodingFunction ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A family of cryptographic hash functions specified as SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, and SHA-512/256." ;
+    :synonym "SHA-2" .
+
+:SHA-3HashFunction a owl:Class ;
+    rdfs:label "SHA-3 Hash Function" ;
+    rdfs:subClassOf :CryptographicHashFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PermutationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :SpongeFunction ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A family of permutation-based cryptographic hash functions specified as SHA3-224, SHA3-256, SHA3-384, and SHA3-512." ;
+    :synonym "SHA-3" .
+
+:SHA-224HashFunction a owl:Class ;
+    rdfs:label "SHA-224 Hash Function" ;
+    rdfs:subClassOf :SHA-2HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A SHA-2 cryptographic hash function that produces a 224-bit hash value." ;
+    :synonym "SHA-224" .
+
+:SHA-256HashFunction a owl:Class ;
+    rdfs:label "SHA-256 Hash Function" ;
+    rdfs:subClassOf :SHA-2HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A SHA-2 cryptographic hash function that produces a 256-bit hash value." ;
+    :synonym "SHA-256" .
+
+:SHA-384HashFunction a owl:Class ;
+    rdfs:label "SHA-384 Hash Function" ;
+    rdfs:subClassOf :SHA-2HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A SHA-2 cryptographic hash function that produces a 384-bit hash value." ;
+    :synonym "SHA-384" .
+
+:SHA-512HashFunction a owl:Class ;
+    rdfs:label "SHA-512 Hash Function" ;
+    rdfs:subClassOf :SHA-2HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A SHA-2 cryptographic hash function that produces a 512-bit hash value." ;
+    :synonym "SHA-512" .
+
+:SHA-512224HashFunction a owl:Class ;
+    rdfs:label "SHA-512/224 Hash Function" ;
+    rdfs:subClassOf :SHA-2HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A SHA-2 cryptographic hash function based on SHA-512 that produces a 224-bit hash value." ;
+    :synonym "SHA-512/224" .
+
+:SHA-512256HashFunction a owl:Class ;
+    rdfs:label "SHA-512/256 Hash Function" ;
+    rdfs:subClassOf :SHA-2HashFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.180-4> ;
+    :definition "A SHA-2 cryptographic hash function based on SHA-512 that produces a 256-bit hash value." ;
+    :synonym "SHA-512/256" .
+
 :ShadowStack a owl:Class ;
     rdfs:label "Shadow Stack" ;
     rdfs:subClassOf :DigitalInformationBearer,
@@ -28399,6 +28761,32 @@ This technique compares the call stack stored in system memory with the shadow c
 ## Considerations
 If the threshold for detecting a stack anomaly is low, it may not detect a return-oriented attack with just one gadget, such as a return-to-libc or return-to-plt attack.  Additionally, this technique may not detect JOP (Jump-oriented programming), as the return instruction is not executed.""" ;
     :kb-reference :Reference-ThreatDetectionForReturnOrientedProgramming_CrowdstrikeInc .
+
+:SHAKE128Function a owl:Class ;
+    rdfs:label "SHAKE128 Function" ;
+    rdfs:subClassOf :ExtendableOutputFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PermutationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :SpongeFunction ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A permutation-based extendable-output function with a security strength of 128 bits against generic attacks." ;
+    :synonym "SHAKE128" .
+
+:SHAKE256Function a owl:Class ;
+    rdfs:label "SHAKE256 Function" ;
+    rdfs:subClassOf :ExtendableOutputFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PermutationFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :SpongeFunction ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A permutation-based extendable-output function with a security strength of 256 bits against generic attacks." ;
+    :synonym "SHAKE256" .
 
 :SharedComputer a owl:Class ;
     rdfs:label "Shared Computer" ;
@@ -28995,6 +29383,15 @@ The goal is for homophones to be encoded to the same representation so that they
     :kb-article """## References
 Towards Data Science. (n.d.). Spectral Clustering. [Link](https://towardsdatascience.com/spectral-clustering-aba2640c0d5b)""" .
 
+:SpongeFunction a owl:Class ;
+    rdfs:label "Sponge Function" ;
+    rdfs:subClassOf :CryptographicConstructionFunction,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :PermutationFunction ] ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.202> ;
+    :definition "A function that processes input by absorbing it into an internal state and produces output by squeezing data from that state." .
+
 :SSHConnectionCloseEvent a owl:Class ;
     rdfs:label "SSH Connection Close Event" ;
     rdfs:subClassOf :NetworkConnectionCloseEvent,
@@ -29428,6 +29825,13 @@ Wikipedia. (n.d.). StyleGAN. [Link](https://en.wikipedia.org/wiki/StyleGAN)""" ;
     :definition "Subspace clustering is an extension of traditional clustering that seeks to find clusters in different subspaces within a dataset." ;
     :kb-article """## References
 Parsons, L., Haque, E., & Liu, H. (2004). Subspace Clustering for High Dimensional Data: A Review. [Link](https://www.kdd.org/exploration_files/parsons.pdf)""" .
+
+:SubstitutionBox a owl:Class ;
+    rdfs:label "Substitution Box" ;
+    rdfs:subClassOf :CryptographicStateTransformationFunction ;
+    rdfs:isDefinedBy <https://doi.org/10.6028/NIST.FIPS.197-upd1> ;
+    :definition "A nonlinear substitution function that maps input values to output values in a cryptographic transformation." ;
+    :synonym "S-box" .
 
 :SubstringMatching a owl:Class,
         owl:NamedIndividual ;
