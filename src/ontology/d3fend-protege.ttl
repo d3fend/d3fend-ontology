@@ -17564,6 +17564,18 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:someValuesFrom :Thread ] ;
     rdfs:seeAlso <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadcontext> .
 
+:GlobalPositioningSystem a owl:Class ;
+    rdfs:label "Global Positioning System" ;
+    rdfs:subClassOf :ServiceApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :GPSClock ] ;
+    :definition "The Global Positioning System (GPS) is a U.S.-owned utility that provides users with positioning, navigation, and timing (PNT) services." ;
+    :synonym "GPS" .
+
 :GlobalUserAccount a owl:Class ;
     rdfs:label "Global User Account" ;
     rdfs:subClassOf :DomainUserAccount ;
@@ -17619,6 +17631,42 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :kb-article """## References
 1. Wolfram Research. (2012). GoodmanKruskalGamma. Wolfram Language function.  [Link](https://reference.wolfram.com/language/ref/GoodmanKruskalGamma.html)
 1. Goodman and Kruskal's gamma. (2022, Nov 23). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Goodman_and_Kruskal%27s_gamma]""" .
+
+:GPSClock a owl:Class ;
+    rdfs:label "GPS Time Synchronization Clock" ;
+    rdfs:subClassOf :SoftwareClock,
+        [ a owl:Restriction ;
+            owl:onProperty :receives ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
+    :communicates-with :GlobalPositioningSystem ;
+    :definition "A GPS clock is used to synchronize the timing of multiple devices within the system. The Global Positioning System (GPS) provides a critical fourth dimension – time. Each GPS satellite contains multiple atomic clocks that contribute very precise time data to the GPS signals. GPS receivers decode these signals, effectively synchronizing each receiver to the atomic clocks. This enables users to determine the time to within 100 billionths of a second, without the cost of owning and operating atomic clocks." ;
+    :see-also <https://www.gps.gov/applications/timing/> .
+
+:GPSMonitoring a :GPSMonitoring,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "GPS Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :GPSClock ] ;
+    :d3fend-id "D3-GPSM" ;
+    :definition "GPS monitoring is the continuous validation of GPS/GNSS signal quality, position, clock behavior, and time output against expected values or independent reference." ;
+    :kb-article """# How To
+
+GPS monitoring continuously checks the satellite signals, receiver calculations, and resulting time against expected behavior and independent references. 
+
+This can be achieved through a variety of methods including: 
+- Signal power and carrier-to-noise ratio
+- Antenna direction or angle of arrival
+- Clock bias, clock drift, and sudden time changes
+- Agreement with another clock or non-GPS time source
+
+Many of these can be achieve through physical and algorithmic""" ;
+    :kb-reference :Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution .
 
 :GPT a owl:Class,
         owl:NamedIndividual ;
@@ -29582,11 +29630,11 @@ When system firmware verification fails a set of predefined responses is typical
             owl:onProperty :accesses ;
             owl:someValuesFrom :OTEmbeddedComputer ],
         [ a owl:Restriction ;
-            owl:onProperty :uses ;
-            owl:someValuesFrom :CommandLineInterface ],
-        [ a owl:Restriction ;
             owl:onProperty :may-produce ;
-            owl:someValuesFrom :RemoteTerminalSession ] ;
+            owl:someValuesFrom :RemoteTerminalSession ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :CommandLineInterface ] ;
     :attack-id "T0807" ;
     :definition "Adversaries may utilize command-line interfaces (CLIs) to interact with systems and execute commands. CLIs provide a means of interacting with computer systems and are a common feature across many types of platforms and devices within control systems environments. (Citation: Enterprise ATT&CK January 2018) Adversaries may also use CLIs to install and run new software, including malicious tools that may be installed over the course of an operation." .
 
@@ -29640,7 +29688,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ATTACKICSLateralMovementTechnique,
         [ a owl:Restriction ;
             owl:onProperty :uses ;
-            owl:someValuesFrom :DefaultUserAccount ] ,
+            owl:someValuesFrom :DefaultUserAccount ],
         [ a owl:Restriction ;
             owl:onProperty :uses ;
             owl:someValuesFrom :Password ] ;
@@ -45346,6 +45394,15 @@ To fit the scope of the Top 20 Secure PLC Coding practices list, practices need 
     :kb-author "NIST" ;
     :kb-reference-of :PassiveCertificateAnalysis ;
     :kb-reference-title "Securing Web Transactions TLS Server Certificate Management - Appendix A Passive Inspection" .
+
+:Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" ;
+    :has-link "https://ieeexplore.ieee.org/document/10271629"^^xsd:anyURI ;
+    :kb-abstract "This work addresses the use of a machine-learning based confidence attribution scheme to detect GPS spoofing attacks against cyber-physical systems. The confidence attribution scheme assigns a continuous value, between 0% and 100%, to each measurement, expressing how consistent this measurement is with measurements from other sensors in a cyber-physical system. By verifying the consistency of GPS measurements when compared to other sensors available, such as those present in an inertial measurement unit, it is possible to detect GPS spoofing attacks. The solution is evaluated on an experimentally acquired dataset containing flight logs, including sensor measurements and control signals, of an UAV subject to GPS spoofing attacks. The results show the number of anomalies detected by the confidence attribution scheme increases significantly in the presence of a GPS spoofing attack, rendering its detection." ;
+    :kb-organization "IEEE" ;
+    :kb-reference-of :countermeasure ;
+    :kb-reference-title "Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" .
 
 :Reference-SecuringWebTransactions a :GuidelineReference,
         owl:NamedIndividual ;
