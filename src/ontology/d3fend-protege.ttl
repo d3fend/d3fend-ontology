@@ -18074,6 +18074,18 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:someValuesFrom :Thread ] ;
     rdfs:seeAlso <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getthreadcontext> .
 
+:GlobalPositioningSystem a owl:Class ;
+    rdfs:label "Global Positioning System" ;
+    rdfs:subClassOf :ServiceApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :communicates-with ;
+            owl:someValuesFrom :GPSClock ] ;
+    :definition "The Global Positioning System (GPS) is a U.S.-owned utility that provides users with positioning, navigation, and timing (PNT) services." ;
+    :synonym "GPS" .
+
 :GlobalUserAccount a owl:Class ;
     rdfs:label "Global User Account" ;
     rdfs:subClassOf :DomainUserAccount ;
@@ -18129,6 +18141,42 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :kb-article """## References
 1. Wolfram Research. (2012). GoodmanKruskalGamma. Wolfram Language function.  [Link](https://reference.wolfram.com/language/ref/GoodmanKruskalGamma.html)
 1. Goodman and Kruskal's gamma. (2022, Nov 23). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Goodman_and_Kruskal%27s_gamma]""" .
+
+:GPSClock a owl:Class ;
+    rdfs:label "GPS Time Synchronization Clock" ;
+    rdfs:subClassOf :SoftwareClock,
+        [ a owl:Restriction ;
+            owl:onProperty :receives ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
+    :communicates-with :GlobalPositioningSystem ;
+    :definition "A GPS clock is used to synchronize the timing of multiple devices within the system. The Global Positioning System (GPS) provides a critical fourth dimension – time. Each GPS satellite contains multiple atomic clocks that contribute very precise time data to the GPS signals. GPS receivers decode these signals, effectively synchronizing each receiver to the atomic clocks. This enables users to determine the time to within 100 billionths of a second, without the cost of owning and operating atomic clocks." ;
+    :see-also <https://www.gps.gov/applications/timing/> .
+
+:GPSMonitoring a :GPSMonitoring,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "GPS Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :GPSClock ] ;
+    :d3fend-id "D3-GPSM" ;
+    :definition "GPS monitoring is the continuous validation of GPS/GNSS signal quality, position, clock behavior, and time output against expected values or independent reference." ;
+    :kb-article """# How To
+
+GPS monitoring continuously checks the satellite signals, receiver calculations, and resulting time against expected behavior and independent references. 
+
+This can be achieved through a variety of methods including: 
+- Signal power and carrier-to-noise ratio
+- Antenna direction or angle of arrival
+- Clock bias, clock drift, and sudden time changes
+- Agreement with another clock or non-GPS time source
+
+Many of these can be achieve through physical and algorithmic""" ;
+    :kb-reference :Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution .
 
 :GPT a owl:Class,
         owl:NamedIndividual ;
@@ -27390,6 +27438,40 @@ This technique analyzes a user's resource accesses by comparing the user's recen
     rdfs:subClassOf :FileSection ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Resource_fork> ;
     :definition "The resource fork is a fork or section of a file on Apple's classic Mac OS operating system, which was also carried over to the modern macOS for compatibility, used to store structured data along with the unstructured data stored within the data fork." .
+
+:ResourceRedundancy a owl:Class,
+        owl:NamedIndividual,
+        :ResourceRedundancy ;
+    rdfs:label "Resource Redundancy" ;
+    rdfs:subClassOf :PlatformHardening,
+        :RestoreObject,
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :GNSSReceiver ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :HardwareDevice ],
+        [ a owl:Restriction ;
+            owl:onProperty :hardens ;
+            owl:someValuesFrom :OTSensor ] ;
+    :d3fend-id "D3-RR" ;
+    :definition "Using multiple independent methods for sensing and timing to ensure accuracy and safety. By comparing sources and automatically switching to a validated backup, it reduces single points of failure and limits the impact of malicious or degraded signals." ;
+    :kb-article """# How To
+
+Using multiple systems of differing types and/or vendors in order to ensure accuracy and credibility of the sensing and timing elements. 
+
+# GPS
+
+Operational networks depend on GPS/GNSS to provide precise, consistent time for functions such as synchronized measurements, event sequencing, protection, control, and wide-area monitoring. Spoofing, jamming, and equipment failures can introduce false timestamps that can lead to poor operational decisions. Building redundancy into timing sources is essential to mitigate a single compromised GPS source from disrupting the broader control system.
+
+Types of GPS redundancy can include: 
+Multiple GNSS receivers that are physically separate antennas that can assist with calculations on satellite positioning, signal disruptions, and carrier-to-noise measurements. This helps with detecting localized spoofing which could include signals coming from unexpected directions or interference. 
+Multiple GNSS Services or frequencies that alleviate constellation-specific anomalies or loss as well as monitor for disagreements in authorative time. 
+
+Usage of non-GPS/GNSS sources which can include local high-quality oscillators if loss of signal through antenna blockages or destruction. Usage of Precision Time Protocol from protected infrastructure.""" ;
+    :kb-reference :Reference-DetectionandMitigationofSpoofingAttacksAgainstTimeSynchronizationandPositioning,
+        :Reference-TheSeparateClockDriftMatchedFiltertoDetectTimeSynchronizationAttacksTowardGlobalNavigationSatelliteSystems ;
+    skos:example "GPS receivers, antennas, time sources, or communication paths to maintain trusted timing when one source is disrupted or spoofed." .
 
 :RestorationEvent a owl:Class,
         owl:NamedIndividual ;
@@ -46640,6 +46722,15 @@ To fit the scope of the Top 20 Secure PLC Coding practices list, practices need 
     :kb-reference-of :PassiveCertificateAnalysis ;
     :kb-reference-title "Securing Web Transactions TLS Server Certificate Management - Appendix A Passive Inspection" .
 
+:Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution a :GuidelineReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" ;
+    :has-link "https://ieeexplore.ieee.org/document/10271629"^^xsd:anyURI ;
+    :kb-abstract "This work addresses the use of a machine-learning based confidence attribution scheme to detect GPS spoofing attacks against cyber-physical systems. The confidence attribution scheme assigns a continuous value, between 0% and 100%, to each measurement, expressing how consistent this measurement is with measurements from other sensors in a cyber-physical system. By verifying the consistency of GPS measurements when compared to other sensors available, such as those present in an inertial measurement unit, it is possible to detect GPS spoofing attacks. The solution is evaluated on an experimentally acquired dataset containing flight logs, including sensor measurements and control signals, of an UAV subject to GPS spoofing attacks. The results show the number of anomalies detected by the confidence attribution scheme increases significantly in the presence of a GPS spoofing attack, rendering its detection." ;
+    :kb-organization "IEEE" ;
+    :kb-reference-of :countermeasure ;
+    :kb-reference-title "Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" .
+
 :Reference-SecuringWebTransactions a :GuidelineReference,
         owl:NamedIndividual ;
     rdfs:label "Reference - Securing Web Transactions" ;
@@ -46800,98 +46891,6 @@ Logon events are Windows Event Code 4624 for Windows Vista and above, 518 for pr
     :kb-reference-of :Application-basedProcessIsolation ;
     :kb-reference-title "Site Isolation Design Document" ;
     :todo "MITRE Analysis was not found" .
-
-:GlobalPositioningSystem a owl:Class ;
-    rdfs:label "Global Positioning System" ;
-    rdfs:subClassOf :ServiceApplicationProcess,
-        [ a owl:Restriction ;
-            owl:onProperty :communicates-with ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :communicates-with ;
-            owl:someValuesFrom :GPSClock ] ;
-    :definition "The Global Positioning System (GPS) is a U.S.-owned utility that provides users with positioning, navigation, and timing (PNT) services." ;
-    :synonym "GPS" .
-
-:GPSClock a owl:Class ;
-    rdfs:label "GPS Time Synchronization Clock" ;
-    rdfs:subClassOf :SoftwareClock,
-        [ a owl:Restriction ;
-            owl:onProperty :receives ;
-            owl:someValuesFrom :GNSSTimeRecord ] ;
-    :communicates-with :GlobalPositioningSystem ;
-    :definition "A GPS clock is used to synchronize the timing of multiple devices within the system. The Global Positioning System (GPS) provides a critical fourth dimension – time. Each GPS satellite contains multiple atomic clocks that contribute very precise time data to the GPS signals. GPS receivers decode these signals, effectively synchronizing each receiver to the atomic clocks. This enables users to determine the time to within 100 billionths of a second, without the cost of owning and operating atomic clocks." ;
-    :see-also <https://www.gps.gov/applications/timing/> .
-
-:GPSMonitoring a :GPSMonitoring,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "GPS Monitoring" ;
-    rdfs:subClassOf :PlatformMonitoring,
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :GPSClock ] ;
-    :d3fend-id "D3-GPSM" ;
-    :definition "GPS monitoring is the continuous validation of GPS/GNSS signal quality, position, clock behavior, and time output against expected values or independent reference." ;
-    :kb-article """# How To
-
-GPS monitoring continuously checks the satellite signals, receiver calculations, and resulting time against expected behavior and independent references. 
-
-This can be achieved through a variety of methods including: 
-- Signal power and carrier-to-noise ratio
-- Antenna direction or angle of arrival
-- Clock bias, clock drift, and sudden time changes
-- Agreement with another clock or non-GPS time source
-
-Many of these can be achieve through physical and algorithmic""" ;
-    :kb-reference :Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution .
-
-:Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution a :GuidelineReference,
-        owl:NamedIndividual ;
-    rdfs:label "Reference - Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" ;
-    :has-link "https://ieeexplore.ieee.org/document/10271629"^^xsd:anyURI ;
-    :kb-abstract "This work addresses the use of a machine-learning based confidence attribution scheme to detect GPS spoofing attacks against cyber-physical systems. The confidence attribution scheme assigns a continuous value, between 0% and 100%, to each measurement, expressing how consistent this measurement is with measurements from other sensors in a cyber-physical system. By verifying the consistency of GPS measurements when compared to other sensors available, such as those present in an inertial measurement unit, it is possible to detect GPS spoofing attacks. The solution is evaluated on an experimentally acquired dataset containing flight logs, including sensor measurements and control signals, of an UAV subject to GPS spoofing attacks. The results show the number of anomalies detected by the confidence attribution scheme increases significantly in the presence of a GPS spoofing attack, rendering its detection." ;
-    :kb-organization "IEEE" ;
-    :kb-reference-of :countermeasure ;
-    :kb-reference-title "Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" .
-
-
-:ResourceRedundancy a owl:Class,
-        owl:NamedIndividual,
-        :ResourceRedundancy ;
-    rdfs:label "Resource Redundancy" ;
-    rdfs:subClassOf :PlatformHardening,
-        :RestoreObject,
-        [ a owl:Restriction ;
-            owl:onProperty :hardens ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :hardens ;
-            owl:someValuesFrom :HardwareDevice ],
-        [ a owl:Restriction ;
-            owl:onProperty :hardens ;
-            owl:someValuesFrom :OTSensor ] ;
-    :d3fend-id "D3-RR" ;
-    :definition "Using multiple independent methods for sensing and timing to ensure accuracy and safety. By comparing sources and automatically switching to a validated backup, it reduces single points of failure and limits the impact of malicious or degraded signals." ;
-    :kb-article """# How To
-
-Using multiple systems of differing types and/or vendors in order to ensure accuracy and credibility of the sensing and timing elements. 
-
-# GPS
-
-Operational networks depend on GPS/GNSS to provide precise, consistent time for functions such as synchronized measurements, event sequencing, protection, control, and wide-area monitoring. Spoofing, jamming, and equipment failures can introduce false timestamps that can lead to poor operational decisions. Building redundancy into timing sources is essential to mitigate a single compromised GPS source from disrupting the broader control system.
-
-Types of GPS redundancy can include: 
-Multiple GNSS receivers that are physically separate antennas that can assist with calculations on satellite positioning, signal disruptions, and carrier-to-noise measurements. This helps with detecting localized spoofing which could include signals coming from unexpected directions or interference. 
-Multiple GNSS Services or frequencies that alleviate constellation-specific anomalies or loss as well as monitor for disagreements in authorative time. 
-
-Usage of non-GPS/GNSS sources which can include local high-quality oscillators if loss of signal through antenna blockages or destruction. Usage of Precision Time Protocol from protected infrastructure.""" ;
-    :kb-reference :Reference-DetectionandMitigationofSpoofingAttacksAgainstTimeSynchronizationandPositioning,
-        :Reference-TheSeparateClockDriftMatchedFiltertoDetectTimeSynchronizationAttacksTowardGlobalNavigationSatelliteSystems ;
-    skos:example "GPS receivers, antennas, time sources, or communication paths to maintain trusted timing when one source is disrupted or spoofed." .
 
 :Reference-SMBCopyAndExecution_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
@@ -48039,4 +48038,4 @@ With keystroke dynamics the biometric template used to identify an individual is
 
 <wptmp:entity#Reference%20-%20DNS%20Whitelist%20(DNSWL)%20Email%20Authentication%20Method%20Extension> :kb-author "Alessandro Vesely" .
 
-### Serialized using the ttlser deterministic serializer v1.2.3
+### Serialized using the ttlser deterministic serializer v1.2.1
