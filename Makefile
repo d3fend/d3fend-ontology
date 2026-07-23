@@ -324,6 +324,12 @@ reports/inconsistent-iri-report.txt:	build/d3fend-full.owl
 		--fail-on none > reports/inconsistent-iri-report.txt
 	$(END)
 
+reports/missing-def-tech-artifacts-report.txt:	build/d3fend-full.owl
+	./bin/robot report -i build/d3fend-full.owl \
+		--profile src/queries/missing-def-tech-artifacts-profile.txt \
+		--fail-on none > reports/missing-def-tech-artifacts-report.txt
+	$(END)
+
 reports/unallowed-thing-report.txt: reportsdir build/d3fend-public.owl
 	./bin/robot report -i build/d3fend-public.owl \
 		--profile src/queries/unallowed-thing-profile.txt \
@@ -500,7 +506,7 @@ reportsdir:
 	mkdir -p reports/
 	$(END)
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-def-tech-artifacts-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
 
 dashboard: reportsdir download-ocsf download-nist download-cci ## Generate static mapping dashboard artifacts in dist/dashboard
