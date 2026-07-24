@@ -18109,6 +18109,35 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
         <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
     :synonym "Global Navigation Satellite System Signal" .
 
+:GNSSSignalMonitoring a :GNSSSignalMonitoring,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "GNSS Signal Monitoring" ;
+    rdfs:subClassOf :PlatformMonitoring,
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :GNSSNavigationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :PNTSolution ],
+        [ a owl:Restriction ;
+            owl:onProperty :monitors ;
+            owl:someValuesFrom :TimeSynchronizationController ] ;
+    :d3fend-id "D3-GPSM" ;
+    :definition "GPS monitoring is the continuous validation of GPS/GNSS signal quality, position, clock behavior, and time output against expected values or independent reference." ;
+    :kb-article """# How To
+
+GPS monitoring continuously checks the satellite signals, receiver calculations, and resulting time against expected behavior and independent references. 
+
+This can be achieved through a variety of methods including: 
+- Signal power and carrier-to-noise ratio
+- Antenna direction or angle of arrival
+- Clock bias, clock drift, and sudden time changes
+- Agreement with another clock or non-GPS time source
+
+Many of these can be achieve through physical and algorithmic""" ;
+    :kb-reference :Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution .
+
 :GNSSTimeRecord a owl:Class ;
     rdfs:label "GNSS Time Record" ;
     rdfs:subClassOf :TimeRecord ;
@@ -18129,42 +18158,6 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :kb-article """## References
 1. Wolfram Research. (2012). GoodmanKruskalGamma. Wolfram Language function.  [Link](https://reference.wolfram.com/language/ref/GoodmanKruskalGamma.html)
 1. Goodman and Kruskal's gamma. (2022, Nov 23). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Goodman_and_Kruskal%27s_gamma]""" .
-
-:GPSClock a owl:Class ;
-    rdfs:label "GPS Time Synchronization Clock" ;
-    rdfs:subClassOf :SoftwareClock,
-        [ a owl:Restriction ;
-            owl:onProperty :receives ;
-            owl:someValuesFrom :GNSSTimeRecord ] ;
-    :communicates-with :GlobalPositioningSystem ;
-    :definition "A GPS clock is used to synchronize the timing of multiple devices within the system. The Global Positioning System (GPS) provides a critical fourth dimension – time. Each GPS satellite contains multiple atomic clocks that contribute very precise time data to the GPS signals. GPS receivers decode these signals, effectively synchronizing each receiver to the atomic clocks. This enables users to determine the time to within 100 billionths of a second, without the cost of owning and operating atomic clocks." ;
-    :see-also <https://www.gps.gov/applications/timing/> .
-
-:GPSMonitoring a :GPSMonitoring,
-        owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "GPS Monitoring" ;
-    rdfs:subClassOf :PlatformMonitoring,
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :GNSSReceiver ],
-        [ a owl:Restriction ;
-            owl:onProperty :monitors ;
-            owl:someValuesFrom :GPSClock ];
-    :d3fend-id "D3-GPSM" ;
-    :definition "GPS monitoring is the continuous validation of GPS/GNSS signal quality, position, clock behavior, and time output against expected values or independent reference." ;
-    :kb-article """# How To
-
-GPS monitoring continuously checks the satellite signals, receiver calculations, and resulting time against expected behavior and independent references. 
-
-This can be achieved through a variety of methods including: 
-- Signal power and carrier-to-noise ratio
-- Antenna direction or angle of arrival
-- Clock bias, clock drift, and sudden time changes
-- Agreement with another clock or non-GPS time source
-
-Many of these can be achieve through physical and algorithmic""" ;
-    :kb-reference :Reference-SecuringCyberPhysicalSystemsAgainstGPSSpoofingAttacksUsingConfidenceAttribution .
 
 :GPT a owl:Class,
         owl:NamedIndividual ;
@@ -40562,6 +40555,17 @@ Wikipedia. (n.d.). Time series. [Link](https://en.wikipedia.org/wiki/Time_series
     rdfs:subClassOf :Database ;
     :definition "A specialized database optimized for storing and retrieving time-stamped data." .
 
+:TimeSynchronizationController a owl:Class ;
+    rdfs:label "Time Synchronization Controller" ;
+    rdfs:subClassOf :EmbeddedComputer,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :GNSSReciever ] ;
+    :communicates-with :GlobalPositioningSystem ;
+    :definition "A hardware-based infrastructure component that acquires authoritative time from one or more reference sources and distributes synchronized time to dependent cyber-physical or networked systems." ;
+    :seeAlso <https://selinc.com/products/2488/>,
+        <https://www.gps.gov/applications/timing/> .
+
 :Token-basedAuthentication a owl:Class,
         owl:NamedIndividual,
         :Token-basedAuthentication ;
@@ -46682,7 +46686,7 @@ To fit the scope of the Top 20 Secure PLC Coding practices list, practices need 
     :has-link "https://ieeexplore.ieee.org/document/10271629"^^xsd:anyURI ;
     :kb-abstract "This work addresses the use of a machine-learning based confidence attribution scheme to detect GPS spoofing attacks against cyber-physical systems. The confidence attribution scheme assigns a continuous value, between 0% and 100%, to each measurement, expressing how consistent this measurement is with measurements from other sensors in a cyber-physical system. By verifying the consistency of GPS measurements when compared to other sensors available, such as those present in an inertial measurement unit, it is possible to detect GPS spoofing attacks. The solution is evaluated on an experimentally acquired dataset containing flight logs, including sensor measurements and control signals, of an UAV subject to GPS spoofing attacks. The results show the number of anomalies detected by the confidence attribution scheme increases significantly in the presence of a GPS spoofing attack, rendering its detection." ;
     :kb-organization "IEEE" ;
-    :kb-reference-of :GPSMonitoring ;
+    :kb-reference-of :GNSSSignalMonitoring ;
     :kb-reference-title "Securing Cyber-Physical Systems Against GPS Spoofing Attacks Using Confidence Attribution" .
 
 :Reference-SecuringWebTransactions a :GuidelineReference,
