@@ -6504,16 +6504,8 @@ Profiling request and response payloads across multiple clients to a single serv
 
 :ClockEvent a owl:Class ;
     rdfs:label "Clock Event" ;
-    rdfs:subClassOf :DigitalEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :Clock ] ;
+    rdfs:subClassOf :DigitalEvent ;
     :definition "An event involving a clock artifact, characterized by changes to or readings from a timekeeping mechanism that maintains a representation of temporal progression." .
-
-:ClockSynchronizationEvent a owl:Class ;
-    rdfs:label "Clock Synchronization Event" ;
-    rdfs:subClassOf :SoftwareClockEvent ;
-    :definition "An event in which a software clock adjusts its value based on an external time reference (e.g., NTP server, GPS time signal)." .
 
 :Cloud-basedDatabaseApplication a owl:Class ;
     rdfs:label "Cloud-based Database Application" ;
@@ -18345,13 +18337,13 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
     :definition "A device driver for a hardware clock." ;
     rdfs:seeAlso <https://docs.kernel.org/admin-guide/rtc.html> .
 
-:HardwareClockEvent a owl:Class ;
-    rdfs:label "Hardware Clock Event" ;
+:HardwareClockUpdateEvent a owl:Class ;
+    rdfs:label "Hardware Clock Update Event" ;
     rdfs:subClassOf :ClockEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :HardwareClock ] ;
-    :definition "A clock event involving a physical timekeeping mechanism implemented in hardware components." .
+    :definition "An event in which a hardware clock's stored time value is read from or written to its battery-backed storage." .
 
 :HardwareComponentInventory a :HardwareComponentInventory,
         owl:Class,
@@ -18480,11 +18472,6 @@ Administrators collect information on hardware devices such as peripherals, NICs
     rdfs:isDefinedBy <https://www.sciencedirect.com/topics/engineering/hardware-timer> ;
     :definition "A hardware timer is defined as an electronic component that serves as an 8-bit or 16-bit counter, capable of measuring time intervals, generating timed outputs, and driving loads through mechanisms such as pulse width modulation (PWM)." .
 
-:HardwareTimerConfigurationEvent a owl:Class ;
-    rdfs:label "Hardware Timer Configuration Event" ;
-    rdfs:subClassOf :HardwareTimerEvent ;
-    :definition "An event in which a hardware timer's registers or operational parameters are programmed or modified." .
-
 :HardwareTimerDeviceDriver a owl:Class ;
     rdfs:label "Hardware Timer Device Driver" ;
     rdfs:subClassOf :HardwareDriver,
@@ -18494,17 +18481,12 @@ Administrators collect information on hardware devices such as peripherals, NICs
     :definition "A device driver for a hardware timer." ;
     rdfs:seeAlso <https://www.intel.com/content/www/us/en/docs/programmable/743810/25-1/timer-device-drivers.html> .
 
-:HardwareTimerEvent a owl:Class ;
-    rdfs:label "Hardware Timer Event" ;
+:HardwareTimerInterruptEvent a owl:Class ;
+    rdfs:label "Hardware Timer Interrupt Event" ;
     rdfs:subClassOf :TimerEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :HardwareTimer ] ;
-    :definition "A timer event involving a physical timer mechanism implemented in hardware components." .
-
-:HardwareTimerInterruptEvent a owl:Class ;
-    rdfs:label "Hardware Timer Interrupt Event" ;
-    rdfs:subClassOf :HardwareTimerEvent ;
     :definition "An event in which a hardware timer generates an interrupt signal upon expiration or interval completion." .
 
 :HardwareWatchdogTimer a owl:Class ;
@@ -22618,6 +22600,14 @@ Implement a key management procedure to include removing the physical key from t
             owl:someValuesFrom :Kernel ] ;
     :definition "An operating system clock is the primary software clock maintained by the operating system, representing the system's current time. It is used for timestamping files, scheduling tasks, and synchronizing processes." ;
     rdfs:seeAlso <https://linux.die.net/sag/hw-sw-clocks.html> .
+
+:OperatingSystemClockUpdateEvent a owl:Class ;
+    rdfs:label "Operating System Clock Update Event" ;
+    rdfs:subClassOf :ClockEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OperatingSystemClock ] ;
+    :definition "An event in which the operating system's primary timekeeping value is modified or synchronized." .
 
 :OperatingSystemConfiguration a owl:Class ;
     rdfs:label "Operating System Configuration" ;
@@ -27663,14 +27653,6 @@ Example RPC Protocols:
         :Reference-SMBWriteRequest-NamedPipes_MITRE ;
     :synonym "RPC Protocol Analysis" .
 
-:RTCUpdateEvent a owl:Class ;
-    rdfs:label "RTC Update Event" ;
-    rdfs:subClassOf :HardwareClockEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :RealtimeClock ] ;
-    :definition "An event in which a Real-Time Clock's stored time value is read from or written to its battery-backed storage." .
-
 :RTSPServer a owl:Class ;
     rdfs:label "RTSP Server" ;
     rdfs:subClassOf :NetworkAudioVisualStreamingResource ;
@@ -28682,13 +28664,13 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     :definition "A clock implemented in software which may synchronize with hardware clocks or external time sources." ;
     rdfs:seeAlso <https://linux.die.net/sag/hw-sw-clocks.html> .
 
-:SoftwareClockEvent a owl:Class ;
-    rdfs:label "Software Clock Event" ;
+:SoftwareClockSynchronizationEvent a owl:Class ;
+    rdfs:label "Software Clock Synchronization Event" ;
     rdfs:subClassOf :ClockEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
             owl:someValuesFrom :SoftwareClock ] ;
-    :definition "A clock event involving a software-based timekeeping mechanism maintained by an operating system or application." .
+    :definition "An event in which a software clock adjusts its value based on an external time reference (e.g., NTP server, GPS time signal)." .
 
 :SoftwareDeploymentTool a owl:Class ;
     rdfs:label "Software Deployment Tool" ;
@@ -28788,14 +28770,6 @@ Application-layer discovery:
             owl:someValuesFrom :Software ] ;
     :definition "A timer implemented in software, typically managed by the operating system or application code. Software timers rely on underlying hardware timers or clocks to measure intervals and trigger actions. They are used for scheduling tasks, implementing timeouts, and managing periodic operations within software environments." ;
     rdfs:seeAlso <https://docs.aws.amazon.com/freertos/latest/userguide/software-timers.html> .
-
-:SoftwareTimerEvent a owl:Class ;
-    rdfs:label "Software Timer Event" ;
-    rdfs:subClassOf :TimerEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :SoftwareTimer ] ;
-    :definition "A clock event involving a software-based timekeeping mechanism maintained by an operating system or application." .
 
 :SoftwareUpdate a owl:Class,
         owl:NamedIndividual,
@@ -29685,14 +29659,6 @@ Initial planning of access model and continuous monitoring of the available user
         :Reference-ArchitectureOfTransparentNetworkSecurityForApplicationContainers_NeuvectorInc,
         :Reference-OverviewOfTheSeccompSandbox ;
     :synonym "System Call Control" .
-
-:SystemClockUpdateEvent a owl:Class ;
-    rdfs:label "System Clock Update Event" ;
-    rdfs:subClassOf :SoftwareClockEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :OperatingSystemClock ] ;
-    :definition "An event in which the operating system's primary timekeeping value is modified or synchronized." .
 
 :SystemConfigSystemCall a owl:Class ;
     rdfs:label "System Config System Call" ;
@@ -40480,6 +40446,14 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
     rdfs:isDefinedBy <https://dbpedia.org/resource/Timer> ;
     :definition "A timer or countdown timer is a type of clock that starts from a specified time duration and stops upon reaching 00:00. It can also usually be stopped manually before the whole duration has elapsed. An example of a simple timer is an hourglass. Commonly, a timer triggers an alarm when it ends. A timer can be implemented through hardware or software." .
 
+:TimerConfigurationEvent a owl:Class ;
+    rdfs:label "Timer Configuration Event" ;
+    rdfs:subClassOf :TimerEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Timer ] ;
+    :definition "An event in which the duration or expiration time of an active timer is changed." .
+
 :TimeRecord a owl:Class ;
     rdfs:label "Time Record" ;
     rdfs:subClassOf :Record,
@@ -40490,26 +40464,16 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
 
 :TimerEvent a owl:Class ;
     rdfs:label "Timer Event" ;
-    rdfs:subClassOf :DigitalEvent,
-        [ a owl:Restriction ;
-            owl:onProperty :has-participant ;
-            owl:someValuesFrom :Timer ] ;
+    rdfs:subClassOf :DigitalEvent ;
     :definition "An event involving a timer artifact, characterized by the initiation, expiration, modification, or cancellation of a countdown or interval-based temporal mechanism." .
 
 :TimerExpirationEvent a owl:Class ;
     rdfs:label "Timer Expiration Event" ;
-    rdfs:subClassOf :SoftwareTimerEvent ;
-    :definition "An event in which a software timer reaches its configured duration and triggers associated actions (callbacks, interrupts, or signals)." .
-
-:TimerModificationEvent a owl:Class ;
-    rdfs:label "Timer Modification Event" ;
-    rdfs:subClassOf :SoftwareTimerEvent ;
-    :definition "An event in which the duration or expiration time of an active timer is changed." .
-
-:TimerSetEvent a owl:Class ;
-    rdfs:label "Timer Set Event" ;
-    rdfs:subClassOf :SoftwareTimerEvent ;
-    :definition "An event in which a software timer is initialized with a specific duration or expiration time." .
+    rdfs:subClassOf :TimerEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Timer ] ;
+    :definition "An event in which a timer reaches its configured duration and triggers associated actions (callbacks, interrupts, or signals)." .
 
 :TimeSeriesAnalysis a owl:Class,
         owl:NamedIndividual ;
@@ -41598,11 +41562,6 @@ It is a combination of VPN hardware and software technologies that provides VPN 
     :synonym "Watchdog",
         "WDT" .
 
-:WatchdogTimerConfigurationEvent a owl:Class ;
-    rdfs:label "Watchdog Timer Configuration Event" ;
-    rdfs:subClassOf :WatchdogTimerEvent ;
-    :definition "An event in which a watchdog timer's timeout period or recovery action is configured." .
-
 :WatchdogTimerEvent a owl:Class ;
     rdfs:label "Watchdog Timer Event" ;
     rdfs:subClassOf :TimerEvent,
@@ -41610,11 +41569,6 @@ It is a combination of VPN hardware and software technologies that provides VPN 
             owl:onProperty :has-participant ;
             owl:someValuesFrom :WatchdogTimer ] ;
     :definition "A watchdog timer event is any occurrence in which a watchdog timer is started, updated, reset, expired, or otherwise interacts with the system it monitors, resulting in a state change, status report, or corrective action intended to detect, signal, or recover from abnormal or stalled system behavior." .
-
-:WatchdogTimerExpirationEvent a owl:Class ;
-    rdfs:label "Watchdog Timer Expiration Event" ;
-    rdfs:subClassOf :WatchdogTimerEvent ;
-    :definition "An event indicating the watchdog timer was not serviced in time and triggers a reset or escalation action." .
 
 :WatchdogTimerResetEvent a owl:Class ;
     rdfs:label "Watchdog Timer Reset Event" ;
