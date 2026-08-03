@@ -1,5 +1,14 @@
 # D3FEND Ontology Change Log
 
+## Version - 1.5.0 - 2026-07-31
+
+ - Add ATT&CK for ICS mappings for techniques T0800 through T0895 and fix T0817 and T1189. (#540-#553, #597)
+ - Update MITRE ATT&CK to v19.0 and MITRE ATLAS to v2026.06. (#566, #611)
+ - Refactor vehicle, spacecraft, and satellite modeling. (#556)
+ - Add the prescribes and prescribed-by relationships and new T1489 restrictions. (#584, #482)
+ - Refine SPARTA bus traffic mappings and correct references and identifiers. (#514, #502, #564)
+ - Add an ontology mapping dashboard and improve build tooling. (#561, #599)
+
 ## Version - 1.4.0 - 2026-03-31
 
  - Expand space and SDR modeling with spacecraft, satellites, GNSS artifacts, transponders, onboard computers, software-defined radio devices/configurations, waveform applications, FPGA bitstreams, and related RF state change events. (#532, #472)

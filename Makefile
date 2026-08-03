@@ -2,8 +2,8 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=1.4.0
-D3FEND_RELEASE_DATE ?="2026-03-31T00:12:00.000Z"
+D3FEND_VERSION ?=1.5.0
+D3FEND_RELEASE_DATE ?="2026-07-31T00:12:00.000Z"
 
 ATTACK_VERSION ?= 19.0
 ATTACK_DATA_BASE_URL ?= https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master
