@@ -4,9 +4,9 @@
 
  - Add ATT&CK for ICS mappings for techniques T0800 through T0895 and fix T0817 and T1189. (#540-#553, #597)
  - Update MITRE ATT&CK to v19.0 and MITRE ATLAS to v2026.06. (#566, #611)
- - Refactor vehicle, spacecraft, and satellite modeling. (#556)
+ - Improved and extended vehicle, spacecraft, and satellite modeling. (#556)
  - Add the prescribes and prescribed-by relationships and new T1489 restrictions. (#584, #482)
- - Refine SPARTA bus traffic mappings and correct references and identifiers. (#514, #502, #564)
+ - Added new SPARTA to artifact mappings, corrected references and identifiers. (#514, #502, #564)
  - Add an ontology mapping dashboard and improve build tooling. (#561, #599)
 
 ## Version - 1.4.0 - 2026-03-31
