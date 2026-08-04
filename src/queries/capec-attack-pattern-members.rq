@@ -1,0 +1,13 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+SELECT DISTINCT ?item ?label ?external_id
+WHERE {
+    ?item rdfs:subClassOf+ d3f:CommonAttackPattern ;
+        d3f:capec-id ?external_id_value .
+    FILTER (STRSTARTS(STR(?external_id_value), "CAPEC-"))
+    OPTIONAL { ?item rdfs:label ?raw_label . }
+    BIND (STR(?external_id_value) AS ?external_id)
+    BIND (COALESCE(STR(?raw_label), REPLACE(STR(?item), "^.*[#/]", "")) AS ?label)
+}
+ORDER BY ?label ?item

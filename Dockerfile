@@ -8,7 +8,7 @@ COPY . /src
 # Ensure the path exists even if the user doesn't have a local `.local/` dir
 RUN mkdir -p /src/.local
 
-FROM rockylinux:9
+FROM rockylinux:9 AS ontology-toolchain
 
 ARG ROBOT_URL
 
@@ -26,15 +26,23 @@ RUN if [ -n "$(find .local -name '*.pem' -o -name '*.crt' 2>/dev/null)" ]; then 
   update-ca-trust extract; \
 fi
 
-RUN dnf -y install python39 java-21-openjdk-headless make python3-pip which git && dnf clean all
+RUN dnf -y install python3.11 python3.11-pip java-21-openjdk-headless make which git gzip tar unzip && dnf clean all
 VOLUME [ "/dist" ]
-RUN pip3 install pipenv==2022.8.5
+ENV PIPENV_PYTHON=/usr/bin/python3.11
+RUN python3.11 -m pip install pipenv==2026.6.1
+
+FROM ontology-toolchain AS ontology-base
+
+ARG ROBOT_URL
 
 # Install deps in a cache-friendly layer (only depends on Pipfile.lock/Makefile)
 COPY --from=src /src/Makefile /app/Makefile
 COPY --from=src /src/Pipfile /app/Pipfile
 COPY --from=src /src/Pipfile.lock /app/Pipfile.lock
+COPY --from=src /src/src/util/robot.sh /app/src/util/robot.sh
 RUN if [ -n "${ROBOT_URL}" ]; then make ROBOT_URL="${ROBOT_URL}" clean install-deps; else make clean install-deps; fi
+
+FROM ontology-base
 
 COPY --from=src /src /app
 #RUN make build extensions dist

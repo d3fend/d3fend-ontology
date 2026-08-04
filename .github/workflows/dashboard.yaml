@@ -1,0 +1,41 @@
+name: Dashboard
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dashboard
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build ontology image
+      run: docker compose build --pull --force-rm d3fend-ontology
+
+    - name: Generate dashboard
+      run: docker compose run --rm d3fend-ontology make dashboard
+
+    - name: Publish gh-pages branch
+      run: |
+        set -euo pipefail
+        cd dist/dashboard
+        touch .nojekyll
+        git init
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Publish dashboard"
+        git branch -M gh-pages
+        git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        git push --force origin gh-pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
