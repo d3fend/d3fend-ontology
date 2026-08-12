@@ -423,6 +423,7 @@ build/d3fend-public-no-private-annotations.owl: 	build/d3fend-public-no-draft-kb
 		--add-prefix "dcterms: http://purl.org/dc/terms/" \
 		--term d3f:d3fend-private-annotation \
 		--select "self descendants instances" \
+	        --preserve-structure false \
 	        --output build/d3fend-public-no-private-annotations.owl
 	$(END)
 
@@ -497,13 +498,14 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	pipenv run ttlfmt build/d3fend-public-with-controls.ttl
 	./bin/robot convert --input build/d3fend-public-with-controls.ttl --output build/d3fend-public-with-controls.owl
+	./bin/robot convert --input build/d3fend-public-with-controls.owl --output build/d3fend-public-with-controls.ttl
 	$(END)
 
 build/ontology: builddir build/d3fend-full.owl build/d3fend-public.owl build/d3fend-public-mapped.owl build/d3fend-public-cco.owl reports/unallowed-thing-report.txt build/d3fend-architecture.owl build/d3fend-prefixes.json build/extensions ## run build and move to public folder, used to create output files, including JSON-LD, since robot doesn't support serializing to JSON-LD
 	$(END)
 
 build: build/ontology build/d3fend.csv # build the D3FEND Ontology and Extensions
-	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.owl file
+	pipenv run python3 src/util/build.py extensions # expects a build/d3fend-public-with-controls.ttl file
 	$(END)
 
 reportsdir:
@@ -592,7 +594,14 @@ test-load-ttl:	reportsdir build/d3fend-public.ttl ## Used to check d3fend.ttl fi
 
 test-load-json:	reportsdir ## Used to check d3fend.json (JSON-LD) file as parseable and useable for DL profile.
 #	./bin/robot validate-profile --profile DL --input d3fend.json --output reports/json-validation.txt # JSON-LD serialized by RDFlib not read by ROBOT or Protege
+	@set -e; previous=$$(mktemp); trap 'rm -f "$$previous"' EXIT; \
+	cp build/d3fend-public-with-controls.json "$$previous"; \
+	pipenv run python3 src/util/build.py >/dev/null; \
+	pipenv run python3 -c 'import pathlib, sys; sys.exit(pathlib.Path(sys.argv[1]).read_bytes() != pathlib.Path(sys.argv[2]).read_bytes())' "$$previous" build/d3fend-public-with-controls.json
+	@pipenv run python3 -c 'from src.util.build import normalize_jsonld; value = {"@list": ["z", "a"]}; assert normalize_jsonld(value) == value'
 	@pipenv run python3 src/tests/test_load_json.py build/d3fend-public-with-controls.json > reports/test-load-json.txt
+	@JAVA="$(JAVA)" ${JENA_PATH}/rdfcompare build/d3fend-public-with-controls.owl build/d3fend-public-with-controls.ttl RDFXML TURTLE | grep -q "models are equal"
+	@JAVA="$(JAVA)" ${JENA_PATH}/rdfcompare build/d3fend-public-with-controls.ttl build/d3fend-public-with-controls.json TURTLE JSON-LD | grep -q "models are equal"
 	$(END)
 
 test-load-full:	reportsdir ## Used to check d3fend-full.owl as parseable and useable for DL profile.
