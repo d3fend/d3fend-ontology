@@ -16,7 +16,7 @@ CAPEC_VERSION := 3.9
 CAPEC_ARCHIVE_URL ?= https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
 CAPEC_ITEM_URL_PREFIX ?= https://capec.mitre.org/data/definitions/
 
-SPARTA_VERSION := 3.2
+SPARTA_VERSION := 4.0
 SPARTA_STIX_URL ?= https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json
 SPARTA_ITEM_URL_PREFIX ?= https://sparta.aerospace.org/technique/
 ATLAS_VERSION := 2026.06
