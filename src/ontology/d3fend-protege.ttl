@@ -1178,7 +1178,8 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
 
 :restores a owl:ObjectProperty ;
     rdfs:label "restores" ;
-    rdfs:subPropertyOf :associated-with ;
+    rdfs:subPropertyOf :associated-with,
+        :d3fend-tactical-verb-property ;
     :definition "x restores y: The entity x returns entity y to its known-good or previous state." .
 
 :restricted-by a owl:ObjectProperty ;
@@ -13943,7 +13944,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
             owl:onProperty :impairs ;
             owl:someValuesFrom :WirelessLink ] ;
     :attack-id "DE-0002" ;
-    :definition "Threat actors may target ground-side telemetry reception, processing, or display to disrupt the operator’s visibility into spacecraft health and activity. This may involve denial-based attacks that prevent the spacecraft from transmitting telemetry to the ground (e.g., disabling telemetry links or crashing telemetry software), or more subtle deception-based attacks that manipulate telemetry content to conceal unauthorized actions. Since telemetry is the primary method ground controllers rely on to monitor spacecraft status, any disruption or manipulation can delay or prevent detection of malicious activity, suppress automated or manual mitigations, or degrade trust in telemetry-based decision support systems." ;
+    :definition "Threat actors may target any point in the telemetry chain, onboard generation and transmission, the downlink path itself, or ground-side reception, processing, and display, to disrupt the operator’s visibility into spacecraft health and activity. This may involve denial-based attacks that prevent the spacecraft from transmitting telemetry to the ground (e.g., disabling telemetry links or crashing telemetry software), or more subtle deception-based attacks that manipulate telemetry content to conceal unauthorized actions. Since telemetry is the primary method ground controllers rely on to monitor spacecraft status, any disruption or manipulation can delay or prevent detection of malicious activity, suppress automated or manual mitigations, or degrade trust in telemetry-based decision support systems." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/> .
 
 :DE-0002.01 a owl:Class ;
@@ -13951,7 +13952,9 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     skos:prefLabel "Inhibit Ground System Functionality" ;
     rdfs:subClassOf :DE-0002 ;
     :attack-id "DE-0002.01" ;
-    :definition "Threat actors may utilize access to the ground system to inhibit its ability to accurately process, render, or interpret spacecraft telemetry, effectively leaving ground controllers unaware of the spacecraft’s true state or activity. This may involve traditional denial-based techniques, such as disabling telemetry software, corrupting processing pipelines, or crashing display interfaces. In addition, more subtle deception-based techniques may be used to falsify telemetry data within the ground system ,  such as modifying command counters, acknowledgments, housekeeping data, or sensor outputs ,  to provide the appearance of nominal operation. These actions can suppress alerts, mask unauthorized activity, or prevent both automated and manual mitigations from being initiated based on misleading ground-side information. Because telemetry is the primary method by which ground controllers monitor the health, behavior, and safety of the spacecraft, any disruption or falsification of this data directly undermines situational awareness and operational control." ;
+    :definition """Threat actors may utilize access to the ground system to inhibit its ability to accurately process, render, or interpret spacecraft telemetry, effectively leaving ground controllers unaware of the spacecraft’s true state or activity. This may involve traditional denial-based techniques, such as disabling telemetry software, corrupting processing pipelines, or crashing display interfaces. In addition, more subtle deception-based techniques may be used to falsify telemetry data within the ground system ,  such as modifying command counters, acknowledgments, housekeeping data, or sensor outputs ,  to provide the appearance of nominal operation. These actions can suppress alerts, mask unauthorized activity, or prevent both automated and manual mitigations from being initiated based on misleading ground-side information. Because telemetry is the primary method by which ground controllers monitor the health, behavior, and safety of the spacecraft, any disruption or falsification of this data directly undermines situational awareness and operational control.
+
+Architectural limitations in ground station software can also enable deception without requiring direct compromise of the ground system. In publish-subscribe spacecraft architectures, ground tools typically attribute telemetry solely by Message ID rather than by producing application. This design assumes that Message IDs reliably identify the originating component. When a malicious onboard application publishes telemetry under a legitimate subsystem's Message ID, ground logs permanently record the spoofed data as genuine with no indication of the true source. Similarly, internal spacecraft bus commands may not be downlinked or logged by ground systems, rendering suppression events forensically invisible. This attribution gap allows onboard component impersonation to succeed without any ground system compromise: the ground infrastructure functions as designed, yet cannot distinguish authentic telemetry from architecturally valid spoofing.""" ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/01/> .
 
 :DE-0002.02 a owl:Class ;
@@ -14101,6 +14104,18 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     :definition "When security monitoring relies on AI/ML (e.g., anomaly detection on telemetry, RF fingerprints, or command semantics), the training data itself is a target. Data-poisoning introduces crafted examples or labels so the learned model embeds false associations, treating attacker behaviors as normal, or flagging benign patterns instead. Variants include clean-label backdoors keyed to subtle triggers, label flipping that shifts decision boundaries, and biased sampling that suppresses rare-but-critical signatures. Models trained on tainted corpora are later deployed as routine updates; once in service, the adversary presents inputs containing the trigger or profile they primed, and the detector omits or downranks the very behaviors that would reveal the intrusion." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/12/> .
 
+:DE-0003.13 a owl:Class ;
+    rdfs:label "Trusted Process Reporting Suppression - SPARTA" ;
+    skos:prefLabel "Trusted Process Reporting Suppression" ;
+    rdfs:subClassOf :DE-0003 ;
+    :attack-id "DE-0003.13" ;
+    :definition """Adversaries may leverage process injection methods to execute malicious functionality within trusted onboard software processes in order to suppress, delay, filter, or selectively conceal telemetry and operational reporting associated with unauthorized activity. By operating inside legitimate telemetry handlers, flight software tasks, middleware, or operating system services, attackers can interfere with the generation, aggregation, or transmission of monitoring data before it is downlinked or processed by onboard monitoring systems.
+
+Unlike direct modification of individual operational values, this technique focuses on manipulating the reporting path itself to prevent malicious activity from being observed, correlated, or reconstructed by operators or autonomy systems.
+
+Examples may include suppressing telemetry associated with unauthorized commands, filtering fault events prior to downlink, selectively disabling event reporting during malicious operations, delaying housekeeping updates, or preventing monitoring services from publishing anomalous state information.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/13/> .
+
 :DE-0004 a owl:Class ;
     rdfs:label "Masquerading - SPARTA" ;
     skos:prefLabel "Masquerading" ;
@@ -14167,7 +14182,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
     skos:prefLabel "Camouflage, Concealment, and Decoys (CCD)" ;
     rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
     :attack-id "DE-0009" ;
-    :definition "The adversary exploits the physical and operational environment to reduce detectability or to mislead observers. Tactics include signature management (minimizing RF/optical/thermal/RCS), controlled emissions timing, deliberate power-down/dormancy, geometry choices that hide within clutter or eclipse, and the deployment of decoys that generate convincing tracks. CCD can also leverage naturally noisy conditions, debris-rich regions, auroral radio noise, solar storms, to mask proximity operations or to provide plausible alternate explanations for anomalies. The unifying theme is environmental manipulation: shape what external sensors perceive so surveillance and attribution lag, misclassify, or look elsewhere." ;
+    :definition "The adversary exploits the physical and operational environment, or manipulates the sensing and processing on which observers depend, to reduce detectability, mislead, or provoke a response. Tactics include signature management (minimizing RF/optical/thermal/RCS), controlled emissions timing, deliberate power-down/dormancy, geometry choices that hide within clutter or eclipse, and the deployment of decoys that generate convincing tracks. CCD can also leverage naturally noisy conditions, debris-rich regions, auroral radio noise, solar storms, to mask proximity operations or to provide plausible alternate explanations for anomalies. The unifying theme is perception management: shape what sensors and their processing chains perceive so surveillance and attribution lag, misclassify, or look elsewhere. This may be achieved through the environment, through decoys and signatures presented to distant observers, or through deception directed at a particular vehicle’s onboard sensing or a particular ground processing pipeline. The same methods may be used to provoke a defender into committing limited resources prematurely." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0009/> .
 
 :DE-0009.01 a owl:Class ;
@@ -16181,7 +16196,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Exploit Hardware/Firmware Corruption" ;
     rdfs:subClassOf :SPARTAExecutionTechnique ;
     :attack-id "EX-0005" ;
-    :definition "The adversary achieves execution or effect by corrupting or steering behavior beneath the software stack, in device firmware, programmable logic, or the hardware itself. Examples include tampering with firmware images or configuration blobs burned into non-volatile memory; targeting MCU/SoC boot ROM fallbacks; editing FPGA bitstreams or partial-reconfiguration frames; or leveraging physical phenomena and timing to flip bits or skip checks. Because these actions occur below or alongside the operating system and application FSW, traditional endpoint safeguards see normal interfaces while trust anchors are already altered." ;
+    :definition "The adversary achieves execution or effect beneath the software stack, in device firmware, programmable logic, or the hardware itself, either by corrupting that layer or by driving it through interfaces that function exactly as designed. Examples include tampering with firmware images or configuration blobs burned into non-volatile memory; targeting MCU/SoC boot ROM fallbacks; editing FPGA bitstreams or partial-reconfiguration frames; leveraging physical phenomena and timing to flip bits or skip checks; or issuing legitimate low-level device, maintenance, and calibration commands that act directly on hardware without passing through high-level command mediation. Because these actions occur below or alongside the operating system and application FSW, traditional endpoint safeguards see normal interfaces while trust anchors are already altered." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0005/> .
 
 :EX-0005.01 a owl:Class ;
@@ -16282,7 +16297,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
             owl:onProperty :modifies ;
             owl:someValuesFrom :OperatingSystem ] ;
     :attack-id "EX-0009.02" ;
-    :definition "At the OS layer the attacker targets primitives that schedule work and mediate hardware. Maintenance builds may expose shells or management consoles; misconfigurations around these interfaces can provide paths to command interpreters or privileged syscalls. Exploitation yields kernel-mode execution, arbitrary memory read/write, or control of scheduling and address spaces, letting the actor tamper with FSW processes, intercept command paths, or manipulate storage and bus drivers beneath application checks. The technique leverages generic OS weaknesses adapted to the spacecraft’s particular build, turning low-level control into mission-facing effects that appear to originate from legitimate processes." ;
+    :definition "At the OS layer, the attacker targets primitives that schedule work and mediate hardware. Modern spacecraft, particularly small satellites, increasingly rely on Linux-based operating systems (e.g., Yocto-derived distributions) rather than traditional RTOSes, significantly expanding the applicable attack surface to include techniques documented in MITRE ATT&CK for Linux - https://attack.mitre.org/matrices/enterprise/linux/. Maintenance builds may expose shells or management consoles; misconfigurations around these interfaces can provide paths to command interpreters or privileged syscalls. Linux-based flight systems inherit standard Unix/Linux vulnerabilities including kernel exploits, container escapes, privilege escalation via misconfigured sudo/capabilities, and exploitation of systemd or other init systems. Exploitation yields kernel-mode execution, arbitrary memory read/write, or control of scheduling and address spaces, letting the actor tamper with FSW processes, intercept command paths, or manipulate storage and bus drivers beneath application checks. Common Linux-specific vectors include exploiting unpatched kernel vulnerabilities, abusing misconfigurations in containerized environments, leveraging POSIX API weaknesses in flight applications, and targeting shared libraries or dynamic linkers to inject malicious code into flight processes. The technique leverages generic OS weaknesses adapted to the spacecraft's particular build, turning low-level control into mission-facing effects that appear to originate from legitimate processes. Because spacecraft Linux builds are often minimized, long-lived (limited patching), and may retain debug interfaces or permissive file permissions from ground testing, they present a unique risk profile combining embedded-system constraints with commodity OS attack techniques. Flight images frequently retain extraneous binaries and utilities (e.g., compilers, debuggers, network tools, package managers) intended for ground testing or development that are not removed before launch, providing adversaries with ready-made 'living off the land' capabilities for reconnaissance, lateral movement, and privilege escalation without needing to upload custom tooling." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0009/02/> .
 
 :EX-0009.03 a owl:Class ;
@@ -16350,6 +16365,18 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     :attack-id "EX-0010.04" ;
     :definition "A bootkit positions itself in the pre-OS boot chain so that it executes before normal integrity checks and can shape what the system subsequently trusts. After seizing early control, the bootkit can redirect image selection, patch kernels or flight binaries in memory, adjust device trees and driver tables, or install hooks that persist across warm resets. Some variants maintain shadow copies of legitimate images and present them to basic verification routines while steering actual execution to a modified payload; others manipulate fallback logic so recovery modes load attacker-controlled code. Because the boot path initializes memory maps, buses, and authentication material, a bootkit can also influence key/counter setup and gateway configurations, creating conditions favorable to later tactics. The central characteristic is precedence: by running first, the implant defines the reality higher layers observe, ensuring that every subsequent component launches under conditions curated by the attacker." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0010/04/> .
+
+:EX-0010.05 a owl:Class ;
+    rdfs:label "On-Board Process Injection - SPARTA" ;
+    skos:prefLabel "On-Board Process Injection" ;
+    rdfs:subClassOf :EX-0010 ;
+    :attack-id "EX-0010.05" ;
+    :definition """Adversaries may inject malicious code into trusted onboard software processes in order to execute arbitrary functionality within the context of legitimate spacecraft software. Targeted processes may include flight software tasks, operating system services, telemetry handlers, middleware, communication daemons, scheduler services, device drivers, or other mission-critical runtime components.
+
+Process injection enables malicious code to inherit the permissions, memory access, execution context, and trust relationships associated with the compromised process. This may allow adversaries to manipulate telemetry, alter spacecraft operational behavior, suppress reporting, interfere with fault management, inject unauthorized commands, or evade detection without interrupting nominal spacecraft operations.
+
+Unlike standalone malicious binaries or scripts, injected code executes within legitimate onboard software contexts, causing malicious activity to appear operationally valid and making detection and forensic analysis significantly more difficult.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0010/05/> .
 
 :EX-0011 a owl:Class ;
     rdfs:label "Exploit Reduced Protections During Safe-Mode - SPARTA" ;
@@ -16573,7 +16600,9 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
             owl:onProperty :spoofs ;
             owl:someValuesFrom :BusNetworkTraffic ] ;
     :attack-id "EX-0014.02" ;
-    :definition "Here the adversary forges messages on internal command/data paths (e.g., 1553, SpaceWire, CAN, custom). By emitting frames with valid identifiers, addresses, and timing, the attacker can make subscribers accept actuator setpoints, power switch toggles, mode changes, or housekeeping values that originated off-path. Because many consumers act on “latest value wins” or on message cadence, forged traffic can mask real publishers, starve critical topics, or force handlers to execute unintended branches. Gateways that translate between networks amplify impact: a spoofed message on one side can propagate to multiple domains as legitimate payload. Outcomes include misdelivered commands, silent configuration drift, and control loops chasing phantom stimuli, all while bus monitors show protocol-conformant traffic." ;
+    :definition """Here the adversary forges messages on internal command/data paths (e.g., 1553, SpaceWire, CAN, custom). By emitting frames with valid identifiers, addresses, and timing, the attacker can make subscribers accept actuator setpoints, power switch toggles, mode changes, or housekeeping values that originated off-path. Because many consumers act on “latest value wins” or on message cadence, forged traffic can mask real publishers, starve critical topics, or force handlers to execute unintended branches. Gateways that translate between networks amplify impact: a spoofed message on one side can propagate to multiple domains as legitimate payload. Outcomes include misdelivered commands, silent configuration drift, and control loops chasing phantom stimuli, all while bus monitors show protocol-conformant traffic.
+
+In architectures where component identity is derived solely from message identifiers, an adversary may suppress the genuine component and fully assume its identity by publishing under the same identifiers at the expected cadence. This sustained impersonation differs from transient injection because the attacker becomes the sole authoritative source for that subsystem's telemetry, housekeeping, and command responses, while ground systems that rely on message-ID-based attribution cannot distinguish spoofed output from legitimate data. Internal suppression commands remain invisible in ground logs, making the replacement potentially forensically undetectable.""" ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/02/> .
 
 :EX-0014.03 a owl:Class ;
@@ -16619,9 +16648,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Jamming" ;
     rdfs:subClassOf :SPARTAExecutionTechnique ;
     :attack-id "EX-0016" ;
-    :definition """Jamming is an electronic attack that uses radio frequency signals to interfere with communications. A jammer must operate in the same frequency band and within the field of view of the antenna it is targeting. Unlike physical attacks, jamming is completely reversible, once the jammer is disengaged, communications can be restored. Attribution of jamming can be tough because the source can be small and highly mobile, and users operating on the wrong frequency or pointed at the wrong satellite can jam friendly communications.* Similiar to intentional jamming, accidential jamming can cause temporary signal degradation. Accidental jamming refers to unintentional interference with communication signals, and it can potentially impact spacecraft in various ways, depending on the severity, frequency, and duration of the interference.
-
-*https://aerospace.csis.org/aerospace101/counterspace-weapons-101""" ;
+    :definition "Jamming is an electronic attack that uses radio frequency energy to deny the use of a signal, whether that signal carries communications, navigation, or timing. A jammer must operate in the same frequency band and within the field of view of the antenna it is targeting. Unlike physical attacks, the interference itself is completely reversible: once the jammer is disengaged, reception can be restored. Second-order effects may persist, however, where the outage has already caused a clock to drift, a schedule to slip, or a synchronization state to be lost. Attribution of jamming can be tough because the source can be small and highly mobile, and users operating on the wrong frequency or pointed at the wrong satellite can jam friendly communications.* Similar to intentional jamming, accidental jamming can cause temporary signal degradation. Accidental jamming refers to unintentional interference with communication signals, and it can potentially impact spacecraft in various ways, depending on the severity, frequency, and duration of the interference. *https://aerospace.csis.org/aerospace101/counterspace-weapons-101" ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0016/> .
 
 :EX-0016.01 a owl:Class ;
@@ -19038,7 +19065,7 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
     skos:prefLabel "Rendezvous & Proximity Operations" ;
     rdfs:subClassOf :SPARTAInitialAccessTechnique ;
     :attack-id "IA-0005" ;
-    :definition "Adversaries may execute a sequence of orbital maneuvers to co-orbit and approach a target closely enough for local sensing, signaling, or physical interaction. Proximity yields advantages that are difficult to achieve from Earth: high signal-to-noise for interception, narrowly targeted interference or spoofing, observation of attitude/thermal behavior, and, if interfaces exist, opportunities for mechanical mating. The approach typically unfolds through phasing, far-field rendezvous, relative navigation (e.g., vision, lidar, crosslink cues), and closed-loop final approach. At close distances, an attacker can monitor side channels, stimulate acquisition beacons, test crosslinks, or prepare for contact operations (capture or docking)." ;
+    :definition "Adversaries may execute a sequence of orbital maneuvers to co-orbit and approach a target closely enough for local sensing, signaling, or physical interaction. Proximity yields advantages that are difficult to achieve from Earth: high signal-to-noise for interception, narrowly targeted interference or spoofing, observation of attitude/thermal behavior, and, if interfaces exist, opportunities for mechanical mating. The approach typically unfolds through phasing, far-field rendezvous, relative navigation (e.g., vision, lidar, crosslink cues), and closed-loop final approach. At close distances, an attacker can monitor side channels, stimulate acquisition beacons, test crosslinks, or prepare for contact operations such as capture or docking. Contact itself is not the endpoint: mating and grappling expose data and power umbilicals, standardized payload ports, service and checkout connectors, and device programming interfaces that are unreachable by any other means." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0005/> .
 
 :IA-0005.01 a owl:Class ;
@@ -19102,7 +19129,7 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
     skos:prefLabel "Rogue External Entity" ;
     rdfs:subClassOf :SPARTAInitialAccessTechnique ;
     :attack-id "IA-0008" ;
-    :definition "Adversaries obtain a foothold by interacting with the spacecraft from platforms outside the authorized ground architecture. A “rogue external entity” is any actor-controlled transmitter or node, ground, maritime, airborne, or space-based, that can radiate or exchange traffic using mission-compatible waveforms, framing, or crosslink protocols. The technique exploits the fact that many vehicles must remain commandable and discoverable over wide areas and across multiple modalities. Using public ephemerides, pass predictions, and knowledge of acquisition procedures, the actor times transmissions to line-of-sight windows, handovers, or maintenance periods. Initial access stems from presenting traffic that the spacecraft will parse or prioritize: syntactically valid telecommands, crafted ranging/acquisition exchanges, crosslink service advertisements, or payload/user-channel messages that bridge into the command/data path." ;
+    :definition "Adversaries obtain a foothold by interacting with the spacecraft from platforms outside the authorized ground architecture. A “rogue external entity” is any actor-controlled transmitter, platform, or node, ground, maritime, airborne, or space-based. Most interact by radiating or exchanging traffic using mission-compatible waveforms, framing, or crosslink protocols. Others carry no mission-compatible capability at all, and instead apply interference, directed energy, or physical proximity to shape the conditions under which access becomes possible. The technique exploits the fact that many vehicles must remain commandable and discoverable over wide areas and across multiple modalities. Using public ephemerides, pass predictions, and knowledge of acquisition procedures, the actor times transmissions to line-of-sight windows, handovers, or maintenance periods. Initial access stems from presenting traffic that the spacecraft will parse or prioritize, such as syntactically valid telecommands, crafted ranging/acquisition exchanges, crosslink service advertisements, or payload/user-channel messages that bridge into the command/data path, or, for entities operating by effect rather than by protocol, from the contingency behavior those effects induce." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0008/> .
 
 :IA-0008.01 a owl:Class ;
@@ -19322,52 +19349,176 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
 Zhang, Q., Wang, H., Lu, H., Won, D., & Yoon, S. W. (2018). Medical Image Synthesis with Generative Adversarial Networks for Tissue Recognition. 2018 IEEE International Conference on Healthcare Informatics (ICHI), 199-207. doi: 10.1109/ICHI.2018.00030. [Link](https://ieeexplore.ieee.org/document/8419363)""" .
 
 :IMP-0001 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Deception (or Misdirection) - SPARTA" ;
     skos:prefLabel "Deception (or Misdirection)" ;
     rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "IMP-0001" ;
     :definition "Measures designed to mislead an adversary by manipulation, distortion, or falsification of evidence or information into a system to induce the adversary to react in a manner prejudicial to their interests. Threat actors may seek to deceive mission stakeholders (or even military decision makers) for a multitude of reasons. Telemetry values could be modified, attacks could be designed to intentionally mimic another threat actor's TTPs, and even allied ground infrastructure could be compromised and used as the source of communications to the spacecraft." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0001/> .
 
 :IMP-0002 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Disruption - SPARTA" ;
     skos:prefLabel "Disruption" ;
     rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "IMP-0002" ;
     :definition "Measures designed to temporarily impair the use or access to a system for a period of time. Threat actors may seek to disrupt communications from the victim spacecraft to the ground controllers or other interested parties. By disrupting communications during critical times, there is the potential impact of data being lost or critical actions not being performed. This could cause the spacecraft's purpose to be put into jeopardy depending on what communications were lost during the disruption. This behavior is different than Denial as this attack can also attempt to modify the data and messages as they are passed as a way to disrupt communications." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0002/> .
 
 :IMP-0003 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Denial - SPARTA" ;
     skos:prefLabel "Denial" ;
     rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "IMP-0003" ;
     :definition "Measures designed to temporarily eliminate the use, access, or operation of a system for a period of time, usually without physical damage to the affected system. Threat actors may seek to deny ground controllers and other interested parties access to the victim spacecraft. This would be done exhausting system resource, degrading subsystems, or blocking communications entirely. This behavior is different from Disruption as this seeks to deny communications entirely, rather than stop them for a length of time." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0003/> .
 
 :IMP-0004 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Degradation - SPARTA" ;
     skos:prefLabel "Degradation" ;
     rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "IMP-0004" ;
     :definition "Measures designed to permanently impair (either partially or totally) the use of a system. Threat actors may target various subsystems or the hosted payload in such a way to rapidly increase it's degradation. This could potentially shorten the lifespan of the victim spacecraft." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0004/> .
 
 :IMP-0005 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Destruction - SPARTA" ;
     skos:prefLabel "Destruction" ;
     rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "IMP-0005" ;
     :definition "Measures designed to permanently eliminate the use of a system, potentially through some physical damage to the system. Threat actors may destroy data, commands, subsystems, or attempt to destroy the victim spacecraft itself. This behavior is different from Degradation, as the individual parts are destroyed rather than put in a position in which they would slowly degrade over time." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0005/> .
 
 :IMP-0006 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Theft - SPARTA" ;
     skos:prefLabel "Theft" ;
     rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "IMP-0006" ;
     :definition "Threat actors may attempt to steal the data that is being gathered, processed, and sent from the victim spacecraft. Many spacecraft have a particular purpose associated with them and the data they gather is deemed mission critical. By attempting to steal this data, the mission, or purpose, of the spacecraft could be lost entirely." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0006/> .
+
+:IMP-0007 a owl:Class ;
+    rdfs:label "Native Functionality Abuse - SPARTA" ;
+    skos:prefLabel "Native Functionality Abuse" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0007" ;
+    :definition """Native Functionality Abuse is the deliberate use or triggering of functionality that already exists within a spacecraft architecture. An adversary may invoke the function directly or create conditions that cause it to activate. The function may operate exactly as designed, but the adversary uses it for an unauthorized or harmful purpose. This mechanism includes platform, payload, autonomous, and mission-specific capabilities. It also includes custom flight software functions. The adversary may misuse a function by activating it at the wrong time, repeating it, interrupting it, or directing it toward an unintended purpose.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could invoke native diagnostic, memory-dump, sensing, or data-export functionality to obtain information outside authorized mission operations.
+Pivot: If the objective is Pivot, an adversary could use native crosslink, relay, or routing functionality to route activity through the spacecraft toward another connected asset or trust domain.
+Subvert: TIf the objective is Subvert, an adversary could deliberately trigger legitimate fault-response or diagnostic functions to disrupt mission operations and divert defenders from other adversary activity.
+Seize: If the objective is Seize, an adversary could use native command and mission-tasking functionality to assume control of a payload or spacecraft capability and repurpose it for unauthorized operations.
+Disable: If the objective is Disable, an adversary could use legitimate pointing functionality to expose a mission-critical sensor to the Sun beyond acceptable limits, leaving the spacecraft unable to conduct its intended mission or an essential mission function.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0007/> .
+
+:IMP-0008 a owl:Class ;
+    rdfs:label "State or Mode Manipulation - SPARTA" ;
+    skos:prefLabel "State or Mode Manipulation" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0008" ;
+    :definition """State or Mode Manipulation is the deliberate alteration of a spacecraft’s operational state, mode, or mission phase. An adversary may force an unauthorized transition, prevent an expected transition, or hold the system in a selected state. This mechanism may affect the spacecraft as a whole or a specific subsystem, payload, software service, or mission function. It applies when the actual operating condition changes. Falsifying only the reported state is instead Data Manipulation.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could place the spacecraft or payload into a diagnostic mode that exposes protected engineering data or internal system information.
+Pivot: If the objective is Pivot, an adversary could force a communications subsystem into a relay or bridging mode that provides access to another connected asset or trust domain.
+Subvert: TIf the objective is Subvert, an adversary could force repeated transitions into safe mode to interrupt mission operations and draw defenders toward an apparent spacecraft fault.
+Seize: If the objective is Seize, an adversary could place the spacecraft into a maintenance, bypass, or manual-control mode that permits unauthorized tasking of a payload or mission function.
+Disable: If the objective is Disable, an adversary could hold the spacecraft in a non-mission mode that prevents it from performing its intended mission or an essential mission function.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0008/> .
+
+:IMP-0009 a owl:Class ;
+    rdfs:label "Configuration Manipulation - SPARTA" ;
+    skos:prefLabel "Configuration Manipulation" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0009" ;
+    :definition """Configuration Manipulation is the deliberate alteration of authoritative, non-executable settings or structured artifacts that govern spacecraft behavior. These settings may define thresholds, limits, gains, access rules, routing behavior, schedules, or operating profiles. The existing software, firmware, or programmable logic remains intact. It interprets the altered configuration and operates under the new conditions. This mechanism applies to both operator-managed settings and internal values that are not normally changed during routine operations. It does not include changes to measured or derived information, which fall under Data Manipulation. It also does not include changes to executable code or programmed hardware behavior.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could alter access-control or data-handling settings to expose protected engineering or mission information.
+Pivot: If the objective is Pivot, an adversary could alter routing or interface configuration to create a path into another connected asset or trust domain.
+Subvert: TIf the objective is Subvert, an adversary could lower fault thresholds so normal conditions trigger repeated recovery actions and disrupt mission operations.
+Seize: If the objective is Seize, an adversary could alter command-authorization settings to grant unauthorized tasking authority and restrict the legitimate operator.
+Disable: If the objective is Disable, an adversary could alter startup configuration so mission software no longer loads, leaving the spacecraft unable to perform its intended mission or an essential mission function.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0009/> .
+
+:IMP-0010 a owl:Class ;
+    rdfs:label "Data Manipulation - SPARTA" ;
+    skos:prefLabel "Data Manipulation" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0010" ;
+    :definition """Data Manipulation is the deliberate alteration of information used or handled by a spacecraft. The affected information may come from onboard sensors, external sources, internal processing, or stored records. An adversary may falsify, suppress, replace, delete, or corrupt this information. This mechanism applies when the information itself changes, whether the data is at rest, in use, or being exchanged. Changing the settings that govern how the system interprets that information is Configuration Manipulation. Changing only how the information moves or arrives is Command and Data Flow Manipulation.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could alter data labels or indexes so protected information appears in an authorized query or routine downlink.
+Pivot: If the objective is Pivot, an adversary could alter data exchanged through a trusted spacecraft interface to carry adversary-controlled content into another connected asset.
+Subvert: TIf the objective is Subvert, an adversary could falsify sensor or state-estimate data so the spacecraft makes incorrect autonomous decisions.
+Seize: If the objective is Seize, an adversary could alter command-source or authentication data so onboard systems accept unauthorized tasking as legitimate.
+Disable: If the objective is Disable, an adversary could corrupt stored attitude or navigation data so the spacecraft cannot maintain mission-required pointing.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0010/> .
+
+:IMP-0011 a owl:Class ;
+    rdfs:label "Command and Data Flow Manipulation - SPARTA" ;
+    skos:prefLabel "Command and Data Flow Manipulation" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0011" ;
+    :definition """Command and Data Flow Manipulation is the d deliberate alteration of the source, destination, path, delivery, availability, timing, sequence, or duplication of commands or data as they move within, to, or from a spacecraft. An adversary may inject an unauthorized command or alter a legitimate command before execution. The adversary may also prevent traffic from arriving, cause it to arrive at the wrong time or destination, or change its sequence. This mechanism applies to both external communications and internal spacecraft pathways. Passive observation alone does not qualify. Altering command or data content may also constitute Data Manipulation.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could duplicate or redirect protected telemetry to an unauthorized destination.
+Pivot: If the objective is Pivot, an adversary could route activity through spacecraft communication paths to reach another connected asset or trust domain.
+Subvert: TIf the objective is Subvert, an adversary could delay or reorder commands and telemetry to disrupt operations and mislead defenders.
+Seize: If the objective is Seize, an adversary could suppress legitimate command traffic while forwarding unauthorized commands to assume control of mission functions.
+Disable: If the objective is Disable, an adversary could block command or data flows required for the spacecraft to conduct its intended mission or an essential mission function.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0011/> .
+
+:IMP-0012 a owl:Class ;
+    rdfs:label "Software, Firmware, or Programmable Logic Manipulation - SPARTA" ;
+    skos:prefLabel "Software, Firmware, or Programmable Logic Manipulation" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0012" ;
+    :definition """Software, Firmware, or Programmable Logic Manipulation is the deliberate alteration of the implementation that controls spacecraft behavior. An adversary may modify executable code, replace firmware, or load altered programmable logic. The change may affect startup, command processing, autonomy, security enforcement, or subsystem control. This mechanism applies when the implementation itself changes. Changing only the settings used by an unchanged implementation is Configuration Manipulation. Changing only the information processed by that implementation is Data Manipulation.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could modify onboard software to copy protected engineering or mission data into an accessible store or downlink stream.
+Pivot: If the objective is Pivot, an adversary could alter communications software or programmable routing logic to pass attacker activity into another connected asset or trust domain.
+Subvert: TIf the objective is Subvert, an adversary could alter fault-management software to suppress valid faults or generate misleading recovery activity.
+Seize: If the objective is Seize, an adversary could modify command-authorization software so attacker tasking is accepted while legitimate operator commands are rejected.
+Disable: If the objective is Disable, an adversary could replace mission software or programmable logic with an altered implementation that prevents an essential mission function from operating.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0012/> .
+
+:IMP-0013 a owl:Class ;
+    rdfs:label "Resource Exhaustion or Contention - SPARTA" ;
+    skos:prefLabel "Resource Exhaustion or Contention" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0013" ;
+    :definition """Resource Exhaustion or Contention is the deliberate depletion or monopolization of a finite spacecraft resource. Exhaustion reduces the available capacity. Contention prevents legitimate functions from obtaining the resource when needed. The resource may support computing, storage, or communications. It may also support power, thermal control, or physical actuation. Consumables such as propellant are within scope. This mechanism applies even when availability later recovers. Changing resource limits or allocation rules is Configuration Manipulation. Falsifying resource status is Data Manipulation.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could gradually consume processing capacity or electrical power to monitor and identify system thresholds, automated responses, and operator procedures.
+Pivot: If the objective is Pivot, an adversary could deliberately deplete propellant to provoke a close-proximity inspection and create an otherwise unavailable attack path or proximity window for operations against the inspecting spacecraft.
+Subvert: TIf the objective is Subvert, an adversary could consume processor capacity or electrical power until legitimate mission functions operate below required performance.
+Seize: If the objective is Seize, an adversary could monopolize command-processing or payload resources to exclude the legitimate operator and reserve the capability for unauthorized use.
+Disable: If the objective is Disable, an adversary could exhaust propellant or another mission-critical consumable until the spacecraft can no longer perform its intended mission or an essential mission function.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0013/> .
+
+:IMP-0014 a owl:Class ;
+    rdfs:label "Timing or Synchronization Manipulation - SPARTA" ;
+    skos:prefLabel "Timing or Synchronization Manipulation" ;
+    rdfs:subClassOf :SPARTAImpactTechnique ;
+    :attack-id "IMP-0014" ;
+    :definition """Timing or Synchronization Manipulation is the deliberate alteration of a spacecraft’s time reference or synchronization state. An adversary may shift the onboard clock or corrupt a trusted timing source. The adversary may also break the temporal alignment between coordinated functions. This mechanism applies when the system uses an altered sense of time or loses required synchronization. It may affect command validation and scheduled activity. It may also affect navigation, communications, or distributed processing. Delaying traffic without changing the system’s time basis is Command and Data Flow Manipulation. Changing a stored schedule or timing setting is Configuration Manipulation.
+Vector: Illustrative Application
+Collect: If the objective is Collect, an adversary could introduce controlled clock drift to learn synchronization tolerances and observe when automated or operator responses occur.
+Pivot: If the objective is Pivot, an adversary could alter onboard time to trigger a scheduled crosslink or communication session with another asset and create an intermediary attack path.
+Subvert: TIf the objective is Subvert, an adversary could desynchronize sensor inputs and onboard processing so the spacecraft makes decisions from temporally inconsistent information.
+Seize: If the objective is Seize, an adversary could manipulate system time to invalidate legitimate control sessions and preserve unauthorized access.
+Disable: If the objective is Disable, an adversary could desynchronize a mission-critical navigation or payload function until the spacecraft can no longer conduct its intended mission or an essential mission function.""" ;
+    rdfs:seeAlso <https://sparta.aerospace.org/technique/IMP-0014/> .
 
 :ImpactTechnique a owl:Class ;
     rdfs:label "Impact Technique" ;
@@ -27067,7 +27218,7 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     skos:prefLabel "Eavesdropping" ;
     rdfs:subClassOf :SPARTAReconnaissanceTechnique ;
     :attack-id "REC-0005" ;
-    :definition "Adversaries seek to passively (and sometimes semi-passively) capture mission communications across terrestrial networks and RF/optical links to reconstruct protocols, extract telemetry, and derive operational rhythms. On networks, packet captures, logs, and flow data from ground stations, mission control, and cloud backends can expose service boundaries, authentication patterns, and automation. In the RF domain, wideband recordings, spectrograms, and demodulation of TT&C and payload links, spanning VHF/UHF through S/L/X/Ka and, increasingly, optical, enable identification of modulation/coding, framing, and beacon structures. Even when links are encrypted, metadata such as carrier plans, symbol rates, polarization, and cadence can support traffic analysis, timing attacks, or selective interference. Community capture networks and open repositories amplify the reach of a modest adversary." ;
+    :definition "Adversaries seek to capture mission communications across terrestrial networks and RF/optical links to reconstruct protocols, extract telemetry, and derive operational rhythms. Collection is most often passive, but may be semi-passive or actively elicited, where the adversary transmits probes or crafted exchanges to provoke identifiable responses from the target rather than waiting to observe them. On networks, packet captures, logs, and flow data from ground stations, mission control, and cloud backends can expose service boundaries, authentication patterns, and automation. In the RF domain, wideband recordings, spectrograms, and demodulation of TT&C and payload links, spanning VHF/UHF through S/L/X/Ka and, increasingly, optical, enable identification of modulation/coding, framing, and beacon structures. Even when links are encrypted, metadata such as carrier plans, symbol rates, polarization, and cadence can support traffic analysis, timing attacks, or selective interference. Community capture networks and open repositories amplify the reach of a modest adversary." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/> .
 
 :REC-0005.01 a owl:Class ;
@@ -30366,7 +30517,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :URL ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :InternetWebNetworkTraffic ],
+            owl:someValuesFrom :InternetNetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :uses ;
             owl:someValuesFrom :Browser ] ;
@@ -34606,7 +34757,7 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :ProcessSegment ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :InternetWebNetworkTraffic ],
+            owl:someValuesFrom :InternetNetworkTraffic ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :URL ] ;

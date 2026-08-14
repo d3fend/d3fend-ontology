@@ -2,8 +2,8 @@ MAKEFLAGS += --silent
 
 SHELL=/bin/bash
 
-D3FEND_VERSION ?=1.4.0
-D3FEND_RELEASE_DATE ?="2026-03-31T00:12:00.000Z"
+D3FEND_VERSION ?=1.5.0
+D3FEND_RELEASE_DATE ?="2026-07-31T00:12:00.000Z"
 
 ATTACK_VERSION ?= 19.0
 ATTACK_DATA_BASE_URL ?= https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master
@@ -16,7 +16,7 @@ CAPEC_VERSION := 3.9
 CAPEC_ARCHIVE_URL ?= https://capec.mitre.org/data/archive/capec_v$(CAPEC_VERSION).zip
 CAPEC_ITEM_URL_PREFIX ?= https://capec.mitre.org/data/definitions/
 
-SPARTA_VERSION := 3.2
+SPARTA_VERSION := 4.0
 SPARTA_STIX_URL ?= https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json
 SPARTA_ITEM_URL_PREFIX ?= https://sparta.aerospace.org/technique/
 ATLAS_VERSION := 2026.06
@@ -56,7 +56,9 @@ PYTHON ?= python3.11
 PIPENV ?= pipenv
 JAVA ?= java
 
-ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v1.9.10/robot.jar"
+ROBOT_VERSION ?= 1.9.10
+ROBOT_VERSIONED_JAR := bin/robot-$(ROBOT_VERSION).jar
+ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v$(ROBOT_VERSION)/robot.jar"
 DOCKER_NO_CACHE ?= false
 DOCKER_BUILD_NOCACHE_FLAG := $(if $(filter true,$(DOCKER_NO_CACHE)),--no-cache,)
 ONTOLOGY_BASE_IMAGE ?= d3fend-ontology-base:latest
@@ -173,16 +175,24 @@ bin/jena: bindir
 	curl https://archive.apache.org/dist/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz | tar xzf - -C bin/jena
 	$(END)
 
-bin/robot: src/util/robot.sh bindir ## install ROBOT launcher wrapper
+bin/robot: src/util/robot.sh | bindir ## install ROBOT launcher wrapper
 	cp src/util/robot.sh bin/robot
 	chmod +x bin/robot
 	$(END)
 
-bin/robot.jar: bindir
-	curl -L $(ROBOT_URL) > bin/robot.jar
+$(ROBOT_VERSIONED_JAR): | bindir
+	curl --fail --location $(ROBOT_URL) --output "$@.tmp"
+	mv "$@.tmp" "$@"
 	$(END)
 
-install-deps: install-python-deps bin/robot bin/robot.jar bin/jena ## install software deps
+bin/robot.jar: $(ROBOT_VERSIONED_JAR) | bindir
+	ln -sfn "$(notdir $<)" "$@"
+	$(END)
+
+robot: bin/robot bin/robot.jar ## install the declared ROBOT wrapper and version
+	$(END)
+
+install-deps: install-python-deps robot bin/jena ## install software deps
 	$(END)
 
 docker-build-base-image: ## build the reusable ontology base image
@@ -339,7 +349,7 @@ builddir:
 	$(END)
 
 # TODO, we may be able to remove this target
-build/d3fend-prefixes.json: builddir ## create d3fend-specific prefix file for use with ROBOT
+build/d3fend-prefixes.json: builddir | robot ## create d3fend-specific prefix file for use with ROBOT
 	./bin/robot --noprefixes \
 		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--add-prefix "rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#" \
@@ -351,7 +361,7 @@ build/d3fend-prefixes.json: builddir ## create d3fend-specific prefix file for u
 		export-prefixes --output build/d3fend-prefixes.json
 	$(END)
 
-build/d3fend-with-header.owl:	src/ontology/d3fend-protege.ttl
+build/d3fend-with-header.owl:	src/ontology/d3fend-protege.ttl | robot
 	./bin/robot annotate --input src/ontology/d3fend-protege.ttl \
 		--version-iri "http://d3fend.mitre.org/ontologies/d3fend/${D3FEND_VERSION}/d3fend.owl" \
 		--typed-annotation "http://d3fend.mitre.org/ontologies/d3fend.owl#release-date" ${D3FEND_RELEASE_DATE} xsd:dateTime \
@@ -439,7 +449,7 @@ build/d3fend-public.owl:	build/d3fend-public-no-private-annotations.owl
 build/d3fend.csv: build/d3fend-public.owl ## make D3FEND csv, not part of build or all targets
 	./bin/robot query --format csv -i build/d3fend-public.owl --query src/queries/csv_data.rq build/d3fend.csv
 
-	SSL_CERT_FILE=~/MITRE.crt pipenv run python src/util/cleancsv.py
+	pipenv run python src/util/cleancsv.py
 
 build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
@@ -500,7 +510,7 @@ reportsdir:
 	mkdir -p reports/
 	$(END)
 
-reports:	reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
+reports:	robot reportsdir reports/default-robot-report.txt reports/missing-d3fend-definition-report.txt reports/bogus-direct-subclassing-of-tactic-technique-report.txt reports/missing-rdfs-label-report.txt reports/missing-attack-id-report.txt reports/inconsistent-iri-report.txt reports/missing-off-tech-artifacts-report.txt ## Generates all reports for ontology quality checks
 	$(END)
 
 dashboard: reportsdir download-ocsf download-nist download-cci ## Generate static mapping dashboard artifacts in dist/dashboard
@@ -596,7 +606,7 @@ test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable 
 test-reasoner:
 	./bin/robot reason --reasoner ELK --input build/d3fend-public-with-controls.ttl -D reports/test-reasoner-results.ttl
 
-test:	test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
+test:	robot test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
 	$(END)
 
 dist: distdir
