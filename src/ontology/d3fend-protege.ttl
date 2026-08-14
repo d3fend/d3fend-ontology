@@ -925,6 +925,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "x may-run y: The entity x may run the thing y; that is, 'x runs y' may be true." .
 
+:may-spoof a owl:ObjectProperty ;
+    rdfs:label "may-spoof" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-spoof y: They entity x may spoof the thing y; that is, 'x spoofs y' may be true." .
+
 :may-transfer a owl:ObjectProperty ;
     rdfs:label "may-transfer" ;
     rdfs:subPropertyOf :may-be-associated-with ;
@@ -14015,7 +14020,10 @@ Architectural limitations in ground station software can also enable deception w
 :DE-0003.10 a owl:Class ;
     rdfs:label "GPS Ephemeris - SPARTA" ;
     skos:prefLabel "GPS Ephemeris" ;
-    rdfs:subClassOf :DE-0003 ;
+    rdfs:subClassOf :DE-0003,
+        [ a owl:Restriction ;
+            owl:onProperty :spoofs ;
+            owl:someValuesFrom :GNSSEphemeris ] ;
     :attack-id "DE-0003.10" ;
     :definition "A satellite with a GPS receiver can use ephemeris data from GPS satellites to estimate its own position in space. A hostile actor could spoof the GPS signals to cause erroneous calculations of the satellite’s position. The received ephemeris data is often telemetered and can be monitored for indications of GPS spoofing. Reception of ephemeris data that changes suddenly without a reasonable explanation (such as a known GPS satellite handoff), could provide an indication of GPS spoofing and warrant further analysis. Threat actors could also change the course of the vehicle and falsify the telemetered data to temporarily convince ground operators the vehicle is still on a proper course." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/10/> .
@@ -15832,6 +15840,12 @@ Email files may propagate through many storage systems across the an organizatio
         :Password ;
     :definition "A password that is encrypted." .
 
+:EncryptedRangingCode a owl:Class ;
+    rdfs:label "Encrypted Ranging Code" ;
+    rdfs:subClassOf :GNSSRangingCode ;
+    :definition "An encrypted ranging code is a ranging code whose sequence is cryptographically protected or otherwise unpredictable (e.g., GPS P(Y) and M-code, Galileo PRS, Galileo SAS spreading-code encryption), so an adversary cannot synthesize or replay it in real time; it provides signal-level (ranging) anti-spoofing." ;
+    rdfs:seeAlso <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> .
+
 :EncryptedTunnels a :EncryptedTunnels,
         owl:Class,
         owl:NamedIndividual ;
@@ -16079,7 +16093,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Position, Navigation, and Timing (PNT) Geofencing" ;
     rdfs:subClassOf :SPARTAExecutionTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :accesses ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :PNTSolution ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
             owl:someValuesFrom :RuntimeVariable ] ;
     :attack-id "EX-0002" ;
     :definition "Malware or implanted procedures execute only when the spacecraft’s state meets geometric and temporal criteria. Triggers can be defined in orbital elements, inertial or Earth-fixed coordinates, relative geometry, lighting conditions, or time references. The code monitors on-board navigation solutions, ephemerides, or propagated TLEs and arms itself when thresholds are met (e.g., “only fire over region X,” “only activate during LEOP,” or “only run within N seconds of a scheduled downlink.”) Geofencing reduces exposure and aids deniability: triggers are rare, aligned with mission cadence, and hard to reproduce on the ground. More elaborate variants require conjunctions of conditions (position + attitude + clock epoch) or incorporate drift so the trigger slowly evolves with the orbit. The result is effect-on-demand: execution occurs precisely where and when the actor intends, while remaining dormant elsewhere." ;
@@ -16506,7 +16523,10 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
 :EX-0014.01 a owl:Class ;
     rdfs:label "Time Spoof - SPARTA" ;
     skos:prefLabel "Time Spoof" ;
-    rdfs:subClassOf :EX-0014 ;
+    rdfs:subClassOf :EX-0014,
+        [ a owl:Restriction ;
+            owl:onProperty :spoofs ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
     :attack-id "EX-0014.01" ;
     :definition "Time underpins sequencing, anti-replay, navigation filtering, and data labeling. An attacker that forges or biases the time seen by onboard consumers can reorder stored command execution, break timetag validation, desynchronize counters, and misalign estimation windows. Spoofing vectors include manipulating the distributed time service, introducing a higher-priority/cleaner time source (e.g., GNSS-derived time), or crafting messages that cause clock discipline to slew toward attacker-chosen values. Once time shifts, autonomous routines keyed to epochs, wheel unloads, downlink starts, heater schedules, fire early/late or not at all, and telemetry appears inconsistent to ground analysis. The signature is correct-looking time metadata that steadily or abruptly departs from truth, driving downstream logic to act at the wrong moment." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/01/> .
@@ -16537,8 +16557,11 @@ In architectures where component identity is derived solely from message identif
     skos:prefLabel "Position, Navigation, and Timing (PNT) Spoofing" ;
     rdfs:subClassOf :EX-0014,
         [ a owl:Restriction ;
-            owl:onProperty :spoofs ;
-            owl:someValuesFrom :GNSSSignal ] ;
+            owl:onProperty :may-spoof ;
+            owl:someValuesFrom :GNSSNavigationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-spoof ;
+            owl:someValuesFrom :GNSSRangingCode ] ;
     :attack-id "EX-0014.04" ;
     :definition "The adversary transmits GNSS-like signals (or manipulates crosslink-distributed time/ephemeris) so the spacecraft’s navigation solution reflects attacker-chosen states. With believable code phases, Doppler, and navigation messages, the victim can be pulled to a false position/velocity/time, causing downstream functions, attitude pointing limits, station visibility prediction, eclipse timing, antenna pointing, and anti-replay windows, to misbehave. Even when GNSS is not the primary navigation source, spoofed PNT can bias timekeeping or seed filters that fuse multiple sensors, leading to mis-scheduling and errant control. The defining feature is externally provided navigation/time that passes validity checks yet encodes a crafted trajectory or epoch." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/04/> .
@@ -16603,7 +16626,13 @@ In architectures where component identity is derived solely from message identif
 :EX-0016.03 a owl:Class ;
     rdfs:label "Position, Navigation, and Timing (PNT) Jamming - SPARTA" ;
     skos:prefLabel "Position, Navigation, and Timing (PNT) Jamming" ;
-    rdfs:subClassOf :EX-0016 ;
+    rdfs:subClassOf :EX-0016,
+        [ a owl:Restriction ;
+            owl:onProperty :impairs ;
+            owl:someValuesFrom :PNTSolution ],
+        [ a owl:Restriction ;
+            owl:onProperty :jams ;
+            owl:someValuesFrom :GNSSSignal ] ;
     :attack-id "EX-0016.03" ;
     :definition "The attacker raises the noise floor in GNSS bands so satellite navigation signals are not acquired or tracked. Loss of PNT manifests as degraded or unavailable position/velocity/time solutions, which in turn disrupts functions that depend on them, time distribution, attitude aiding, scheduling, anti-replay windows, and visibility prediction. Because GNSS signals at the receiver are extremely weak, modest jammers within the antenna field of view can produce outsized effects; mobile emitters can create intermittent outages aligned with the attacker’s objectives." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0016/03/> .
@@ -18107,9 +18136,68 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     :definition "A type of user account in Microsoft Windows (NT) that has a domain-wide scope.defines that user's access to a logical group of network objects (computers, users, devices) that share the same Active Directory databases; that is, a user's access to the domain." ;
     rdfs:seeAlso <https://networkencyclopedia.com/global-user-account> .
 
+:GNSSEphemeris a owl:Class ;
+    rdfs:label "GNSS Ephemeris" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_Broadcast_Orbits> ;
+    :definition "A broadcast GNSS (Global Navigation Satellite System) ephemeris is a record of the precise orbital parameters of a single transmitting GNSS satellite, valid over a short fit interval, from which a receiver computes that satellite's instantaneous position and velocity for ranging." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GPS_and_Galileo_Satellite_Coordinates_Computation> .
+
+:GNSSNavigationMessage a owl:Class ;
+    rdfs:label "GNSS Navigation Message" ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GNSSEphemeris ],
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GNSSTimeRecord ] ;
+    rdfs:isDefinedBy <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> ;
+    :definition "A GNSS (Global Navigation Satellite System) navigation message is the data payload modulated onto a GNSS signal that conveys the information a receiver needs to compute a PNT solution, including the transmitting satellite's broadcast ephemeris, clock-correction parameters, almanac, and constellation time. It is the data-layer attack surface targeted by navigation-message spoofing and the artifact authenticated by schemes such as Galileo OSNMA." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Galileo_Navigation_Message>,
+        <https://gssc.esa.int/navipedia/index.php/GPS_Navigation_Message> .
+
+:GNSSNavigationMessageAuthentication a :GNSSNavigationMessageAuthentication,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "GNSS Navigation Message Authentication" ;
+    rdfs:subClassOf :MessageAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :GNSSNavigationMessage ] ;
+    :d3fend-id "D3-NMA" ;
+    :definition "Cryptographically verifying that a GNSS navigation message originates from the genuine constellation and has not been altered, by checking digital signatures or message authentication codes embedded in the broadcast data." ;
+    :kb-article """## How it works
+GNSS Navigation Message Authentication adds a cryptographic layer to the broadcast navigation data so a receiver can confirm that the ephemeris, clock, and timing parameters it decodes were transmitted by the genuine constellation operator and not injected by a spoofer. The constellation ground segment signs the navigation message, or a digest of it, with a secret key and embeds the resulting signature or message authentication code (MAC) into spare or reserved fields of the broadcast data stream, so authentication rides inside the existing signal without changing the modulation or chipping rate. Galileo OSNMA implements this with a TESLA (Timed Efficient Stream Loss-tolerant Authentication) protocol: the satellite transmits MACs computed under a key that is itself disclosed in a later message, and the receiver, loosely synchronized to system time, verifies that each disclosed key chains back to a trusted Merkle-tree root before accepting the previously received data as authentic.
+
+Because the authenticating key is revealed only after the data it protects has already been broadcast, an attacker cannot forge a valid MAC in real time, and any navigation message that fails verification, or that arrives with a key that does not chain to the trust anchor, is rejected before it can bias the position or time solution. The mechanism authenticates the data content of the message; it does not by itself prove that the ranging measurement (code phase) was generated by the satellite, which is why it is paired with signal- or ranging-layer defenses to address record-and-replay.
+
+## Considerations
+* Time to First Authenticated Fix: Key disclosure and chain verification mean an authenticated solution is not available immediately at power-on; the receiver must buffer data and tolerate added latency before trust is established.
+
+* Loose Time Synchronization: TESLA-style schemes require the receiver to hold an independently trustworthy notion of time (e.g., from a holdover clock), since an adversary who controls the receiver clock can defeat the key-disclosure timing assumption.
+
+* Trust-Anchor Management: Receivers must securely store the public trust anchor (e.g., the Merkle root) and handle planned public-key renewal and unplanned revocation without losing service.
+
+* Replay Residual Risk: Message authentication confirms data origin and integrity but does not prevent meaconing (rebroadcast of authentic signals), so it should be combined with ranging-layer or consistency checks.
+
+* Cross-Constellation Coverage: Authentication is constellation-specific and not yet universal (operational on Galileo; on roadmaps for GPS and SBAS), so multi-constellation receivers gain only partial coverage during the transition.""" ;
+    :kb-reference :Reference-GalileoOSNMAServiceDefinitionDocument ;
+    rdfs:seeAlso <https://www.euspa.europa.eu/galileo-osnma> .
+
+:GNSSRangingCode a owl:Class ;
+    rdfs:label "GNSS Ranging Code" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
+    :definition "A GNSS (Gloval Navigation Satellite System) ranging code is the pseudorandom spreading sequence modulated onto a GNSS carrier that a receiver correlates against a local replica to measure signal transit time and hence pseudorange." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/GNSS_Receivers_General_Introduction> .
+
 :GNSSReceiver a owl:Class ;
     rdfs:label "GNSS Receiver" ;
-    rdfs:subClassOf :Receiver ;
+    rdfs:subClassOf :Receiver,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :PNTSolution ] ;
     :definition "A GNSS (Global Navigation Satellite System) receiver is an electronic device that picks up signals from one or more satellite constellations (like GPS, GLONASS, Galileo, BeiDou) to calculate precise location, velocity, and time." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation> .
 
@@ -18130,7 +18218,10 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
     rdfs:subClassOf :ElectromagneticSignal,
         [ a owl:Restriction ;
             owl:onProperty :carries ;
-            owl:someValuesFrom :GNSSTimeRecord ] ;
+            owl:someValuesFrom :GNSSNavigationMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GNSSRangingCode ] ;
     :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>,
         <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
@@ -22694,6 +22785,12 @@ Additionally, after the code file is printed, it could be recovered from the sys
     rdfs:isDefinedBy <http://dbpedia.org/resource/Open_(system_call)> ;
     :definition "For most file systems, a program initializes access to a file in a file system using the open system call. This allocates resources associated to the file (the file descriptor), and returns a handle that the process will use to refer to that file. In some cases the open is performed by the first access. During the open, the filesystem may allocate memory for buffers, or it may wait until the first operation. Various other errors which may occur during the open include directory update failures, un-permitted multiple connections, media failures, communication link failures and device failures." .
 
+:OpenRangingCode a owl:Class ;
+    rdfs:label "Open Ranging Code" ;
+    rdfs:subClassOf :GNSSRangingCode ;
+    :definition "An open ranging code is a ranging code whose sequence is public and predictable (e.g., GPS L1 C/A, Galileo E1 Open Service), making it straightforward for an adversary to generate and therefore susceptible to signal-synthesis spoofing." ;
+    rdfs:seeAlso <https://archive.gps.gov/technical/icwg/IS-GPS-200N.pdf> .
+
 :OperatingMode a owl:Class ;
     rdfs:label "Operating Mode" ;
     rdfs:subClassOf :SystemPlatformVariable ;
@@ -25600,6 +25697,14 @@ Monitoring the time since the last power cycle or restart alerts operators to un
 ## Considerations
 The source of the variable may be mutable depending on the platform, and the provenance of the value.""" ;
     :kb-reference :Reference-SecurePLCCodingPracticesTop20List .
+
+:PNTSolution a owl:Class ;
+    rdfs:label "PNT Solution" ;
+    rdfs:subClassOf :Record ;
+    rdfs:isDefinedBy <https://gssc.esa.int/navipedia/index.php/GNSS_Receivers_General_Introduction> ;
+    :definition "A PNT (Position, Navigation, and Timing) solution is the position, velocity, and time estimate a GNSS receiver computes from pseudorange and carrier measurements across multiple satellites. It is the receiver output corrupted by successful spoofing or meaconing and the artifact validated by integrity-monitoring countermeasures." ;
+    rdfs:seeAlso <https://gssc.esa.int/navipedia/index.php/Code_Based_Positioning_(SPS)> ;
+    :synonym "PVT Solution" .
 
 :Point-biserialCorrelationCoefficient a owl:Class,
         owl:NamedIndividual ;
@@ -45111,6 +45216,16 @@ Again, I would recommend that you do not proceed to build a production FWTK fire
     :kb-reference-title "FWTK Documentation" ;
     :todo "add all authors",
         "MITRE Analysis was not found" .
+
+:Reference-GalileoOSNMAServiceDefinitionDocument a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Galileo OSNMA Service Definition Document - EUSPA" ;
+    :has-link "https://www.gsc-europa.eu/sites/default/files/sites/all/files/Galileo-OSNMA-SDD_v1.0.pdf"^^xsd:anyURI ;
+    :kb-abstract "Issue 1.0 (July 2025) of the Service Definition Document for the Galileo Open Service Navigation Message Authentication. It sets out the terms, conditions, and minimum performance levels under which OSNMA data authentication is provided, and refers to the OSNMA SIS ICD and Receiver Guidelines for the protocol elements and receiver processing steps used to confirm that received Galileo navigation data originates from the system and has not been altered." ;
+    :kb-mitre-analysis "Establishes the operational, global, civil instance of navigation-message (data-layer) authentication and the performance commitments a defender can rely on; the companion Receiver Guidelines specify the TESLA-based verification logic the receiver must implement." ;
+    :kb-organization "European Union Agency for the Space Programme (EUSPA)" ;
+    :kb-reference-of :NavigationMessageAuthentication ;
+    :kb-reference-title "Galileo Open Service Navigation Message Authentication (OSNMA) Service Definition Document, Issue 1.0" .
 
 :Reference-GatheringEvidenceModel-DrivenSoftwareEngineeringinAutomatedDigitalForensics a :AcademicPaperReference,
         owl:NamedIndividual ;
