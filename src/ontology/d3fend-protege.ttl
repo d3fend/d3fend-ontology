@@ -13874,10 +13874,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0002 a owl:Class ;
     rdfs:label "Disrupt or Deceive Downlink - SPARTA" ;
     skos:prefLabel "Disrupt or Deceive Downlink" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :impairs ;
-            owl:someValuesFrom :WirelessLink ] ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
     :attack-id "DE-0002" ;
     :definition "Threat actors may target any point in the telemetry chain, onboard generation and transmission, the downlink path itself, or ground-side reception, processing, and display, to disrupt the operator’s visibility into spacecraft health and activity. This may involve denial-based attacks that prevent the spacecraft from transmitting telemetry to the ground (e.g., disabling telemetry links or crashing telemetry software), or more subtle deception-based attacks that manipulate telemetry content to conceal unauthorized actions. Since telemetry is the primary method ground controllers rely on to monitor spacecraft status, any disruption or manipulation can delay or prevent detection of malicious activity, suppress automated or manual mitigations, or degrade trust in telemetry-based decision support systems." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/> .
@@ -13895,7 +13892,10 @@ Architectural limitations in ground station software can also enable deception w
 :DE-0002.02 a owl:Class ;
     rdfs:label "Jam Link Signal - SPARTA" ;
     skos:prefLabel "Jam Link Signal" ;
-    rdfs:subClassOf :DE-0002 ;
+    rdfs:subClassOf :DE-0002,
+        [ a owl:Restriction ;
+            owl:onProperty :jams ;
+            owl:someValuesFrom :RadiatedSignal ] ;
     :attack-id "DE-0002.02" ;
     :definition "Threat actors may overwhelm/jam the downlink signal to prevent transmitted telemetry signals from reaching their destination without severe modification/interference, effectively leaving ground controllers unaware of vehicle activity during this time. Telemetry is the only method in which ground controllers can monitor the health and stability of the spacecraft while in orbit. By disabling this downlink, threat actors may be able to stop mitigations from taking place." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/02/> .
@@ -15590,9 +15590,9 @@ Analyzing the interaction of a piece of code with a system while the code is bei
 
 :ElectricalSignal a owl:Class ;
     rdfs:label "Electrical Signal" ;
-    rdfs:subClassOf :Signal ;
+    rdfs:subClassOf :GuidedSignal ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Signal> ;
-    :definition "Time-varying voltage or current that carries information." .
+    :definition "A guided signal consisting of a time-varying voltage or current propagating along an electrical conductor." .
 
 :ElectromagneticRadiationHardening a :ElectromagneticRadiationHardening,
         owl:Class,
@@ -15616,12 +15616,6 @@ For threats at higher energy levels or involving ionizing radiation, such as nuc
 """ ;
     :kb-reference :Reference-SystemAndMethodForProvidingCertifiableElectromagneticPulseAndRFIProtection_InstantAccessNetworksLLC ;
     :synonym "EM Hardening" .
-
-:ElectromagneticSignal a owl:Class ;
-    rdfs:label "Electromagnetic Signal" ;
-    rdfs:subClassOf :Signal ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Signal> ;
-    :definition "An electromagnetic wave that carries information." .
 
 :ElectronicCombinationLock a owl:Class ;
     rdfs:label "Electronic Combination Lock" ;
@@ -16931,7 +16925,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :EXF-0003 a owl:Class ;
     rdfs:label "Signal Interception - SPARTA" ;
     skos:prefLabel "Signal Interception" ;
-    rdfs:subClassOf :SPARTAExfiltrationTechnique ;
+    rdfs:subClassOf :SPARTAExfiltrationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :Signal ] ;
     :attack-id "EXF-0003" ;
     :definition "The adversary captures mission traffic in transit, on ground networks or over the space link, so that payload products, housekeeping, and command/ack exchanges can be reconstructed offline. Vantage points include tapped ground LANs/WANs between MOC and stations, baseband interfaces (IF/IQ), RF/optical receptions within the antenna field of view, and crosslink monitors. Depending on protection, the haul ranges from plaintext frames to encrypted bitstreams whose headers, rates, and schedules still yield valuable context (APIDs, VCIDs, pass timing, file manifest cues). Intercepted sessions can guide later replay, cloning, or targeted downlink requests." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0003/> .
@@ -17118,6 +17115,13 @@ Intro to Active Learning. inovex Blog. [Link](https://www.inovex.de/de/blog/intr
     rdfs:isDefinedBy <http://dbpedia.org/resource/Symbolic_link#Storage_of_symbolic_links> ;
     :definition "Fast symbolic links, allow storage of the target path within the data structures used for storing file information on disk (e.g., within the inodes). This space normally stores a list of disk block addresses allocated to a file. Thus, symlinks with short target paths are accessed quickly. Systems with fast symlinks often fall back to using the original method if the target path exceeds the available inode space." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Symbolic_link#Storage_of_symbolic_links> .
+
+:Fiber-opticSignal a owl:Class ;
+    rdfs:label "Fiber-optic Signal" ;
+    rdfs:subClassOf :GuidedSignal ;
+    :definition "A guided signal consisting of optical-frequency electromagnetic radiation that propagates within a dielectric waveguide." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Fiber-optic_communication> ;
+    :synonym "Guided Optical Signal" .
 
 :File a owl:Class ;
     rdfs:label "File" ;
@@ -17947,6 +17951,14 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
     :definition "A binary configuration file generated by synthesizing and placing-and-routing an HDL design, which is loaded into a Field-Programmable Gate Array (FPGA) to physically define its internal logic, interconnects, and I/O behavior. Rather than being executed by a processor, it programs the device itself." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Bitstream> .
 
+:Free-spaceOpticalSignal a owl:Class ;
+    rdfs:label "Free-space Optical Signal" ;
+    rdfs:subClassOf :RadiatedSignal ;
+    :definition "A radiated signal consisting of optical-frequency electromagnetic radiation that propagates through free space." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Free-space_optical_communication> ;
+    :synonym "FSO Signal",
+        "Radiated Optical Signal" .
+
 :FreeMemory a owl:Class ;
     rdfs:label "Free Memory" ;
     rdfs:subClassOf :SystemCall,
@@ -18127,11 +18139,11 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :GNSSSignal a owl:Class ;
     rdfs:label "GNSS Signal" ;
-    rdfs:subClassOf :ElectromagneticSignal,
+    rdfs:subClassOf :RadiatedRFSignal,
         [ a owl:Restriction ;
             owl:onProperty :carries ;
             owl:someValuesFrom :GNSSTimeRecord ] ;
-    :definition "A GNSS (Global Navigation Satellite System) signal is a low-power radio signal broadcast from satellites that contains a carrier wave, a ranging code, and a navigation message. The receiver uses the carrier wave to precisely measure the time it takes for the signal to travel from the satellite, while the navigation message provides essential information like the satellite's position (ephemeris) and clock information." ;
+    :definition "A radiated RF signal broadcast by a GNSS satellite that carries a GNSS time record for determining receiver position or time." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation>,
         <https://gssc.esa.int/navipedia/index.php/GNSS_signal> ;
     :synonym "Global Navigation Satellite System Signal" .
@@ -18274,6 +18286,17 @@ Talukdar, P. (2020, June 10). Convolutional Neural Networks Explained. Towards D
     rdfs:label "Group Policy" ;
     rdfs:subClassOf :AccessControlConfiguration ;
     :definition "Group Policy is a feature of the Microsoft Windows NT family of operating systems that controls the working environment of user accounts and computer accounts. Group Policy provides the centralized management and configuration of operating systems, applications, and users' settings in an Active Directory environment. A version of Group Policy called Local Group Policy (\"LGPO\" or \"LocalGPO\") also allows Group Policy Object management on standalone and non-domain computers." .
+
+:GuidedRFSignal a owl:Class ;
+    rdfs:label "Guided RF Signal" ;
+    rdfs:subClassOf :GuidedSignal ;
+    :definition "A guided signal consisting of radio-frequency electromagnetic energy that propagates within a waveguide or transmission line." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Waveguide_(radio_frequency)> .
+
+:GuidedSignal a owl:Class ;
+    rdfs:label "Guided Signal" ;
+    rdfs:subClassOf :Signal ;
+    :definition "A signal whose propagation is directed by a bounded transmission medium." .
 
 :GuidelineReference a owl:Class ;
     rdfs:label "Guideline Reference" ;
@@ -25380,13 +25403,8 @@ System designers or operators make physical changes to a computer enclosure whic
 
 :PhysicalLink a owl:Class ;
     rdfs:label "Physical Link" ;
-    rdfs:subClassOf :Link,
-        [ a owl:Restriction ;
-            owl:onProperty :carries ;
-            owl:someValuesFrom :Signal ] ;
-    :definition """A physical link is a dedicated connection for communication that uses some physical media (electrical, electromagnetic, optical, to include clear spaces or vacuums.)  A physical link represents only a single hop (link) in any larger communcations path, circuit, or network.
-
-NOTE: not synonymous with data link as a data link can be over a telecommunications circuit, which may be a virtual circuit composed of multiple phyical links.""" ;
+    rdfs:subClassOf :Link ;
+    :definition "A link that connects two endpoints through a physical transmission medium." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Physical_layer> ;
     :synonym "Layer-1 Link" .
 
@@ -26544,6 +26562,18 @@ Q-learning. Wikipedia. [Link](https://en.wikipedia.org/wiki/Q-learning).""" .
     :kb-article """## References
 Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/intro-to-active-learning/).""" .
 
+:RadiatedRFSignal a owl:Class ;
+    rdfs:label "Radiated RF Signal" ;
+    rdfs:subClassOf :RadiatedSignal ;
+    :definition "A radiated signal consisting of electromagnetic radiation within the radio-frequency spectrum." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Radio_wave> ;
+    :synonym "Radio Wave" .
+
+:RadiatedSignal a owl:Class ;
+    rdfs:label "Radiated Signal" ;
+    rdfs:subClassOf :Signal ;
+    :definition "A signal consisting of electromagnetic radiation that propagates without guidance by a bounded transmission medium." .
+
 :RadiationHardening a owl:Class,
         owl:NamedIndividual,
         :RadiationHardening ;
@@ -27053,7 +27083,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.01 a owl:Class ;
     rdfs:label "Uplink Intercept Eavesdropping - SPARTA" ;
     skos:prefLabel "Uplink Intercept Eavesdropping" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :RadiatedSignal ] ;
     :attack-id "REC-0005.01" ;
     :definition "Uplink reconnaissance focuses on capturing the command path from ground to spacecraft to learn telecommand framing, authentication fields, timing, and anti-replay behavior. Valuable artifacts include emission designators, symbol rates, polarization sense, Doppler profiles, and any preambles or ranging tones that gate command acceptance. Even if payload and TT&C share spectrum, their authentication postures often differ, knowledge an adversary can exploit. Partial captures, console screenshots, or training recordings reduce the effort needed to build an SDR pipeline that “looks right” on the air. Where missions authenticate without encrypting the uplink, traffic analysis can reveal command cadence and maintenance windows." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/01/> .
@@ -27061,7 +27094,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.02 a owl:Class ;
     rdfs:label "Downlink Intercept - SPARTA" ;
     skos:prefLabel "Downlink Intercept" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :RadiatedSignal ] ;
     :attack-id "REC-0005.02" ;
     :definition "Downlink collection aims to harvest housekeeping telemetry, event logs, ephemerides, payload data, and operator annotations that reveal system state and procedures. Even when payload content is encrypted, ancillary channels (beacons, health/status, low-rate engineering downlink) can disclose mode transitions, battery and thermal margins, safing events, and next-pass predictions. Community ground networks and public dashboards may inadvertently provide stitched datasets that make trend analysis trivial. Captured framing and coding parameters also help an adversary build testbeds and refine timing for later actions." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/02/> .
@@ -27077,7 +27113,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.04 a owl:Class ;
     rdfs:label "Active Scanning (RF/Optical) - SPARTA" ;
     skos:prefLabel "Active Scanning (RF/Optical)" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :RadiatedSignal ] ;
     :attack-id "REC-0005.04" ;
     :definition "Active scanning moves beyond passive collection: an adversary transmits or injects probes intended to elicit identifiable responses that reveal frequencies, protocols, or device behavior. Examples include stimulating auto-track or auto-reply beacons, provoking ranging responses, tickling access schemes (TDMA/FDMA bursts), or sending benign-looking frames to observe AGC, saturation, or error counters. Optical/lasercom analogs include alignment pings or modulation patterns that solicit acquisition messages. The objective is RF “banner grabbing”, learning enough to build compatible demod/decoder chains or to map control surfaces, without necessarily breaching authentication. Because scans can resemble normal acquisition attempts, they may blend into the noise floor of operations." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/04/> .
@@ -42509,8 +42548,11 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :WiredLink a owl:Class ;
     rdfs:label "Wired Link" ;
-    rdfs:subClassOf :PhysicalLink ;
-    :definition "A physical link that uses a physical conductor or waveguide to constrain and direct signal propagation between endpoints. The signal is confined within or along a manufactured medium such as metal conductors, optical fibers, or coaxial structures." .
+    rdfs:subClassOf :PhysicalLink,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :GuidedSignal ] ;
+    :definition "A physical link that carries a guided signal between endpoints through a conductor or waveguide." .
 
 :WirelessAccessPoint a owl:Class ;
     rdfs:label "Wireless Access Point" ;
@@ -42535,8 +42577,11 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :WirelessLink a owl:Class ;
     rdfs:label "Wireless Link" ;
-    rdfs:subClassOf :PhysicalLink ;
-    :definition "A physical link that transmits signals through free space or an unguided medium without physical connectors between endpoints. The signal propagates through air, vacuum, water, or other natural media using electromagnetic waves or acoustic energy." .
+    rdfs:subClassOf :PhysicalLink,
+        [ a owl:Restriction ;
+            owl:onProperty :carries ;
+            owl:someValuesFrom :RadiatedSignal ] ;
+    :definition "A physical link that carries a radiated signal between endpoints without a physical transmission guide." .
 
 :WirelessRouter a owl:Class ;
     rdfs:label "Wireless Router" ;
