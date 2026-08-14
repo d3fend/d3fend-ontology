@@ -16875,7 +16875,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :EXF-0001 a owl:Class ;
     rdfs:label "Replay - SPARTA" ;
     skos:prefLabel "Replay" ;
-    rdfs:subClassOf :SPARTAExfiltrationTechnique ;
+    rdfs:subClassOf :SPARTAExfiltrationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "EXF-0001" ;
     :definition "The adversary re-sends previously valid commands or procedures to cause the spacecraft to transmit data again, then captures the resulting downlink. Typical targets are recorder playbacks, payload product dumps, housekeeping snapshots, or file directory listings. By aligning replays with geometry (e.g., when the satellite is in view of actor-controlled apertures) and with acceptance conditions (counters, timetags, mode), the attacker induces legitimate transmissions that appear routine to operators. Variants include selectively replaying index ranges to fetch only high-value intervals, reissuing subscription/telemetry-rate changes to increase data volume, or queueing playbacks that fire during later passes when interception is feasible." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0001/> .
@@ -19029,7 +19032,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0007.02 a owl:Class ;
     rdfs:label "Malicious Commanding via Valid GS - SPARTA" ;
     skos:prefLabel "Malicious Commanding via Valid GS" ;
-    rdfs:subClassOf :IA-0007 ;
+    rdfs:subClassOf :IA-0007,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "IA-0007.02" ;
     :definition "Adversaries may use a compromised, mission-owned ground system to transmit legitimate-looking commands to the target spacecraft. Because the ground equipment is already configured for the mission, correct waveforms, framing, dictionaries, and scheduling, the attacker’s traffic blends with routine operations. Initial access unfolds by inserting commands or procedures into existing timelines, modifying rate/size limits or command queues, or invoking maintenance dictionaries and rapid-response workflows that accept broader command sets. Pre-positioned scripts can chain actions across multiple passes and stations, while telemetry routing provides immediate feedback to refine follow-on steps. Exfiltration can be embedded in standard downlink channels or forwarded through gateways as ordinary mission data. The distinguishing feature is that command origin appears valid, transmitted from approved apertures using expected parameters, so the first execution event is not a protocol anomaly but a misuse of legitimate command authority obtained through the compromised ground system." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/02/> .
@@ -27334,8 +27340,35 @@ Complex intranet VPNs or routing encapsulation may affect the detection analytic
 
 :RemoteCommand a owl:Class ;
     rdfs:label "Remote Command" ;
-    rdfs:subClassOf :Command ;
+    rdfs:subClassOf :Command,
+        :DigitalMessage ;
     :definition "A remote command is an instruction or set of instructions issued from a geographically or logically distant location to control, configure, or elicit a response from a target system, device, or entity. The execution of a remote command does not require direct physical interaction with the target; instead, it relies on a communication link to transmit the instruction and receive any resulting feedback or data." .
+
+:RemoteCommandAuthentication a owl:Class,
+        owl:NamedIndividual,
+        :RemoteCommandAuthentication ;
+    rdfs:label "Remote Command Authentication" ;
+    rdfs:subClassOf :MessageAuthentication,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :RemoteCommand ] ;
+    :d3fend-id "D3-RCA" ;
+    :definition "Authenticating the sender of a remote command and ensuring message integrity." ;
+    :kb-article """## How it works
+Remote command authentication binds each command to a trusted issuing principal by attaching a cryptographic credential, typically a message authentication code (MAC) or digital signature, computed over the command content and relevant metadata. The receiving system recomputes or verifies this credential using a shared secret or public key; commands that fail verification are dropped before reaching the execution layer. This ensures that even if an adversary can observe or intercept command traffic, they cannot forge or alter commands without access to the underlying key material.
+
+To prevent replay attacks, authentication is paired with a freshness mechanism. This is commonly implemented as a monotonically increasing sequence counter, a timestamp-bounded validity window, or a nonce bound to a specific command instance. The receiving system maintains state about previously accepted commands and rejects any that fall outside the expected freshness window, regardless of whether their cryptographic credential is valid.
+
+## Considerations
+* Transport vs. command-layer implementation: When commands are issued over session-oriented, cryptographically protected transports (TLS, SSH, mTLS), authentication and anti-replay may be provided by the transport layer rather than implemented per-command. In stateless, connectionless, or highly constrained environments such as spacecraft telecommanding, these mechanisms must be implemented at the command layer itself.
+
+* Key management: The security of the countermeasure is bounded by the security of the underlying key lifecycle — generation, distribution, storage, rotation, and revocation. Compromised key material defeats cryptographic authentication entirely.
+
+* Symmetric vs. asymmetric schemes: HMAC-based MACs (e.g., HMAC-SHA256) are computationally efficient and well-suited to constrained receivers, but require secure shared-secret distribution. Digital signatures (e.g., ECDSA) provide non-repudiation and avoid shared-secret distribution but impose higher computational cost.
+
+* Sequence counter persistence: In systems with intermittent connectivity or power cycling (e.g., embedded systems, spacecraft), sequence counters or nonce state must survive restarts to prevent replay windows from resetting to an exploitable baseline.""" ;
+    :kb-reference :Reference-SpaceDataLinkSecurityProtocol-CCSDS,
+        :Reference-TheKerberosNetworkAuthenticationService-IETF .
 
 :RemoteDatabaseQuery a owl:Class ;
     rdfs:label "Remote Database Query" ;
@@ -47051,6 +47084,16 @@ Monitoring SMB write requests still creates some noise, particularly with named 
         :SystemVulnerabilityAssessment ;
     :kb-reference-title "Software vulnerability graph database" .
 
+:Reference-SpaceDataLinkSecurityProtocol-CCSDS a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - Space Data Link Security Protocol - CCSDS" ;
+    :has-link "https://ccsds.org/Pubs/355x0b2.pdf"^^xsd:anyURI ;
+    :kb-abstract "The purpose of this Recommended Standard is to specify the Space Data Link Security Protocol (hereafter referred as the Security Protocol) for CCSDS data links.  This protocol provides a security header and trailer along with associated procedures that may be used with the CCSDS Telemetry, Telecommand, Advanced Orbiting Systems, and Unified Space Data Link Protocols to provide a structured method for applying data authentication and/or data confidentiality at the Data Link Layer." ;
+    :kb-author "" ;
+    :kb-organization "Consultative Committee for Space Data Systems (CCSDS)" ;
+    :kb-reference-of :RemoteCommandAuthentication ;
+    :kb-reference-title "CCSDS 355.0-B-2: Space Data Link Security Protocol" .
+
 :Reference-Squiblydoo_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-04-003: Squiblydoo - MITRE" ;
@@ -47536,6 +47579,16 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-author "Matt Weir, Sudhir Aggarwal, Michael Collins, Henry Stern" ;
     :kb-reference-of :StrongPasswordPolicy ;
     :kb-reference-title "Testing Metrics for Password Creation Policies by Attacking Large Sets of Revealed Passwords" .
+
+:Reference-TheKerberosNetworkAuthenticationService-IETF a owl:NamedIndividual,
+        :SpecificationReference ;
+    rdfs:label "Reference - The Kerberos Network Authentication Service (V5) - IETF" ;
+    :has-link "https://tools.ietf.org/html/rfc1510"^^xsd:anyURI ;
+    :kb-abstract "This document gives an overview and specification of Version 5 of the protocol for the Kerberos network authentication system. Version 4, described elsewhere, is presently in production use at MIT's Project Athena, and at other Internet sites." ;
+    :kb-author "J. Kohl, C. Neuman" ;
+    :kb-organization "Internet Engineering Task Force (IETF)" ;
+    :kb-reference-of :RemoteCommandAuthentication ;
+    :kb-reference-title "The Kerberos Network Authentication Service (V5)" .
 
 :Reference-ThePyramidOfPain-DavidBianco a :InternetArticleReference,
         owl:NamedIndividual ;
