@@ -4425,6 +4425,14 @@ In a more general sense, ASP includes all applications of answer sets to knowled
 1. Answer set programming. (2023, April 27). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Answer_set_programming)""" ;
     :synonym "ASP" .
 
+:AntennaController a owl:Class ;
+    rdfs:label "Antenna Controller" ;
+    rdfs:subClassOf :OTController ;
+    rdfs:isDefinedBy <https://csrc.nist.gov/glossary/term/controller> ;
+    :definition "An OT controller that regulates antenna pointing and tracking by driving positioners in response to commands and position feedback." ;
+    :synonym "Antenna Control Unit (ACU)",
+        "Antenna Pointing Controller" .
+
 :Application a owl:Class ;
     rdfs:label "Application" ;
     rdfs:subClassOf :Software,
@@ -13885,7 +13893,13 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0002.01 a owl:Class ;
     rdfs:label "Inhibit Ground System Functionality - SPARTA" ;
     skos:prefLabel "Inhibit Ground System Functionality" ;
-    rdfs:subClassOf :DE-0002 ;
+    rdfs:subClassOf :DE-0002,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :MissionControlSoftware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SpacecraftTelemetry ] ;
     :attack-id "DE-0002.01" ;
     :definition """Threat actors may utilize access to the ground system to inhibit its ability to accurately process, render, or interpret spacecraft telemetry, effectively leaving ground controllers unaware of the spacecraft’s true state or activity. This may involve traditional denial-based techniques, such as disabling telemetry software, corrupting processing pipelines, or crashing display interfaces. In addition, more subtle deception-based techniques may be used to falsify telemetry data within the ground system ,  such as modifying command counters, acknowledgments, housekeeping data, or sensor outputs ,  to provide the appearance of nominal operation. These actions can suppress alerts, mask unauthorized activity, or prevent both automated and manual mitigations from being initiated based on misleading ground-side information. Because telemetry is the primary method by which ground controllers monitor the health, behavior, and safety of the spacecraft, any disruption or falsification of this data directly undermines situational awareness and operational control.
 
@@ -17873,8 +17887,11 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
             owl:someValuesFrom :Telecommand ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :SoftwareWatchdogTimer ] ;
-    :definition "Flight Software (FSW) is software that runs on a processor embedded in a spacecraft's avionics. It is responsible for managing on-board activities, data processing and spacecraft health and safety. The name “flight software” reflects the location where it executes, i.e. in the spacecraft , to differentiate from “ground software”, which runs in the ground segment." ;
+            owl:someValuesFrom :SoftwareWatchdogTimer ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :SpacecraftTelemetry ] ;
+    :definition "Vehicle control software that executes aboard a spacecraft to process telecommands and control spacecraft operations." ;
     rdfs:seeAlso <https://phxcubesat.asu.edu/subsystems/flight-software>,
         <https://www.spiedigitallibrary.org/conference-proceedings-of-spie/13546/135462R/An-evaluation-of-flight-software-platforms-for-small-satellite-missions/10.1117/12.3062481.full> ;
     :synonym "FSW",
@@ -17953,6 +17970,31 @@ The DNS lookup can be blocked by either dropping the network traffic with an inl
         [ a owl:Restriction ;
             owl:onProperty :deletes ;
             owl:someValuesFrom :MemoryBlock ] .
+
+:Front-endProcessor a owl:Class ;
+    rdfs:label "Front-end Processor" ;
+    rdfs:subClassOf :Host,
+        [ a owl:Restriction ;
+            owl:onProperty :runs ;
+            owl:someValuesFrom :Front-endProcessorApplication ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Front-end_processor> ;
+    :definition "A host that offloads communication processing from another host and mediates between that host and a communications medium." ;
+    :synonym "Communications Processor",
+        "FEP" .
+
+:Front-endProcessorApplication a owl:Class ;
+    rdfs:label "Front-End Processor Application" ;
+    rdfs:subClassOf :DigitalSignalProcessingApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :encodes ;
+            owl:someValuesFrom :Telecommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkFrame ] ;
+    :definition "A digital signal processing application that encodes telecommands as network frames for transmission." ;
+    :synonym "Software FEP",
+        "vFEP",
+        "Virtual Front-End Processor" .
 
 :FTPDeleteEvent a owl:Class ;
     rdfs:label "FTP Delete Event" ;
@@ -19013,7 +19055,19 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0007 a owl:Class ;
     rdfs:label "Compromise Ground System - SPARTA" ;
     skos:prefLabel "Compromise Ground System" ;
-    rdfs:subClassOf :SPARTAInitialAccessTechnique ;
+    rdfs:subClassOf :SPARTAInitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :AntennaController ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Front-endProcessor ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Front-endProcessorApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :MissionControlSoftware ] ;
     :attack-id "IA-0007" ;
     :definition "Compromising the ground segment gives an adversary the most direct path to first execution against a spacecraft. Ground systems encompass operator workstations and mission control mission control software, scheduling/orchestration services, front-end processors and modems, antenna control, key-loading tools and HSMs, data gateways (SLE/CSP), identity providers, and cloud-hosted mission services. Once inside, a threat actor can prepare on-orbit updates, craft and queue valid telecommands, replay captured traffic within acceptance windows, or manipulate authentication material and counters to pass checks. The same foothold enables deep reconnaissance: enumerating mission networks and enclaves, discovering which satellites are operated from a site, mapping logical topology between MOC and stations, identifying in-band “birds” reachable from a given aperture, and learning pass plans, dictionaries, and automation hooks. From there, initial access to the spacecraft is a matter of timing and presentation, injecting commands, procedures, or update packages that align with expected operations so the first execution event appears indistinguishable from normal activity." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/> .
@@ -19029,7 +19083,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0007.02 a owl:Class ;
     rdfs:label "Malicious Commanding via Valid GS - SPARTA" ;
     skos:prefLabel "Malicious Commanding via Valid GS" ;
-    rdfs:subClassOf :IA-0007 ;
+    rdfs:subClassOf :IA-0007,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "IA-0007.02" ;
     :definition "Adversaries may use a compromised, mission-owned ground system to transmit legitimate-looking commands to the target spacecraft. Because the ground equipment is already configured for the mission, correct waveforms, framing, dictionaries, and scheduling, the attacker’s traffic blends with routine operations. Initial access unfolds by inserting commands or procedures into existing timelines, modifying rate/size limits or command queues, or invoking maintenance dictionaries and rapid-response workflows that accept broader command sets. Pre-positioned scripts can chain actions across multiple passes and stations, while telemetry routing provides immediate feedback to refine follow-on steps. Exfiltration can be embedded in standard downlink channels or forwarded through gateways as ordinary mission data. The distinguishing feature is that command origin appears valid, transmitted from approved apertures using expected parameters, so the first execution event is not a protocol anomaly but a misuse of legitimate command authority obtained through the compromised ground system." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/02/> .
@@ -21657,6 +21714,21 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     rdfs:isDefinedBy <http://dbpedia.org/resource/HTML_Application> ;
     :definition "An HTML Application (HTA) is a Microsoft Windows program whose source code consists of HTML, Dynamic HTML, and one or more scripting languages supported by Internet Explorer, such as VBScript or JScript." ;
     :synonym "HTA" .
+
+:MissionControlSoftware a owl:Class ;
+    rdfs:label "Mission Control Software" ;
+    rdfs:subClassOf :Application,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :SpacecraftTelemetry ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
+    :definition "An application that produces telecommands and analyzes spacecraft telemetry to enable operators to control and monitor a spacecraft." ;
+    rdfs:seeAlso <https://www.space-glossary.com/cms/glossary/22-glossary-m/65836-mission-control-software.html> ;
+    :synonym "Ground Control Software",
+        "Mission Control System (MCS)",
+        "Satellite Command and Control Software" .
 
 :MobilePhone a owl:Class ;
     rdfs:label "Mobile Phone" ;
@@ -25127,7 +25199,19 @@ Wolfram MathWorld. (n.d.). Correlation Coefficient. [Link](https://mathworld.wol
 :PER-0003 a owl:Class ;
     rdfs:label "Ground System Presence - SPARTA" ;
     skos:prefLabel "Ground System Presence" ;
-    rdfs:subClassOf :SPARTAPersistenceTechnique ;
+    rdfs:subClassOf :SPARTAPersistenceTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :AntennaController ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Front-endProcessor ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :Front-endProcessorApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :MissionControlSoftware ] ;
     :attack-id "PER-0003" ;
     :definition "The adversary maintains long-lived access by residing within mission ground infrastructure that already has end-to-end reach to the spacecraft. Persistence can exist in operator workstations and mission control software, schedulers/orchestrators, station control (antenna/mount, modem/baseband), automation scripts and procedure libraries, identity and ticketing systems, and cloud-hosted mission services. With this foothold, the actor can repeatedly queue commands, updates, or file transfers during routine passes; mirror legitimate operator behavior to blend in; and refresh their tooling as software is upgraded. Presence on the ground also supports durable reconnaissance (pass plans, dictionaries, key/counter states) and continuous staging so each window to the vehicle can be exploited without re-establishing access." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/PER-0003/> .
@@ -29036,6 +29120,12 @@ The goal is for homophones to be encoded to the same representation so that they
         :VehicleOperatingMode ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Safe_mode_in_spacecraft> ;
     :definition "Safe mode is an operating mode of a modern uncrewed spacecraft during which all non-essential systems are shut down and only essential functions such as thermal management, radio reception and attitude control are active." .
+
+:SpacecraftTelemetry a owl:Class ;
+    rdfs:label "Spacecraft Telemetry" ;
+    rdfs:subClassOf :Telemetry ;
+    :definition "Telemetry collected aboard a spacecraft and transmitted to a ground system." ;
+    rdfs:seeAlso <https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Onboard_Computers_and_Data_Handling/Telemetry_Telecommand> .
 
 :SPARTADefenseEvasionTechnique a owl:Class ;
     rdfs:label "Defense Evasion Technique - SPARTA" ;
@@ -40525,6 +40615,13 @@ Defense Impairment consists of techniques that degrade, disable, or undermine th
     rdfs:isDefinedBy <http://dbpedia.org/resource/Telecommand> ;
     :definition "A telecommand or telecontrol is a command sent to control a remote system or systems not directly connected (e.g. via wires) to the place from which the telecommand is sent." ;
     :synonym "Remote Control Command" .
+
+:Telemetry a owl:Class ;
+    rdfs:label "Telemetry" ;
+    rdfs:subClassOf :DigitalInformation ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Telemetry> ;
+    :definition "Digital information automatically collected at a remote point and transmitted to receiving equipment for monitoring." ;
+    :synonym "TM" .
 
 :TemporalDifferenceLearning a owl:Class,
         owl:NamedIndividual ;
