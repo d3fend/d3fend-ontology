@@ -2238,6 +2238,18 @@ Agglomerative clustering starts with each data point as its own cluster. The alg
 3. Scikit-learn. (30 Jun 2023). Scikit-learn Documentation: Agglomerative Clustering.
 [Link](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html).""" .
 
+:AggregatedNetworkInterface a owl:Class ;
+    rdfs:label "Aggregated Network Interface" ;
+    rdfs:subClassOf :VirtualNetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :has-member ;
+            owl:someValuesFrom :NetworkInterface ] ;
+    :definition "A virtual network interface that combines two or more member network interfaces into one logical interface." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/bonding.html> ;
+    :synonym "Bonded Network Interface",
+        "Link Aggregation Interface",
+        "Teamed Network Interface" .
+
 :AircraftComputer a owl:Class ;
     rdfs:label "Aircraft Computer" ;
     rdfs:subClassOf :VehicleComputer ;
@@ -5706,6 +5718,15 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
 IEEE Std 1003.1-2017: A file that refers to a device. A block special file is normally distinguished from a character special file by providing access to the device in a manner such that the hardware characteristics of the device are not visible.""" ;
     rdfs:seeAlso <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_79> .
 
+:BluetoothNetworkInterface a owl:Class ;
+    rdfs:label "Bluetooth Network Interface" ;
+    rdfs:subClassOf :WirelessNetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :identified-by ;
+            owl:someValuesFrom :MACAddress ] ;
+    :definition "A wireless network interface that exchanges network traffic over a Bluetooth connection." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Bluetooth> .
+
 :BookReference a owl:Class ;
     rdfs:label "Book Reference" ;
     rdfs:subClassOf :TechniqueReference ;
@@ -5915,6 +5936,28 @@ As messages circulate on the bus network, receiving nodes do not immediately tru
             owl:someValuesFrom :BusMessage ] ;
     :definition "A network frame whose layout and timing follow a bus protocol, allowing data to be exchanged across the shared bus medium." .
 
+:BusNetworkInterface a owl:Class ;
+    rdfs:label "Bus Network Interface" ;
+    rdfs:subClassOf :NetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :connected-to ;
+            owl:someValuesFrom :BusNetwork ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :BusNetworkNode ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :BusNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :receives ;
+            owl:someValuesFrom :BusNetworkFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :transmits ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
+    :definition "A network interface that transmits and receives bus network frames over a shared bus network." ;
+    rdfs:seeAlso :BusNetwork ;
+    :synonym "Bus Interface" .
+
 :BusNetworkNode a owl:Class ;
     rdfs:label "Bus Network Node" ;
     rdfs:subClassOf :Host,
@@ -5922,9 +5965,12 @@ As messages circulate on the bus network, receiving nodes do not immediately tru
             owl:onProperty :connected-to ;
             owl:someValuesFrom :BusNetwork ],
         [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :BusNetworkInterface ],
+        [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :BusNetworkTraffic ] ;
-    :definition "A device or logical endpoint whose interface is directly connected to a bus and exchanges data over the shared medium using the protocol implemented on that interface." .
+    :definition "A host that connects to a bus network through a bus network interface." .
 
 :BusNetworkTraffic a owl:Class ;
     rdfs:label "Bus Network Traffic" ;
@@ -6022,6 +6068,14 @@ C4.5 algorithm. Wikipedia. [Link](https://en.wikipedia.org/wiki/C4.5_algorithm).
     rdfs:isDefinedBy <http://dbpedia.org/resource/Call_stack> ;
     :definition "In computer science, a call stack is a stack data structure that stores information about the active subroutines of a computer program. This kind of stack is also known as an execution stack, program stack, control stack, run-time stack, or machine stack, and is often shortened to just \"the stack\". Although maintenance of the call stack is important for the proper functioning of most software, the details are normally hidden and automatic in high-level programming languages. Many computer instruction sets provide special instructions for manipulating stacks." .
 
+:CANNetworkInterface a owl:Class ;
+    rdfs:label "CAN Network Interface" ;
+    rdfs:subClassOf :BusNetworkInterface ;
+    :definition "A bus network interface that exchanges network frames using the Controller Area Network protocol." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/can.html> ;
+    :synonym "CAN Interface",
+        "Controller Area Network Interface" .
+
 :CanopyClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Canopy Clustering" ;
@@ -6090,6 +6144,14 @@ Classification and Regression Tree (CART) Algorithm. Analytics Steps. [Link](htt
         [ a owl:Restriction ;
             owl:onProperty :published ;
             owl:someValuesFrom xsd:dateTime ] .
+
+:CellularNetworkInterface a owl:Class ;
+    rdfs:label "Cellular Network Interface" ;
+    rdfs:subClassOf :WirelessNetworkInterface ;
+    :definition "A wireless network interface that exchanges packet data through a cellular modem and radio access network." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/device_drivers/wwan/index.html> ;
+    :synonym "Mobile Broadband Interface",
+        "WWAN Interface" .
 
 :CentralProcessingUnit a owl:Class ;
     rdfs:label "Central Processing Unit" ;
@@ -6762,8 +6824,11 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
 :ComputerNetworkNode a owl:Class ;
     rdfs:label "Computer Network Node" ;
     rdfs:subClassOf :ComputerPlatform,
-        :NetworkNode ;
-    :definition "A network node running on a computer platform." ;
+        :NetworkNode,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :NetworkInterface ] ;
+    :definition "A network node implemented as a computer platform containing a network interface." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/network_endpoint> .
 
 :ComputerPlatform a owl:Class ;
@@ -15931,6 +15996,22 @@ Programming languages can have multiple senses of equality that may include, but
 Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Link](https://online.stat.psu.edu/stat504/lesson/statistical-inference-and-estimation)""" ;
     :todo "Seems like there should be more than just interval and pont estimation in here." .
 
+:EthernetNetworkInterface a owl:Class ;
+    rdfs:label "Ethernet Network Interface" ;
+    rdfs:subClassOf :NetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :identified-by ;
+            owl:someValuesFrom :MACAddress ],
+        [ a owl:Restriction ;
+            owl:onProperty :receives ;
+            owl:someValuesFrom :NetworkFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :transmits ;
+            owl:someValuesFrom :NetworkFrame ] ;
+    :definition "A network interface that transmits and receives network frames using IEEE 802.3 media access control." ;
+    rdfs:seeAlso <https://standards.ieee.org/ieee/802.3/10422/> ;
+    :synonym "Ethernet Interface" .
+
 :EvalFunction a owl:Class ;
     rdfs:label "Eval Function" ;
     rdfs:subClassOf :Subroutine,
@@ -18356,6 +18437,15 @@ Hardware process isolation is commonly implemented through Direct Memory Access 
     :definition "Physical methods of preventing data from being written to computer storage." ;
     :kb-reference :Reference-WhatisHardwareWriteProtect .
 
+:HardwareBackedNetworkInterface a owl:Class ;
+    rdfs:label "Hardware Backed Network Interface" ;
+    rdfs:subClassOf :NetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :NetworkInterfaceCard ] ;
+    :definition "A network interface implemented by a network interface card." ;
+    rdfs:seeAlso :NetworkInterfaceCard .
+
 :HardwareClock a owl:Class ;
     rdfs:label "Hardware Clock" ;
     rdfs:subClassOf :Clock,
@@ -20343,6 +20433,9 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
             owl:someValuesFrom :Application ],
         [ a owl:Restriction ;
             owl:onProperty :manages ;
+            owl:someValuesFrom :NetworkInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
             owl:someValuesFrom :OperatingSystemProcess ],
         [ a owl:Restriction ;
             owl:onProperty :manages ;
@@ -20354,7 +20447,7 @@ Unlike other algorithms that explicitly model the problem, such as linear regres
             owl:onProperty :may-contain ;
             owl:someValuesFrom :KernelModule ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Kernel_(operating_system)> ;
-    :definition "The kernel is a computer program that constitutes the central core of a computer's operating system. It has complete control over everything that occurs in the system. As such, it is the first program loaded on startup, and then manages the remainder of the startup, as well as input/output requests from software, translating them into data processing instructions for the central processing unit. It is also responsible for managing memory, and for managing and communicating with computing peripherals, like printers, speakers, etc. The kernel is a fundamental part of a modern computer's operating system." ;
+    :definition "System software that manages a computer's hardware resources and running processes while mediating application access to hardware." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/kernel> .
 
 :Kernel-basedProcessIsolation a :Kernel-basedProcessIsolation,
@@ -21220,14 +21313,21 @@ Wikipedia. (n.d.). Logistic regression. [Link](https://en.wikipedia.org/wiki/Log
     :kb-article """## References
 Wikipedia. (2021, September 29). Long short-term memory. [Link](https://en.wikipedia.org/wiki/Long_short-term_memory)""" .
 
+:LoopbackNetworkInterface a owl:Class ;
+    rdfs:label "Loopback Network Interface" ;
+    rdfs:subClassOf :VirtualNetworkInterface ;
+    :definition "A virtual network interface that returns transmitted network traffic to the originating host's network stack without sending it to an external network." ;
+    rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc1122.html> ;
+    :synonym "Loopback Interface" .
+
 :MACAddress a owl:Class ;
     rdfs:label "MAC Address" ;
     rdfs:subClassOf :Identifier,
         [ a owl:Restriction ;
             owl:onProperty :identifies ;
-            owl:someValuesFrom :NetworkInterfaceCard ] ;
+            owl:someValuesFrom :NetworkInterface ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/MAC_address> ;
-    :definition "A media access control address (MAC address) is a unique identifier assigned to a network interface controller (NIC) for use as a network address in communications within a network segment." .
+    :definition "An identifier assigned to a network interface for link-layer communication within a network segment." .
 
 :MachineLearning a owl:Class,
         owl:NamedIndividual ;
@@ -21946,6 +22046,17 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
     rdfs:subClassOf :NetworkMultimediaStreamingResource ;
     :definition "A server that provides digital audio-visual media content to users." .
 
+:NetworkBridgeInterface a owl:Class ;
+    rdfs:label "Network Bridge Interface" ;
+    rdfs:subClassOf :VirtualNetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :has-member ;
+            owl:someValuesFrom :NetworkInterface ] ;
+    :definition "A virtual network interface that forwards link-layer network frames among its member network interfaces." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/bridge.html>,
+        <https://standards.ieee.org/ieee/802.1Q/10323/> ;
+    :synonym "Bridge Interface" .
+
 :NetworkCardFirmware a owl:Class ;
     rdfs:label "Network Card Firmware" ;
     skos:altLabel "Network Controller Firmware" ;
@@ -22062,16 +22173,50 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
         :NetworkFileResource ;
     :definition "A computer file resource made available from one host to other hosts on a computer network that is also an initialization script." .
 
+:NetworkInterface a owl:Class ;
+    rdfs:label "Network Interface" ;
+    rdfs:subClassOf :LocalResource,
+        [ a owl:Restriction ;
+            owl:onProperty :connected-to ;
+            owl:someValuesFrom :Network ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :ComputerNetworkNode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :OperatingSystem ],
+        [ a owl:Restriction ;
+            owl:onProperty :used-by ;
+            owl:someValuesFrom :Software ] ;
+    :definition "A local resource that provides software with a network attachment point for transmitting and receiving network traffic." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/netdevices.html>,
+        <https://www.rfc-editor.org/rfc/rfc2863.html>,
+        :NetworkInterfaceCard ;
+    :synonym "Logical Network Interface",
+        "Operating System Network Interface" .
+
 :NetworkInterfaceCard a owl:Class ;
     rdfs:label "Network Interface Card" ;
     rdfs:subClassOf :HardwareDevice,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkCardFirmware ] ;
+            owl:someValuesFrom :NetworkCardFirmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :implements ;
+            owl:someValuesFrom :HardwareBackedNetworkInterface ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Network_interface_controller> ;
-    :definition "A network interface card (NIC, also known as a network interface controller, network adapter, LAN adapter or physical network interface, and by similar terms) is a computer hardware component that connects a computer to a computer network." ;
+    :definition "A hardware device that provides a computer with physical connectivity to a network." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/network_interface> ;
     :synonym "Network Interface Controller" .
+
+:NetworkInterfaceConfiguration a owl:Class ;
+    rdfs:label "Network Interface Configuration" ;
+    rdfs:subClassOf :OperatingSystemConfigurationComponent,
+        [ a owl:Restriction ;
+            owl:onProperty :configures ;
+            owl:someValuesFrom :NetworkInterface ] ;
+    :definition "An operating system configuration component that determines the operational properties of a network interface." ;
+    :synonym "Network Interface Settings" .
 
 :NetworkIsolation a :NetworkIsolation,
         owl:Class,
@@ -22231,9 +22376,12 @@ Network Resource Access Control involves managing and regulating access to resou
 
 :NetworkServiceApplicationProcess a owl:Class ;
     rdfs:label "Network Service Application Process" ;
-    rdfs:subClassOf :ServiceApplicationProcess ;
+    rdfs:subClassOf :ServiceApplicationProcess,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :NetworkInterface ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Network_service> ;
-    :definition "In computer networking, a network service is an application running at the network application layer and above, that provides data storage, manipulation, presentation, communication or other capability which is often implemented using a client-server or peer-to-peer architecture based on application layer network protocols. Clients and servers will often have a user interface, and sometimes other hardware associated with it." .
+    :definition "A service application process that uses a network interface to provide a network-accessible service." .
 
 :NetworkSession a owl:Class ;
     rdfs:label "Network Session" ;
@@ -22395,6 +22543,16 @@ Network signature analysis is susceptible to generating false positives. These o
 
 """ ;
     :kb-reference :Reference-SystemAndMethodForStrategicAntiMalwareMonitoring .
+
+:NetworkTunnelInterface a owl:Class ;
+    rdfs:label "Network Tunnel Interface" ;
+    rdfs:subClassOf :VirtualNetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :NetworkInterface ] ;
+    :definition "A virtual network interface that uses another network interface to exchange encapsulated network traffic between tunnel endpoints." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/tuntap.html> ;
+    :synonym "Tunnel Interface" .
 
 :NetworkVideoStreamingResource a owl:Class ;
     rdfs:label "Network Video Streaming Resource" ;
@@ -22756,8 +22914,11 @@ Implement a key management procedure to include removing the physical key from t
             owl:someValuesFrom :SystemServiceSoftware ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
+            owl:someValuesFrom :NetworkInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
             owl:someValuesFrom :OperatingSystemConfigurationComponent ] ;
-    :definition "An operating system (OS) is system software that manages computer hardware and software resources and provides common services for computer programs. All computer programs, excluding firmware, require an operating system to function. Time-sharing operating systems schedule tasks for efficient use of the system and may also include accounting software for cost allocation of processor time, mass storage, printing, and other resources." ;
+    :definition "A digital information bearer that contains a kernel and manages a computer's hardware and software resources while providing common services to applications." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Operating_system>,
         <https://schema.ocsf.io/objects/os> .
 
@@ -25671,6 +25832,16 @@ A known potential limitation of PACs concerns signing gadgets. Under certain cir
     :definition "A point estimation is a single value that estimates the parameter. Point estimates are single values calculated from the sample" ;
     :kb-article """## References
 Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Link](https://online.stat.psu.edu/stat504/lesson/statistical-inference-and-estimation)""" .
+
+:PointToPointNetworkInterface a owl:Class ;
+    rdfs:label "Point-to-Point Network Interface" ;
+    rdfs:subClassOf :NetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :connected-to ;
+            owl:someValuesFrom :LogicalLink ] ;
+    :definition "A network interface connected to exactly one peer by a logical link without a shared multi-access medium." ;
+    rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc1661.html> ;
+    :synonym "P2P Interface" .
 
 :PolicyGradient a owl:Class,
         owl:NamedIndividual ;
@@ -41684,6 +41855,29 @@ Video surveillance uses digital cameras that stream to a video management system
     :definition "Virtual memory is a memory management technique where secondary memory can be used as if it were a part of the main memory. Virtual memory uses hardware and software to enable a computer to compensate for physical memory shortages" ;
     rdfs:seeAlso <https://dbpedia.org/page/Virtual_memory> .
 
+:VirtualNetworkInterface a owl:Class ;
+    rdfs:label "Virtual Network Interface" ;
+    rdfs:subClassOf :NetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Software ] ;
+    :definition "A network interface implemented by software without a one-to-one mapping to a physical network port." ;
+    rdfs:seeAlso <https://docs.kernel.org/networking/tuntap.html>,
+        <https://www.rfc-editor.org/rfc/rfc2863.html> ;
+    :synonym "Software Network Interface" .
+
+:VLANNetworkInterface a owl:Class ;
+    rdfs:label "VLAN Network Interface" ;
+    rdfs:subClassOf :EthernetNetworkInterface,
+        :VirtualNetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :EthernetNetworkInterface ] ;
+    :definition "A virtual network interface that uses an Ethernet network interface to exchange traffic for an IEEE 802.1Q virtual local area network." ;
+    rdfs:seeAlso <https://standards.ieee.org/ieee/802.1Q/10323/> ;
+    :synonym "Virtual LAN Interface",
+        "VLAN Interface" .
+
 :VMImage a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Virtual Machine Image" ;
@@ -42533,10 +42727,34 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:someValuesFrom :WirelessRouter ] ;
     :definition "An attacker who targets wireless communication methods, like Wi-Fi, without needing physical access to the premises." .
 
+:WirelessLANNetworkInterface a owl:Class ;
+    rdfs:label "Wireless LAN Network Interface" ;
+    rdfs:subClassOf :WirelessNetworkInterface,
+        [ a owl:Restriction ;
+            owl:onProperty :identified-by ;
+            owl:someValuesFrom :MACAddress ],
+        [ a owl:Restriction ;
+            owl:onProperty :receives ;
+            owl:someValuesFrom :NetworkFrame ],
+        [ a owl:Restriction ;
+            owl:onProperty :transmits ;
+            owl:someValuesFrom :NetworkFrame ] ;
+    :definition "A wireless network interface that exchanges frames over an IEEE 802.11 wireless local area network." ;
+    rdfs:seeAlso <https://www.ieee802.org/11/> ;
+    :synonym "Wi-Fi Interface",
+        "WLAN Interface" .
+
 :WirelessLink a owl:Class ;
     rdfs:label "Wireless Link" ;
     rdfs:subClassOf :PhysicalLink ;
     :definition "A physical link that transmits signals through free space or an unguided medium without physical connectors between endpoints. The signal propagates through air, vacuum, water, or other natural media using electromagnetic waves or acoustic energy." .
+
+:WirelessNetworkInterface a owl:Class ;
+    rdfs:label "Wireless Network Interface" ;
+    rdfs:subClassOf :NetworkInterface ;
+    :definition "A network interface that exchanges network traffic through an unguided transmission medium." ;
+    rdfs:seeAlso :WirelessLink ;
+    :synonym "Wireless Interface" .
 
 :WirelessRouter a owl:Class ;
     rdfs:label "Wireless Router" ;
