@@ -13874,10 +13874,7 @@ Analytics Vidhya. (2020, September 15). How DBSCAN Clustering Works: A Comprehen
 :DE-0002 a owl:Class ;
     rdfs:label "Disrupt or Deceive Downlink - SPARTA" ;
     skos:prefLabel "Disrupt or Deceive Downlink" ;
-    rdfs:subClassOf :SPARTADefenseEvasionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :impairs ;
-            owl:someValuesFrom :WirelessLink ] ;
+    rdfs:subClassOf :SPARTADefenseEvasionTechnique ;
     :attack-id "DE-0002" ;
     :definition "Threat actors may target any point in the telemetry chain, onboard generation and transmission, the downlink path itself, or ground-side reception, processing, and display, to disrupt the operator’s visibility into spacecraft health and activity. This may involve denial-based attacks that prevent the spacecraft from transmitting telemetry to the ground (e.g., disabling telemetry links or crashing telemetry software), or more subtle deception-based attacks that manipulate telemetry content to conceal unauthorized actions. Since telemetry is the primary method ground controllers rely on to monitor spacecraft status, any disruption or manipulation can delay or prevent detection of malicious activity, suppress automated or manual mitigations, or degrade trust in telemetry-based decision support systems." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0002/> .
@@ -14007,7 +14004,7 @@ Architectural limitations in ground station software can also enable deception w
     rdfs:subClassOf :DE-0003,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :SystemTime ] ;
+            owl:someValuesFrom :OperatingSystemClock ] ;
     :attack-id "DE-0003.09" ;
     :definition "The adversary biases the spacecraft’s authoritative time so that telemetry, event logs, and command histories appear shifted or inconsistent. By writing clock registers, altering disciplining sources (e.g., GNSS vs. free-running oscillator), or tweaking distribution services and offsets, they can make stored commands execute “earlier” or “later” on the timeline and misalign acknowledgments with actual actions. Downlinked frames still carry plausible timestamps near packet headers, but those stamps no longer reflect when data was produced, complicating reconstruction of sequences and masking causality during incident analysis." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0003/09/> .
@@ -14064,6 +14061,9 @@ Examples may include suppressing telemetry associated with unauthorized commands
     skos:prefLabel "Subvert Protections via Safe-Mode" ;
     rdfs:subClassOf :SPARTADefenseEvasionTechnique,
         [ a owl:Restriction ;
+            owl:onProperty :abuses ;
+            owl:someValuesFrom :SpacecraftSafeMode ],
+        [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :VehicleOperatingMode ] ;
     :attack-id "DE-0005" ;
@@ -14086,16 +14086,16 @@ Examples may include suppressing telemetry associated with unauthorized commands
     skos:prefLabel "Evasion via Rootkit" ;
     rdfs:subClassOf :SPARTADefenseEvasionTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :BootSector ],
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :Kernel ],
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :KernelModule ],
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :SystemFirmware ] ;
     :attack-id "DE-0007" ;
     :definition "A rootkit hides malicious activity by interposing on reporting paths after the system has booted. In flight contexts this includes patching flight software APIs, kernel syscalls, message queues, and telemetry publishers so task lists, counters, health channels, and event severities are falsified before downlink. Command handlers can be hooked to suppress evidence of certain opcodes or sources; recorder catalogs and file listings can be rewritten on the fly; and housekeeping can be biased to show nominal temperatures, currents, or voltages while actions proceed. The defining feature is runtime concealment: the observability surfaces operators rely on are altered to present a curated, benign narrative." ;
@@ -14106,8 +14106,14 @@ Examples may include suppressing telemetry associated with unauthorized commands
     skos:prefLabel "Evasion via Bootkit" ;
     rdfs:subClassOf :SPARTADefenseEvasionTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :BootLoader ] ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :BootLoader ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :BootROM ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SystemFirmware ] ;
     :attack-id "DE-0008" ;
     :definition "A bootkit hides activity by running first and shaping what higher layers will later observe. Positioned in boot ROM handoff or early loaders, it can select or patch images in memory, alter device trees and driver tables, seed forged counters and timestamps, and preconfigure telemetry/crypto modes so subsequent components launch into a reality curated by the attacker. Because integrity and logging mechanisms are initialized afterward, the resulting view of processes, files, and histories reflects the bootkit’s choices, allowing long-term evasion that persists across resets and mode transitions." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/DE-0008/> .
@@ -16058,7 +16064,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0001,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :OTProtocolMessage ] ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "EX-0001.01" ;
     :definition "Threat actors may resend authentic-looking telecommands that were previously accepted by the spacecraft. Captures may include whole command PDUs with framing, CRC/MAC, counters, and timetags intact, or they may be reconstructed from operator tooling and procedure logs. When timing, counters, and mode preconditions align, the replayed packet can cause the same effect: toggling relays, initiating safing or recovery scripts, adjusting tables, commanding momentum dumps, or scheduling delta-v events. Even when outright execution fails, repeated “near-miss” injections can map acceptance windows, rate/size limits, and interlocks by observing the spacecraft’s acknowledgments and state changes. At scale, streams of valid-but-stale commands can congest command queues, delay legitimate activity, or trigger nuisance FDIR responses." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0001/01/> .
@@ -16089,6 +16095,9 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:label "Modify Authentication Process - SPARTA" ;
     skos:prefLabel "Modify Authentication Process" ;
     rdfs:subClassOf :SPARTAExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :BootLoader ],
         [ a owl:Restriction ;
             owl:onProperty :may-modify ;
             owl:someValuesFrom :FlightSoftware ] ;
@@ -16132,7 +16141,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0005,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :OTModifyDeviceConfigurationCommand ] ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
     :attack-id "EX-0005.02" ;
     :definition "Threat actors may issue low-level device or maintenance commands that act directly on hardware, bypassing much of the high-level command mediation. These may be memory-mapped register writes forwarded over the bus, vendor-specific instrument/control opcodes, built-in-test and calibration modes, boot-mode or fuse-programming sequences, file/sector operations to on-board non-volatile stores, or actuator primitives for wheels, thrusters, motors, heaters, and RF chains. Because these interfaces exist to configure sensors, zero momentum, switch power domains, tune gains, or adjust clocks, they can also be sequenced to produce harmful effects: over-driving mechanisms, altering persistent calibration, disabling watchdogs, or switching timing sources. Some hardware command sets are only exposed in maintenance or contingency modes, while others are always reachable through gateway processors that translate high-level telecommands into device-level operations. By crafting orders that respect expected framing and rate/size limits, the adversary can induce mechanical, electrical, or logical state changes with immediate, high-privilege impact, all while appearing to exercise legitimate device capabilities." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0005/02/> .
@@ -16203,7 +16212,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0009,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
-            owl:someValuesFrom :Application ] ;
+            owl:someValuesFrom :FlightSoftware ] ;
     :attack-id "EX-0009.01" ;
     :definition "Flight software presents rich attack surface where mission-specific parsing and autonomy live. Vulnerable components include command and telemetry handlers, table loaders, file transfer services, mode management and safing logic, payload control applications, and gateway processes that bridge payload and bus protocols. Typical flaws are unchecked lengths and indices in command fields, arithmetic overflows in rate/size calculations, insufficient validation of table contents, format-string misuse in logging, incomplete state cleanup across rapid mode changes, and race conditions in concurrent message processing. Some FSW suites expose operator-facing APIs or scripting/procedure engines used for automation; malformed invocations can coerce unexpected behaviors or enable arbitrary expressions. Because many subsystems act on “last write wins,” logic errors can yield durable configuration changes without obvious anomalies in protocol syntax. Successful exploitation lets an adversary execute code, alter persistent parameters, or chain effects across partitions that would otherwise be segmented by design." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0009/01/> .
@@ -16213,7 +16222,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Operating System" ;
     rdfs:subClassOf :EX-0009,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :abuses ;
             owl:someValuesFrom :OperatingSystem ] ;
     :attack-id "EX-0009.02" ;
     :definition "At the OS layer, the attacker targets primitives that schedule work and mediate hardware. Modern spacecraft, particularly small satellites, increasingly rely on Linux-based operating systems (e.g., Yocto-derived distributions) rather than traditional RTOSes, significantly expanding the applicable attack surface to include techniques documented in MITRE ATT&CK for Linux - https://attack.mitre.org/matrices/enterprise/linux/. Maintenance builds may expose shells or management consoles; misconfigurations around these interfaces can provide paths to command interpreters or privileged syscalls. Linux-based flight systems inherit standard Unix/Linux vulnerabilities including kernel exploits, container escapes, privilege escalation via misconfigured sudo/capabilities, and exploitation of systemd or other init systems. Exploitation yields kernel-mode execution, arbitrary memory read/write, or control of scheduling and address spaces, letting the actor tamper with FSW processes, intercept command paths, or manipulate storage and bus drivers beneath application checks. Common Linux-specific vectors include exploiting unpatched kernel vulnerabilities, abusing misconfigurations in containerized environments, leveraging POSIX API weaknesses in flight applications, and targeting shared libraries or dynamic linkers to inject malicious code into flight processes. The technique leverages generic OS weaknesses adapted to the spacecraft's particular build, turning low-level control into mission-facing effects that appear to originate from legitimate processes. Because spacecraft Linux builds are often minimized, long-lived (limited patching), and may retain debug interfaces or permissive file permissions from ground testing, they present a unique risk profile combining embedded-system constraints with commodity OS attack techniques. Flight images frequently retain extraneous binaries and utilities (e.g., compilers, debuggers, network tools, package managers) intended for ground testing or development that are not removed before launch, providing adversaries with ready-made 'living off the land' capabilities for reconnaissance, lateral movement, and privilege escalation without needing to upload custom tooling." ;
@@ -16238,7 +16247,10 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
 :EX-0010.01 a owl:Class ;
     rdfs:label "Ransomware - SPARTA" ;
     skos:prefLabel "Ransomware" ;
-    rdfs:subClassOf :EX-0010 ;
+    rdfs:subClassOf :EX-0010,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :File ] ;
     :attack-id "EX-0010.01" ;
     :definition "Ransomware on a spacecraft encrypts data or critical configuration so that nominal operations can no longer proceed without the attacker’s cooperation. Targets include mass-memory file stores (engineering telemetry, payload data), configuration and command tables, event logs, on-board ephemerides, and even intermediate buffers used by downlink pipelines. Some variants interfere with key services instead of bulk data, e.g., encrypting a command dictionary or table index so valid inputs are rejected, or wrapping the payload data path in an attacker-chosen cipher so downlinked products appear as noise. By denying access to on-board content or control artifacts at scale, attackers convert execution into bargaining power or irreversible mission degradation." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0010/01/> .
@@ -16259,16 +16271,16 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Rootkit" ;
     rdfs:subClassOf :EX-0010,
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :BootSector ],
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :Kernel ],
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :KernelModule ],
         [ a owl:Restriction ;
-            owl:onProperty :modifies ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :SystemFirmware ] ;
     :attack-id "EX-0010.03" ;
     :definition "A rootkit hides the presence and activity of other malicious components by interposing on the mechanisms that report system state. On spacecraft this can occur within flight software processes, at OS kernel level, inside separation kernels/hypervisors, or down in system firmware where drivers and initialization routines run. Techniques include API and syscall hooking, patching message queues and inter-process communication paths, altering task lists and scheduler views, filtering telemetry packets and event logs, and rewriting sensor or health values before they are recorded or downlinked. Rootkits may also hook command handlers and gateways so certain opcodes, timetags, or sources are silently accepted or ignored while external observers see normal acknowledgments. Because many missions rely on deterministic procedures and limited observability, even small alterations to reporting can make malicious actions appear as plausible mode transitions or benign anomalies. Persistence often pairs with the concealment layer, with the rootkit reinjecting companions after resets or rebuilds by monitoring for specific files, tables, or image loads and modifying them on the fly." ;
@@ -16308,10 +16320,7 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
 :EX-0012 a owl:Class ;
     rdfs:label "Modify On-Board Values - SPARTA" ;
     skos:prefLabel "Modify On-Board Values" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :RuntimeVariable ] ;
+    rdfs:subClassOf :SPARTAExecutionTechnique ;
     :attack-id "EX-0012" ;
     :definition "The attacker alters live or persistent data that the spacecraft uses to make decisions and route work. Targets include device and control registers, parameter and limit tables, internal routing/subscriber maps, schedules and timelines, priority/QoS settings, watchdog and timer values, autonomy/FDIR rule tables, ephemeris and attitude references, and power/thermal setpoints. Many missions expose legitimate mechanisms for updating these artifacts, direct memory read/write commands, table load services, file transfers, or maintenance procedures, which can be invoked to steer behavior without changing code. Edits may be transient (until reset) or latched/persistent across boots; they can be narrowly scoped (a single bit flip on an enable mask) or systemic (rewriting a routing table so commands are misdelivered). The effect space spans subtle biasing of control loops, selective blackholing of commands or telemetry, rescheduling of operations, and wholesale changes to mode logic, all accomplished by modifying the values the software already trusts and consumes." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0012/> .
@@ -16481,8 +16490,11 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
     skos:prefLabel "Valid Commands" ;
     rdfs:subClassOf :EX-0013,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :OTProtocolMessage ] ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :BusMessage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "EX-0013.01" ;
     :definition "Here the adversary saturates paths with legitimate telecommands or bus messages so the spacecraft burns scarce resources honoring them. Inputs may be innocuous (no-ops, time queries, telemetry requests) or low-risk configuration edits, but at scale they consume command handler cycles, fill queues, generate events and logs, trigger acknowledgments, and provoke downstream work in subsystems (e.g., repeated state reports, mode toggles, or file listings). On internal buses, valid actuator or housekeeping messages replayed at high rate can starve higher-priority publishers or cause control laws to chase stale stimuli. Because the traffic is syntactically correct, and often contextually plausible, the system attempts to process it rather than discard it early, increasing CPU usage, memory pressure, and power draw. Consequences include delayed or preempted legitimate operations, transient loss of commandability, and knock-on FDIR activity as deadlines slip and telemetry appears inconsistent." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0013/01/> .
@@ -16506,7 +16518,10 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
 :EX-0014.01 a owl:Class ;
     rdfs:label "Time Spoof - SPARTA" ;
     skos:prefLabel "Time Spoof" ;
-    rdfs:subClassOf :EX-0014 ;
+    rdfs:subClassOf :EX-0014,
+        [ a owl:Restriction ;
+            owl:onProperty :spoofs ;
+            owl:someValuesFrom :TimeRecord ] ;
     :attack-id "EX-0014.01" ;
     :definition "Time underpins sequencing, anti-replay, navigation filtering, and data labeling. An attacker that forges or biases the time seen by onboard consumers can reorder stored command execution, break timetag validation, desynchronize counters, and misalign estimation windows. Spoofing vectors include manipulating the distributed time service, introducing a higher-priority/cleaner time source (e.g., GNSS-derived time), or crafting messages that cause clock discipline to slew toward attacker-chosen values. Once time shifts, autonomous routines keyed to epochs, wheel unloads, downlink starts, heater schedules, fire early/late or not at all, and telemetry appears inconsistent to ground analysis. The signature is correct-looking time metadata that steadily or abruptly departs from truth, driving downstream logic to act at the wrong moment." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0014/01/> .
@@ -16554,10 +16569,7 @@ In architectures where component identity is derived solely from message identif
 :EX-0015 a owl:Class ;
     rdfs:label "Side-Channel Attack - SPARTA" ;
     skos:prefLabel "Side-Channel Attack" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :modifies ;
-            owl:someValuesFrom :OTEmbeddedComputer ] ;
+    rdfs:subClassOf :SPARTAExecutionTechnique ;
     :attack-id "EX-0015" ;
     :definition "Adversaries extract secrets or steer execution by observing or perturbing physical byproducts of computation rather than the intended interfaces. Passive channels include timing, power draw, electromagnetic emissions, acoustic/optical leakage, and thermal patterns correlated with operations such as key use, counter updates, or parser activity. Active channels deliberately induce faults during runtime, e.g., voltage or clock glitches, electromagnetic/laser injection, or targeted radiation, to flip bits, skip checks, or bias intermediate values. On spacecraft, prime targets include crypto modules, SDR/FPGA pipelines, bootloaders, and bus controllers whose switching behavior or error handling reveals protocol state or key material. With sufficient samples, or with repeated fault attempts, statistical features emerge that reduce entropy of the sensitive variable under study; in effect, a successful fault campaign turns into information leakage comparable to a passive side channel. Collection vantage points range from on-orbit proximity (for EM/optical), to ATLO and ground test (for direct probing), to instrumented compromised hardware already in the signal path." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0015/> .
@@ -16637,10 +16649,7 @@ In architectures where component identity is derived solely from message identif
 :EX-0018 a owl:Class ;
     rdfs:label "Non-Kinetic Physical Attack - SPARTA" ;
     skos:prefLabel "Non-Kinetic Physical Attack" ;
-    rdfs:subClassOf :SPARTAExecutionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :impairs ;
-            owl:someValuesFrom :OTEmbeddedComputer ] ;
+    rdfs:subClassOf :SPARTAExecutionTechnique ;
     :attack-id "EX-0018" ;
     :definition "The adversary inflicts physical effects on a satellite without mechanical contact, using energy delivered through the environment. Principal modalities are electromagnetic pulse (EMP), high-power laser (optical/thermal effects), and high-power microwave (HPM). These methods can be tuned for reversible disruption (temporary sensor saturation, processor upsets) or irreversible damage (component burnout, optics degradation), and may be executed from ground, airborne, or space platforms given line-of-sight and power/aperture conditions. Forensics are often ambiguous: signatures may resemble environmental phenomena or normal degradations, and confirmation of effect is frequently limited to what the operator observes in telemetry or performance loss." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0018/> .
@@ -16875,7 +16884,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :EXF-0001 a owl:Class ;
     rdfs:label "Replay - SPARTA" ;
     skos:prefLabel "Replay" ;
-    rdfs:subClassOf :SPARTAExfiltrationTechnique ;
+    rdfs:subClassOf :SPARTAExfiltrationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "EXF-0001" ;
     :definition "The adversary re-sends previously valid commands or procedures to cause the spacecraft to transmit data again, then captures the resulting downlink. Typical targets are recorder playbacks, payload product dumps, housekeeping snapshots, or file directory listings. By aligning replays with geometry (e.g., when the satellite is in view of actor-controlled apertures) and with acceptance conditions (counters, timetags, mode), the attacker induces legitimate transmissions that appear routine to operators. Variants include selectively replaying index ranges to fetch only high-value intervals, reissuing subscription/telemetry-rate changes to increase data volume, or queueing playbacks that fire during later passes when interception is feasible." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0001/> .
@@ -19029,7 +19041,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0007.02 a owl:Class ;
     rdfs:label "Malicious Commanding via Valid GS - SPARTA" ;
     skos:prefLabel "Malicious Commanding via Valid GS" ;
-    rdfs:subClassOf :IA-0007 ;
+    rdfs:subClassOf :IA-0007,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Telecommand ] ;
     :attack-id "IA-0007.02" ;
     :definition "Adversaries may use a compromised, mission-owned ground system to transmit legitimate-looking commands to the target spacecraft. Because the ground equipment is already configured for the mission, correct waveforms, framing, dictionaries, and scheduling, the attacker’s traffic blends with routine operations. Initial access unfolds by inserting commands or procedures into existing timelines, modifying rate/size limits or command queues, or invoking maintenance dictionaries and rapid-response workflows that accept broader command sets. Pre-positioned scripts can chain actions across multiple passes and stations, while telemetry routing provides immediate feedback to refine follow-on steps. Exfiltration can be embedded in standard downlink channels or forwarded through gateways as ordinary mission data. The distinguishing feature is that command origin appears valid, transmitted from approved apertures using expected parameters, so the first execution event is not a protocol anomaly but a misuse of legitimate command authority obtained through the compromised ground system." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/02/> .
@@ -20881,7 +20896,10 @@ Newer system call.""" .
 :LM-0002 a owl:Class ;
     rdfs:label "Exploit Lack of Bus Segregation - SPARTA" ;
     skos:prefLabel "Exploit Lack of Bus Segregation" ;
-    rdfs:subClassOf :SPARTALateralMovementTechnique ;
+    rdfs:subClassOf :SPARTALateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :BusNetworkFrame ] ;
     :attack-id "LM-0002" ;
     :definition "On flat architectures, where remote terminals, subsystems, and payloads share a common bus with minimal partitioning, any node that can transmit may influence many others. An attacker leverages this by forging message IDs or terminal addresses, replaying actuator/sensor frames, seizing or imitating bus-controller roles, or abusing gateway bridges that forward traffic between links (e.g., 1553↔SpaceWire/CAN). Because consumers often act on the latest valid-looking message, crafted traffic from one compromised device can reconfigure peers, toggle power domains, or write persistent parameters. Weak role enforcement and broadcast semantics allow privilege escalation from a peripheral to effective system-wide influence, turning the shared medium into a highway for further compromise." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/LM-0002/> .
@@ -25137,7 +25155,10 @@ Wolfram MathWorld. (n.d.). Correlation Coefficient. [Link](https://mathworld.wol
     skos:prefLabel "Replace Cryptographic Keys" ;
     rdfs:subClassOf :SPARTAPersistenceTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :adds ;
+            owl:onProperty :may-add ;
+            owl:someValuesFrom :CryptographicKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
             owl:someValuesFrom :CryptographicKey ] ;
     :attack-id "PER-0004" ;
     :definition "The adversary cements control by changing the cryptographic material the spacecraft uses to authenticate or protect links and updates. Targets include uplink authentication keys and counters, link-encryption/session keys and key-encryption keys (KEKs), key identifiers/selectors, and algorithm profiles. Using authorized rekey commands or key-loading procedures, often designed for over-the-air use, the attacker installs new values in non-volatile storage and updates selectors so subsequent traffic must use the attacker’s keys to be accepted. Variants desynchronize anti-replay by advancing counters or switching epochs, or strand operators by flipping profiles to a mode for which only the adversary holds parameters. Once replaced, the new material persists across resets and mode changes, turning the spacecraft into a node that recognizes the adversary’s channel while rejecting former controllers." ;
@@ -26746,7 +26767,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :RD-0004.02 a owl:Class ;
     rdfs:label "Upload Exploit/Payload - SPARTA" ;
     skos:prefLabel "Upload Exploit/Payload" ;
-    rdfs:subClassOf :RD-0004 ;
+    rdfs:subClassOf :RD-0004,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :File ] ;
     :attack-id "RD-0004.02" ;
     :definition "Having chosen a path, adversaries pre-position the specific packages and procedures they intend to use: binary exploits, malicious tables and ephemerides, patch images, modem profiles, and operator macros that chain actions. On compromised or leased infrastructure, they stage these items where execution will be fastest, provider portals, scheduler queues, ground station file drops, or automation repos, with triggers tied to pass start, beacon acquisition, or operator shift changes. Artifacts are formatted to mission protocols (framing, CRC/MAC, timetags), chunked to meet rate/size constraints, and signed or wrapped to evade superficial checks. Anti-forensics (timestamp tampering, log suppression, ephemeral storage) reduce audit visibility, while fallback payloads are kept for alternate modes (safe-mode dictionaries, recovery consoles)." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/RD-0004/02/> .
