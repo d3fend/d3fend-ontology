@@ -16070,7 +16070,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0001,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "EX-0001.01" ;
     :definition "Threat actors may resend authentic-looking telecommands that were previously accepted by the spacecraft. Captures may include whole command PDUs with framing, CRC/MAC, counters, and timetags intact, or they may be reconstructed from operator tooling and procedure logs. When timing, counters, and mode preconditions align, the replayed packet can cause the same effect: toggling relays, initiating safing or recovery scripts, adjusting tables, commanding momentum dumps, or scheduling delta-v events. Even when outright execution fails, repeated “near-miss” injections can map acceptance windows, rate/size limits, and interlocks by observing the spacecraft’s acknowledgments and state changes. At scale, streams of valid-but-stale commands can congest command queues, delay legitimate activity, or trigger nuisance FDIR responses." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0001/01/> .
@@ -16500,7 +16500,7 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
             owl:someValuesFrom :BusMessage ],
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "EX-0013.01" ;
     :definition "Here the adversary saturates paths with legitimate telecommands or bus messages so the spacecraft burns scarce resources honoring them. Inputs may be innocuous (no-ops, time queries, telemetry requests) or low-risk configuration edits, but at scale they consume command handler cycles, fill queues, generate events and logs, trigger acknowledgments, and provoke downstream work in subsystems (e.g., repeated state reports, mode toggles, or file listings). On internal buses, valid actuator or housekeeping messages replayed at high rate can starve higher-priority publishers or cause control laws to chase stale stimuli. Because the traffic is syntactically correct, and often contextually plausible, the system attempts to process it rather than discard it early, increasing CPU usage, memory pressure, and power draw. Consequences include delayed or preempted legitimate operations, transient loss of commandability, and knock-on FDIR activity as deadlines slip and telemetry appears inconsistent." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0013/01/> .
@@ -16893,7 +16893,7 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     rdfs:subClassOf :SPARTAExfiltrationTechnique,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "EXF-0001" ;
     :definition "The adversary re-sends previously valid commands or procedures to cause the spacecraft to transmit data again, then captures the resulting downlink. Typical targets are recorder playbacks, payload product dumps, housekeeping snapshots, or file directory listings. By aligning replays with geometry (e.g., when the satellite is in view of actor-controlled apertures) and with acceptance conditions (counters, timetags, mode), the attacker induces legitimate transmissions that appear routine to operators. Variants include selectively replaying index ranges to fetch only high-value intervals, reissuing subscription/telemetry-rate changes to increase data volume, or queueing playbacks that fire during later passes when interception is feasible." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0001/> .
@@ -17888,7 +17888,7 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
     rdfs:subClassOf :VehicleControlSoftware,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
-            owl:someValuesFrom :Telecommand ],
+            owl:someValuesFrom :WirelessCommand ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :SoftwareWatchdogTimer ] ;
@@ -19056,7 +19056,7 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
     rdfs:subClassOf :IA-0007,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "IA-0007.02" ;
     :definition "Adversaries may use a compromised, mission-owned ground system to transmit legitimate-looking commands to the target spacecraft. Because the ground equipment is already configured for the mission, correct waveforms, framing, dictionaries, and scheduling, the attacker’s traffic blends with routine operations. Initial access unfolds by inserting commands or procedures into existing timelines, modifying rate/size limits or command queues, or invoking maintenance dictionaries and rapid-response workflows that accept broader command sets. Pre-positioned scripts can chain actions across multiple passes and stations, while telemetry routing provides immediate feedback to refine follow-on steps. Exfiltration can be embedded in standard downlink channels or forwarded through gateways as ordinary mission data. The distinguishing feature is that command origin appears valid, transmitted from approved apertures using expected parameters, so the first execution event is not a protocol anomaly but a misuse of legitimate command authority obtained through the compromised ground system." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/02/> .
@@ -26910,19 +26910,19 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
             owl:onProperty :reads ;
             owl:someValuesFrom :MemoryBlock ] .
 
-:Real-timeOperatingSystem a owl:Class ;
-    rdfs:label "Real-time Operating System" ;
-    rdfs:subClassOf :OperatingSystem ;
-    rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_operating_system> ;
-    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints." ;
-    :synonym "RTOS" .
-
 :Real-timeClock a owl:Class ;
     rdfs:label "Real-time Clock" ;
     rdfs:subClassOf :HardwareClock ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_clock> ;
     :definition "A real-time clock (RTC) is an electronic device (most often in the form of an integrated circuit) that measures the passage of time." ;
     :synonym "RTC" .
+
+:Real-timeOperatingSystem a owl:Class ;
+    rdfs:label "Real-time Operating System" ;
+    rdfs:subClassOf :OperatingSystem ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_operating_system> ;
+    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints." ;
+    :synonym "RTOS" .
 
 :REC-0001 a owl:Class ;
     rdfs:label "Gather Spacecraft Design Information - SPARTA" ;
@@ -40569,19 +40569,12 @@ Defense Impairment consists of techniques that degrade, disable, or undermine th
     :definition "A reference used to develop KB articles." ;
     :pref-label "Technique Reference" .
 
-:Telecommand a owl:Class ;
-    rdfs:label "Telecommand" ;
-    rdfs:subClassOf :RemoteCommand ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Telecommand> ;
-    :definition "A telecommand or telecontrol is a command sent to control a remote system or systems not directly connected (e.g. via wires) to the place from which the telecommand is sent." ;
-    :synonym "Remote Control Command" .
-
 :TelecommandEvent a owl:Class ;
     rdfs:label "Telecommand Event" ;
     rdfs:subClassOf :OTControlCommandEvent,
         [ a owl:Restriction ;
             owl:onProperty :has-participant ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :definition "An event representing the issuance, transmission, reception, or execution outcome of a remote control instruction (command) sent to a system, capturing the details, timing, and status of that remote commanding action." .
 
 :TemporalDifferenceLearning a owl:Class,
@@ -42590,6 +42583,14 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:onProperty :accesses ;
             owl:someValuesFrom :WirelessRouter ] ;
     :definition "An attacker who targets wireless communication methods, like Wi-Fi, without needing physical access to the premises." .
+
+:WirelessCommand a owl:Class ;
+    rdfs:label "Wireless Command" ;
+    rdfs:subClassOf :RemoteCommand ;
+    rdfs:comment "Wireless commands can be carried by electromagnetic energy such as RF waves or light, as well as by acoustic energy such as ultrasonic sound waves." ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Telecommand> ;
+    :definition "A wireless command is a remote command used to control a system that is not directly connected (e.g., via wires) to the place from which the command is sent." ;
+    :synonym "Telecommand" .
 
 :WirelessLink a owl:Class ;
     rdfs:label "Wireless Link" ;
