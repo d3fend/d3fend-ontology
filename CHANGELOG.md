@@ -1,5 +1,14 @@
 # D3FEND Ontology Change Log
 
+## Version - 1.6.0 - 2026-08-31
+
+ - Update SPARTA to v4.0 with new and deprecated techniques, cleaned definitions, and refined D3FEND mappings. (#639, #621)
+ - Refactor Telecommand as Wireless Command and update related restrictions. (#522)
+ - Materialize restrictions for all artifacts, events, and agents in built ontology outputs. (#647, #648)
+ - Correct space ontology class names, definitions, labels, and event modeling. (#650)
+ - Remove the duplicate resume property, classify restores as a tactical verb, and correct ontology typos. (#653, #634, #640, #651)
+ - Make JSON-LD builds deterministic and improve dashboard publishing. (#637, #641)
+
 ## Version - 1.5.0 - 2026-07-31
 
  - Add ATT&CK for ICS mappings for techniques T0800 through T0895 and fix T0817 and T1189. (#540-#553, #597)
