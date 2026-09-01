@@ -18417,8 +18417,10 @@ Administrators collect information on hardware devices such as peripherals, NICs
 
 :HardwareDevice a owl:Class ;
     rdfs:label "Hardware Device" ;
-    rdfs:subClassOf :DigitalInformationBearer,
-        :PhysicalArtifact ;
+    rdfs:subClassOf :DigitalInformationBearer, :PhysicalArtifact,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain;
+            owl:someValuesFrom :HardwareRegister ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Computer_hardware> ;
     :definition "Hardware devices are the physical artifacts that constitute a network or computer system. Hardware devices are the physical parts or components of a computer, such as the monitor, keyboard, computer data storage, hard disk drive (HDD), graphic cards, sound cards, memory (RAM), motherboard, and so on, all of which are tangible physical objects. By contrast, software is instructions that can be stored and run by hardware. Hardware is directed by the software to execute any command or instruction. A combination of hardware and software forms a usable computing system." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/device_hw_info> .
@@ -18505,6 +18507,38 @@ Administrators collect information on hardware devices such as peripherals, NICs
             owl:someValuesFrom :HardwareDevice ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> ;
     :definition "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." .
+
+:HardwareRegister a owl:Class ;
+    rdfs:label "Hardware Register" ;
+    rdfs:subClassOf :HardwareDeviceConfiguration,
+        :PrimaryStorage,
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-contained-by ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    rdfs:isDefinedBy <https://dbpedia.org/page/Hardware_register> ;
+    :definition "A hardware register is a small, fixed-size storage location physically embedded within peripheral hardware that holds the operational parameters, status flags, and control bits governing the behavior of that device, and which are directly read from or written to by software via memory-mapped or I/O-mapped addresses." .
+
+:HardwareRegisterLocking a :HardwareRegisterLocking,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Hardware Register Locking" ;
+    rdfs:subClassOf :PlatformHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :restricts ;
+            owl:someValuesFrom :HardwareRegister ] ;
+    :d3fend-id "D3-HCL" ;
+    :definition "Rendering the configuration registers of a hardware peripheral or subsystem immutable after initial boot-time provisioning." ;
+    :kb-article """## How it works
+Many hardware peripherals in embedded and OT systems expose their operational parameters through memory-mapped or bus-accessible control registers: timeout values, clock prescalers, interrupt masks, mode selectors, etc. Hardware register locking treats these parameters not as runtime-adjustable settings but as provisioning-time constants. The pattern is consistent across peripheral types: during the secure boot sequence, a trusted bootloader or hardware root of trust writes the intended parameter values to the relevant control registers. A lock bit, lock register, or lock sequence is then asserted. From that point forward, the hardware logic itself ignores or rejects all subsequent writes to those registers for the remainder of the power cycle (or permanently, in the case of one-time-programmable fuse-based locks). The lock is enforced below the software abstraction layer: it does not depend on an operating system, a privilege level, or a software access-control policy being intact. 
+
+The mechanism takes several physical forms depending on the peripheral and platform. Integrated peripherals on microcontrollers commonly expose a dedicated lock register into which a specific key sequence must be written to enable subsequent writes to configuration registers so that once the lock key is written and the window closes, no further changes are possible without a power-on reset. External supervisory or peripheral ICs often implement locking through hardware strap pins whose values are sampled at power-up and held in latches, making the configuration a function of PCB layout rather than software state. One-time-programmable fuse bits provide the strongest guarantee, permanently encoding a configuration that survives all power cycles and resets. 
+
+## Considerations
+* Softlock vs. hardlock distinction: A softlock, where a key sequence written to a lock register prevents further writes until a reset, still relies on the hardware correctly honoring that register state and cannot prevent an adversary who controls the reset mechanism from cycling through the lock. A hardlock, implemented via OTP fuses, strap pin latches, or dedicated supervisory hardware, cannot be reversed by any software action and provides the strongest guarantee.
+* Boot sequence trust dependency: the security guarantee provided by hardware configuration locking is only as strong as the integrity of the boot sequence that performs the provisioning. 
+* Trade-offs in operational flexibility: locking hardware configuration at boot removes the ability to reconfigure peripherals in response to changing mission conditions. 
+* Radiation and fault-injection robustness: in radiation prone environments such as space, Single Event Upsets (SEUs) can flip register bits, including lock bits and the configuration values they protect. Configuration registers that are locked should ideally reside in radiation-hardened or error-correcting memory cells.""" ;
+    :kb-reference :Reference-SecureWatchdogTimer-IntelCorp .
 
 :HardwareTimer a owl:Class ;
     rdfs:label "Hardware Timer" ;
@@ -46800,6 +46834,17 @@ To fit the scope of the Top 20 Secure PLC Coding practices list, practices need 
         :OTVariableAccessRestriction,
         :PlatformUptimeMonitoring ;
     :kb-reference-title "Secure PLC Coding Practices: Top 20 List" .
+
+:Reference-SecureWatchdogTimer-IntelCorp a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Secure Watchdog Timer - Intel Corp" ;
+    :has-link "https://patents.google.com/patent/US20040250178A1"^^xsd:anyURI ;
+    :kb-abstract "A watchdog timer including a counter, a watchdog enable mechanism, and a timeout control. The watchdog enable mechanism is set to an enabled state by receiving an enabling input and set to a disabled state only by a power cycle or a hardware reset. The timeout control is coupled to the counter and to the watchdog enable mechanism. The timeout control enables a error signal if the watchdog enable mechanism is enabled and the counter is not updated before completing a count." ;
+    :kb-author "Peter Munguia, Kyle Gilsdorf, Shailendra Jha" ;
+    :kb-mitre-analysis "Foundational description of a write-once lock bit pattern applied to a peripheral enable mechanism, clearable only by power cycle or hardware reset and not by any software path." ;
+    :kb-organization "Intel Corp" ;
+    :kb-reference-of :HardwareRegisterLocking ;
+    :kb-reference-title "Secure watchdog timer" .
 
 :Reference-Securing_Web_Transactions__TLS_Server_Certificate_Management_Appendix_A_Passive_Inspection a :GuidelineReference,
         owl:NamedIndividual ;
