@@ -121,6 +121,12 @@
     rdfs:subPropertyOf :semantic-relation ;
     :definition "x broader-transitive y: The entity x represents a more general concept than entity y, including indirect or hierarchical relationships where x encompasses y through intermediate entities." .
 
+:captures a owl:ObjectProperty ;
+    rdfs:range :Artifact ;
+    :definition "x captures y: The entity x acquires, records, or stores a copy of communications data y from any source or state (e.g., in transit, at rest, or from storage) such that x can subsequently access, analyze, or use y." ;
+    :label "captures" ;
+    :subPropertyOf :associated-with .
+
 :carried-by a owl:ObjectProperty ;
     rdfs:label "carried-by" ;
     rdfs:subPropertyOf :associated-with ;
@@ -629,6 +635,12 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:label "instructs" ;
     rdfs:subPropertyOf :associated-with ;
     :definition "x instructs y: A subject x delivers machine instructions to object y." .
+
+:intercepts a owl:ObjectProperty ;
+    rdfs:range :Artifact ;
+    :definition "x intercepts y: The entity x captures communications data y while y is in transit between other communicating parties, where x is not an intended endpoint of that communication." ;
+    :label "intercepts" ;
+    :subPropertyOf :captures .
 
 :interprets a owl:ObjectProperty ;
     rdfs:label "interprets" ;
@@ -14918,6 +14930,35 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:isDefinedBy "https://dbpedia.org/page/Audiovisual" ;
     :definition "Audiovisual (AV) is electronic media possessing both a sound and a visual component." .
 
+:DigitalBeamforming a :DigitalBeamforming,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Digital Beamforming" ;
+    rdfs:subClassOf :SignalHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
+    :d3fend-id "D3-DBF" ;
+    :definition "Beamforming is a signal processing technique used in sensor arrays for directional signal transmission or reception." ;
+    :kb-article """## How it works
+Digital beamforming uses multiple coordinated emitters, receivers, or transceiver elements arranged as an array. A digital signal processing stage computes complex per-element weights that control the relative phase and amplitude of each element's contribution so that the combined field constructively reinforces in desired directions and destructively suppresses in others. In transmit mode, for a fixed overall power budget, this typically increases received power and therefore signal-to-noise ratio (SNR) at the intended receiver while reducing off-axis energy available to unintended receivers, interceptors, or interferers. In receive mode, the same principle improves effective SNR by coherently combining energy from the desired direction and attenuating interference and noise arriving from other directions.
+
+In practical systems, digital beamforming is commonly implemented in digital signal processing (DSP) pipelines realized in field-programmable gate arrays (FPGAs), application-specific integrated circuits (ASICs), systems on chip (SoCs), or high-performance processors. These platforms calculate and update the beamforming weights from calibration data, steering commands, and sometimes channel estimates. The technique generally requires an array architecture; a single radiator or detector does not provide the independently controllable elements needed for steerable beam synthesis. Although most commonly discussed in radio frequency (RF) systems, the same principle applies to optical phased arrays, where digitally controlled phase shifts across multiple optical elements steer and shape coherent optical energy in space.
+
+## Considerations
+
+* Digital beamforming generally requires an antenna array, sensor array, or optical phased array with multiple controllable elements; without an array, true beam steering is not available.
+* Array geometry, element spacing, phase coherence, and calibration accuracy strongly affect performance. Errors in timing, phase, or amplitude control can reduce main-lobe gain and increase unwanted side lobes.
+* Beamforming can improve signal-to-noise ratio for intended receivers while lowering off-axis signal-to-noise ratio, but it does not eliminate leakage. Side lobes, back lobes, and reflections may still expose useful signal energy to an adversary.
+* In dynamic or mobile environments, the beam may need continual retuning using digital signal processing logic and fast control loops. This introduces computational cost, control latency, and dependence on accurate channel or direction estimates.
+* Optical beamforming and radio frequency beamforming share the same phased-array principle, but their hardware constraints differ. Optical implementations may depend on photonic phase shifters, thermal tuning, or tightly controlled fabrication tolerances.
+* Defensive claims should be validated against realistic interception, jamming, spoofing, and multipath scenarios rather than assuming directional gain alone is sufficient protection.
+""" ;
+    :kb-reference :Reference-MultipleBeamAntennaSystemEmployingMultipleDirectionalCouplersInTheLeadin-LockheedMartinCorp ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Beamforming> ;
+    :synonym "Digital Beam Shaping",
+        "Spatial Filtering" .
+
 :DigitalCamera a owl:Class ;
     rdfs:label "Digital Camera" ;
     rdfs:subClassOf :HardwareDevice ;
@@ -16937,7 +16978,10 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
 :EXF-0003 a owl:Class ;
     rdfs:label "Signal Interception - SPARTA" ;
     skos:prefLabel "Signal Interception" ;
-    rdfs:subClassOf :SPARTAExfiltrationTechnique ;
+    rdfs:subClassOf :SPARTAExfiltrationTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :Signal ] ;
     :attack-id "EXF-0003" ;
     :definition "The adversary captures mission traffic in transit, on ground networks or over the space link, so that payload products, housekeeping, and command/ack exchanges can be reconstructed offline. Vantage points include tapped ground LANs/WANs between MOC and stations, baseband interfaces (IF/IQ), RF/optical receptions within the antenna field of view, and crosslink monitors. Depending on protection, the haul ranges from plaintext frames to encrypted bitstreams whose headers, rates, and schedules still yield valuable context (APIDs, VCIDs, pass timing, file manifest cues). Intercepted sessions can guide later replay, cloning, or targeted downlink requests." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0003/> .
@@ -27072,7 +27116,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.01 a owl:Class ;
     rdfs:label "Uplink Intercept Eavesdropping - SPARTA" ;
     skos:prefLabel "Uplink Intercept Eavesdropping" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.01" ;
     :definition "Uplink reconnaissance focuses on capturing the command path from ground to spacecraft to learn telecommand framing, authentication fields, timing, and anti-replay behavior. Valuable artifacts include emission designators, symbol rates, polarization sense, Doppler profiles, and any preambles or ranging tones that gate command acceptance. Even if payload and TT&C share spectrum, their authentication postures often differ, knowledge an adversary can exploit. Partial captures, console screenshots, or training recordings reduce the effort needed to build an SDR pipeline that “looks right” on the air. Where missions authenticate without encrypting the uplink, traffic analysis can reveal command cadence and maintenance windows." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/01/> .
@@ -27080,7 +27127,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.02 a owl:Class ;
     rdfs:label "Downlink Intercept - SPARTA" ;
     skos:prefLabel "Downlink Intercept" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :intercepts ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.02" ;
     :definition "Downlink collection aims to harvest housekeeping telemetry, event logs, ephemerides, payload data, and operator annotations that reveal system state and procedures. Even when payload content is encrypted, ancillary channels (beacons, health/status, low-rate engineering downlink) can disclose mode transitions, battery and thermal margins, safing events, and next-pass predictions. Community ground networks and public dashboards may inadvertently provide stitched datasets that make trend analysis trivial. Captured framing and coding parameters also help an adversary build testbeds and refine timing for later actions." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/02/> .
@@ -27096,7 +27146,10 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
 :REC-0005.04 a owl:Class ;
     rdfs:label "Active Scanning (RF/Optical) - SPARTA" ;
     skos:prefLabel "Active Scanning (RF/Optical)" ;
-    rdfs:subClassOf :REC-0005 ;
+    rdfs:subClassOf :REC-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :ElectromagneticSignal ] ;
     :attack-id "REC-0005.04" ;
     :definition "Active scanning moves beyond passive collection: an adversary transmits or injects probes intended to elicit identifiable responses that reveal frequencies, protocols, or device behavior. Examples include stimulating auto-track or auto-reply beacons, provoking ranging responses, tickling access schemes (TDMA/FDMA bursts), or sending benign-looking frames to observe AGC, saturation, or error counters. Optical/lasercom analogs include alignment pings or modulation patterns that solicit acquisition messages. The objective is RF “banner grabbing”, learning enough to build compatible demod/decoder chains or to map control surfaces, without necessarily breaching authentication. Because scans can resemble normal acquisition attempts, they may blend into the noise floor of operations." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/REC-0005/04/> .
@@ -28649,6 +28702,18 @@ Another difference are the capabilities of the mechanism:
     rdfs:isDefinedBy <http://dbpedia.org/resource/Signal> ;
     :definition "In electronics and telecommunications, signal refers to any time-varying voltage, current, or electromagnetic wave that carries information." .
 
+:SignalHardening a owl:Class,
+        owl:NamedIndividual,
+        :SignalHardening ;
+    rdfs:label "Signal Hardening" ;
+    rdfs:subClassOf :DefensiveTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :Harden ] ;
+    :d3fend-id "D3-SH" ;
+    :definition "Signal hardening encompasses the physical-layer techniques used to manipulate a signal's characteristics (such as its power, frequency, or spatial footprint) to minimize its vulnerability to detection, interception, and jamming." ;
+    :enables :Harden .
+
 :Simulation a owl:Class ;
     rdfs:label "Simulation" ;
     rdfs:subClassOf :Generation .
@@ -29164,6 +29229,34 @@ The goal is for homophones to be encoded to the same representation so that they
     :definition "Spectral clustering is a technique that identifies communities of nodes in a graph based on the edges connecting them." ;
     :kb-article """## References
 Towards Data Science. (n.d.). Spectral Clustering. [Link](https://towardsdatascience.com/spectral-clustering-aba2640c0d5b)""" .
+
+:SpectralManipulation a owl:Class,
+        owl:NamedIndividual,
+        :SpectralManipulation ;
+    rdfs:label "Spectral Manipulation" ;
+    rdfs:subClassOf :SignalHardening,
+        [ a owl:Restriction ;
+            owl:onProperty :strengthens ;
+            owl:someValuesFrom :Signal ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Spread_spectrum> ;
+    :d3fend-id "D3-SM" ;
+    :definition "Deliberately dispersing a signal across a bandwidth far greater than the minimum required to carry its information in order to make the signal resistant to detection, interception, and jamming." ;
+    :kb-article """## How it works
+Spectral manipulation is based on the principle that a signal distributed thinly across a wide band is difficult to distinguish from background electromagnetic noise, and is therefore hard to detect, characterize, or disrupt. 
+
+A pseudorandom sequence known only to authorized parties, known as a spreading code, is used to expand a signal across this wide bandwidth before transmission. The code is independent of the information content and changes rapidly enough that an adversary cannot predict or track it. At the receiving end, the identical code is applied in reverse to collapse the spread signal back to its original bandwidth and recover the information. Any interference or jamming energy that was not present in the original signal, having not been despread by the code, remains spread thinly across the wide band and is largely rejected by the receiver.
+
+The spreading can be applied across any physical dimension available to the signal being transmitted: frequency (as in direct-sequence or frequency-hopping implementations), time, wavelength (in the optical domain), or combinations thereof. This generality means spread spectrum is not inherently tied to any particular frequency regime or signal type. It is a coding and bandwidth strategy that can be layered onto RF, microwave, millimeter-wave, infrared, or visible-light signals wherever the underlying physics permits the necessary bandwidth expansion.
+
+## Considerations
+* Processing gain is the central design trade-off: greater spread yields stronger jamming resistance and lower probability of intercept, but demands wider spectrum access and more complex hardware.
+* Synchronization is a critical vulnerability: the receiver must maintain precise alignment with the transmitter's spreading code; loss of synchronization collapses the link entirely.
+* The spreading code must remain secret and unpredictable: a compromised or predictable code eliminates most of the defensive benefit and can expose the signal to targeted jamming or spoofing.
+* Spectrum availability limits the achievable spread: regulatory, physical, or operational constraints on usable bandwidth cap the maximum processing gain in any given deployment environment.
+* Spectral manipulation is not encryption: it fragments the message carried on a signal across the spectrum to make interception more difficult, but does not by itself protect the content.
+""" ;
+    :kb-reference :Reference-ACommunicationTechniqueForMultipathChannels-IEEE ;
+    :synonym "Spread Spectrum" .
 
 :SSHConnectionCloseEvent a owl:Class ;
     rdfs:label "SSH Connection Close Event" ;
@@ -43487,6 +43580,17 @@ order to constitute a complete standard. For a complete definition of all requir
     :kb-reference-title "Account monitoring" ;
     :todo "MITRE Analysis was not found" .
 
+:Reference-ACommunicationTechniqueForMultipathChannels-IEEE a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - A Communication Technique for Multipath Channels - IEEE" ;
+    :has-link "https://ieeexplore.ieee.org/document/4065360"^^xsd:anyURI ;
+    :kb-abstract "Application of principles of statistical communication theory has led to a new communication system, called Rake, designed expressly to work against the combination of random multipath and additive noise disturbances. By coding the Mark-Space sequence of symbols to be transmitted into a wide-band signal, it becomes possible at the receiver to isolate those portions of the transmitted signal arriving with different delays, using correlation detection techniques. Before being recombined by addition, these separated signals are continuously and automatically processed so as to 1) apply to each an optimum weighting coefficient, derived from a measurement of the ionosphere response, and 2) introduce in each an appropriate delay such that they are all brought back into time coincidence. After a brief introduction, a functional description of the system is presented. There follows a review of the communication theory studies, which indicate that such systems have certain optimal properties. Details of design of an experimental prototype Rake system are followed by the results of limited field tests of this prototype. Conclusions and recommendations for future work are given." ;
+    :kb-author "R. Price, P.E. Green" ;
+    :kb-mitre-analysis "Introduced the RAKE receiver concept: a direct-sequence spread spectrum receiver that uses multiple correlators to separately resolve and combine multipath signal components. This paper established the link between wideband spreading and multipath mitigation, one of spread spectrum's most important practical benefits, and remains one of the most heavily cited works in the field." ;
+    :kb-organization "IEEE" ;
+    :kb-reference-of :SpectralManipulation ;
+    :kb-reference-title "A Communication Technique for Multipath Channels" .
+
 :Reference-ActiveDirectoryDumpingViaNTDSUtil_MITRE a :ExternalKnowledgeBase,
         owl:NamedIndividual ;
     rdfs:label "Reference - CAR-2019-08-002: Active Directory Dumping via NTDSUtil - MITRE" ;
@@ -45965,6 +46069,17 @@ Some examples of data inputs:
     :kb-reference-of :ConnectedHoneynet ;
     :kb-reference-title "Modification of a Server to Mimic a Deception Mechanism" ;
     :todo "MITRE Analysis was not found" .
+
+:Reference-MultipleBeamAntennaSystemEmployingMultipleDirectionalCouplersInTheLeadin-LockheedMartinCorp a owl:NamedIndividual,
+        :PatentReference ;
+    rdfs:label "Reference - Multiple beam antenna system employing multiple directional couplers in the leadin - Lockheed Martin Corp." ;
+    :has-link "https://patents.google.com/patent/US3255450A"^^xsd:anyURI ;
+    :kb-abstract "This invention relates to multiple beam antenna systems and more particularly to circuits and components comprising such systems for directional beam steering through selective phasing of signals from a plurality of antennas." ;
+    :kb-author "Jesse L. Butler" ;
+    :kb-mitre-analysis "This patent describes a passive network of couplers and phase shifters that performs a spatial Fast Fourier Transform (FFT). By feeding different input ports, the antenna array produces beams in distinct, pre-defined directions. It remains a standard for low-cost, multi-beam satellite and 5G hardware." ;
+    :kb-organization "Lockheed Martin Corp." ;
+    :kb-reference-of :DigitalBeamforming ;
+    :kb-reference-title "Multiple beam antenna system employing multiple directional couplers in the leadin" .
 
 :Reference-Munin a owl:NamedIndividual,
         :SourceCodeReference ;
