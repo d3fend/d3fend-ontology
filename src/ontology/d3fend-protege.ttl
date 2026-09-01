@@ -4757,6 +4757,19 @@ This technique requires the ability to parse application layer protocols to unde
     rdfs:isDefinedBy <http://dbpedia.org/resource/Archive_file> ;
     :definition "An archive file is a file that is composed of one or more computer files along with metadata. Archive files are used to collect multiple data files together into a single file for easier portability and storage, or simply to compress files to use less storage space. Archive files often store directory structures, error detection and correction information, arbitrary comments, and sometimes use built-in encryption." .
 
+:AssemblySourceCode a owl:Class ;
+    rdfs:label "Assembly Source Code" ;
+    rdfs:subClassOf :SourceCode ;
+    :definition "Source code written in an assembly language, using mnemonic representations of machine instructions and related directives." .
+
+:AssemblySourceFile a owl:Class ;
+    rdfs:label "Assembly Source File" ;
+    rdfs:subClassOf :SourceCodeFile,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :AssemblySourceCode ] ;
+    :definition "A source code file containing assembly source code." .
+
 :ARIMAModel a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "ARIMA Model" ;
@@ -5647,10 +5660,31 @@ BERT (language model). (n.d.). In Wikipedia. [Link](https://en.wikipedia.org/wik
     :definition "A binary large object (BLOB) is a collection of binary data stored as a single entity. Blobs are typically images, audio or other multimedia objects, though sometimes binary executable code is stored as a blob." ;
     :todo "sometimes a record, but not always.  always Binary Data (but we don't have Data and Binary Data tax).  Also do we need to distinguish between information and data?  Don't think so.  IBO that is encoded as binary is Binary Data.  The notion of \"object\" is distinct as it may be part of file, part of DB, or file (part of file system).  Binary padding would relate, though is padding information if just used to pad (e.g., all zeroes?)" .
 
+:BinaryAnalysisTool a owl:Class ;
+    rdfs:label "Binary Analysis Tool" ;
+    rdfs:subClassOf :CodeAnalyzer,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :ExecutableBinary ] ;
+    :definition "A code analysis tool that examines executable binary code or its structure." .
+
 :BinarySegment a owl:Class ;
     rdfs:label "Binary Segment" ;
     rdfs:subClassOf :DigitalInformationBearer ;
     :definition "A binary segment is a partition of binary information within a larger binary object, which arranges a set of binary objects for its purpose.   For example, code, data, heap, and stack segments are segments of the binary information used by a process.  Code and data segments are also found in object files." .
+
+:Bytecode a owl:Class ;
+    rdfs:label "Bytecode" ;
+    rdfs:subClassOf :ExecutableCode,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :BytecodeInstruction ] ;
+    :definition "Executable code encoded for interpretation or execution by a virtual machine." .
+
+:BytecodeInstruction a owl:Class ;
+    rdfs:label "Bytecode Instruction" ;
+    rdfs:subClassOf :ProgramInstruction ;
+    :definition "A program instruction encoded for a virtual machine." .
 
 :BiometricAuthentication a :BiometricAuthentication,
         owl:Class,
@@ -6718,6 +6752,30 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:label "Compiler Configuration File" ;
     rdfs:subClassOf :ApplicationConfigurationFile ;
     :definition "A file containing Information used to configure the parameters and initial settings for a compiler." .
+
+:Decompiler a owl:Class ;
+    rdfs:label "Decompiler" ;
+    rdfs:subClassOf :BinaryAnalysisTool,
+        :StaticAnalysisTool ;
+    :definition "A static analysis tool that reconstructs source-like program code from executable code." .
+
+:Debugger a owl:Class ;
+    rdfs:label "Debugger" ;
+    rdfs:subClassOf :DynamicAnalysisTool ;
+    :definition "A dynamic analysis tool used to inspect and control the execution state of a computer program." .
+
+:DebugInformation a owl:Class ;
+    rdfs:label "Debug Information" ;
+    rdfs:subClassOf :ExecutableMetadata,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :DebugSymbol ] ;
+    :definition "File metadata that relates executable code and storage locations to program symbols, data types, and source code locations for debugging or analysis." .
+
+:DebugSymbol a owl:Class ;
+    rdfs:label "Debug Symbol" ;
+    rdfs:subClassOf :SoftwareSymbol ;
+    :definition "A software symbol retained as debug information to identify a program element during debugging or analysis." .
 
 :ComputeDeviceEvent a owl:Class ;
     rdfs:label "Compute Device Event" ;
@@ -14977,6 +15035,12 @@ Wikipedia. (n.d.). Descriptive statistics. [Link](https://en.wikipedia.org/wiki/
     rdfs:subClassOf :DigitalArtifact ;
     :definition "A digital information bearer is a physical or virtual entity that stores, transmits, or processes digital information." .
 
+:Disassembler a owl:Class ;
+    rdfs:label "Disassembler" ;
+    rdfs:subClassOf :BinaryAnalysisTool,
+        :StaticAnalysisTool ;
+    :definition "A static analysis tool that translates machine code or bytecode into an assembly-language representation." .
+
 :DigitalMedia a owl:Class ;
     rdfs:label "Digital Media" ;
     rdfs:subClassOf :DigitalInformation ;
@@ -16773,13 +16837,52 @@ Organizations which download or create high volumes of software make management 
             owl:onProperty :contains ;
             owl:someValuesFrom :ImageCodeSegment ],
         [ a owl:Restriction ;
-            owl:onProperty :contains ;
+            owl:onProperty :may-contain ;
             owl:someValuesFrom :ImageDataSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FileHeaderBlock ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FileMagicBytes ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SymbolTable ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :DebugInformation ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :ImportTable ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :ExportTable ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :RelocationTable ],
         [ a owl:Restriction ;
             owl:onProperty :may-interpret ;
             owl:someValuesFrom :ExecutableScript ] ;
     :definition "An executable binary contains machine code instructions for a physical CPU. D3FEND also considers byte code for a virtual machine to be binary code.  This is in contrast to executable scripts written in a scripting language." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Executable> .
+
+:ExecutableCode a owl:Class ;
+    rdfs:label "Executable Code" ;
+    rdfs:subClassOf :ProgramCode,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ProgramInstruction ] ;
+    :definition "Program code encoded as instructions capable of execution by a physical or virtual machine." .
+
+:ExecutableMetadata a owl:Class ;
+    rdfs:label "Executable Metadata" ;
+    rdfs:subClassOf :FileMetadata ;
+    :definition "File metadata that describes the format, structure, contents, or loading of executable code." .
+
+:ExportTable a owl:Class ;
+    rdfs:label "Export Table" ;
+    rdfs:subClassOf :FileSection ;
+    :definition "A file section identifying software symbols made available by an object file or executable binary to other software." .
 
 :ExecutableDenylisting a :ExecutableDenylisting,
         owl:Class,
@@ -17515,7 +17618,8 @@ File format specifications often define expected values for specific fields. A c
 
 :FileMagicBytes a owl:Class ;
     rdfs:label "File Magic Bytes" ;
-    rdfs:subClassOf :FileHeaderBlockSignature ;
+    rdfs:subClassOf :ExecutableMetadata,
+        :FileHeaderBlockSignature ;
     :definition "A specific type of header signature located at the beginning of a file, used to identify the file format." .
 
 :FileMagicByteVerification a :FileMagicByteVerification,
@@ -19225,6 +19329,9 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
     rdfs:subClassOf :ImageSegment,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
+            owl:someValuesFrom :ExecutableCode ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
             owl:someValuesFrom :Subroutine ] ;
     :definition "An image code segment, also known as a text segment or simply as text, is a portion of an object file that contains executable instructions. The term \"segment\" comes from the memory segment, which is a historical approach to memory management that has been succeeded by paging. When a program is stored in an object file, the code segment is a part of this file; when the loader places a program into memory so that it may be executed, various memory regions are allocated (in particular, as pages), corresponding to both the segments in the object files and to segments only needed at run time. For example, the code segment of an object file is loaded into a corresponding code segment in memory." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Code_segment>,
@@ -19232,7 +19339,10 @@ MathWorks. (n.d.). Get Started with GANs for Image-to-Image Translation. [Link](
 
 :ImageDataSegment a owl:Class ;
     rdfs:label "Image Data Segment" ;
-    rdfs:subClassOf :ImageSegment ;
+    rdfs:subClassOf :ImageSegment,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ProgramData ] ;
     :definition "An image data segment (often denoted .data) is a portion of an object file that contains initialized static variables, that is, global variables and static local variables. The size of this segment is determined by the size of the values in the program's source code, and does not change at run time. This segmenting of the memory space into discrete blocks with specific tasks carried over into the programming languages of the day and the concept is still widely in use within modern programming languages." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Data_segment>,
         :ProcessDataSegment .
@@ -19464,6 +19574,17 @@ Disable: If the objective is Disable, an adversary could desynchronize a mission
             owl:onProperty :loads ;
             owl:someValuesFrom :SharedLibraryFile ] ;
     :definition "Loads an external software library to enable the invocations of its methods." .
+
+:ImportTable a owl:Class ;
+    rdfs:label "Import Table" ;
+    rdfs:subClassOf :FileSection ;
+    :definition "A file section identifying external software symbols or libraries required by an object file or executable binary." .
+
+:IntermediateRepresentation a owl:Class ;
+    rdfs:label "Intermediate Representation" ;
+    skos:altLabel "IR" ;
+    rdfs:subClassOf :ProgramCode ;
+    :definition "Program code represented in an intermediate form used between source code and executable code during translation or analysis." .
 
 :In-memoryPasswordStore a owl:Class ;
     rdfs:label "In-memory Password Store" ;
@@ -20597,6 +20718,11 @@ Takes independent variables (i.e. covariate, features, predictors, input variabl
     :definition "A link is a connection or association between two entities that facilitates communication, interaction, or data transfer." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Link> .
 
+:Linker a owl:Class ;
+    rdfs:label "Linker" ;
+    rdfs:subClassOf :BuildTool ;
+    :definition "A build tool that combines object files and libraries, resolves software symbols and relocations, and produces an executable binary, shared library, or other object file." .
+
 :Linux_Exit a owl:Class ;
     rdfs:label "Linux _Exit" ;
     rdfs:subClassOf :OSAPITerminateProcess ;
@@ -21654,6 +21780,19 @@ Symmetric encryption uses the same cryptographic key by both the sender and rece
     :definition "Metadata is information which describes aspects of other information." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/metadata> .
 
+:MachineCode a owl:Class ;
+    rdfs:label "Machine Code" ;
+    rdfs:subClassOf :ExecutableCode,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :MachineInstruction ] ;
+    :definition "Executable code encoded for a physical processor instruction set architecture." .
+
+:MachineInstruction a owl:Class ;
+    rdfs:label "Machine Instruction" ;
+    rdfs:subClassOf :ProgramInstruction ;
+    :definition "A program instruction encoded for execution by a physical processor." .
+
 :Microcode a owl:Class ;
     rdfs:label "Microcode" ;
     rdfs:subClassOf :Firmware ;
@@ -22612,7 +22751,19 @@ Programmatically checking if a pointer is NULL before use.
 
 :ObjectFile a owl:Class ;
     rdfs:label "Object File" ;
-    rdfs:subClassOf :File ;
+    rdfs:subClassOf :File,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :ImageCodeSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :ImageDataSegment ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SymbolTable ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :RelocationTable ] ;
     :comment "This is the most general category of files that contain 'objects' for execution, but they themselves are not generally the primary target for execution, an d3f:ExecutableBinaryFile usually references these files to load and execute their objects." ;
     :definition "An object file is a file that contains relocatable machine code." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Object_file> ;
@@ -25830,6 +25981,21 @@ Wikipedia. (n.d.). Principal component analysis. [Link](https://en.wikipedia.org
             owl:onProperty :start ;
             owl:allValuesFrom :Step ] .
 
+:ProgramCode a owl:Class ;
+    rdfs:label "Program Code" ;
+    rdfs:subClassOf :FileContentBlockData ;
+    :definition "Software information expressed as source code, an intermediate representation, or executable code." .
+
+:ProgramData a owl:Class ;
+    rdfs:label "Program Data" ;
+    rdfs:subClassOf :FileContentBlockData ;
+    :definition "Data encoded within a program file or data block for use by program code rather than as executable instructions." .
+
+:ProgramInstruction a owl:Class ;
+    rdfs:label "Program Instruction" ;
+    rdfs:subClassOf :Command ;
+    :definition "A command encoded as part of program code for execution by a physical or virtual machine." .
+
 :Process a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Process" ;
@@ -27204,6 +27370,11 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
     rdfs:subClassOf :DigitalInformationBearer ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Record_(computer_science)> ;
     :definition "In computer science, a record (also called struct or compound data) is a basic data structure. A record is a collection of fields, possibly of different data types, typically in fixed number and sequence . The fields of a record may also be called members, particularly in object-oriented programming. Fields may also be called elements, though these risk confusion with the elements of a collection. A tuple may or may not be considered a record, and vice versa, depending on conventions and the specific programming language." .
+
+:RelocationTable a owl:Class ;
+    rdfs:label "Relocation Table" ;
+    rdfs:subClassOf :FileSection ;
+    :definition "A file section containing relocation information used to adjust references when object code is linked or loaded at a different address." .
 
 :RecurrentNeuralNetwork a owl:Class,
         owl:NamedIndividual ;
@@ -28740,6 +28911,11 @@ Wikipedia. (n.d.). Skewness. [Link](https://en.wikipedia.org/wiki/Skewness)""" .
     rdfs:isDefinedBy <http://dbpedia.org/resource/Software> ;
     :definition "Computer software, or simply software, is that part of a computer system that consists of encoded information or computer instructions, in contrast to the physical hardware from which the system is built." .
 
+:SoftwareSymbol a owl:Class ;
+    rdfs:label "Software Symbol" ;
+    rdfs:subClassOf :Identifier ;
+    :definition "An identifier that associates a name or other symbolic value with an element of software or program code." .
+
 :Software-definedRadio a owl:Class ;
     rdfs:label "Software-defined Radio" ;
     rdfs:subClassOf :HardwareDevice,
@@ -29009,6 +29185,19 @@ The goal is for homophones to be encoded to the same representation so that they
     rdfs:subClassOf :StaticAnalysisTool ;
     :definition "A source code analyzer tool is a static analysis tool that operates specifically on source code, but not object code." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Static_program_analysis> .
+
+:SourceCode a owl:Class ;
+    rdfs:label "Source Code" ;
+    rdfs:subClassOf :ProgramCode ;
+    :definition "Program code expressed in a human-readable programming language before translation to executable code." .
+
+:SourceCodeFile a owl:Class ;
+    rdfs:label "Source Code File" ;
+    rdfs:subClassOf :File,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SourceCode ] ;
+    :definition "A file containing source code." .
 
 :SourceCodeHardening a owl:Class,
         owl:NamedIndividual ;
@@ -29453,6 +29642,16 @@ Wikipedia. (n.d.). Standard deviation. [Link](https://en.wikipedia.org/wiki/Stan
         <http://dbpedia.org/resource/Program_analysis> ;
     :todo "Not sure what intended diff of Source Code Analyzer Tool and Static Analysis Tool is.  At high level these are grouped.  There are subtypes of analysis, but much finer grained operations/capes.  Also, there ought to be a Dynamic Analysis Tool (http://dbpedia.org/resource/Dynamic_program_analysis) as part of Program Analysis as parent.  Not sure what Code Analyzer parent is other than another name for Static Code Analyzer/Static Analysis Tool... or Program Analysis Tool see" .
 
+:StaticLibraryFile a owl:Class ;
+    rdfs:label "Static Library File" ;
+    skos:altLabel "Static Library" ;
+    rdfs:subClassOf :ArchiveFile,
+        :SoftwareLibraryFile,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :ObjectFile ] ;
+    :definition "A software library file containing object files that a linker can copy into another object file or executable binary." .
+
 :StatisticalMethod a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "Statistical Method" ;
@@ -29676,6 +29875,14 @@ Symbolic artificial intelligence is used in tools such as logic programming, pro
 ## References
 1. Symbolic artificial intelligence. (2023, May 23). In _Wikipedia_. [Link](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence)""" ;
     :synonym "Symbolic Artificial Intelligence" .
+
+:SymbolTable a owl:Class ;
+    rdfs:label "Symbol Table" ;
+    rdfs:subClassOf :FileSection,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :SoftwareSymbol ] ;
+    :definition "A file section containing software symbols and information needed to associate them with locations or elements in program code." .
 
 :SymbolicLink a owl:Class ;
     rdfs:label "Symbolic Link" ;
