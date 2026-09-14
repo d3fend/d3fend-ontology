@@ -22205,7 +22205,10 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
             owl:someValuesFrom :ComputerNetworkNode ],
         [ a owl:Restriction ;
             owl:onProperty :used-by ;
-            owl:someValuesFrom :Software ] ;
+            owl:someValuesFrom :Software ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :NetworkInterfaceConfiguration ] ;
     :definition "A local resource that provides software with a network attachment point for transmitting and receiving network traffic." ;
     rdfs:seeAlso <https://docs.kernel.org/networking/netdevices.html>,
         <https://www.rfc-editor.org/rfc/rfc2863.html>,
@@ -30808,7 +30811,10 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :DNSLookup ],
         [ a owl:Restriction ;
             owl:onProperty :monitors ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :NetworkInterface ] ;
     :attack-id "T0842" ;
     :definition "Network sniffing is the practice of using a network interface on a computer system to monitor or capture information (Citation: Enterprise ATT&CK January 2018) regardless of whether it is the specified destination for the information." .
 
@@ -31762,7 +31768,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1011.001 a owl:Class ;
     rdfs:label "Exfiltration Over Bluetooth" ;
-    rdfs:subClassOf :T1011 ;
+    rdfs:subClassOf :T1011,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :BluetoothNetworkInterface ] ;
     :attack-id "T1011.001" ;
     :definition "Adversaries may attempt to exfiltrate data over Bluetooth rather than the command and control channel. If the command and control network is a wired Internet connection, an adversary may opt to exfiltrate data using a Bluetooth communication channel." .
 
@@ -31822,6 +31831,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1016 a owl:Class ;
     rdfs:label "System Network Configuration Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :NetworkInterfaceConfiguration ],
         [ a owl:Restriction ;
             owl:onProperty :may-execute ;
             owl:someValuesFrom :ExecutableScript ],
@@ -32411,8 +32423,14 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :CredentialAccessTechnique,
         :DiscoveryTechnique,
         [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :NetworkInterfaceConfiguration ],
+        [ a owl:Restriction ;
             owl:onProperty :may-produce ;
-            owl:someValuesFrom :DNSLookup ] ;
+            owl:someValuesFrom :DNSLookup ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :NetworkInterface ] ;
     :attack-id "T1040" ;
     :definition "Adversaries may passively sniff network traffic to capture information about an environment, including authentication material passed over the network. Network sniffing refers to using the network interface on a system to monitor or capture information sent over a wired or wireless connection. An adversary may place a network interface into promiscuous mode to passively access data in transit over the network, or use span ports to capture a larger amount of data." .
 
@@ -35685,7 +35703,10 @@ When system firmware verification fails a set of predefined responses is typical
 :T1422 a owl:Class ;
     rdfs:label "System Network Configuration Discovery - ATTACK Mobile" ;
     skos:prefLabel "System Network Configuration Discovery" ;
-    rdfs:subClassOf :ATTACKMobileDiscoveryTechnique ;
+    rdfs:subClassOf :ATTACKMobileDiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :NetworkInterface ] ;
     :attack-id "T1422" ;
     :definition "Adversaries may look for details about the network configuration and settings, such as IP and/or MAC addresses, of devices they access or through information discovery of remote systems." .
 
@@ -39978,7 +39999,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1669 a owl:Class ;
     rdfs:label "Wi-Fi Networks" ;
-    rdfs:subClassOf :InitialAccessTechnique ;
+    rdfs:subClassOf :InitialAccessTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :WirelessNetworkInterface ] ;
     :attack-id "T1669" ;
     :definition "Adversaries may gain initial access to target systems by connecting to wireless networks. They may accomplish this by exploiting open Wi-Fi networks used by target devices or by accessing secured Wi-Fi networks — requiring [Valid Accounts](https://attack.mitre.org/techniques/T1078) — belonging to a target organization.(Citation: DOJ GRU Charges 2018)(Citation: Nearest Neighbor Volexity) Establishing a connection to a Wi-Fi access point requires a certain level of proximity to both discover and maintain a stable network connection." .
 
@@ -40297,14 +40321,20 @@ When system firmware verification fails a set of predefined responses is typical
 :T1695.002 a owl:Class ;
     rdfs:label "Ethernet - ATTACK ICS" ;
     skos:prefLabel "Ethernet" ;
-    rdfs:subClassOf :T1695 ;
+    rdfs:subClassOf :T1695,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :EthernetNetworkInterface ] ;
     :attack-id "T1695.002" ;
     :definition "Adversaries may block access to Ethernet communications to prevent instructions or configurations messages from reaching target systems and devices. Ethernet connections allow for communications between IT and OT systems and devices. Blocking Ethernet communications may also block command and reporting messages.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
 :T1695.003 a owl:Class ;
     rdfs:label "Wi-Fi - ATTACK ICS" ;
     skos:prefLabel "Wi-Fi" ;
-    rdfs:subClassOf :T1695 ;
+    rdfs:subClassOf :T1695,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :WirelessNetworkInterface ] ;
     :attack-id "T1695.003" ;
     :definition "Adversaries may block access to Wi-Fi communications to prevent messages from reaching target systems and devices. Wi-Fi connections allow for communications between IT and OT systems and devices. Blocking Wi-Fi communications may also block command and reporting messages.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
