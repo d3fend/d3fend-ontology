@@ -1,0 +1,15 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?subject ?subject_label ?predicate ?predicate_label ?target
+WHERE {
+    VALUES ?predicate {
+        rdfs:seeAlso
+        rdfs:isDefinedBy
+    }
+    ?subject ?predicate ?target .
+    OPTIONAL { ?subject rdfs:label ?raw_subject_label . }
+    OPTIONAL { ?predicate rdfs:label ?raw_predicate_label . }
+    BIND (COALESCE(STR(?raw_subject_label), REPLACE(STR(?subject), "^.*[#/]", "")) AS ?subject_label)
+    BIND (COALESCE(STR(?raw_predicate_label), REPLACE(STR(?predicate), "^.*[#/]", "")) AS ?predicate_label)
+}
+ORDER BY ?subject ?predicate ?target
