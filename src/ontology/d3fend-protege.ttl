@@ -16155,6 +16155,9 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     skos:prefLabel "Bus Traffic Replay" ;
     rdfs:subClassOf :EX-0001,
         [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :BusNetworkInterface ],
+        [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :BusNetworkTraffic ] ;
     :attack-id "EX-0001.02" ;
@@ -16611,6 +16614,9 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
     rdfs:label "Bus Traffic Spoofing - SPARTA" ;
     skos:prefLabel "Bus Traffic Spoofing" ;
     rdfs:subClassOf :EX-0014,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :BusNetworkInterface ],
         [ a owl:Restriction ;
             owl:onProperty :spoofs ;
             owl:someValuesFrom :BusNetworkTraffic ] ;
@@ -19454,7 +19460,10 @@ Disable: If the objective is Disable, an adversary could hold the spacecraft in 
 :IMP-0009 a owl:Class ;
     rdfs:label "Configuration Manipulation - SPARTA" ;
     skos:prefLabel "Configuration Manipulation" ;
-    rdfs:subClassOf :SPARTAImpactTechnique ;
+    rdfs:subClassOf :SPARTAImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :NetworkInterfaceConfiguration ] ;
     :attack-id "IMP-0009" ;
     :definition """Configuration Manipulation is the deliberate alteration of authoritative, non-executable settings or structured artifacts that govern spacecraft behavior. These settings may define thresholds, limits, gains, access rules, routing behavior, schedules, or operating profiles. The existing software, firmware, or programmable logic remains intact. It interprets the altered configuration and operates under the new conditions. This mechanism applies to both operator-managed settings and internal values that are not normally changed during routine operations. It does not include changes to measured or derived information, which fall under Data Manipulation. It also does not include changes to executable code or programmed hardware behavior.
 Vector: Illustrative Application
@@ -20981,7 +20990,13 @@ Newer system call.""" .
 :LM-0001 a owl:Class ;
     rdfs:label "Hosted Payload - SPARTA" ;
     skos:prefLabel "Hosted Payload" ;
-    rdfs:subClassOf :SPARTALateralMovementTechnique ;
+    rdfs:subClassOf :SPARTALateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :BusNetworkInterface ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :EthernetNetworkInterface ] ;
     :attack-id "LM-0001" ;
     :definition "The adversary pivots through the host–payload boundary to reach additional subsystems. Hosted payloads exchange power, time, housekeeping, and data with the bus via defined gateways (e.g., SpaceWire, 1553, Ethernet) and often support file services, table loads, and command dictionaries distinct from the host’s. A foothold on the payload can be used to inject traffic through the gateway processor, request privileged services (time/ephemeris distribution, firmware loads), or ride shared backplanes where payload traffic is bridged into C&DH networks. In some designs, payload processes execute on host compute or expose maintenance modes that temporarily widen access, creating paths from the payload into attitude, power, storage, or recorder resources. The movement is transitive: compromise a co-resident unit, then traverse the trusted interface that already exists for mission operations." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/LM-0001/> .
@@ -20990,6 +21005,9 @@ Newer system call.""" .
     rdfs:label "Exploit Lack of Bus Segregation - SPARTA" ;
     skos:prefLabel "Exploit Lack of Bus Segregation" ;
     rdfs:subClassOf :SPARTALateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :BusNetworkInterface ],
         [ a owl:Restriction ;
             owl:onProperty :produces ;
             owl:someValuesFrom :BusNetworkFrame ] ;
@@ -21016,7 +21034,10 @@ Newer system call.""" .
 :LM-0005 a owl:Class ;
     rdfs:label "Virtualization Escape - SPARTA" ;
     skos:prefLabel "Virtualization Escape" ;
-    rdfs:subClassOf :SPARTALateralMovementTechnique ;
+    rdfs:subClassOf :SPARTALateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :VirtualNetworkInterface ] ;
     :attack-id "LM-0005" ;
     :definition "The adversary pivots across partitions by abusing the mechanisms a separation kernel or hypervisor exposes for inter-partition communication and device sharing. Paths include message ports/queues, shared-memory windows, virtual NICs and bridges, hypercalls, and common driver backends (e.g., storage or DMA engines without strict IOMMU bounds). A foothold in a less-trusted partition, often a payload or guest OS, can be turned into access to a higher-privilege domain by crafting traffic that exploits parser flaws in port services, racing management channels, or coercing backend drivers to perform out-of-bounds operations. Once the boundary is crossed, the actor can reach bus gateways, file systems, or control applications hosted in adjacent partitions and continue movement under the guise of permitted inter-partition exchanges." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/LM-0005/> .
