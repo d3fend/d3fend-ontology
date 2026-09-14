@@ -751,6 +751,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :definition "x may-be-associated-with y: The subject x and object y may be associated in some way." ;
     rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/13804981-n> .
 
+:may-be-connected-to a owl:ObjectProperty ;
+    rdfs:label "may-be-connected-to" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-be-connected-to y: The entity x may be connected to thing y; that is, 'x connected-to y' may be true." .
+
 :may-be-contained-by a owl:ObjectProperty,
         owl:TransitiveProperty ;
     rdfs:label "may-be-contained-by" ;
@@ -6774,7 +6779,10 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
             owl:someValuesFrom :OperatingSystem ],
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :SystemPlatformVariable ] ;
+            owl:someValuesFrom :SystemPlatformVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :HardwarePort ] ;
     :definition "Platform includes the hardware and OS. The term computing platform can refer to different abstraction levels, including a certain hardware architecture, an operating system (OS), and runtime libraries. In total it can be said to be the stage on which computer programs can run." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Computing_platform> ;
     :synonym "Computing Platform" ;
@@ -15192,7 +15200,10 @@ Each partition can be managed separately and can have its own file system. Disk 
     skos:altLabel "Display Card",
         "Graphics Adapter",
         "Video Card" ;
-    rdfs:subClassOf :OutputDevice ;
+    rdfs:subClassOf :OutputDevice,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :GraphicsProcessingUnit ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Video_card> ;
     :definition "A graphics card (also called a display card, video card, display adapter, or graphics adapter) is an expansion card which generates a feed of output images to a display device (such as a computer monitor). Frequently, these are advertised as discrete or dedicated graphics cards, emphasizing the distinction between these and integrated graphics. At the core of both is the graphics processing unit (GPU), which is the main part that does the actual computations, but should not be confused with the video card as a whole, although \"GPU\" is often used to refer to video cards." .
 
@@ -15930,6 +15941,12 @@ Programming languages can have multiple senses of equality that may include, but
     :kb-article """## References
 Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Link](https://online.stat.psu.edu/stat504/lesson/statistical-inference-and-estimation)""" ;
     :todo "Seems like there should be more than just interval and point estimation in here." .
+
+:EthernetPort a owl:Class ;
+    rdfs:label "Ethernet Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port designed to provide a physical connection for an Ethernet link conforming to the IEEE 802.3 family of standards, directly or through a compatible pluggable transceiver or cable assembly." ;
+    rdfs:seeAlso <https://www.ieee802.org/3/> .
 
 :EvalFunction a owl:Class ;
     rdfs:label "Eval Function" ;
@@ -18506,6 +18523,15 @@ Administrators collect information on hardware devices such as peripherals, NICs
     rdfs:isDefinedBy <http://dbpedia.org/resource/Device_driver> ;
     :definition "In computing, a device driver (commonly referred to simply as a driver) is a computer program that operates or controls a particular type of device that is attached to a computer. A driver provides a software interface to hardware devices, enabling operating systems and other computer programs to access hardware functions without needing to know precise details of the hardware being used. A driver communicates with the device through the computer bus or communications subsystem to which the hardware connects. When a calling program invokes a routine in the driver, the driver issues commands to the device. Once the device sends data back to the driver, the driver may invoke routines in the original calling program. Drivers are hardware dependent and operating-system-specific. They usually provide the interrupt handling required for any necessary asynchronous time-dependent hardware interface." .
 
+:HardwarePort a owl:Class ;
+    rdfs:label "Hardware Port" ;
+    rdfs:subClassOf :HardwareDevice ;
+    :definition "A hardware device designed to provide a physical attachment point for transferring information-bearing signals between Hardware Devices." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Computer_port_(hardware)> ;
+    :synonym "Computer Port",
+        "I/O Port",
+        "Physical Port" .
+
 :HardwareTimer a owl:Class ;
     rdfs:label "Hardware Timer" ;
     rdfs:subClassOf :HardwareDevice,
@@ -19003,7 +19029,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0005.03 a owl:Class ;
     rdfs:label "Proximity Grappling - SPARTA" ;
     skos:prefLabel "Proximity Grappling" ;
-    rdfs:subClassOf :IA-0005 ;
+    rdfs:subClassOf :IA-0005,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :HardwarePort ] ;
     :attack-id "IA-0005.03" ;
     :definition "In this variant, the attacker employs a capture mechanism (robotic arm, grappling fixture, magnetic or mechanical coupler) to establish physical contact without full docking. Once grappled, covers can be manipulated, temporary umbilicals attached, or exposed test points engaged; if design provisions exist (service ports, checkout connectors, external debug pads), these become direct pathways to device programming interfaces (e.g., JTAG/SWD/UART), mass-storage access, or maintenance command sets. Grappling also enables precise attitude control relative to the target, allowing contact-based sensors to read buses inductively or capacitively, or to inject signals onto harness segments reachable from the exterior. Initial access arises when a maintenance or debug path, normally latent in flight, is electrically or logically completed by the grappled connection, allowing authentication-bypassing actions such as boot-mode strapping, image replacement, or scripted command ingress. The operation demands accurate geometry, approach constraints, and fixture knowledge, but yields a transient, high-privilege bridge tailored for short, decisive actions that leave minimal on-orbit RF signature." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0005/03/> .
@@ -19974,6 +20003,9 @@ Intrusion prevention systems are considered extensions of intrusion detection sy
     rdfs:subClassOf :AccessMediation,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
+            owl:someValuesFrom :HardwarePort ],
+        [ a owl:Restriction ;
+            owl:onProperty :filters ;
             owl:someValuesFrom :InputDevice ],
         [ a owl:Restriction ;
             owl:onProperty :filters ;
@@ -20146,6 +20178,12 @@ Potential for false positives from anomalies that are not associated with malici
         <http://dbpedia.org/resource/Windows_Task_Scheduler>,
         :ScheduledJob ;
     :synonym "Task Scheduler Software" .
+
+:JTAGPort a owl:Class ;
+    rdfs:label "JTAG Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port designed to provide a connection to the test access interface specified by IEEE 1149.1." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/JTAG> .
 
 :K-CenterClustering a owl:Class,
         owl:NamedIndividual ;
@@ -22079,7 +22117,10 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
     rdfs:subClassOf :HardwareDevice,
         [ a owl:Restriction ;
             owl:onProperty :contains ;
-            owl:someValuesFrom :NetworkCardFirmware ] ;
+            owl:someValuesFrom :NetworkCardFirmware ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :EthernetPort ] ;
     rdfs:isDefinedBy <https://dbpedia.org/page/Network_interface_controller> ;
     :definition "A network interface card (NIC, also known as a network interface controller, network adapter, LAN adapter or physical network interface, and by similar terms) is a computer hardware component that connects a computer to a computer network." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/network_interface> ;
@@ -29654,6 +29695,12 @@ About Support Vector Machine (SVM). IBM SPSS Modeler SaaS Documentation. [Link](
     :definition "Suspending a thread causes the thread to stop executing user-mode code." ;
     rdfs:seeAlso <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-suspendthread> .
 
+:SWDPort a owl:Class ;
+    rdfs:label "SWD Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port designed to provide access to the Arm Serial Wire Debug interface through a clock signal and a bidirectional data signal." ;
+    rdfs:seeAlso <https://developer.arm.com/documentation/100893/1-0/Debug-and-trace-interface/Serial-Wire-Debug-signals> .
+
 :Switch a owl:Class ;
     rdfs:label "Switch" ;
     skos:altLabel "Bridging Hub",
@@ -32380,6 +32427,9 @@ When system firmware verification fails a set of predefined responses is typical
 :T1052.001 a owl:Class ;
     rdfs:label "Exfiltration over USB" ;
     rdfs:subClassOf :T1052,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :USBPort ],
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :RemovableMediaDevice ] ;
@@ -35746,7 +35796,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Replication Through Removable Media - ATTACK Mobile" ;
     skos:prefLabel "Replication Through Removable Media" ;
     rdfs:subClassOf :ATTACKMobileInitialAccessTechnique,
-        :ATTACKMobileLateralMovementTechnique ;
+        :ATTACKMobileLateralMovementTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :USBPort ] ;
     :attack-id "T1458" ;
     :definition "Adversaries may move onto devices by exploiting or copying malware to devices connected via USB. In the case of Lateral Movement, adversaries may utilize the physical connection of a device to a compromised or malicious charging station or PC to bypass application store requirements and install malicious applications directly.(Citation: Lau-Mactans) In the case of Initial Access, adversaries may attempt to exploit the device via the connection to gain access to data stored on the device.(Citation: Krebs-JuiceJacking) Examples of this include:" .
 
@@ -40612,6 +40665,12 @@ Temporal difference learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/T
             owl:someValuesFrom :Thread ] ;
     :definition "A function which invokes a create thread system call." .
 
+:ThunderboltPort a owl:Class ;
+    rdfs:label "Thunderbolt Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port designed to provide a physical connection using signaling defined by the Thunderbolt interface specifications." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Thunderbolt_(interface)> .
+
 :TicketGrantingTicket a owl:Class ;
     rdfs:label "Ticket Granting Ticket" ;
     skos:altLabel "Golden Ticket" ;
@@ -40973,6 +41032,12 @@ Note: This resource should not be considered a definitive or exhaustive coding g
             owl:someValuesFrom :TunnelOpenEvent ] ;
     :definition "An event where the lifecycle of a network tunnel is extended, ensuring continued encapsulated communication and avoiding session expiration." .
 
+:UARTPort a owl:Class ;
+    rdfs:label "UART Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardwrae port designed to transfer data characters delimited by start and stop bits using single-ended logic-level signaling." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Universal_asynchronous_receiver-transmitter> .
+
 :UDPEvent a owl:Class ;
     rdfs:label "UDP Event" ;
     rdfs:subClassOf :TransportLayerEvent ;
@@ -41120,6 +41185,12 @@ URL analysis may trigger follow-on analytics such as **File Analysis**
     :d3fend-id "D3-URA" ;
     :definition "Analyzing the reputation of a URL." ;
     :kb-reference :Reference-Finding_phishing_sites .
+
+:USBPort a owl:Class ;
+    rdfs:label "USB Port" ;
+    rdfs:subClassOf :HardwarePort ;
+    :definition "A hardware port designed to provide a physical connection using data signaling defined by the Universal Serial Bus specifications." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/USB_hardware> .
 
 :UseCaseGoal a owl:Class ;
     rdfs:label "Use Case Goal" ;
