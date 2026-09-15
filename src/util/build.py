@@ -1,7 +1,13 @@
-from rdflib import Graph, Namespace, URIRef
+import json
+import re
+from pathlib import Path
 
-PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public-with-controls.owl"
+from rdflib import BNode, Graph
+
+PUBLIC_ONTOLOGY_FILEPATH = "build/d3fend-public-with-controls.ttl"
 PUBLIC_DEST_DIR = "build/"
+
+GENERATED_BNODE = re.compile(r"^n[0-9a-f]{32}b([1-9][0-9]*)$")
 
 DEFAULT_CONTEXT = {
     "d3f": "http://d3fend.mitre.org/ontologies/d3fend.owl#",
@@ -43,39 +49,54 @@ def get_graph(filename=PUBLIC_ONTOLOGY_FILEPATH):
     return g
 
 
-_base = "http://d3fend.mitre.org/ontologies/d3fend.owl"
-_xmlns = _base + "#"
-xmlns = Namespace(_xmlns)
+def stable_bnode(term):
+    if not isinstance(term, BNode):
+        return term
+    match = GENERATED_BNODE.fullmatch(str(term))
+    if not match:
+        raise ValueError(f"Unexpected blank-node identifier: {term}")
+    return BNode(f"b{int(match.group(1)):04d}")
+
+
+def normalize_jsonld(value, parent_key=None):
+    if isinstance(value, dict):
+        return {key: normalize_jsonld(item, key) for key, item in value.items()}
+    if isinstance(value, list):
+        items = [normalize_jsonld(item) for item in value]
+        if parent_key in {"@context", "@list"}:
+            return items
+        return sorted(
+            items,
+            key=lambda item: json.dumps(
+                item, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ),
+        )
+    return value
+
+
+def serialize_jsonld(graph):
+    stable_graph = Graph()
+    for triple in graph:
+        stable_graph.add(tuple(stable_bnode(term) for term in triple))
+    document = json.loads(
+        stable_graph.serialize(format="json-ld", context=DEFAULT_CONTEXT)
+    )
+    return (
+        json.dumps(
+            normalize_jsonld(document), indent=2, sort_keys=True, ensure_ascii=False
+        )
+        + "\n"
+    )
+
 
 if __name__ == "__main__":
     output_fname = "d3fend-public-with-controls"
 
     g = get_graph()
-
-    g.namespace_manager.bind("", xmlns, override=True, replace=True)
-    ## Unbind may be indicated if desire serialization to manifest
-    ## 'd3f:' prefix instead of ':' (i.e., empty prefix). See
-    ## https://github.com/RDFLib/rdflib/issues/543.  Unbind operator
-    ## not available in latest release (5.0.0) yet.
-    # g.namespace_manager.unbind('')
-    d3f = Namespace(_xmlns)
-    g.namespace_manager.bind("d3f", d3f, override=True, replace=True)
-
-    # Serialize to different formats
-    base_uri = URIRef(_base)
-
-    g.serialize(
-        destination=f"{PUBLIC_DEST_DIR}{output_fname}.ttl",
-        format="ttl",
-        auto_compact=True,
-    )
-    log(f"Wrote: {output_fname}.ttl")
-
-    # g.serialize(destination=f"{PUBLIC_DEST_DIR}{output_fname}.json", context={k:v for k, v in g.namespaces()}, format="json-ld")
-    g.serialize(
-        destination=f"{PUBLIC_DEST_DIR}{output_fname}.json",
-        context=DEFAULT_CONTEXT,
-        format="json-ld",
+    destination = Path(f"{PUBLIC_DEST_DIR}{output_fname}.json")
+    destination.write_text(
+        serialize_jsonld(g),
+        encoding="utf-8",
     )
 
     log(f"wrote: {output_fname}.json")
