@@ -5846,7 +5846,10 @@ Ensemble learning. Wikipedia.  [Link](https://en.wikipedia.org/wiki/Ensemble_lea
 :BuildTool a owl:Class ;
     rdfs:label "Build Tool" ;
     skos:altLabel "Build Automation Tool" ;
-    rdfs:subClassOf :DeveloperApplication ;
+    rdfs:subClassOf :DeveloperApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     :definition "A tool that automates the process of creating a software build and the associated processes including: compiling computer source code into binary code, packaging binary code, and running automated tests." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Build_automation> .
 
@@ -6614,11 +6617,98 @@ Cluster analysis. (n.d.). Wikipedia. [Link](https://en.wikipedia.org/wiki/Cluste
     rdfs:subClassOf :SoftwareLibrary ;
     :definition "A software component that encodes or decodes a data stream of signal." .
 
+:CodePipeline a owl:Class ;
+    rdfs:label "Code Pipeline" ;
+    rdfs:subClassOf :DigitalInformation,
+        :Plan,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :CodePipelineStage ] ;
+    :definition "A digitally encoded, reusable plan composed of stages and their dependencies that specifies activities for building, evaluating, packaging, or delivering software." ;
+    rdfs:seeAlso <https://docs.gitlab.com/ci/pipelines/> .
+
+:CodePipelineApplication a owl:Class ;
+    rdfs:label "Code Pipeline Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :CodePipelineExecution ],
+        [ a owl:Restriction ;
+            owl:onProperty :manages ;
+            owl:someValuesFrom :CodePipeline ] ;
+    :definition "A service application that manages code pipeline definitions and coordinates their execution." .
+
+:CodePipelineConfigurationFile a owl:Class ;
+    rdfs:label "Code Pipeline Configuration File" ;
+    rdfs:subClassOf :ApplicationConfigurationFile,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :CodePipeline ] ;
+    rdfs:comment "Examples include .gitlab-ci.yml and GitHub Actions workflow files." ;
+    :definition "An application configuration file containing a reusable code pipeline definition." .
+
+:CodePipelineExecution a owl:Class ;
+    rdfs:label "Code Pipeline Execution" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :date ;
+            owl:someValuesFrom xsd:dateTime ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CodePipeline ] ;
+    :definition "A particular occurrence of executing a code pipeline according to its definition." .
+
+:CodePipelineRunnerApplication a owl:Class ;
+    rdfs:label "Code Pipeline Runner Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :CodePipelineStage ] ;
+    :definition "A service application that executes code pipeline stage instructions dispatched by a code pipeline application and reports execution results." ;
+    rdfs:seeAlso <https://docs.gitlab.com/ci/runners/> .
+
+:CodePipelineStage a owl:Class ;
+    rdfs:label "Code Pipeline Stage" ;
+    rdfs:subClassOf :Command,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :DigitalArtifact ] ;
+    rdfs:comment "Required inputs and prerequisite stages are related through depends-on. Input capabilities are related through may-access and can include subroutines, files, software packages, configuration, and credentials. Output capabilities are related through may-produce and can include executable binaries, software packages, container images, result records, and logs. These relationships describe a reusable definition; has-input and has-output describe execution events." ;
+    :definition "A named set of instructions specifying a unit of work within a code pipeline." .
+
+:CodePipelineStageExecution a owl:Class ;
+    rdfs:label "Code Pipeline Stage Execution" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :date ;
+            owl:someValuesFrom xsd:dateTime ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-input ;
+            owl:someValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-output ;
+            owl:allValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CodePipelineRunnerApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CodePipelineStage ] ;
+    rdfs:comment "Actual input and output artifacts are related through has-input and has-output. Outputs are not required for unfinished or failed invocations. The date property records an execution timestamp." ;
+    :definition "A particular invocation of a code pipeline stage by a code pipeline runner application." .
+
 :CodeRepository a owl:Class ;
     rdfs:label "Code Repository" ;
     skos:altLabel "Repository",
         "Version Control Repository" ;
-    rdfs:subClassOf :Database ;
+    rdfs:subClassOf :Database,
+        :Repository,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Repository_(version_control)> ;
     :definition "A code repository is a form of database where code, typically source code, is stored and managed.  In revision control systems, a repository is a data structure that stores metadata for a set of files or directory structure. Depending on whether the version control system in use is distributed like (Git or Mercurial) or centralized like (Subversion, CVS, or Perforce), the whole set of information in the repository may be duplicated on every user's system or may be maintained on a single server." .
 
@@ -6710,7 +6800,10 @@ Wikipedia. (n.d.). Coefficient of variation. [Link](https://en.wikipedia.org/wik
     rdfs:subClassOf :BuildTool,
         [ a owl:Restriction ;
             owl:onProperty :reads ;
-            owl:someValuesFrom :CompilerConfigurationFile ] ;
+            owl:someValuesFrom :CompilerConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :reads ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Compiler> ;
     :definition "In computing, a compiler is a computer program that translates computer code written in one programming language (the source language) into another language (the target language). The name \"compiler\" is primarily used for programs that translate source code from a high-level programming language to a lower level language (e.g., assembly language, object code, or machine code) to create an executable program." .
 
@@ -26539,7 +26632,8 @@ Proxy-based Web Server Access Mediation involves controlling access to web serve
 
 :PythonScriptFile a owl:Class ;
     rdfs:label "Python Script File" ;
-    rdfs:subClassOf :ExecutableScript ;
+    rdfs:subClassOf :ExecutableScript,
+        :SourceCodeFile ;
     :synonym "A script file written in the Python programming language." .
 
 :Q-Learning a owl:Class,
@@ -28916,13 +29010,19 @@ Application-layer discovery:
             owl:someValuesFrom :ExecutableBinary ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
-            owl:someValuesFrom :ExecutableScript ] ;
+            owl:someValuesFrom :ExecutableScript ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     :definition "A software library is a collection of software components that are used to build a software product." ;
     rdfs:seeAlso <https://dbpedia.org/page/Library_(computing)> .
 
 :SoftwarePackage a owl:Class ;
     rdfs:label "Software Package" ;
-    rdfs:subClassOf :DigitalInformationBearer ;
+    rdfs:subClassOf :DigitalInformationBearer,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     :definition "A Software Package is a bundled collection of files, code, and metadata that provides functionality, libraries, or applications." ;
     rdfs:seeAlso <https://schema.ocsf.io/objects/package> .
 
@@ -29006,9 +29106,17 @@ The goal is for homophones to be encoded to the same representation so that they
 
 :SourceCodeAnalyzerTool a owl:Class ;
     rdfs:label "Source Code Analyzer Tool" ;
-    rdfs:subClassOf :StaticAnalysisTool ;
+    rdfs:subClassOf :StaticAnalysisTool,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     :definition "A source code analyzer tool is a static analysis tool that operates specifically on source code, but not object code." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Static_program_analysis> .
+
+:SourceCodeFile a owl:Class ;
+    rdfs:label "Source Code File" ;
+    rdfs:subClassOf :File ;
+    :definition "A file containing computer program instructions expressed in a source programming language." .
 
 :SourceCodeHardening a owl:Class,
         owl:NamedIndividual ;
@@ -31868,7 +31976,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1027,
         [ a owl:Restriction ;
             owl:onProperty :creates ;
-            owl:someValuesFrom :ExecutableFile ] ;
+            owl:someValuesFrom :ExecutableFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     :attack-id "T1027.004" ;
     :definition "Adversaries may attempt to make payloads difficult to discover and analyze by delivering files to victims as uncompiled code. Text-based source code files may subvert analysis and scrutiny from protections targeting executables/binaries. These payloads will need to be compiled before execution; typically via native utilities such as csc.exe or GCC/MinGW.(Citation: ClearSky MuddyWater Nov 2018)" .
 
@@ -34686,6 +34797,9 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Compromise Software Supply Chain" ;
     rdfs:subClassOf :T1195,
         [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :SourceCodeFile ],
+        [ a owl:Restriction ;
             owl:onProperty :modifies ;
             owl:someValuesFrom :Software ] ;
     :attack-id "T1195.002" ;
@@ -37219,7 +37333,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1552,
         [ a owl:Restriction ;
             owl:onProperty :accesses ;
-            owl:someValuesFrom :File ] ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :SourceCodeFile ] ;
     :attack-id "T1552.001" ;
     :definition "Adversaries may search local file systems and remote file shares for files containing insecurely stored credentials. These can be files created by users to store their own credentials, shared credential stores for a group of individuals, configuration files containing passwords for a system or service, or source code/binary files containing embedded passwords." .
 
@@ -41632,6 +41749,15 @@ Intro to Active Learning. inovex Blog.  [Link](https://www.inovex.de/de/blog/int
     rdfs:subClassOf :Provider ;
     :definition "A vendor sells or supplies goods and services to customers." .
 
+:VersionControlApplication a owl:Class ;
+    rdfs:label "Version Control Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        :VersionControlTool,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :CodeRepository ] ;
+    :definition "A service application that contains and manages code repositories, tracks revisions to their contents, and provides clients with access to version-controlled code." .
+
 :VersionControlTool a owl:Class ;
     rdfs:label "Version Control Tool" ;
     skos:altLabel "Revision Control",
@@ -41885,7 +42011,8 @@ An ID token is proof of the user's authentication. An ID token is encoded as a J
 :WebScriptFile a owl:Class ;
     rdfs:label "Web Script File" ;
     skos:altLabel "Web Script" ;
-    rdfs:subClassOf :ExecutableScript ;
+    rdfs:subClassOf :ExecutableScript,
+        :SourceCodeFile ;
     :definition "A file containing a script in a web-scripting programming language. Web scripts may be present and run on the client or on the server side." .
 
 :WebServer a owl:Class ;
