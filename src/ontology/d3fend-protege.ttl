@@ -6631,9 +6631,41 @@ Cluster analysis. (n.d.). Wikipedia. [Link](https://en.wikipedia.org/wiki/Cluste
     rdfs:label "Code Pipeline Application" ;
     rdfs:subClassOf :ServiceApplication,
         [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :CodePipelineExecution ],
+        [ a owl:Restriction ;
             owl:onProperty :manages ;
             owl:someValuesFrom :CodePipeline ] ;
     :definition "A service application that manages code pipeline definitions and coordinates their execution." .
+
+:CodePipelineConfigurationFile a owl:Class ;
+    rdfs:label "Code Pipeline Configuration File" ;
+    rdfs:subClassOf :ApplicationConfigurationFile,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :CodePipeline ] ;
+    rdfs:comment "Examples include .gitlab-ci.yml and GitHub Actions workflow files." ;
+    :definition "An application configuration file containing a reusable code pipeline definition." .
+
+:CodePipelineExecution a owl:Class ;
+    rdfs:label "Code Pipeline Execution" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :date ;
+            owl:someValuesFrom xsd:dateTime ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CodePipeline ] ;
+    :definition "A particular occurrence of executing a code pipeline according to its definition." .
+
+:CodePipelineRunnerApplication a owl:Class ;
+    rdfs:label "Code Pipeline Runner Application" ;
+    rdfs:subClassOf :ServiceApplication,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :CodePipelineStage ] ;
+    :definition "A service application that executes code pipeline stage instructions dispatched by a code pipeline application and reports execution results." ;
+    rdfs:seeAlso <https://docs.gitlab.com/ci/runners/> .
 
 :CodePipelineStage a owl:Class ;
     rdfs:label "Code Pipeline Stage" ;
@@ -6646,6 +6678,27 @@ Cluster analysis. (n.d.). Wikipedia. [Link](https://en.wikipedia.org/wiki/Cluste
             owl:someValuesFrom :DigitalArtifact ] ;
     rdfs:comment "Required inputs and prerequisite stages are related through depends-on. Input capabilities are related through may-access and can include subroutines, files, software packages, configuration, and credentials. Output capabilities are related through may-produce and can include executable binaries, software packages, container images, result records, and logs. These relationships describe a reusable definition; has-input and has-output describe execution events." ;
     :definition "A named set of instructions specifying a unit of work within a code pipeline." .
+
+:CodePipelineStageExecution a owl:Class ;
+    rdfs:label "Code Pipeline Stage Execution" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :date ;
+            owl:someValuesFrom xsd:dateTime ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-input ;
+            owl:someValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-output ;
+            owl:allValuesFrom :DigitalArtifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CodePipelineRunnerApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CodePipelineStage ] ;
+    rdfs:comment "Actual input and output artifacts are related through has-input and has-output. Outputs are not required for unfinished or failed invocations. The date property records an execution timestamp." ;
+    :definition "A particular invocation of a code pipeline stage by a code pipeline runner application." .
 
 :CodeRepository a owl:Class ;
     rdfs:label "Code Repository" ;
