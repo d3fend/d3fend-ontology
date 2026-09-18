@@ -36938,19 +36938,34 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1546.016 a owl:Class ;
     rdfs:label "Installer Packages" ;
-    rdfs:subClassOf :T1546 ;
+    rdfs:subClassOf :T1546,
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :attack-id "T1546.016" ;
     :definition "Adversaries may establish persistence and elevate privileges by using an installer to trigger the execution of malicious content. Installer packages are OS specific and contain the resources an operating system needs to install applications on a system. Installer packages can include scripts that run prior to installation as well as after installation is complete. Installer scripts may inherit elevated permissions when executed. Developers often use these scripts to prepare the environment for installation, check requirements, download dependencies, and remove files after installation.(Citation: Installer Package Scripting Rich Trouton)" .
 
 :T1546.017 a owl:Class ;
     rdfs:label "Udev Rules" ;
-    rdfs:subClassOf :T1546 ;
+    rdfs:subClassOf :T1546,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :OperatingSystemConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :OperatingSystemConfigurationFile ] ;
     :attack-id "T1546.017" ;
     :definition "Adversaries may maintain persistence through executing malicious content triggered using udev rules. Udev is the Linux kernel device manager that dynamically manages device nodes, handles access to pseudo-device files in the `/dev` directory, and responds to hardware events, such as when external devices like hard drives or keyboards are plugged in or removed. Udev uses rule files with `match keys` to specify the conditions a hardware event must meet and `action keys` to define the actions that should follow. Root permissions are required to create, modify, or delete rule files located in `/etc/udev/rules.d/`, `/run/udev/rules.d/`, `/usr/lib/udev/rules.d/`, `/usr/local/lib/udev/rules.d/`, and `/lib/udev/rules.d/`. Rule priority is determined by both directory and by the digit prefix in the rule filename.(Citation: Ignacio Udev research 2024)(Citation: Elastic Linux Persistence 2024)" .
 
 :T1546.018 a owl:Class ;
     rdfs:label "Python Startup Hooks" ;
-    rdfs:subClassOf :T1546 ;
+    rdfs:subClassOf :T1546,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :ConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :PythonScriptFile ] ;
     :attack-id "T1546.018" ;
     :definition "Adversaries may achieve persistence by leveraging Python’s startup mechanisms, including path configuration (`.pth`) files and the `sitecustomize.py` or `usercustomize.py` modules. These files are automatically processed during the initialization of the Python interpreter, allowing for the execution of arbitrary code whenever Python is invoked.(Citation: Volexity GlobalProtect CVE 2024)" .
 
