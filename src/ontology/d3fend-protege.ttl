@@ -37324,13 +37324,28 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1553.005 a owl:Class ;
     rdfs:label "Mark-of-the-Web Bypass" ;
-    rdfs:subClassOf :T1553 ;
+    rdfs:subClassOf :T1553,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :DiskImage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FileSystemMetadata ] ;
     :attack-id "T1553.005" ;
     :definition "Adversaries may abuse specific file formats to subvert Mark-of-the-Web (MOTW) controls. In Windows, when files are downloaded from the Internet, they are tagged with a hidden NTFS Alternate Data Stream (ADS) named <code>Zone.Identifier</code> with a specific value known as the MOTW.(Citation: Microsoft Zone.Identifier 2020) Files that are tagged with MOTW are protected and cannot perform certain actions. For example, starting in MS Office 10, if a MS Office file has the MOTW, it will open in Protected View. Executables tagged with the MOTW will be processed by Windows Defender SmartScreen that compares files with an allowlist of well-known executables. If the file is not known/trusted, SmartScreen will prevent the execution and warn the user not to run it.(Citation: Beek Use of VHD Dec 2020)(Citation: Outflank MotW 2020)(Citation: Intezer Russian APT Dec 2020)" .
 
 :T1553.006 a owl:Class ;
     rdfs:label "Code Signing Policy Modification" ;
-    rdfs:subClassOf :T1553 ;
+    rdfs:subClassOf :T1553,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :WindowsRegistry ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingSystemConfigurationComponent ] ;
     :attack-id "T1553.006" ;
     :definition "Adversaries may modify code signing policies to enable execution of unsigned or self-signed code. Code signing provides a level of authenticity on a program from a developer and a guarantee that the program has not been tampered with. Security controls can include enforcement mechanisms to ensure that only valid, signed code can be run on an operating system." .
 
