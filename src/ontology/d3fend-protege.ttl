@@ -37988,19 +37988,34 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1564.010 a owl:Class ;
     rdfs:label "Process Argument Spoofing" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :WindowsWriteProcessMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessSegment ] ;
     :attack-id "T1564.010" ;
     :definition "Adversaries may attempt to hide process command-line arguments by overwriting process memory. Process command-line arguments are stored in the process environment block (PEB), a data structure used by Windows to store various information about/used by a process. The PEB includes the process command-line arguments that are referenced when executing the process. When a process is created, defensive tools/sensors that monitor process creations may retrieve the process arguments from the PEB.(Citation: Microsoft PEB 2021)(Citation: Xpn Argue Like Cobalt 2019)" .
 
 :T1564.011 a owl:Class ;
     rdfs:label "Ignore Process Interrupts" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ShellCommand ] ;
     :attack-id "T1564.011" ;
     :definition "Adversaries may evade defensive mechanisms by executing commands that hide from process interrupt signals. Many operating systems use signals to deliver messages to control process behavior. Command interpreters often include specific commands/flags that ignore errors and other hangups, such as when the user of the active session logs off.(Citation: Linux Signal Man)  These interrupt signals may also be used by defensive tools and/or analysts to pause or terminate specified running processes." .
 
 :T1564.012 a owl:Class ;
     rdfs:label "File/Path Exclusions" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :File ] ;
     :attack-id "T1564.012" ;
     :definition "Adversaries may attempt to hide their file-based artifacts by writing them to specific folders or file names excluded from antivirus (AV) scanning and other defensive capabilities. AV and other file-based scanners often include exclusions to optimize performance as well as ease installation and legitimate use of applications. These exclusions may be contextual (e.g., scans are only initiated in response to specific triggering events/alerts), but are also often hardcoded strings referencing specific folders and/or files assumed to be trusted and legitimate.(Citation: Microsoft File Folder Exclusions)" .
 
@@ -38012,7 +38027,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1564.014 a owl:Class ;
     rdfs:label "Extended Attributes" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :FileSystemMetadata ] ;
     :attack-id "T1564.014" ;
     :definition "Adversaries may abuse extended attributes (xattrs) on macOS and Linux to hide their malicious data in order to evade detection. Extended attributes are key-value pairs of file and directory metadata used by both macOS and Linux. They are not visible through standard tools like `Finder`,  `ls`, or `cat` and require utilities such as `xattr` (macOS) or `getfattr` (Linux) for inspection. Operating systems and applications use xattrs for tagging, integrity checks, and access control. On Linux, xattrs are organized into namespaces such as `user.` (user permissions), `trusted.` (root permissions), `security.`, and `system.`, each with specific permissions. On macOS, xattrs are flat strings without namespace prefixes, commonly prefixed with `com.apple.*` (e.g., `com.apple.quarantine`, `com.apple.metadata:_kMDItemUserTags`) and used by system features like Gatekeeper and Spotlight.(Citation: Establishing persistence using extended attributes on Linux)" .
 
