@@ -37075,19 +37075,37 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1547.012 a owl:Class ;
     rdfs:label "Print Processors" ;
-    rdfs:subClassOf :T1547 ;
+    rdfs:subClassOf :T1547,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :SoftwareLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :WindowsRegistryKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :OSAPIFunction ] ;
     :attack-id "T1547.012" ;
     :definition "Adversaries may abuse print processors to run malicious DLLs during system boot for persistence and/or privilege escalation. Print processors are DLLs that are loaded by the print spooler service, `spoolsv.exe`, during boot.(Citation: Microsoft Intro Print Processors)" .
 
 :T1547.013 a owl:Class ;
     rdfs:label "XDG Autostart Entries" ;
-    rdfs:subClassOf :T1547 ;
+    rdfs:subClassOf :T1547,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :UserInitConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :UserInitConfigurationFile ] ;
     :attack-id "T1547.013" ;
     :definition "Adversaries may add or modify XDG Autostart Entries to execute malicious programs or commands when a user’s desktop environment is loaded at login. XDG Autostart entries are available for any XDG-compliant Linux system. XDG Autostart entries use Desktop Entry files (`.desktop`) to configure the user’s desktop environment upon user login. These configuration files determine what applications launch upon user login, define associated applications to open specific file types, and define applications used to open removable media.(Citation: Free Desktop Application Autostart Feb 2006)(Citation: Free Desktop Entry Keys)" .
 
 :T1547.014 a owl:Class ;
     rdfs:label "Active Setup" ;
-    rdfs:subClassOf :T1547 ;
+    rdfs:subClassOf :T1547,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
     :attack-id "T1547.014" ;
     :definition "Adversaries may achieve persistence by adding a Registry key to the Active Setup of the local machine. Active Setup is a Windows mechanism that is used to execute programs when a user logs in. The value stored in the Registry key will be executed after a user logs into the computer.(Citation: Klein Active Setup 2010) These programs will be executed under the context of the user and will have the account's associated permissions level." .
 
