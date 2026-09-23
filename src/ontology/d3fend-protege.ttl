@@ -32140,31 +32140,49 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1036.008 a owl:Class ;
     rdfs:label "Masquerade File Type" ;
-    rdfs:subClassOf :T1036 ;
+    rdfs:subClassOf :T1036,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FileHeaderBlock ] ;
     :attack-id "T1036.008" ;
     :definition "Adversaries may masquerade malicious payloads as legitimate files through changes to the payload's formatting, including the file’s signature, extension, and contents. Various file types have a typical standard format, including how they are encoded and organized. For example, a file’s signature (also known as header or magic bytes) is the beginning bytes of a file and is often used to identify the file’s type. For example, the header of a JPEG file,  is <code> 0xFF 0xD8</code> and the file extension is either `.JPE`, `.JPEG` or `.JPG`." .
 
 :T1036.009 a owl:Class ;
     rdfs:label "Break Process Trees" ;
-    rdfs:subClassOf :T1036 ;
+    rdfs:subClassOf :T1036,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Process ] ;
     :attack-id "T1036.009" ;
     :definition "An adversary may attempt to evade process tree-based analysis by modifying executed malware's parent process ID (PPID). If endpoint protection software leverages the “parent-child\" relationship for detection, breaking this relationship could result in the adversary’s behavior not being associated with previous process tree activity. On Unix-based systems breaking this process tree is common practice for administrators to execute software using scripts and programs.(Citation: 3OHA double-fork 2022) " .
 
 :T1036.010 a owl:Class ;
     rdfs:label "Masquerade Account Name" ;
-    rdfs:subClassOf :T1036 ;
+    rdfs:subClassOf :T1036,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :UserAccount ] ;
     :attack-id "T1036.010" ;
     :definition "Adversaries may match or approximate the names of legitimate accounts to make newly created ones appear benign. This will typically occur during [Create Account](https://attack.mitre.org/techniques/T1136), although accounts may also be renamed at a later date. This may also coincide with [Account Access Removal](https://attack.mitre.org/techniques/T1531) if the actor first deletes an account before re-creating one with the same name.(Citation: Huntress MOVEit 2023)" .
 
 :T1036.011 a owl:Class ;
     rdfs:label "Overwrite Process Arguments" ;
-    rdfs:subClassOf :T1036 ;
+    rdfs:subClassOf :T1036,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessSegment ] ;
     :attack-id "T1036.011" ;
     :definition "Adversaries may modify a process's in-memory arguments to change its name in order to appear as a legitimate or benign process. On Linux, the operating system stores command-line arguments in the process’s stack and passes them to the `main()` function as the `argv` array. The first element, `argv[0]`, typically contains the process name or path - by default, the command used to actually start the process (e.g., `cat /etc/passwd`). By default, the Linux `/proc` filesystem uses this value to represent the process name. The `/proc/<PID>/cmdline` file reflects the contents of this memory, and tools like `ps` use it to display process information. Since arguments are stored in user-space memory at launch, this modification can be performed without elevated privileges." .
 
 :T1036.012 a owl:Class ;
     rdfs:label "Browser Fingerprint" ;
-    rdfs:subClassOf :T1036 ;
+    rdfs:subClassOf :T1036,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :OutboundInternetWebTraffic ] ;
     :attack-id "T1036.012" ;
     :definition "Adversaries may attempt to blend in with legitimate traffic by spoofing browser and system attributes like operating system, system language, platform, user-agent string, resolution, time zone, etc.  The HTTP User-Agent request header is a string that lets servers and network peers identify the application, operating system, vendor, and/or version of the requesting user agent.(Citation: Mozilla User Agent)" .
 
