@@ -18115,9 +18115,21 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
 
 :GNSSReceiver a owl:Class ;
     rdfs:label "GNSS Receiver" ;
-    rdfs:subClassOf :Receiver ;
+    rdfs:subClassOf :Receiver,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :GNSSReceiverFirmware ] ; 
     :definition "A GNSS (Global Navigation Satellite System) receiver is an electronic device that picks up signals from one or more satellite constellations (like GPS, GLONASS, Galileo, BeiDou) to calculate precise location, velocity, and time." ;
     rdfs:seeAlso <https://dbpedia.org/resource/Satellite_navigation> .
+
+:GNSSReceiverFirmware a owl:Class ;
+    rdfs:label "GNSS Receiver Firmware" ;
+    rdfs:subClassOf :Firmware,
+        [ a owl:Restriction ;
+            owl:onProperty :controls ;
+            owl:someValuesFrom :GNSSReceiver ] ; 
+    rdfs:seeAlso <https://insidegnss.com/hexagon-novatel-ships-oem7-firmware-upgrade-aimed-at-gnss-reliability-in-difficult-environments/> ; 
+    :definition "Firmware installed on a GNSS receiver that implements signal acquisition and tracking, navigation solution computation, and timing output" .
 
 :GNSSSatellite a owl:Class ;
     rdfs:label "GNSS Satellite" ;
@@ -18914,7 +18926,10 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
 :IA-0001.02 a owl:Class ;
     rdfs:label "Software Supply Chain - SPARTA" ;
     skos:prefLabel "Software Supply Chain" ;
-    rdfs:subClassOf :IA-0001 ;
+    rdfs:subClassOf :IA-0001,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :GNSSReceiverFirmware ] ;
     :attack-id "IA-0001.02" ;
     :definition "Here the manipulation targets software delivered to flight or ground systems: altering source before build, swapping signed binaries at distribution edges, subverting update metadata, or using stolen signing keys to issue malicious patches. Space-specific vectors include mission control applications, schedulers, gateway services, flight tables and configuration packages, and firmware loads during I&T or LEOP. Adversaries craft payloads that pass superficial validation, trigger under particular operating modes, or reintroduce known weaknesses through version rollback. “Data payloads” such as malformed tables, ephemerides, or calibration products can double as exploits when parsers are permissive. The objective is to ride the normal promotion pipeline so the implant arrives pre-trusted and executes as part of routine operations." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0001/02/> .
