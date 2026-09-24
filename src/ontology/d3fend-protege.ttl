@@ -32303,11 +32303,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Service Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :ServiceApplicationProcess ] ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
     :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
@@ -32851,7 +32851,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :UserGroup ] ; 
+            owl:someValuesFrom :UserGroup ] ;
     :attack-id "T1069" ;
     :definition "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions." .
 
@@ -33880,7 +33880,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :loads ;
-            owl:someValuesFrom :SharedLibraryFile ] ; 
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1129" ;
     :definition "Adversaries may execute malicious payloads via loading shared modules. Shared modules are executable files that are loaded into processes to provide access to reusable code, such as specific custom functions or invoking OS API functions (i.e., [Native API](https://attack.mitre.org/techniques/T1106))." ;
     :todo "This is distinct [sub-]technique, but isn't it related to Native API Execution?  The concrete procedure examples indicate in3 or 4 cases API function calls to load the modules, which is not execution per se, but loading the code in preparation for execution.  [Astaroth software's 'techniques used' was one reference for this comment.]" .
@@ -39761,7 +39761,16 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1651 a owl:Class ;
     rdfs:label "Cloud Administration Command" ;
-    rdfs:subClassOf :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :RemoteCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :ExecutableScript ] ;
     :attack-id "T1651" ;
     :definition "Adversaries may abuse cloud management services to execute commands within virtual machines. Resources such as AWS Systems Manager, Azure RunCommand, and Runbooks allow users to remotely run scripts in virtual machines by leveraging installed virtual machine agents. (Citation: AWS Systems Manager Run Command)(Citation: Microsoft Run Command)" .
 
