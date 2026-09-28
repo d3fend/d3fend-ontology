@@ -32303,11 +32303,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Service Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :ServiceApplicationProcess ] ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
     :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
@@ -32851,7 +32851,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :UserGroup ] ; 
+            owl:someValuesFrom :UserGroup ] ;
     :attack-id "T1069" ;
     :definition "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions." .
 
@@ -33880,7 +33880,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :loads ;
-            owl:someValuesFrom :SharedLibraryFile ] ; 
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1129" ;
     :definition "Adversaries may execute malicious payloads via loading shared modules. Shared modules are executable files that are loaded into processes to provide access to reusable code, such as specific custom functions or invoking OS API functions (i.e., [Native API](https://attack.mitre.org/techniques/T1106))." ;
     :todo "This is distinct [sub-]technique, but isn't it related to Native API Execution?  The concrete procedure examples indicate in3 or 4 cases API function calls to load the modules, which is not execution per se, but loading the code in preparation for execution.  [Astaroth software's 'techniques used' was one reference for this comment.]" .
@@ -34842,19 +34842,34 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1204.003 a owl:Class ;
     rdfs:label "Malicious Image" ;
-    rdfs:subClassOf :T1204 ;
+    rdfs:subClassOf :T1204,
+        [ a owl:Restriction ;
+            owl:onProperty :executes ;
+            owl:someValuesFrom :ContainerImage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :ContainerImage ] ;
     :attack-id "T1204.003" ;
     :definition "Adversaries may rely on a user running a malicious image to facilitate execution. Amazon Web Services (AWS) Amazon Machine Images (AMIs), Google Cloud Platform (GCP) Images, and Azure Images as well as popular container runtimes such as Docker can be backdoored. Backdoored images may be uploaded to a public repository via [Upload Malware](https://attack.mitre.org/techniques/T1608/001), and users may then download and deploy an instance or container from the image without realizing the image is malicious, thus bypassing techniques that specifically achieve Initial Access. This can lead to the execution of malicious code, such as code that executes cryptocurrency mining, in the instance or container.(Citation: Summit Route Malicious AMIs)" .
 
 :T1204.004 a owl:Class ;
     rdfs:label "Malicious Copy and Paste" ;
-    rdfs:subClassOf :T1204 ;
+    rdfs:subClassOf :T1204,
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ShellCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Clipboard ] ;
     :attack-id "T1204.004" ;
     :definition "An adversary may rely upon a user copying and pasting code in order to gain execution. Users may be subjected to social engineering to get them to copy and paste code directly into a [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059)." .
 
 :T1204.005 a owl:Class ;
     rdfs:label "Malicious Library" ;
-    rdfs:subClassOf :T1204 ;
+    rdfs:subClassOf :T1204,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :SoftwareLibraryFile ] ;
     :attack-id "T1204.005" ;
     :definition "Adversaries may rely on a user installing a malicious library to facilitate execution. Threat actors may [Upload Malware](https://attack.mitre.org/techniques/T1608/001) to package managers such as NPM and PyPi, as well as to public code repositories such as GitHub. User may install libraries without realizing they are malicious, thus bypassing techniques that specifically achieve Initial Access. This can lead to the execution of malicious code, such as code that establishes persistence, steals data, or mines cryptocurrency.(Citation: Datadog Security Labs Malicious PyPi Packages 2024)(Citation: Fortinet Malicious NPM Packages 2023)" .
 
