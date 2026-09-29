@@ -850,6 +850,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-counter-attack ;
     :pref-label "may deceive" .
 
+:may-delete a owl:ObjectProperty ;
+    rdfs:label "may-delete" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-delete y: The entity x may delete the entity y; that is, 'x deletes y' may be true." .
+
 :may-detect a owl:ObjectProperty ;
     rdfs:label "may-detect" ;
     rdfs:subPropertyOf :may-counter-attack ;
@@ -32303,11 +32308,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Service Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :ServiceApplicationProcess ] ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
     :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
@@ -32851,7 +32856,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :UserGroup ] ; 
+            owl:someValuesFrom :UserGroup ] ;
     :attack-id "T1069" ;
     :definition "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions." .
 
@@ -33880,7 +33885,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :loads ;
-            owl:someValuesFrom :SharedLibraryFile ] ; 
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1129" ;
     :definition "Adversaries may execute malicious payloads via loading shared modules. Shared modules are executable files that are loaded into processes to provide access to reusable code, such as specific custom functions or invoking OS API functions (i.e., [Native API](https://attack.mitre.org/techniques/T1106))." ;
     :todo "This is distinct [sub-]technique, but isn't it related to Native API Execution?  The concrete procedure examples indicate in3 or 4 cases API function calls to load the modules, which is not execution per se, but loading the code in preparation for execution.  [Astaroth software's 'techniques used' was one reference for this comment.]" .
@@ -35962,7 +35967,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1485 a owl:Class ;
     rdfs:label "Data Destruction" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-delete ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FileSystem ] ;
     :attack-id "T1485" ;
     :definition "Adversaries may destroy data and files on specific systems or in large numbers on a network to interrupt availability to systems, services, and network resources. Data destruction is likely to render stored data irrecoverable by forensic techniques through overwriting files or data on local and remote drives.(Citation: Symantec Shamoon 2012)(Citation: FireEye Shamoon Nov 2016)(Citation: Palo Alto Shamoon Nov 2016)(Citation: Kaspersky StoneDrill 2017)(Citation: Unit 42 Shamoon3 2018)(Citation: Talos Olympic Destroyer 2018) Common operating system file deletion commands such as <code>del</code> and <code>rm</code> often only remove pointers to files without wiping the contents of the files themselves, making the files recoverable by proper forensic methodology. This behavior is distinct from [Disk Content Wipe](https://attack.mitre.org/techniques/T1561/001) and [Disk Structure Wipe](https://attack.mitre.org/techniques/T1561/002) because individual files are destroyed rather than sections of a storage disk or the disk's logical structure." .
 
