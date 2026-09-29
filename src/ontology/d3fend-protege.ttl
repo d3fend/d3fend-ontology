@@ -32303,11 +32303,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Service Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :ServiceApplicationProcess ] ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
     :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
@@ -32851,7 +32851,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :UserGroup ] ; 
+            owl:someValuesFrom :UserGroup ] ;
     :attack-id "T1069" ;
     :definition "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions." .
 
@@ -33880,7 +33880,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :loads ;
-            owl:someValuesFrom :SharedLibraryFile ] ; 
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1129" ;
     :definition "Adversaries may execute malicious payloads via loading shared modules. Shared modules are executable files that are loaded into processes to provide access to reusable code, such as specific custom functions or invoking OS API functions (i.e., [Native API](https://attack.mitre.org/techniques/T1106))." ;
     :todo "This is distinct [sub-]technique, but isn't it related to Native API Execution?  The concrete procedure examples indicate in3 or 4 cases API function calls to load the modules, which is not execution per se, but loading the code in preparation for execution.  [Astaroth software's 'techniques used' was one reference for this comment.]" .
@@ -36176,7 +36176,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1499.001 a owl:Class ;
     rdfs:label "OS Exhaustion Flood" ;
-    rdfs:subClassOf :T1499 ;
+    rdfs:subClassOf :T1499,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :InboundNetworkTraffic ] ;
     :attack-id "T1499.001" ;
     :definition "Adversaries may launch a denial of service (DoS) attack targeting an endpoint's operating system (OS). A system's OS is responsible for managing the finite resources as well as preventing the entire system from being overwhelmed by excessive demands on its capacity. These attacks do not need to exhaust the actual resources on a system; the attacks may simply exhaust the limits and available resources that an OS self-imposes." .
 
@@ -36192,7 +36195,16 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1499.003 a owl:Class ;
     rdfs:label "Application Exhaustion Flood" ;
-    rdfs:subClassOf :T1499 ;
+    rdfs:subClassOf :T1499,
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :WebApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :InboundNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :WebResourceAccess ] ;
     :attack-id "T1499.003" ;
     :definition "Adversaries may target resource intensive features of applications to cause a denial of service (DoS), denying availability to those applications. For example, specific features in web applications may be highly resource intensive. Repeated requests to those features may be able to exhaust system resources and deny access to the application or the server itself.(Citation: Arbor AnnualDoSreport Jan 2018)" .
 
