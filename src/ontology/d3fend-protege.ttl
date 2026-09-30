@@ -902,6 +902,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     :pref-label "may isolate" ;
     :todo "There are some d3f isolation techniques H b P I and E T and M A C that use isolates directly which is different sense that this tactical isolates/may-isolates." .
 
+:may-load a owl:ObjectProperty ;
+    rdfs:label "may-load" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-load y: The entity x may load the entity y; that is, 'x loads y' may be true." .
+
 :may-map a owl:ObjectProperty ;
     rdfs:label "may-map" ;
     rdfs:subPropertyOf :may-be-associated-with .
@@ -25770,7 +25775,7 @@ Policy Gradients in a Nutshell. Towards Data Science.  [Link](https://towardsdat
             owl:onProperty :contains ;
             owl:someValuesFrom :ProcessSegment ] ;
     rdfs:isDefinedBy <https://www.memorymanagement.org/glossary/m.html#term-main-memory> ;
-    :definition "Primary memory of a computer is memory that is wired directly to the processor, consisting of RAM and possibly ROM.  These terms are used in contrast to mass storage devices and cache memory (although we may note that when a program accesses main memory, it is often actually interacting with a cache)." ;
+    :definition "Primary memory of a computer is memory that is wired directly to the processor, consisting of RAM and possibly ROM.  These terms are used in contrast to mass storage devices and cache memory (although we may note that when a program accesses main memory, it is often actually ƒinteracting with a cache)." ;
     rdfs:seeAlso <https://en.wikipedia.org/wiki/Computer_data_storage#Primary_storage> .
 
 :PrincipalComponentAnalysis a owl:Class,
@@ -32303,11 +32308,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Service Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :ServiceApplicationProcess ] ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
     :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
@@ -32851,7 +32856,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :UserGroup ] ; 
+            owl:someValuesFrom :UserGroup ] ;
     :attack-id "T1069" ;
     :definition "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions." .
 
@@ -33880,7 +33885,7 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :ExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :loads ;
-            owl:someValuesFrom :SharedLibraryFile ] ; 
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1129" ;
     :definition "Adversaries may execute malicious payloads via loading shared modules. Shared modules are executable files that are loaded into processes to provide access to reusable code, such as specific custom functions or invoking OS API functions (i.e., [Native API](https://attack.mitre.org/techniques/T1106))." ;
     :todo "This is distinct [sub-]technique, but isn't it related to Native API Execution?  The concrete procedure examples indicate in3 or 4 cases API function calls to load the modules, which is not execution per se, but loading the code in preparation for execution.  [Astaroth software's 'techniques used' was one reference for this comment.]" .
@@ -37670,10 +37675,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1560 a owl:Class ;
     rdfs:label "Archive Collected Data" ;
-    rdfs:subClassOf :CollectionTechnique,
-        [ a owl:Restriction ;
-            owl:onProperty :creates ;
-            owl:someValuesFrom :ArchiveFile ] ;
+    rdfs:subClassOf :CollectionTechnique ;
     :attack-id "T1560" ;
     :definition "An adversary may compress and/or encrypt data that is collected prior to exfiltration. Compressing the data can help to obfuscate the collected data and minimize the amount of data sent over the network.(Citation: DOJ GRU Indictment Jul 2018) Encryption can be used to hide information that is being exfiltrated from detection or make exfiltration less conspicuous upon inspection by a defender." .
 
@@ -37691,7 +37693,10 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:subClassOf :T1560,
         [ a owl:Restriction ;
             owl:onProperty :creates ;
-            owl:someValuesFrom :ArchiveFile ] ;
+            owl:someValuesFrom :ArchiveFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-load ;
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1560.002" ;
     :definition "An adversary may compress or encrypt data that is collected prior to exfiltration using 3rd party libraries. Many libraries exist that can archive data, including [Python](https://attack.mitre.org/techniques/T1059/006) rarfile (Citation: PyPI RAR), libzip (Citation: libzip), and zlib (Citation: Zlib Github). Most libraries include functionality to encrypt and/or compress data." .
 
