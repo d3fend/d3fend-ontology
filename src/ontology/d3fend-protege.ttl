@@ -38255,25 +38255,49 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1569 a owl:Class ;
     rdfs:label "System Services" ;
-    rdfs:subClassOf :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ServiceApplication ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ShellCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :CreateProcess ] ;
     :attack-id "T1569" ;
     :definition "Adversaries may abuse system services or daemons to execute commands or programs. Adversaries can execute malicious content by interacting with or creating services either locally or remotely. Many services are set to run at boot, which can aid in achieving persistence ([Create or Modify System Process](https://attack.mitre.org/techniques/T1543/)), but adversaries can also abuse services for one-time or temporary execution." .
 
 :T1569.001 a owl:Class ;
     rdfs:label "Launchctl" ;
-    rdfs:subClassOf :T1569 ;
+    rdfs:subClassOf :T1569,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :PropertyListFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :PropertyListFile ] ;
     :attack-id "T1569.001" ;
     :definition "Adversaries may abuse launchctl to execute commands or programs. Launchctl interfaces with launchd, the service management framework for macOS. Launchctl supports taking subcommands on the command-line, interactively, or even redirected from standard input.(Citation: Launchctl Man)" .
 
 :T1569.002 a owl:Class ;
     rdfs:label "Service Execution" ;
-    rdfs:subClassOf :T1569 ;
+    rdfs:subClassOf :T1569,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :WindowsRegistryKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
     :attack-id "T1569.002" ;
     :definition "Adversaries may abuse the Windows service control manager to execute malicious commands or payloads. The Windows service control manager (<code>services.exe</code>) is an interface to manage and manipulate services.(Citation: Microsoft Service Control Manager) The service control manager is accessible to users via GUI components as well as system utilities such as <code>sc.exe</code> and [Net](https://attack.mitre.org/software/S0039)." .
 
 :T1569.003 a owl:Class ;
     rdfs:label "Systemctl" ;
-    rdfs:subClassOf :T1569 ;
+    rdfs:subClassOf :T1569,
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :OperatingSystemConfigurationFile ] ;
     :attack-id "T1569.003" ;
     :definition "Adversaries may abuse systemctl to execute commands or programs. Systemctl is the primary interface for systemd, the Linux init system and service manager. Typically invoked from a shell, Systemctl can also be integrated into scripts or applications." .
 
