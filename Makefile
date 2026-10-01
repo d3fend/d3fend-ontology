@@ -56,6 +56,23 @@ PYTHON ?= python3.11
 PIPENV ?= pipenv
 JAVA ?= java
 
+ONTOLOGY_ROOT := src/ontology/d3fend-protege.ttl
+ONTOLOGY_CATALOG := src/ontology/catalog-v001.xml
+ONTOLOGY_MODULES := \
+	src/ontology/modules/core.ttl \
+	src/ontology/modules/properties.ttl \
+	src/ontology/modules/artifacts.ttl \
+	src/ontology/modules/events.ttl \
+	src/ontology/modules/defensive-techniques.ttl \
+	src/ontology/modules/analytics.ttl \
+	src/ontology/modules/references.ttl \
+	src/ontology/external/attack.ttl \
+	src/ontology/external/atlas.ttl \
+	src/ontology/external/sparta.ttl \
+	src/ontology/external/cwe.ttl \
+	src/ontology/external/capec.ttl
+ONTOLOGY_SOURCES := $(ONTOLOGY_ROOT) $(ONTOLOGY_MODULES)
+
 ROBOT_VERSION ?= 1.9.10
 ROBOT_VERSIONED_JAR := bin/robot-$(ROBOT_VERSION).jar
 ROBOT_URL ?= "https://github.com/ontodev/robot/releases/download/v$(ROBOT_VERSION)/robot.jar"
@@ -361,8 +378,12 @@ build/d3fend-prefixes.json: builddir | robot ## create d3fend-specific prefix fi
 		export-prefixes --output build/d3fend-prefixes.json
 	$(END)
 
-build/d3fend-with-header.owl:	src/ontology/d3fend-protege.ttl | robot
-	./bin/robot annotate --input src/ontology/d3fend-protege.ttl \
+build/d3fend-asserted.ttl: $(ONTOLOGY_SOURCES) $(ONTOLOGY_CATALOG) src/util/ontology_modules.py | builddir
+	$(PIPENV) run $(PYTHON) src/util/ontology_modules.py --source $(ONTOLOGY_ROOT) --catalog $(ONTOLOGY_CATALOG) --output $@
+	$(END)
+
+build/d3fend-with-header.owl:	build/d3fend-asserted.ttl | robot
+	./bin/robot annotate --input build/d3fend-asserted.ttl \
 		--version-iri "http://d3fend.mitre.org/ontologies/d3fend/${D3FEND_VERSION}/d3fend.owl" \
 		--typed-annotation "http://d3fend.mitre.org/ontologies/d3fend.owl#release-date" ${D3FEND_RELEASE_DATE} xsd:dateTime \
 		--annotation owl:versionInfo ${D3FEND_VERSION} \
@@ -464,8 +485,8 @@ build/d3fend-public-mapped.owl: build/d3fend-public.owl
 	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
 	$(END)
 
-build/d3fend-public-cco.owl: build/d3fend-public.owl
-	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-cco.ttl --input build/d3fend-public.owl --output build/d3fend-public-cco.owl
+build/d3fend-public-cco.owl: build/d3fend-public.owl $(ONTOLOGY_CATALOG)
+	./bin/robot merge --catalog $(ONTOLOGY_CATALOG) --include-annotations true --input src/ontology/mappings/d3fend-cco.ttl --input build/d3fend-public.owl --output build/d3fend-public-cco.owl
 	$(END)
 
 build/d3fend-public.ttl: build/d3fend-public.owl
@@ -615,7 +636,11 @@ test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable 
 test-reasoner:
 	./bin/robot reason --reasoner ELK --input build/d3fend-public-with-controls.ttl -D reports/test-reasoner-results.ttl
 
-test:	robot test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
+test-ontology-modules: ## Check local module assembly and dashboard loading
+	$(PIPENV) run $(PYTHON) -m unittest src.tests.test_ontology_modules
+	$(END)
+
+test:	robot test-ontology-modules test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
 	$(END)
 
 dist: distdir
@@ -644,7 +669,7 @@ help: ##print out this message
 	@grep -E '^[^@]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 format: ## Format ttl to canonical, stable format for effective diffing (accomplished before any commits)
-	pipenv run ttlfmt src/ontology/d3fend-protege.ttl
+	pipenv run ttlfmt $(ONTOLOGY_SOURCES)
 
 # requires `make install-python-deps`
 pre-commit-install:
@@ -654,6 +679,6 @@ pre-commit:
 	pipenv run pre-commit run --all-files
 
 
-.PHONY: all help clean build dist test robot
+.PHONY: all help clean build dist test test-ontology-modules robot
 
 .DEFAULT_GOAL := help

@@ -1,11 +1,11 @@
 from update_attack import get_stix_data, update_and_add
 from stix2 import MemoryStore
 from rdflib import URIRef, Literal, Graph, RDF, RDFS, Namespace
-from build import _xmlns as _XMLNS
 
 owl = Namespace("http://www.w3.org/2002/07/owl#")
 rdfs = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
+_XMLNS = str(d3fend)
 
 test_graph = """
     @prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .

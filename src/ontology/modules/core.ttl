@@ -1,0 +1,592 @@
+@prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://d3fend.mitre.org/ontologies/modules/core> a owl:Ontology ;
+    owl:imports <http://d3fend.mitre.org/ontologies/modules/properties> .
+
+### Classes
+
+:Agent a owl:Class ;
+    rdfs:label "Agent" ;
+    rdfs:subClassOf :D3FENDCore ;
+    :definition "An entity capable of performing intentional actions." ;
+    rdfs:seeAlso <https://schema.ocsf.io/objects/actor> .
+
+:AgentGroup a owl:Class ;
+    rdfs:label "Agent Group" ;
+    rdfs:subClassOf :Group,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :Agent ] .
+
+:AnalyticalPurpose a owl:Class ;
+    rdfs:label "Analytical Purpose" ;
+    rdfs:subClassOf :Goal .
+
+:Artifact a owl:Class ;
+    rdfs:label "Artifact" ;
+    rdfs:subClassOf :D3FENDCore ;
+    :definition "A man-made object taken as a whole." ;
+    rdfs:seeAlso <http://d3fend.mitre.org/ontologies/d3fend.owl>,
+        <http://wordnet-rdf.princeton.edu/id/00022119-n> .
+
+:Attacker a owl:Class ;
+    rdfs:label "Attacker" ;
+    rdfs:subClassOf :Agent ;
+    :definition "An agent that attempts to exploit vulnerabilities to gain unauthorized access to data or systems." .
+
+:BinaryClassification a owl:Class ;
+    rdfs:label "Binary Classification" ;
+    rdfs:subClassOf :Classifying .
+
+:Capability a owl:Class ;
+    rdfs:label "Capability" ;
+    rdfs:subClassOf :ExternalThing ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Capability_(systems_engineering)> ;
+    :comment """Source Definitions for DoDAF-DM2 Term: "(JCIDS):  The ability to achieve a desired effect under specified standards and conditions through combinations of means and ways to perform a set of tasks.
+(DoDAF/CADM):  An ability to achieve an objective. (DDDS Counter (333/1)(A))
+(JC3IEDM):  The potential ability to do work, perform a function or mission, achieve an objective, or provide a service.
+(MODAF):  Capabilities in the MODAF sense are specifically not about equipment but are a high level specification of the enterprise’s ability. A capability is a classification of some ability - and can be specified regardless of whether the enterprise is currently able to achieve it. For example, one could define a capability “Manned Interplanetary Travel” which no-one can currently achieve, but which may be planned or aspired to. Capabilities in MODAF are not time-dependent - once defined they are persistent. It is only the Capability Requirement that changes.
+(NAF):  The ability of one or more resources to deliver a specified type of effect or a specified course of action. (GEN TERM)
+(NAF):  A high level specification of the enterprise's ability. (MM)
+(JCS 1-02):  The ability to execute a specified course of action. (A capability may or may not be accompanied by an intention.)
+(Webster's):  1. The quality of being capable; ability.  2. A talent or ability that has potential for development or use.  3. The capacity to be used, treated, or developed for a specific purpose.
+(Merriam-Webster's Eleventh Collegiate Dictionary): A feature or factor capable of development: POTENTIALITY.    3. The facility or potential for an indicated use or deployment.
+(Joint Publication 1-02, Dictionary of Military and Associated Terms, 12 Apr 2001 (as amended trhough 30 May 2008) ): The ability to exercise a specified course of action (A capability may or may not be accompanied by an intention)
+(Dictionary.com): The quality of being capable; capacity; ability: His capability was unquestionable. The ability to undergo or be affected by a given treatment or action: the capability of glass in resisting heat. Usually, capabilities. qualities, abilities, features, etc., that can be used or developed; potential: Though dilapidated, the house has great capabilities
+(Wiktionary): The power or ability to generate an outcome
+(www.staffordshireprepared.gov.uk/glossary/): Originally a military term which includes the aspects of personnel, equipment, training, planning and operational doctrine. Now used to mean a demonstrable capacity or ability to respond to and recover from a particular threat or hazard."
+
+CJCS Guide 3401D: https://www.jcs.mil/Portals/36/Documents/Library/Handbooks/g3401.pdf?ver=2016-02-05-175742-457 : "capability. The ability to execute a specified course of action. (A capability may or may not be accompanied by an intention.)"
+
+USG Compendium of Interagency and Associated Terms: https://www.jcs.mil/Portals/36/Documents/Doctrine/dictionary/repository/usg_compendium.pdf?ver=2019-11-04-174229-423 "capability - means to accomplish a mission, function, or objective." DHS, DHS Lexicon, Terms, Mar 17;
+
+USG Compendium of Interagency and Associated Terms: https://www.jcs.mil/Portals/36/Documents/Doctrine/dictionary/repository/usg_compendium.pdf?ver=2019-11-04-174229-423  "capability - Provides the means to accomplish a mission or function resulting from the performance of one or more critical tasks, under specified conditions, to target levels of performance. A capability may be delivered with any combination of properly planned, organized, equipped, trained, and exercised personnel that achieves the desired outcome."
+DHHS, National Health Security Review 2010- 2014, Terms, Jan 17""" ;
+    rdfs:seeAlso <https://web.archive.org/web/20081123014953/http://www.dtic.mil/doctrine/jel/new_pubs/jp1_02.pdf> .
+
+:CCIControl a owl:Class ;
+    rdfs:label "CCI Control" ;
+    rdfs:subClassOf :ExternalControl,
+        [ a owl:Restriction ;
+            owl:onProperty :control-name ;
+            owl:someValuesFrom xsd:string ],
+        [ a owl:Restriction ;
+            owl:onProperty :member-of ;
+            owl:someValuesFrom :ControlCorrelationIdentifierCatalog ],
+        [ a owl:Restriction ;
+            owl:onProperty :published ;
+            owl:someValuesFrom xsd:dateTime ] .
+
+:Classifying a owl:Class ;
+    rdfs:label "Classifying" ;
+    rdfs:subClassOf :AnalyticalPurpose .
+
+:CloudServiceProvider a owl:Class ;
+    rdfs:label "Cloud Service Provider" ;
+    rdfs:subClassOf :ServiceProvider ;
+    :definition "A cloud service provider delivers scalable and distributed computing resources over a network, enabling clients to access infrastructure, platforms, and applications remotely." .
+
+:Clustering a owl:Class ;
+    rdfs:label "Clustering" ;
+    rdfs:subClassOf :Summarizing .
+
+:Condition a owl:Class ;
+    rdfs:label "Condition" ;
+    rdfs:subClassOf :D3FENDCore ;
+    rdfs:comment "Less common usage versus state, meant to superclass precondition, postcondition, and effect." ;
+    rdfs:isDefinedBy "n-06768279" ;
+    :definition "An assumption on which rests the validity or effect of something else." .
+
+:ControlCatalog a owl:Class ;
+    rdfs:label "Control Catalog" ;
+    rdfs:subClassOf :ExternalControlThing,
+        [ a owl:Restriction ;
+            owl:onProperty :has-member ;
+            owl:someValuesFrom :ExternalControl ],
+        [ a owl:Restriction ;
+            owl:onProperty :version ;
+            owl:someValuesFrom [ a rdfs:Datatype ;
+                    owl:unionOf (
+                            xsd:integer
+                            xsd:string ) ] ] ;
+    :definition "A control catalog is a complete list of protective measures for systems, organizations, or individuals for subject domains (e.g., security and privacy.)" ;
+    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/06499734-n> .
+
+:ControlCorrelationIdentifierCatalog a owl:Class ;
+    rdfs:label "Control Correlation Identifier Catalog" ;
+    rdfs:subClassOf :ControlCatalog,
+        [ a owl:Restriction ;
+            owl:onProperty :has-member ;
+            owl:someValuesFrom :CCIControl ] ;
+    :definition "A control correlation identifier (CCI) catalog provides a catalog of CCIs for a given release date." ;
+    rdfs:seeAlso <https://public.cyber.mil/stigs/cci/> .
+
+:CyberTechnique a owl:Class ;
+    rdfs:label "Cyber Technique" ;
+    rdfs:subClassOf :Technique,
+        [ a owl:Restriction ;
+            owl:onProperty :implemented-by ;
+            owl:someValuesFrom :Procedure ] .
+
+:D3FENDCore a owl:Class ;
+    rdfs:label "D3FEND Core" .
+
+:D3FENDKBThing a owl:Class ;
+    rdfs:label "D3FEND KB Thing" .
+
+:Event a owl:Class ;
+    rdfs:label "Event" ;
+    rdfs:subClassOf :D3FENDCore ;
+    :definition "An Event is an occurrence or action within a system, process, or environment within a finite span of time." .
+
+:ExternalControl a owl:Class ;
+    rdfs:label "External Control" ;
+    rdfs:subClassOf :ExternalControlThing,
+        [ a owl:Restriction ;
+            owl:onProperty :member-of ;
+            owl:someValuesFrom :ControlCatalog ],
+        [ a owl:Restriction ;
+            owl:onProperty :semantic-relation ;
+            owl:someValuesFrom :DefensiveTechnique ] .
+
+:ExternalControlThing a owl:Class ;
+    rdfs:label "External Control Thing" ;
+    rdfs:subClassOf :ExternalThing .
+
+:ExternalThing a owl:Class ;
+    rdfs:label "External Thing" .
+
+:ExternalThreatModelThing a owl:Class ;
+    rdfs:label "External Threat Model Thing" ;
+    rdfs:subClassOf :ExternalThing .
+
+:Forecasting a owl:Class ;
+    rdfs:label "Forecasting" ;
+    rdfs:subClassOf :AnalyticalPurpose .
+
+:Generation a owl:Class ;
+    rdfs:label "Media Generation" ;
+    rdfs:subClassOf :AnalyticalPurpose .
+
+:Goal a owl:Class ;
+    rdfs:label "Goal" ;
+    rdfs:subClassOf :D3FENDCore .
+
+:Group a owl:Class ;
+    rdfs:label "Group" ;
+    rdfs:subClassOf :D3FENDCore .
+
+:Grouping a owl:Class ;
+    rdfs:label "Grouping" ;
+    rdfs:subClassOf :Summarizing .
+
+:Histogramming a owl:Class ;
+    rdfs:label "Histogramming" ;
+    rdfs:subClassOf :Summarizing .
+
+:InternetBasedAttacker a owl:Class ;
+    rdfs:label "Internet-based Attacker" ;
+    rdfs:subClassOf :RemoteAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WideAreaNetwork ] ;
+    :definition "A remote attacker who leverages the internet to conduct attacks, such as through phishing, malware, or direct network attacks." .
+
+:LocalAreaNetworkAttacker a owl:Class ;
+    rdfs:label "Local Area Network Attacker" ;
+    rdfs:subClassOf :LocalAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :LocalAreaNetwork ] ;
+    :definition "An attacker who exploits vulnerabilities within the same local area network." ;
+    :synonym "LAN Attacker" .
+
+:LocalAttacker a owl:Class ;
+    rdfs:label "Local Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An attacker who is physically near or on the premises of the target network or systems." .
+
+:Matching a owl:Class ;
+    rdfs:label "Matching" ;
+    rdfs:subClassOf :AnalyticalPurpose .
+
+:MediaGeneration a owl:Class ;
+    rdfs:label "Media Generation" ;
+    rdfs:subClassOf :Generation ;
+    owl:disjointWith :Simulation .
+
+:MulticlassClassification a owl:Class ;
+    rdfs:label "Multiclass Classification" ;
+    rdfs:subClassOf :Classifying .
+
+:NISTControl a owl:Class ;
+    rdfs:label "NIST Control" ;
+    rdfs:subClassOf :ExternalControl,
+        [ a owl:Restriction ;
+            owl:onProperty :member-of ;
+            owl:someValuesFrom :NISTSP800-53ControlCatalog ] .
+
+:NISTSP800-53ControlCatalog a owl:Class ;
+    rdfs:label "NIST SP 800-53 Control Catalog" ;
+    rdfs:subClassOf :ControlCatalog,
+        [ a owl:Restriction ;
+            owl:onProperty :has-member ;
+            owl:someValuesFrom :NISTControl ] ;
+    :definition "A NIST SP 800-53 control catalog provides the entire set of security and privacy controls for a version of NIST SP 800-53." ;
+    rdfs:seeAlso <https://doi.org/10.6028/NIST.SP.800-53r5> .
+
+:Non-PersonEntity a owl:Class ;
+    rdfs:label "Non-Person Entity" ;
+    rdfs:subClassOf :Agent ;
+    :definition "An entity related to information technology with a digital identity that acts in cyberspace, but is not a human actor. This can include organizations, hardware objects (physical entities/devices), software objects (virtual/logical entities), and information artifacts." ;
+    rdfs:seeAlso <https://csrc.nist.gov/glossary/term/non_person_entity>,
+        :NIST_SP_800-53_R5,
+        :Reference-CNNSI-4009 ;
+    :synonym "NPE" .
+
+:OffensiveTactic a owl:Class ;
+    rdfs:label "Offensive Tactic" ;
+    rdfs:subClassOf :Goal,
+        [ a owl:Restriction ;
+            owl:onProperty :enabled-by ;
+            owl:someValuesFrom :OffensiveTechnique ] ;
+    rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
+    :definition "Per ATT&CK, these are defined as Tactical Goals, not Tactics per se. Many children also fit definition of tactics.  Some are neither tactics or tactical goals really (e.g., Execution, which is a useful grouping, but an action, not really a tactic or technique." ;
+    :synonym "Tactical Objective" .
+
+:OffensiveTechnique a owl:Class ;
+    rdfs:label "Offensive Technique" ;
+    rdfs:subClassOf :CyberTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enables ;
+            owl:someValuesFrom :OffensiveTactic ],
+        [ a owl:Restriction ;
+            owl:onProperty :initiates ;
+            owl:someValuesFrom :Access ] ;
+    rdfs:isDefinedBy <https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf> ;
+    :display-baseurl "/offensive-technique/attack/" .
+
+:Open-sourceDeveloper a owl:Class ;
+    rdfs:label "Open-source Developer" ;
+    rdfs:subClassOf :ProductDeveloper ;
+    :definition "An open-source developer contributes to the development, maintenance, or improvement of open-source projects." .
+
+:OperationalActivityPlan a owl:Class ;
+    rdfs:label "Operational Activity Plan" ;
+    rdfs:subClassOf :Plan ;
+    :definition "An activity is a specific behavior representing a set of actions that may be accomplished by an agent." ;
+    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/00408356-n>,
+        <https://en.wikipedia.org/wiki/Business_Process_Model_and_Notation>,
+        <https://en.wikipedia.org/wiki/IDEF0>,
+        <https://enterpriseintegrationlab.github.io/icity/Activity/doc/index-en.html> ;
+    :synonym "Business Process",
+        "Mission Critical Function",
+        "Mission Function",
+        "Organizational Activity Plan" .
+
+:Organization a owl:Class ;
+    rdfs:label "Organization" ;
+    rdfs:subClassOf :AgentGroup,
+        :Non-PersonEntity,
+        [ a owl:Restriction ;
+            owl:onProperty :has-member ;
+            owl:someValuesFrom :Person ] ;
+    :definition "An organization with a defined mission/goal and a defined boundary, using systems to execute that mission, and with responsibility for managing its own risks and performance. An enterprise may consist of all or some of the following business aspects: acquisition, program management, human resources, financial management, security, and systems, information and mission management" ;
+    rdfs:seeAlso :NIST_SP_800-53_R5 .
+
+:Person a owl:Class ;
+    rdfs:label "Person" ;
+    rdfs:subClassOf :Agent,
+        [ a owl:Restriction ;
+            owl:onProperty :name ;
+            owl:someValuesFrom xsd:string ] ;
+    :definition "A person is a human being." .
+
+:PhysicalAttacker a owl:Class ;
+    rdfs:label "Physical Attacker" ;
+    rdfs:subClassOf :LocalAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :ComputerPlatform ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "An attacker who is physically close enough to interact with the system directly, such as through physical access to devices." .
+
+:PhysicalLocation a owl:Class ;
+    rdfs:label "Physical Location" ;
+    rdfs:subClassOf :D3FENDCore ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Location_(geography)> ;
+    :definition "The terms location  [here, a physical location] and place in geography are used to identify a point or an area on the Earth's surface or elsewhere. The term location generally implies a higher degree of certainty than place, which often indicates an entity with an ambiguous boundary, relying more on human or social attributes of place identity and sense of place than on geometry. The distinction between space and place is considered a central concern of geography, and has been addressed by scholars such as Yi-Fu Tuan and John Agnew." ;
+    rdfs:seeAlso <https://schema.ocsf.io/objects/location> .
+
+:Plan a owl:Class ;
+    rdfs:label "Plan" ;
+    rdfs:subClassOf :D3FENDCore .
+
+:Planning a owl:Class ;
+    rdfs:label "Planning" ;
+    rdfs:subClassOf :AnalyticalPurpose .
+
+:Procedure a owl:Class ;
+    rdfs:label "Procedure" ;
+    rdfs:subClassOf :Plan,
+        [ a owl:Restriction ;
+            owl:onProperty :implements ;
+            owl:someValuesFrom :Technique ],
+        [ a owl:Restriction ;
+            owl:onProperty :start ;
+            owl:allValuesFrom :Step ] .
+
+:ProductDeveloper a owl:Class ;
+    rdfs:label "Product Developer" ;
+    rdfs:subClassOf :Provider ;
+    :definition "A product developer intentionally designs, creates, or improves products, which may include physical goods, software, or other outputs." .
+
+:Provider a owl:Class ;
+    rdfs:label "Provider" ;
+    rdfs:subClassOf :Organization ;
+    :definition "Providers are entities that intentionally offer, supply, or facilitate goods, services, or resources through actions of their agents." .
+
+:RemoteAttacker a owl:Class ;
+    rdfs:label "Remote Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An attacker who exploits systems without being physically present near the target, often over the internet." .
+
+:Scheduling a owl:Class ;
+    rdfs:label "Scheduling" ;
+    rdfs:subClassOf :Planning .
+
+:ServiceProvider a owl:Class ;
+    rdfs:label "Service Provider" ;
+    rdfs:subClassOf :Provider ;
+    :definition "A service provider offers delivery of intangible outputs such as expertise, support, or access to resources to individuals, organizations, or other entities." .
+
+:Simulation a owl:Class ;
+    rdfs:label "Simulation" ;
+    rdfs:subClassOf :Generation .
+
+:Step a owl:Class ;
+    rdfs:label "Step" ;
+    rdfs:subClassOf :Plan,
+        [ a owl:Restriction ;
+            owl:onProperty :end ;
+            owl:someValuesFrom :Step ],
+        [ a owl:Restriction ;
+            owl:onProperty :fork ;
+            owl:someValuesFrom :Step ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-be-associated-with ;
+            owl:someValuesFrom :Artifact ],
+        [ a owl:Restriction ;
+            owl:onProperty :next ;
+            owl:someValuesFrom :Step ] .
+
+:Summarizing a owl:Class ;
+    rdfs:label "Summarizing" ;
+    rdfs:subClassOf :AnalyticalPurpose .
+
+:SupplyChainAttacker a owl:Class ;
+    rdfs:label "Supply Chain Attacker" ;
+    rdfs:subClassOf :Attacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Software ] ;
+    :definition "An attacker who exploits vulnerabilities in the supply chain to compromise systems or data." .
+
+:TargetAudience a owl:Class ;
+    rdfs:label "Target Audience" ;
+    rdfs:subClassOf :AgentGroup .
+
+:Technique a owl:Class ;
+    rdfs:label "Technique" ;
+    rdfs:subClassOf :Plan .
+
+:Time a owl:Class ;
+    rdfs:label "Time" ;
+    rdfs:subClassOf :D3FENDCore ;
+    :definition "Time is the one-dimensional continuum of temporal regions within which all processes unfold and at which all continuants exist. A temporal region is a specific portion of this continuum that may be either zero-dimensional (a temporal instant) or one-dimensional (a temporal interval). Temporal regions serve as the temporal boundaries and extents for occurrents (processes, events) and provide the temporal indexing for the existence of continuants (entities that persist through time)." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Time_in_physics> .
+
+:TimeInstant a owl:Class ;
+    rdfs:label "Time Instant" ;
+    rdfs:subClassOf :Time ;
+    :definition "A time instant is a zero-dimensional temporal region that has no duration and represents a singular point in the temporal continuum. Time instants serve as the temporal boundaries of temporal intervals and as the indexical points at which continuants exist and bear their qualities." .
+
+:TimeInterval a owl:Class ;
+    rdfs:label "Time Interval" ;
+    rdfs:subClassOf :Time ;
+    :definition "A time interval is a one-dimensional temporal region that has duration and represents a continuous extent of time bounded by two time instants (a start instant and an end instant)." .
+
+:TrajectoryPrediction a owl:Class ;
+    rdfs:label "Trajectory Prediction" ;
+    rdfs:subClassOf :Forecasting .
+
+:TrustedAdministratorAttacker a owl:Class ;
+    rdfs:label "Trusted Administrator Attacker" ;
+    rdfs:subClassOf :TrustedAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PrivilegedUserAccount ] ;
+    :definition "A trusted attacker who misuses administrative access to execute attacks, often with elevated privileges." .
+
+:TrustedAttacker a owl:Class ;
+    rdfs:label "Trusted Attacker" ;
+    rdfs:subClassOf :Attacker ;
+    :definition "An individual who exploits their authorized access to conduct unauthorized actions, either intentionally or through negligence." .
+
+:TrustedUserAttacker a owl:Class ;
+    rdfs:label "Trusted User Attacker" ;
+    rdfs:subClassOf :TrustedAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DefaultUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :DomainUserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :LocalUserAccount ] ;
+    :definition "A trusted attacker who abuses regular user-level access privileges to compromise systems or data." .
+
+:UseCaseGoal a owl:Class ;
+    rdfs:label "Use Case Goal" ;
+    rdfs:subClassOf :Goal .
+
+:UseCaseProcedure a owl:Class ;
+    rdfs:label "Use Case Procedure" ;
+    rdfs:subClassOf :Procedure .
+
+:UseCaseStep a owl:Class ;
+    rdfs:label "Use Case Step" ;
+    rdfs:subClassOf :Step .
+
+:User a owl:Class ;
+    rdfs:label "User" ;
+    rdfs:subClassOf :Agent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-account ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :restricted-by ;
+            owl:someValuesFrom :AccessControlList ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/User_(computing)> ;
+    :definition "A user is a person [or agent] who uses a computer or network service. Users generally use a system or a software product without the technical expertise required to fully understand it. Power users use advanced features of programs, though they are not necessarily capable of computer programming and system administration. A user often has a user account and is identified to the system by a username (or user name). Other terms for username include login name, screenname (or screen name), nickname (or nick) and handle, which is derived from the identical Citizen's Band radio term. Some software products provide services to other systems and have no direct end users." ;
+    rdfs:seeAlso <http://wordnet-rdf.princeton.edu/id/10761247-n>,
+        :UserAccount .
+
+:Vendor a owl:Class ;
+    rdfs:label "Vendor" ;
+    rdfs:subClassOf :Provider ;
+    :definition "A vendor sells or supplies goods and services to customers." .
+
+:Vulnerability a owl:Class ;
+    rdfs:label "Vulnerability" ;
+    rdfs:subClassOf :D3FENDCore ;
+    :definition "A Vulnerability is a publicly disclosed instance of one or more weaknesses in a product that an attacker could exploit, violating its confidentiality, integrity, or availability." .
+
+:Weakness a owl:Class ;
+    rdfs:label "Weakness" ;
+    rdfs:subClassOf :D3FENDCore ;
+    :comment "A type of behavior that has the potential for allowing an attacker to violate the intended security policy, if the behavior is made accessible to the attacker. For example, an unbounded strcpy() call is a weakness, since it might be subject to a buffer overflow if an attacker can provide an input buffer that is larger than the output buffer. (CWE)",
+        "Logic present in hardware or software which enables an attacker to violate the intended security policy." ;
+    :definition "A weakness is a condition in a software, firmware, hardware, or service component that, under certain circumstances, could contribute to the introduction of vulnerabilities." .
+
+:WirelessAttacker a owl:Class ;
+    rdfs:label "Wireless Attacker" ;
+    rdfs:subClassOf :RemoteAttacker,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PhysicalLink ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WirelessAccessPoint ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :WirelessRouter ] ;
+    :definition "An attacker who targets wireless communication methods, like Wi-Fi, without needing physical access to the premises." .
+
+### Individuals
+
+:CCICatalog_v2022-04-05 a :ControlCorrelationIdentifierCatalog,
+        owl:NamedIndividual ;
+    rdfs:label "CCI Catalog v2022-04-05" ;
+    :archived-at "https://public.cyber.mil/stigs/cci/"^^xsd:anyURI ;
+    rdfs:seeAlso <https://public.cyber.mil/stigs/cci/> ;
+    :version "2022-04-05" .
+
+:DISA_FSO a :Organization,
+        owl:NamedIndividual ;
+    rdfs:label "DISA FSO" ;
+    :definition "Defense Information Systems Agency (DISA) Field Security Office (FSO)" .
+
+:NIST_SP_800-53_R3 a :NISTSP800-53ControlCatalog,
+        owl:NamedIndividual ;
+    rdfs:label "NIST SP 800-53 R3" ;
+    :archived-at "https://csrc.nist.gov/publications/detail/sp/800-53/rev-4/archive/2013-04-30"^^xsd:anyURI ;
+    rdfs:seeAlso <https://csrc.nist.gov/publications/detail/sp/800-53/rev-4/archive/2013-04-30> ;
+    :version 3 .
+
+:NIST_SP_800-53_R4 a :NISTSP800-53ControlCatalog,
+        owl:NamedIndividual ;
+    rdfs:label "NIST SP 800-53 R4" ;
+    :archived-at "https://csrc.nist.gov/publications/detail/sp/800-53/rev-4/archive/2013-04-30"^^xsd:anyURI ;
+    rdfs:seeAlso <https://csrc.nist.gov/publications/detail/sp/800-53/rev-4/archive/2015-01-22> ;
+    :version 4 .
+
+:NIST_SP_800-53_R5 a :NISTSP800-53ControlCatalog,
+        owl:NamedIndividual ;
+    rdfs:label "NIST SP 800-53 R5" ;
+    :archived-at "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final"^^xsd:anyURI ;
+    rdfs:seeAlso <https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final> ;
+    :version 5 .
+
+:procedure-1 a owl:NamedIndividual,
+        :Procedure ;
+    rdfs:label "Procedure 1 - T1134.001 Access Token Manipulation" ;
+    :implements :T1134.001 ;
+    :start :step-1 .
+
+:SecurityArchitects a owl:NamedIndividual,
+        :TargetAudience ;
+    rdfs:label "Security Architects" .
+
+:step-1 a owl:NamedIndividual ;
+    rdfs:label "Step 1 - Copy Token" ;
+    :invokes :CopyToken ;
+    :next :step-2 .
+
+:step-2 a owl:NamedIndividual ;
+    rdfs:label "Step 2 - Impersonate User" ;
+    :invokes :ImpersonateUser .
+
+### Axioms
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+            :Agent
+            :Artifact
+            :Event
+            :Goal
+            :Plan
+            :Weakness ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+            :Classifying
+            :Forecasting
+            :Generation
+            :Matching
+            :Summarizing ) .
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+            :Clustering
+            :Grouping
+            :Histogramming ) .
+
+### Serialized using the ttlser deterministic serializer v1.2.3

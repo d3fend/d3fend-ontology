@@ -1,16 +1,16 @@
 import argparse
 import string
+from pathlib import Path
 
-from rdflib import BNode, URIRef, Literal, RDF, RDFS, Namespace
+from rdflib import BNode, Graph, URIRef, Literal, RDF, RDFS, Namespace
 from stix2 import MemoryStore, Filter
-
-from build import get_graph, _xmlns as _XMLNS
 
 
 owl = Namespace("http://www.w3.org/2002/07/owl#")
 rdfs = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
 skos = Namespace("http://www.w3.org/2004/02/skos/core#")
+_XMLNS = str(d3fend)
 
 SUPPORTED_FRAMEWORKS = {"enterprise", "ics", "mobile"}
 
@@ -509,7 +509,7 @@ def ensure_superclasses(graph, attack_uri, subclass, framework, subtechnique):
 
 
 def update_and_add(graph, data, framework="enterprise"):
-    # If tech is missing, add it to d3fend-protege.updates.ttl
+    # If a technique is missing, add it to the ATT&CK module candidate.
     # Else, handle if technique has recently become deprecated, revoked, or has an updated label
 
     counters = {
@@ -555,13 +555,20 @@ def update_and_add(graph, data, framework="enterprise"):
     return counters
 
 
-def main(attack_version, frameworks=None, do_counters=True):
+def main(
+    attack_version,
+    frameworks=None,
+    do_counters=True,
+    input_file="src/ontology/external/attack.ttl",
+    output_file="build/attack.updates.ttl",
+    data_dir="data",
+):
 
     if frameworks is None:
         frameworks = ["enterprise"]
 
-    # Load the base D3FEND graph
-    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.updates.ttl")
+    # Parse only the owned module, retaining its header and import declarations.
+    d3fend_graph = Graph().parse(input_file, format="turtle")
 
     # Initialize cumulative counters
     total_counters = {
@@ -576,10 +583,10 @@ def main(attack_version, frameworks=None, do_counters=True):
 
     framework_results = []
     for framework in frameworks:
-        stix_file = f"data/{framework}-attack-{attack_version}.json"
+        stix_file = Path(data_dir) / f"{framework}-attack-{attack_version}.json"
         print(f"\nProcessing {framework} STIX file: {stix_file}")
         src = MemoryStore()
-        src.load_from_file(stix_file)
+        src.load_from_file(str(stix_file))
         if framework == "enterprise":
             sync_enterprise_tactics(d3fend_graph, src)
         data = get_stix_data(src, d3fend_graph, framework)
@@ -589,9 +596,9 @@ def main(attack_version, frameworks=None, do_counters=True):
         framework_results.append((framework, counters, len(data)))
 
     # Serialize the updated graph
-    d3fend_graph.serialize(
-        destination="src/ontology/d3fend-protege.updates.ttl", format="turtle"
-    )
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    d3fend_graph.serialize(destination=output_file, format="turtle")
+    print(f"Review {output_file} against {input_file} before replacing the module.")
 
     if do_counters:
         # Print per-framework stats
@@ -650,9 +657,7 @@ def main(attack_version, frameworks=None, do_counters=True):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description=(
-            "Update D3FEND ontology with ATT&CK techniques from the specified frameworks."
-        )
+        description="Create an ATT&CK module update from the specified frameworks."
     )
     parser.add_argument(
         "version",
@@ -661,11 +666,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "frameworks",
         nargs="*",
-        help="Frameworks to include: enterprise, ics, mobile. Defaults to enterprise.",
+        help="Frameworks to include: enterprise, ics, mobile. Defaults to all three.",
     )
+    parser.add_argument("--input", default="src/ontology/external/attack.ttl")
+    parser.add_argument("--output", default="build/attack.updates.ttl")
+    parser.add_argument("--data-dir", default="data")
     args = parser.parse_args()
 
-    frameworks = args.frameworks or ["enterprise" "ics" "mobile"]
+    frameworks = args.frameworks or ["enterprise", "ics", "mobile"]
     invalid = sorted(set(frameworks) - SUPPORTED_FRAMEWORKS)
     if invalid:
         parser.error(
@@ -673,4 +681,11 @@ if __name__ == "__main__":
             f"Supported values are: {', '.join(sorted(SUPPORTED_FRAMEWORKS))}."
         )
 
-    main(attack_version=args.version, frameworks=frameworks, do_counters=True)
+    main(
+        attack_version=args.version,
+        frameworks=frameworks,
+        do_counters=True,
+        input_file=args.input,
+        output_file=args.output,
+        data_dir=args.data_dir,
+    )

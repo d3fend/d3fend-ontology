@@ -1,6 +1,6 @@
 ##
 ## This script creates a D3FEND ontology update from SPARTA STIX
-## After running the user must manually compare & replace d3fend-protege.sparta.ttl
+## Review build/sparta.updates.ttl against src/ontology/external/sparta.ttl.
 ##
 
 GREEN='\033[0;32m'
@@ -17,16 +17,13 @@ else
     echo -e "${GREEN}Using ${sparta} for SPARTA version ${SPARTA_VERSION} \n"
 fi
 
-cp src/ontology/d3fend-protege.ttl src/ontology/d3fend-protege.updates.ttl
-
 pipenv run python src/util/test_cases.py  || exit 1
 
 echo -e "${GREEN}All test cases passed \n"
 
 pipenv run python src/util/update_sparta.py "$SPARTA_VERSION" || exit 1
 
-pipenv run ttlfmt src/ontology/d3fend-protege.updates.ttl
+pipenv run ttlfmt build/sparta.updates.ttl || exit 1
 
-echo -e "${YELLOW}Created new ontology file with updates here: src/ontology/d3fend-protege.updates.ttl \n"
-echo -e "Please manually review and compare to: src/ontology/d3fend-protege.ttl \n"
-echo -e "If changes acceptable, replace files \n"
+echo -e "${YELLOW}Created candidate module: build/sparta.updates.ttl \n"
+echo -e "Review against src/ontology/external/sparta.ttl and replace that module when accepted. \n"

@@ -15,8 +15,13 @@ from urllib.parse import quote
 
 from defusedxml import ElementTree as ET
 from rdflib import Graph, URIRef
-from rdflib.namespace import RDFS
+from rdflib.namespace import OWL, RDFS
 from rdflib.util import guess_format
+
+if __package__:
+    from .ontology_modules import load_ontology
+else:
+    from ontology_modules import load_ontology
 
 
 D3F_PREFIX = "http://d3fend.mitre.org/ontologies/d3fend.owl#"
@@ -107,6 +112,10 @@ def text_value(value):
 def parse_graph(source_path):
     graph = Graph()
     graph.parse(source_path, format=guess_format(str(source_path)))
+    if guess_format(str(source_path)) == "turtle" and any(
+        graph.triples((None, OWL.imports, None))
+    ):
+        return load_ontology(source_path)
     return graph
 
 

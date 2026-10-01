@@ -10,14 +10,21 @@ This repository holds the necessary content to produce the D3FEND ontology distr
 
 > **Note:** if you are looking for the latest D3FEND ontology release please find it [here](https://d3fend.mitre.org/resources/ontology/).
 
-The basic workflow is to edit the `d3fend-protege.ttl` file, save your changes, then simply
-run `make all` in this directory. This is designed to accommodate both plain text editing
-and Protege Ontology IDE modifications.
+The ontology is authored in smaller Turtle files under `src/ontology/modules/`
+and `src/ontology/external/`. All existing entities retain the same D3FEND
+namespace. Open `src/ontology/d3fend-protege.ttl` in Protege to load the whole
+ontology through its local import catalog, or edit the owning module with a text
+editor. The root file contains ontology metadata and imports.
+
+Run `make build/d3fend-asserted.ttl` to assemble the sources into one graph, or
+`make all` for the distribution workflow. Generated files under `build/` are not
+authoring sources. See the [module guide](src/ontology/README.md) for ownership,
+Protege settings, framework updates, and prototype validation.
 
 When making changes with a text editor please avoid introducing unsubstantial changes
 to many lines in the file. This enables efficient code reviews.
 
-> **Note**: before sending a merge request changes to `src/ontology/d3fend-protege.ttl` please always run `make pre-commit` **before** you commit changes or will will not be able to accept the request. :eyes: You can run this automatically (and only against staged files) every commit with `make pre-commit-install`.
+> **Note**: before committing ontology source changes, run `make pre-commit`. The Turtle formatting hook covers the root and all files under `modules/` and `external/`. You can run hooks automatically against staged files with `make pre-commit-install`.
 
 ## System Dependencies
 
@@ -57,7 +64,10 @@ These files are located in the src, build, or dist directories.
 
 |File                       |Purpose                                          |
 |---------------------------|-------------------------------------------------|
-|d3fend-protege.ttl         |Downloaded D3FEND ontology from webprotege.owl (renamed to match this name).|
+|d3fend-protege.ttl         |Authoring entry point containing ontology metadata and local module imports.|
+|catalog-v001.xml          |Maps ontology import IRIs to local source files for Protege, ROBOT, and the assembler.|
+|modules/*.ttl, external/*.ttl|Editable ontology modules, all sharing the existing D3FEND entity namespace.|
+|d3fend-asserted.ttl        |Generated assembly of the complete asserted ontology before release transforms.|
 |d3fend.{ttl,owl,json}      |D3FEND ontology distribution files.|
 |d3fend-public.owl         |Temp merge of original web protege ontology and restrictions as object property assertions.|
 |d3fend-res-as-prop.owl     |Temp file containing *just* restrictions as object property assertions between class puns.|

@@ -1,6 +1,6 @@
 ##
 ## This script creates a D3FEND ontology update from ATT&CK STIX JSON document
-## After running the user must manually compare & replace d3fend-protege.updates.ttl
+## Review build/attack.updates.ttl against src/ontology/external/attack.ttl.
 ##
 
 GREEN='\033[0;32m'
@@ -53,16 +53,13 @@ for framework in "${FRAMEWORKS[@]}"; do
     fi
 done
 
-cp src/ontology/d3fend-protege.ttl src/ontology/d3fend-protege.updates.ttl
-
 pipenv run python src/util/test_cases.py  || exit 1
 
 echo -e "${GREEN}All test cases passed \n"
 
 pipenv run python src/util/update_attack.py "$ATTACK_VERSION" "${FRAMEWORKS[@]}" || exit 1
 
-pipenv run ttlfmt src/ontology/d3fend-protege.updates.ttl
+pipenv run ttlfmt build/attack.updates.ttl || exit 1
 
-echo -e "${YELLOW}Created new ontology file with updates here: src/ontology/d3fend-protege.updates.ttl \n"
-echo -e "Please manually review and compare to: src/ontology/d3fend-protege.ttl \n"
-echo -e "If changes acceptable, replace files \n"
+echo -e "${YELLOW}Created candidate module: build/attack.updates.ttl \n"
+echo -e "Review against src/ontology/external/attack.ttl and replace that module when accepted. \n"

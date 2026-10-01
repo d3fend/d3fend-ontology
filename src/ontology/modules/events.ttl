@@ -1,0 +1,2513 @@
+@prefix : <http://d3fend.mitre.org/ontologies/d3fend.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://d3fend.mitre.org/ontologies/modules/events> a owl:Ontology ;
+    owl:imports <http://d3fend.mitre.org/ontologies/modules/core> .
+
+### Classes
+
+:Access a owl:Class ;
+    rdfs:label "Access" ;
+    rdfs:subClassOf :Action,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Resource ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-mediator ;
+            owl:someValuesFrom :AccessMediator ] .
+
+:AccessControlAdministrationEvent a owl:Class ;
+    rdfs:label "Access Control Administration Event" ;
+    skos:altLabel "Permission Administration Event",
+        "Permission Provisioning Event" ;
+    rdfs:subClassOf :AccessControlEvent ;
+    :definition "An event concerning the administrative actions of setting, modifying, or abolishing permissions, configuring access control settings, and managing user access rights to ensure alignment with access control policies." .
+
+:AccessControlEvent a owl:Class ;
+    rdfs:label "Access Control Event" ;
+    rdfs:subClassOf :AuthorizationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :AccessControlConfiguration ] ;
+    :definition "An event that captures the implementation or evaluation of access control measures, including the application of rules and policies to govern the accessibility of resources by agents within a digital system." .
+
+:AccessDeniedEvent a owl:Class ;
+    rdfs:label "Access Denied Event" ;
+    rdfs:subClassOf :AccessMediationEvent ;
+    :definition "An event indicating the refusal of access to a resource, where an access request has been evaluated and denied based on current authorization policies, preventing operations by the requesting agent." .
+
+:AccessGrantedEvent a owl:Class ;
+    rdfs:label "Access Granted Event" ;
+    rdfs:subClassOf :AccessMediationEvent ;
+    :definition "An event signifying that access to a resource has been authorized and successfully enforced, allowing the requesting agent to perform specified operations based on the access control policies." .
+
+:AccessMediationEvent a owl:Class ;
+    rdfs:label "Access Mediation Event" ;
+    skos:altLabel "Access Enforcement Event" ;
+    rdfs:subClassOf :AccessControlEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :AccessMediator ] ;
+    :definition "An event involving the intermediary control mechanism that evaluates access requests and enforces access control decisions, ensuring that subjects' resource interactions comply with the established access policies." .
+
+:Action a owl:Class ;
+    rdfs:label "Action" ;
+    rdfs:subClassOf :Event,
+        [ a owl:Restriction ;
+            owl:onProperty :has-agent ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "An Action is a deliberate operation or activity performed by an entity." .
+
+:AddUserToGroupEvent a owl:Class ;
+    rdfs:label "Add User to Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :GroupCreationEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where a user is added to a group, granting the user the permissions and privileges associated with the group." .
+
+:ApplicationConfigurationModificationEvent a owl:Class ;
+    rdfs:label "Application Configuration Modification Event" ;
+    rdfs:subClassOf :ConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ApplicationConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationUpdateEvent ] ;
+    :definition "An event in which the configuration of a specific software application is changed, affecting how that application executes, interacts with other components, or exposes functionality to users or services." .
+
+:ApplicationDeletionEvent a owl:Class ;
+    rdfs:label "Application Deletion Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+    :definition "An event capturing the removal of an application from a system, ensuring its binaries, configuration files, and registry entries are deleted or deactivated." .
+
+:ApplicationDisableEvent a owl:Class ;
+    rdfs:label "Application Disable Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationEnableEvent ] ;
+    :definition "An event capturing the disabling of an application, preventing it from being operational or accessed until re-enabled." .
+
+:ApplicationEnableEvent a owl:Class ;
+    rdfs:label "Application Enable Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+    :definition "An event representing the enabling of an application, allowing it to be started or accessed when required." .
+
+:ApplicationEvent a owl:Class ;
+    rdfs:label "Application Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Application ] ;
+    :definition "An event that captures the behavior, state, or interactions of software applications or services operating within a system. Application events encompass lifecycle changes, configuration updates, and operational anomalies, providing insight into the health and performance of software components." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/application_lifecycle> .
+
+:ApplicationInstallationEvent a owl:Class ;
+    rdfs:label "Application Installation Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SoftwareDeploymentTool ] ;
+    :definition "An event representing the installation of an application onto a system, making it available for use and interaction." .
+
+:ApplicationLayerEvent a owl:Class ;
+    rdfs:label "Application Layer Event" ;
+    rdfs:subClassOf :NetworkEvent ;
+    :definition "An event occurring at the application layer, involving protocols that support application-specific communication." .
+
+:ApplicationRestartEvent a owl:Class ;
+    rdfs:label "Application Restart Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationStopEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ApplicationStartEvent ] ;
+    :definition "An event where an application is sequentially stopped and started, typically to refresh its state, apply updates, or resolve issues while preserving its availability." .
+
+:ApplicationStartEvent a owl:Class ;
+    rdfs:label "Application Start Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+    :definition "An event where an application transitions from an inactive state to an active state, initializing its resources and becoming operational for user interaction or automated processes." .
+
+:ApplicationStopEvent a owl:Class ;
+    rdfs:label "Application Stop Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationStartEvent ] ;
+    :definition "An event capturing the cessation of an application’s operations, transitioning it to an inactive state and releasing any allocated resources." .
+
+:ApplicationUpdateEvent a owl:Class ;
+    rdfs:label "Application Update Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ApplicationInstallationEvent ] ;
+    :definition "An event describing changes made to an application, such as updates, reconfigurations, or patch installations, while maintaining its presence on the system." .
+
+:AssignPrivilegesToGroupEvent a owl:Class ;
+    rdfs:label "Assign Privileges to Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent,
+        :PermissionGrantingEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :GroupCreationEvent ] ;
+    :definition "An event where specific privileges or rights are granted to a group, enabling its members to perform actions or access resources as defined by the privileges." .
+
+:Authentication a owl:Class ;
+    rdfs:label "Authentication" ;
+    rdfs:subClassOf :DefensiveAction,
+        [ a owl:Restriction ;
+            owl:onProperty :authenticates ;
+            owl:someValuesFrom :User ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :IntranetNetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :originates-from ;
+            owl:someValuesFrom :PhysicalLocation ] ;
+    :definition "A request-response comprising a user credential presentation to a system and a verification response." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Authentication>,
+        <http://wordnet-rdf.princeton.edu/id/00155053-n> .
+
+:AuthenticationEvent a owl:Class ;
+    rdfs:label "Authentication Event" ;
+    skos:altLabel "Agent Authentication Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :Authentication ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Credential ] ;
+    :definition "An event capturing the systematic process of verifying an agent's identity within a system, involving credential validation and identity confirmation." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/authentication> .
+
+:Authorization a owl:Class ;
+    rdfs:label "Authorization" ;
+    rdfs:subClassOf :DefensiveAction,
+        [ a owl:Restriction ;
+            owl:onProperty :authorizes ;
+            owl:someValuesFrom :Access ] ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Authorization> ;
+    :definition "Authorization is the function of specifying access rights to resources related to information security and computer security in general and to access control in particular. More formally, \"to authorize\" is to define an access policy. For example, human resources staff is normally authorized to access employee records and this policy is usually formalized as access control rules in a computer system. During operation, the system uses the access control rules to decide whether access requests from (authenticated) consumers shall be approved (granted) or disapproved (rejected). Resources include individual files or an item's data, computer programs, computer devices and functionality provided by computer applications. Examples of consumers are computer users, computer program" .
+
+:AuthorizationEvent a owl:Class ;
+    rdfs:label "Authorization Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :Authorization ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "An event reflecting the decision-making process and actions concerning access control, recording whether agents are permitted or denied access to resources based on pre-defined access control policies." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/authorize_session> .
+
+:ClockEvent a owl:Class ;
+    rdfs:label "Clock Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Clock ] ;
+    :definition "An event involving a clock artifact, characterized by changes to or readings from a timekeeping mechanism that maintains a representation of temporal progression." .
+
+:ClockSynchronizationEvent a owl:Class ;
+    rdfs:label "Clock Synchronization Event" ;
+    rdfs:subClassOf :SoftwareClockEvent ;
+    :definition "An event in which a software clock adjusts its value based on an external time reference (e.g., NTP server, GPS time signal)." .
+
+:CloudConfigurationModificationEvent a owl:Class ;
+    rdfs:label "Cloud Configuration Modification Event" ;
+    rdfs:subClassOf :ConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :CloudConfiguration ] ;
+    :definition "An event that updates cloud-hosted resource configurations such as IAM policies, virtual network constructs, storage settings, or managed-service parameters; impacting resource provisioning, access control, functionality, or compliance." .
+
+:CloudServiceAuthentication a owl:Class ;
+    rdfs:label "Cloud Service Authentication" ;
+    rdfs:subClassOf :WebAuthentication ;
+    :definition "A request-response comprising a user credential presentation to a system and a verification response where the verifying party is a cloud service." .
+
+:CloudServiceAuthorization a owl:Class ;
+    rdfs:label "Cloud Service Authorization" ;
+    rdfs:subClassOf :Authorization ;
+    :definition "Cloud authorization is the function of specifying access rights to cloud resources." .
+
+:ComputeDeviceEvent a owl:Class ;
+    rdfs:label "Compute Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Processor ] ;
+    :definition "An event capturing the operation, state, or performance of computational hardware, such as CPUs, GPUs, or accelerators. These events reflect processing capacity changes, utilization anomalies, or device health." .
+
+:ConfigurationEvent a owl:Class ;
+    rdfs:label "Configuration Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ConfigurationResource ] ;
+    :definition "A discrete event that creates, applies, modifies, or deletes configuration resources to determine or alter the function of a system, device, application, or service." .
+
+:ConfigurationModificationEvent a owl:Class ;
+    rdfs:label "Configuration Modification Event" ;
+    rdfs:subClassOf :ConfigurationEvent ;
+    :definition "An event that changes the persisted state of configuration resources by adding, updating, or removing parameters, impacting the target component's behavior." .
+
+:CyberAction a owl:Class ;
+    rdfs:label "Cyber Action" ;
+    rdfs:subClassOf :Action .
+
+:DefensiveAction a owl:Class ;
+    rdfs:label "Defensive Action" ;
+    rdfs:subClassOf :CyberAction .
+
+:DetectionEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Detection Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event capturing the identification of a potential security issue, such as unauthorized access attempts, policy violations, or anomalous activities. Detection events form the foundation of cybersecurity monitoring and response." ;
+    rdfs:seeAlso <https://schema.ocsf.io/categories/findings> ;
+    :related :Detect .
+
+:DHCPAckEvent a owl:Class ;
+    rdfs:label "DHCP Ack Event" ;
+    skos:altLabel "DHCPACK" ;
+    rdfs:subClassOf :DHCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DHCPRequestEvent ] ;
+    :definition "An event where a DHCP server sends an ACK message to acknowledge a client's REQUEST, confirming the allocation of an IP address and associated network settings." .
+
+:DHCPDiscoverEvent a owl:Class ;
+    rdfs:label "DHCP Discover Event" ;
+    skos:altLabel "DHCPDISCOVER" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP client broadcasts a DISCOVER message to identify available DHCP servers capable of providing IP configuration." .
+
+:DHCPEvent a owl:Class ;
+    rdfs:label "DHCP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :UDPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :DHCPNetworkTraffic ] ;
+    :definition "An event involving the Dynamic Host Configuration Protocol (DHCP), a UDP-based protocol used to dynamically assign IP addresses and configure network parameters, enabling devices to communicate efficiently on a network." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/dhcp_activity> .
+
+:DHCPInformEvent a owl:Class ;
+    rdfs:label "DHCP Inform Event" ;
+    skos:altLabel "DHCPINFORM" ;
+    rdfs:subClassOf :DHCPEvent ;
+    :definition "An event where a DHCP client sends an INFORM message to request configuration parameters, such as DNS or gateway information, without requiring IP address assignment." .
+
+:DHCPLeaseExpireEvent a owl:Class ;
+    rdfs:label "DHCP Lease Expire Event" ;
+    skos:altLabel "DHCPLEASEEXPIRE" ;
+    rdfs:subClassOf :DHCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DHCPAckEvent ] ;
+    :definition "An event indicating that a DHCP lease has expired, rendering the previously assigned IP address available for reassignment to other devices." .
+
+:DHCPNakEvent a owl:Class ;
+    rdfs:label "DHCP Nak Event" ;
+    skos:altLabel "DHCPNAK" ;
+    rdfs:subClassOf :DHCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DHCPRequestEvent ] ;
+    :definition "An event where a DHCP server sends a NAK message to reject a client's REQUEST, indicating that the requested configuration cannot be granted." .
+
+:DHCPOfferEvent a owl:Class ;
+    rdfs:label "DHCP Offer Event" ;
+    skos:altLabel "DHCPOFFER" ;
+    rdfs:subClassOf :DHCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DHCPDiscoverEvent ] ;
+    :definition "An event where a DHCP server sends an OFFER message to a client in response to a DISCOVER request, proposing an IP address and associated configuration parameters." .
+
+:DHCPReleaseEvent a owl:Class ;
+    rdfs:label "DHCP Release Event" ;
+    skos:altLabel "DHCPRELEASE" ;
+    rdfs:subClassOf :DHCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DHCPAckEvent ] ;
+    :definition "An event where a DHCP client sends a RELEASE message to relinquish its assigned IP address and cancel any remaining lease duration." .
+
+:DHCPRequestEvent a owl:Class ;
+    rdfs:label "DHCP Request Event" ;
+    skos:altLabel "DHCPREQUEST" ;
+    rdfs:subClassOf :DHCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DHCPOfferEvent ] ;
+    :definition "An event where a DHCP client sends a REQUEST message to confirm or renew its desired IP configuration with a specific DHCP server." .
+
+:DigitalEvent a owl:Class ;
+    rdfs:label "Digital Event" ;
+    rdfs:subClassOf :Event ;
+    :definition "A digital event represents an observable occurrence, action, or state change within digital systems, networks, or their interactions. These events are characterized by their impact on the confidentiality, integrity, availability, or functionality of digital resources, processes, identities, or communications. Digital events are essential units of information in cybersecurity, serving as the basis for detecting threats, analyzing anomalies, and orchestrating responses in complex, interconnected environments." .
+
+:DNSEvent a owl:Class ;
+    rdfs:label "DNS Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        [ a owl:Class ;
+            owl:unionOf (
+                    :TCPEvent
+                    :UDPEvent ) ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :DNSNetworkTraffic ] ;
+    :definition "An event involving the Domain Name System (DNS), which translates domain names to IP addresses and operates over UDP and TCP." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/dns_activity> .
+
+:DNSQueryEvent a owl:Class ;
+    rdfs:label "DNS Query Event" ;
+    rdfs:subClassOf :DNSEvent ;
+    :definition "An event where a DNS query is made to resolve a domain name." .
+
+:DNSResponseEvent a owl:Class ;
+    rdfs:label "DNS Response Event" ;
+    rdfs:subClassOf :DNSEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DNSQueryEvent ] ;
+    :definition "An event where a DNS server responds to a query with resolution data." .
+
+:ElectronicCombinationLockEvent a owl:Class ;
+    rdfs:label "Electronic Combination Lock Event" ;
+    rdfs:subClassOf :PhysicalAccessAlarmEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ElectronicCombinationLock ] ;
+    rdfs:comment "An event occurring when combination lock's bolt changes position." ;
+    rdfs:seeAlso "NRC Regulatory Guide 5.12 Rev1" .
+
+:EmailEvent a owl:Class ;
+    rdfs:label "Email Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MailNetworkTraffic ] ;
+    :definition "An event involving email communication, including sending, receiving, and processing emails. Email events encapsulate activities essential to the transmission and analysis of email messages in a networked environment." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/email_activity> .
+
+:EmailReceiveEvent a owl:Class ;
+    rdfs:label "Email Receive Event" ;
+    rdfs:subClassOf :EmailEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :EmailSendEvent ] ;
+    :definition "An event where an email is delivered to a recipient's mail server or mailbox. This includes receiving messages from internal or external sources via protocols such as IMAP, POP3, or their secure variants." .
+
+:EmailScanEvent a owl:Class ;
+    rdfs:label "Email Scan Event" ;
+    rdfs:subClassOf :EmailEvent ;
+    :definition "An event where an email is inspected or analyzed for content, security, or compliance purposes. Scanning often involves identifying spam, detecting malware, or ensuring policy adherence before delivery or after reception." .
+
+:EmailSendEvent a owl:Class ;
+    rdfs:label "Email Send Event" ;
+    rdfs:subClassOf :EmailEvent ;
+    :definition "An event where an email is transmitted from a client to a recipient via a mail server. This process often involves protocols such as SMTP or its secure variants, with potential authentication and encryption for secure delivery." .
+
+:EventLogArchiveEvent a owl:Class ;
+    rdfs:label "Event Log Archive Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event involving the archiving of event log data, typically to preserve historical records in a compressed or secure format." .
+
+:EventLogClearEvent a owl:Class ;
+    rdfs:label "Event Log Clear Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event log data is cleared from the system, often as part of log maintenance or potentially to cover tracks." .
+
+:EventLogDeleteEvent a owl:Class ;
+    rdfs:label "Event Log Delete Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event log database, file, or cache is deleted from the system, removing the log's historical records." .
+
+:EventLogDisableEvent a owl:Class ;
+    rdfs:label "Event Log Disable Event" ;
+    rdfs:subClassOf :EventLogEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :EventLogEnableEvent ] ;
+    :definition "An event indicating that the event logging service has been disabled, preventing it from collecting or recording logs." .
+
+:EventLogEnableEvent a owl:Class ;
+    rdfs:label "Event Log Enable Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event logging service is enabled, allowing it to actively collect and record logs." .
+
+:EventLogEvent a owl:Class ;
+    rdfs:label "Event Log Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :EventLog ] ;
+    :definition "An event that captures actions or operations related to the management of system event logs, including modifications, access, and service state changes." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/event_log_activity> .
+
+:EventLogExportEvent a owl:Class ;
+    rdfs:label "Event Log Export Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event representing the export of event log data to a file or external system for backup or analysis purposes." .
+
+:EventLogRestartEvent a owl:Class ;
+    rdfs:label "Event Log Restart Event" ;
+    rdfs:subClassOf :EventLogEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :EventLogStopEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :EventLogStartEvent ] ;
+    :definition "An event representing the restarting of the event logging service, often performed during system maintenance or troubleshooting." .
+
+:EventLogRotateEvent a owl:Class ;
+    rdfs:label "Event Log Rotate Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event log is rotated, often as part of log rotation policies to manage storage and ensure continuity." .
+
+:EventLogStartEvent a owl:Class ;
+    rdfs:label "Event Log Start Event" ;
+    rdfs:subClassOf :EventLogEvent ;
+    :definition "An event where the event logging service is started, enabling the collection and recording of system events." .
+
+:EventLogStopEvent a owl:Class ;
+    rdfs:label "Event Log Stop Event" ;
+    rdfs:subClassOf :EventLogEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :EventLogStartEvent ] ;
+    :definition "An event indicating that the event logging service has been stopped, halting the recording of system events." .
+
+:EvictionEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Eviction Event" ;
+    rdfs:subClassOf :SecurityEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :DetectionEvent ] ;
+    :definition "An event describing actions to remove adversaries or malicious resources from a system, re-establishing security and operational integrity." ;
+    :related :Evict .
+
+:FileAccessEvent a owl:Class ;
+    rdfs:label "File Access Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FilePathOpenFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event where a file is accessed for operations such as reading, opening, or inspecting its contents or metadata, without necessarily modifying its state." .
+
+:FileCopyEvent a owl:Class ;
+    rdfs:label "File Copy Event" ;
+    rdfs:subClassOf :FileCreationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileAccessEvent ] ;
+    :definition "An event where a file is duplicated, creating a new file in a different location or under a different name while preserving the original file's content and attributes." .
+
+:FileCreationEvent a owl:Class ;
+    rdfs:label "File Creation Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event representing the creation of a new file within the system, establishing its existence and initial attributes in the file system or storage medium." .
+
+:FileDecryptionEvent a owl:Class ;
+    rdfs:label "File Decryption Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileEncryptionEvent ] ;
+    :definition "An event where a previously encrypted file is decoded, rendering its content accessible to authorized users or processes." .
+
+:FileDeletionEvent a owl:Class ;
+    rdfs:label "File Deletion Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file is permanently removed from the file system or storage medium, potentially triggering actions related to data retention or recovery." .
+
+:FileEncryptionEvent a owl:Class ;
+    rdfs:label "File Encryption Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event involving the application of cryptographic techniques to a file, ensuring its content is securely encoded and inaccessible without proper decryption keys." .
+
+:FileEvent a owl:Class ;
+    rdfs:label "File Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :File ] ;
+    :definition "An event involving operations performed on digital files, encompassing actions such as creation, modification, deletion, access, and attribute or permission changes." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/file_activity> .
+
+:FileGetAttributesEvent a owl:Class ;
+    rdfs:label "File Get Attributes Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileAccessEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event where a file's metadata attributes, such as size, creation date, or type, are queried or retrieved without altering its content." .
+
+:FileGetPermissionsEvent a owl:Class ;
+    rdfs:label "File Get Permissions Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event where a file's security settings or access control list (ACL) is retrieved, detailing permissions granted to users or processes." .
+
+:FileMountEvent a owl:Class ;
+    rdfs:label "File Mount Event" ;
+    rdfs:subClassOf :FileEvent ;
+    :definition "An event where a file system or storage volume is mounted, making its files and directories accessible to the operating system or applications." .
+
+:FileRenamingEvent a owl:Class ;
+    rdfs:label "File Renaming Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileAccessEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event representing the renaming of a file, modifying its identifier within the file system while retaining its content and metadata." .
+
+:FileSetAttributesEvent a owl:Class ;
+    rdfs:label "File Set Attributes Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileAccessEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event where a file's metadata attributes are modified, such as changing its timestamps, labels, or categorization within the system." .
+
+:FileSetPermissionsEvent a owl:Class ;
+    rdfs:label "File Set Permissions Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event involving the modification of a file's permissions or access control list (ACL), specifying which users or processes are granted or restricted access." .
+
+:FileUnmountEvent a owl:Class ;
+    rdfs:label "File Unmount Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileMountEvent ] ;
+    :definition "An event where a file system or storage volume is unmounted, disconnecting its files and directories from the operating system or applications." .
+
+:FileUpdateEvent a owl:Class ;
+    rdfs:label "File Update Event" ;
+    rdfs:subClassOf :FileEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileAccessEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FileCreationEvent ] ;
+    :definition "An event involving changes to the content or metadata of an existing file, reflecting updates that alter its state or properties." .
+
+:FTPDeleteEvent a owl:Class ;
+    rdfs:label "FTP Delete Event" ;
+    rdfs:subClassOf :FTPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FTPPutEvent ] ;
+    :definition "An event where files or directories are removed from an FTP server, resulting in their permanent deletion from the remote system." .
+
+:FTPEvent a owl:Class ;
+    rdfs:label "FTP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FileTransferNetworkTraffic ] ;
+    :definition "An event involving the File Transfer Protocol (FTP), a standard network protocol used to transfer files between a client and server over a TCP/IP network. FTP facilitates operations such as file uploads, downloads, directory listing, and remote file management." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/ftp_activity> .
+
+:FTPGetEvent a owl:Class ;
+    rdfs:label "FTP Get Event" ;
+    rdfs:subClassOf :FTPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FTPPutEvent ] ;
+    :definition "An event where a file is downloaded from an FTP server to a client, retrieving data from the remote system to the local destination." .
+
+:FTPListEvent a owl:Class ;
+    rdfs:label "FTP List Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where the contents of a directory on an FTP server are listed, providing metadata such as file names, sizes, and timestamps." .
+
+:FTPPollEvent a owl:Class ;
+    rdfs:label "FTP Poll Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where a client queries an FTP server to check for the presence of specific files or directories without initiating a transfer." .
+
+:FTPPutEvent a owl:Class ;
+    rdfs:label "FTP Put Event" ;
+    rdfs:subClassOf :FTPEvent ;
+    :definition "An event where a file is uploaded from a client to an FTP server, transferring data from the local system to the remote destination." .
+
+:FTPRenameEvent a owl:Class ;
+    rdfs:label "FTP Rename Event" ;
+    rdfs:subClassOf :FTPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FTPPutEvent ] ;
+    :definition "An event where files or directories on an FTP server are renamed, modifying their identifiers without altering their content or location." .
+
+:GroupCreationEvent a owl:Class ;
+    rdfs:label "Group Creation Event" ;
+    rdfs:subClassOf :GroupManagementEvent ;
+    :definition "An event where a new group is established within the system, defining an entity to manage users and permissions collectively." .
+
+:GroupDeletionEvent a owl:Class ;
+    rdfs:label "Group Deletion Event" ;
+    rdfs:subClassOf :GroupManagementEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :GroupCreationEvent ] ;
+    :definition "An event where an existing group is permanently removed from the system, dissolving its associated memberships and privileges." .
+
+:GroupManagementEvent a owl:Class ;
+    rdfs:label "Group Management Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :AccessControlGroup ] ;
+    :definition "An event involving the creation, modification, or deletion of a group, or changes to its membership and privileges. Group management events facilitate the enforcement of role-based access control by organizing users and permissions into logical units for streamlined administration and policy enforcement." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/group_management> .
+
+:HardeningEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Hardening Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event involving actions to strengthen defenses, such as applying patches or implementing secure configurations, reducing attack surfaces, and increasing the difficulty of exploitation by adversaries." ;
+    :related :Harden .
+
+:HardwareClockEvent a owl:Class ;
+    rdfs:label "Hardware Clock Event" ;
+    rdfs:subClassOf :ClockEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareClock ] ;
+    :definition "A clock event involving a physical timekeeping mechanism implemented in hardware components." .
+
+:HardwareDeviceBindEvent a owl:Class ;
+    rdfs:label "Hardware Device Bind Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is logically bound to a system or process, typically for exclusive use or integration with specific software components." .
+
+:HardwareDeviceConnectionEvent a owl:Class ;
+    rdfs:label "Hardware Device Connection Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event representing the physical or logical attachment of a device to a system, enabling its operational functionality." .
+
+:HardwareDeviceDisabledEvent a owl:Class ;
+    rdfs:label "Hardware Device Disabled Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :HardwareDeviceEnabledEvent ] ;
+    :definition "An event where a device transitions to an inactive or unavailable state, often due to deactivation, failure, or maintenance." .
+
+:HardwareDeviceDisconnectionEvent a owl:Class ;
+    rdfs:label "Hardware Device Disconnection Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :HardwareDeviceConnectionEvent ] ;
+    :definition "An event representing the removal of a device from a system, ceasing its operational functionality or availability." .
+
+:HardwareDeviceEnabledEvent a owl:Class ;
+    rdfs:label "Hardware Device Enabled Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :HardwareDeviceConnectionEvent ] ;
+    :definition "An event where a device becomes operational and available for use, typically following initialization, activation, or repair." .
+
+:HardwareDeviceEvent a owl:Class ;
+    rdfs:label "Hardware Device Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareDevice ] ;
+    :definition "An event capturing the existence, state, or interaction of hardware or virtual devices within a system. Device events encompass activities such as discovery, connection, disconnection, operational state changes, or configuration modifications, providing visibility into device behavior and health." .
+
+:HardwareDeviceMoveEvent a owl:Class ;
+    rdfs:label "Hardware Device Move Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent ;
+    :definition "An event where a device is relocated or reassigned within a system or network, potentially affecting its operational scope or connectivity." .
+
+:HardwareDeviceStateEvent a owl:Class ;
+    rdfs:label "Hardware Device State Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
+    :definition "An event involving a change to a device's state, such as connection, disconnection, modification, or operational state transitions (e.g., online or offline). Device state events provide visibility into device availability and operational conditions." .
+
+:HardwareDeviceUnbindEvent a owl:Class ;
+    rdfs:label "Hardware Device Unbind Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :HardwareDeviceBindEvent ] ;
+    :definition "An event where a device is logically unbound from a system or process, releasing it from exclusive use or integration." .
+
+:HardwareDeviceUpdateEvent a owl:Class ;
+    rdfs:label "Hardware Device Update Event" ;
+    rdfs:subClassOf :HardwareDeviceStateEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :HardwareDeviceConnectionEvent ] ;
+    :definition "An event capturing updates or changes to a device's configuration, properties, or state, including firmware updates, reconfigurations, or optimizations." .
+
+:HardwareTimerConfigurationEvent a owl:Class ;
+    rdfs:label "Hardware Timer Configuration Event" ;
+    rdfs:subClassOf :HardwareTimerEvent ;
+    :definition "An event in which a hardware timer's registers or operational parameters are programmed or modified." .
+
+:HardwareTimerEvent a owl:Class ;
+    rdfs:label "Hardware Timer Event" ;
+    rdfs:subClassOf :TimerEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareTimer ] ;
+    :definition "A timer event involving a physical timer mechanism implemented in hardware components." .
+
+:HardwareTimerInterruptEvent a owl:Class ;
+    rdfs:label "Hardware Timer Interrupt Event" ;
+    rdfs:subClassOf :HardwareTimerEvent ;
+    :definition "An event in which a hardware timer generates an interrupt signal upon expiration or interval completion." .
+
+:HTTPConnectEvent a owl:Class ;
+    rdfs:label "HTTP CONNECT Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP CONNECT method is used to establish a tunnel to the server identified by the target resource." .
+
+:HTTPDeleteEvent a owl:Class ;
+    rdfs:label "HTTP DELETE Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP DELETE method is used to delete the specified resource." .
+
+:HTTPEvent a owl:Class ;
+    rdfs:label "HTTP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WebNetworkTraffic ] ;
+    :definition "An event involving the Hypertext Transfer Protocol (HTTP), which operates over TCP to transmit hypermedia documents." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/http_activity> .
+
+:HTTPGetEvent a owl:Class ;
+    rdfs:label "HTTP GET Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP GET method is used to request a representation of the specified resource." .
+
+:HTTPHeadEvent a owl:Class ;
+    rdfs:label "HTTP HEAD Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP HEAD method is used to request metadata about the specified resource without the response body." .
+
+:HTTPOptionsEvent a owl:Class ;
+    rdfs:label "HTTP OPTIONS Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP OPTIONS method is used to describe the communication options for the target resource." .
+
+:HTTPPostEvent a owl:Class ;
+    rdfs:label "HTTP POST Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP POST method is used to submit data to the specified resource, often causing a change in state or side effects on the server." .
+
+:HTTPPutEvent a owl:Class ;
+    rdfs:label "HTTP PUT Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP PUT method is used to replace all current representations of the target resource with the request payload." .
+
+:HTTPRequestEvent a owl:Class ;
+    rdfs:label "HTTP Request Event" ;
+    rdfs:subClassOf :HTTPEvent ;
+    :definition "An event where an HTTP request is sent from a client to a server over an established TCP connection." .
+
+:HTTPResponseEvent a owl:Class ;
+    rdfs:label "HTTP Response Event" ;
+    rdfs:subClassOf :HTTPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :HTTPRequestEvent ] ;
+    :definition "An event where an HTTP response is sent from a server to a client over an established TCP connection." .
+
+:HTTPTraceEvent a owl:Class ;
+    rdfs:label "HTTP TRACE Event" ;
+    rdfs:subClassOf :HTTPRequestEvent ;
+    :definition "An event where the HTTP TRACE method is used to perform a message loop-back test along the path to the target resource." .
+
+:InputDeviceEvent a owl:Class ;
+    rdfs:label "Input Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :InputDevice ] ;
+    :definition "An event involving human-machine interface devices, such as keyboards, mice, or touchscreens." .
+
+:IsolationEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Isolation Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event involving actions to create logical or physical barriers that isolate compromised components, preventing adversary movement and reducing attack surfaces." ;
+    :related :Isolate .
+
+:KernelEvent a owl:Class ;
+    rdfs:label "Kernel Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Kernel ] ;
+    :definition "An event involving operations at the kernel level of an operating system, encompassing interactions with core system resources such as drivers, modules, system calls, and other privileged processes. Kernel events are critical for understanding low-level system behavior and ensuring the integrity of the operating environment." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/kernel_activity> .
+
+:KernelModuleEvent a owl:Class ;
+    rdfs:label "Kernel Module Event" ;
+    rdfs:subClassOf :KernelEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :HardwareDriver ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :KernelModule ] ;
+    :definition "An event involving the management of kernel modules, such as the loading or unloading of device drivers, extensions, or other dynamically linked components essential for kernel functionality." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/kernel_extension_activity> .
+
+:KernelModuleLoadEvent a owl:Class ;
+    rdfs:label "Kernel Module Load Event" ;
+    rdfs:subClassOf :KernelModuleEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
+    :definition "An event representing the loading of a kernel module, such as a device driver or dynamically linked extension, into the operating system kernel to extend or modify its capabilities." .
+
+:KernelModuleUnloadEvent a owl:Class ;
+    rdfs:label "Kernel Module Unload Event" ;
+    rdfs:subClassOf :KernelModuleEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :KernelModuleLoadEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :MemoryDeletionEvent ] ;
+    :definition "An event representing the removal of a kernel module from the operating system kernel, deallocating resources and potentially altering system functionality." .
+
+:LoadLibraryEvent a owl:Class ;
+    rdfs:label "Load Library Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SharedLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ProcessCreationEvent ] ;
+    :definition "An event where a process dynamically loads a library or module into its memory space, extending its capabilities." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/module_activity> .
+
+:LogoffEvent a owl:Class ;
+    rdfs:label "Logoff Event" ;
+    rdfs:subClassOf :AuthenticationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Session ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :LogonEvent ] ;
+    :definition "An authentication event where an active session is conclusively terminated, resulting in the cessation of access and deallocation of resources associated with the session, ensuring that the connection to the system, application, or resource no longer exists." .
+
+:LogonEvent a owl:Class ;
+    rdfs:label "Logon Event" ;
+    rdfs:subClassOf :AuthenticationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Session ] ;
+    :definition "An authentication event where a new session is initiated, signifying the successful validation of credentials and establishment of an authorized connection to a system, application, or resource. This marks the beginning of the subject’s authenticated interaction with the system." .
+
+:MemoryAllocationEvent a owl:Class ;
+    rdfs:label "Memory Allocation Event" ;
+    rdfs:subClassOf :MemoryEvent ;
+    :definition "An event representing the allocation of memory resources to a process, providing it with the capacity to store data or execute instructions." .
+
+:MemoryDeletionEvent a owl:Class ;
+    rdfs:label "Memory Deletion Event" ;
+    rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryFreeFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
+    :definition "An event marking the release or deallocation of memory resources, reclaiming them for reuse within the system." .
+
+:MemoryDeviceEvent a owl:Class ;
+    rdfs:label "Memory Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :PrimaryStorage ] ;
+    :definition "An event describing activity in primary storage devices, such as DRAM or SRAM memory initialization, reconfiguration, or failures." .
+
+:MemoryEvent a owl:Class ;
+    rdfs:label "Memory Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryAddress ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MemoryExtent ] ;
+    :definition "An event capturing operations on the memory resources of a system, encompassing allocation, modification, access, protection, or deallocation." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/memory_activity> .
+
+:MemoryMapEvent a owl:Class ;
+    rdfs:label "Memory Map Event" ;
+    rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :VirtualMemorySpace ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
+    :definition "An event representing the mapping of memory regions into a process's virtual address space, enabling efficient access to shared or reserved memory." .
+
+:MemoryModificationEvent a owl:Class ;
+    rdfs:label "Memory Modification Event" ;
+    rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
+    :definition "An event where a process modifies allocated memory, potentially altering its content, behavior, or state." .
+
+:MemoryReadEvent a owl:Class ;
+    rdfs:label "Memory Read Event" ;
+    rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :RawMemoryAccessFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
+    :definition "An event where a process retrieves data from a specific memory address, either from its own allocated space or that of another process." .
+
+:MemoryWriteEvent a owl:Class ;
+    rdfs:label "Memory Write Event" ;
+    rdfs:subClassOf :MemoryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :MemoryAllocationEvent ] ;
+    :definition "An event where a process writes data to a memory address, storing new information or updating existing content." .
+
+:MotionDetectedEvent a owl:Class ;
+    rdfs:label "Motion Detected Event" ;
+    rdfs:subClassOf :PhysicalAccessAlarmEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :MotionDetector ] .
+
+:NetworkConnectionCloseEvent a owl:Class ;
+    rdfs:label "Network Connection Close Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :NetworkConnectionOpenEvent ] ;
+    :definition "An event where a network connection is closed." .
+
+:NetworkConnectionEvent a owl:Class ;
+    rdfs:label "Network Connection Event" ;
+    rdfs:subClassOf :NetworkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkSession ] ;
+    :definition "An event related to the establishment, maintenance, or termination of a network connection." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/network_activity> .
+
+:NetworkConnectionFailEvent a owl:Class ;
+    rdfs:label "Network Connection Fail Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection attempt fails." .
+
+:NetworkConnectionListenEvent a owl:Class ;
+    rdfs:label "Network Connection Listen Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network endpoint begins listening for new network connections." .
+
+:NetworkConnectionOpenEvent a owl:Class ;
+    rdfs:label "Network Connection Open Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection is successfully opened." .
+
+:NetworkConnectionRefuseEvent a owl:Class ;
+    rdfs:label "Network Connection Refuse Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent ;
+    :definition "An event where a network connection is refused." .
+
+:NetworkConnectionResetEvent a owl:Class ;
+    rdfs:label "Network Connection Reset Event" ;
+    rdfs:subClassOf :NetworkConnectionEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :NetworkConnectionOpenEvent ] ;
+    :definition "An event where an attempt is made to establish a network connection." .
+
+:NetworkDeviceEvent a owl:Class ;
+    rdfs:label "Network Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent ;
+    :definition "An event capturing the activity or state of network devices, such as Ethernet adapters, Wi-Fi modules, or virtual interfaces. These events highlight connectivity, configuration, or performance changes." .
+
+:NetworkEvent a owl:Class ;
+    rdfs:label "Network Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTraffic ] ;
+    :definition "An event involving network communications within or between digital systems." ;
+    rdfs:seeAlso <https://schema.ocsf.io/categories/network> .
+
+:NTPBroadcastEvent a owl:Class ;
+    rdfs:label "NTP Broadcast Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP server broadcasts time synchronization messages to multiple clients simultaneously, enabling synchronization without individual request-response cycles." .
+
+:NTPClientSyncEvent a owl:Class ;
+    rdfs:label "NTP Client Synchronization Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP client requests and adjusts its clock based on time synchronization data provided by an NTP server, ensuring alignment with a standard time source." .
+
+:NTPControlMessageEvent a owl:Class ;
+    rdfs:label "NTP Control Message Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP client or server exchanges control messages used for diagnostic, monitoring, or administrative management of the NTP protocol, rather than time synchronization." .
+
+:NTPEvent a owl:Class ;
+    rdfs:label "NTP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :UDPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTimeServer ] ;
+    :definition "An event involving the Network Time Protocol (NTP), a protocol designed to synchronize the clocks of computer systems over packet-switched, variable-latency data networks, UDP as its transport protocol." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/ntp_activity> .
+
+:NTPServerResponseEvent a owl:Class ;
+    rdfs:label "NTP Server Response Event" ;
+    rdfs:subClassOf :NTPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :NTPClientSyncEvent ] ;
+    :definition "An event where an NTP server sends time synchronization data to a client, enabling the client to align its local clock with the server's reference time." .
+
+:NTPSymmetricActiveExchangeEvent a owl:Class ;
+    rdfs:label "NTP Symmetric Active Exchange Event" ;
+    rdfs:subClassOf :NTPEvent ;
+    :definition "An event where an NTP peer operating in symmetric active mode initiates clock synchronization messages to a peer in symmetric passive mode, enabling time synchronization between equal-status systems." .
+
+:NTPSymmetricPassiveExchangeEvent a owl:Class ;
+    rdfs:label "NTP Symmetric Passive Exchange Event" ;
+    rdfs:subClassOf :NTPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :NTPSymmetricActiveExchangeEvent ] ;
+    :definition "An event where an NTP peer operating in symmetric passive mode responds to clock synchronization messages initiated by a symmetric active peer, facilitating mutual timekeeping." .
+
+:OffensiveAction a owl:Class ;
+    rdfs:label "Offensive Action" ;
+    rdfs:subClassOf :CyberAction .
+
+:OperatingSystemConfigurationModificationEvent a owl:Class ;
+    rdfs:label "Operating System Configuration Modification Event" ;
+    rdfs:subClassOf :ConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OperatingSystemConfiguration ] ;
+    :definition "An event that alters persistent operating-system configuration resources such as kernel options, registry keys, service definitions, or security policies; affecting system startup, hardware interfaces, or global security enforcement." .
+
+:OperationalEvent a owl:Class ;
+    rdfs:label "Operational Event" ;
+    rdfs:subClassOf :Action ;
+    :definition "An Operational Event is an action or occurrence within an organization's mission or business operations that happens over a period of time." ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Event_(BPMN)>,
+        <https://en.wikipedia.org/wiki/Unified_Architecture_Framework>,
+        <https://www.omg.org/spec/UAF/> ;
+    :synonym "Business Event",
+        "Business Process",
+        "Mission Event",
+        "Operational Activity Event",
+        "Operational Occurrence" .
+
+:OTAbortCommandEvent a owl:Class ;
+    rdfs:label "OT Abort Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTAbortCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTRunCommandEvent ] .
+
+:OTAlarmMessageEvent a owl:Class ;
+    rdfs:label "OT Alarm Message Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTAlarmMessage ] ;
+    :definition "Report danger, hazards, or serious errors." .
+
+:OTChangeControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Change Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTChangeControlProgramCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlProgram ] ;
+    :definition "Commands a remote device to modify an existing control program." .
+
+:OTChangeDataCommandEvent a owl:Class ;
+    rdfs:label "OT Change Data Command Event" ;
+    rdfs:subClassOf :OTWriteCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTChangeDataCommand ] ;
+    :definition "OT command that modifies existing data on a remote device." .
+
+:OTConnectionCommandEvent a owl:Class ;
+    rdfs:label "OT Connection Command Event" ;
+    rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTConnectionCommand ] ;
+    :definition "Establish a network connection with a device." .
+
+:OTControlCommandEvent a owl:Class ;
+    rdfs:label "OT Control Command Event" ;
+    rdfs:subClassOf :OTProcessDataCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlCommand ] ;
+    :definition "Command and control the managed process." .
+
+:OTCreateDataCommandEvent a owl:Class ;
+    rdfs:label "OT Create Data Command Event" ;
+    rdfs:subClassOf :OTWriteCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTCreateDataCommand ] ;
+    :definition "OT command that creates data on a remote device." .
+
+:OTCreateNewControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Create New Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTCreateNewControlProgramCommand ] ;
+    :definition "Commands a remote device to create an control program." .
+
+:OTDebugCommandEvent a owl:Class ;
+    rdfs:label "OT Debug Command Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDebugCommand ] ;
+    :definition "Investigate or analyze the current state of the system." .
+
+:OTDeleteControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Delete Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeleteControlProgramCommand ] ;
+    :definition "Commands a remote device to remove an existing control program." .
+
+:OTDeleteDataCommandEvent a owl:Class ;
+    rdfs:label "OT Delete Data Command Event" ;
+    rdfs:subClassOf :OTWriteCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeleteDataCommand ] ;
+    :definition "OT command that removes data on a remote device." .
+
+:OTDeviceConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Device Configuration Command Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceConfigurationCommand ] ;
+    :definition "Configure or administer managed devices." .
+
+:OTDeviceDescriptionMessageEvent a owl:Class ;
+    rdfs:label "OT Device Description Message Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceDescriptionMessage ] ;
+    :definition "Describe features, abilities, or performance of system components." .
+
+:OTDeviceFirmwareCommandEvent a owl:Class ;
+    rdfs:label "OT Device Firmware Command Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceFirmwareCommand ] ;
+    :definition "Interact with the software responsible for low-level control of the system." .
+
+:OTDeviceIdentificationMessageEvent a owl:Class ;
+    rdfs:label "OT Device Identification Message Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceIdentificationMessage ] ;
+    :definition "Identify devices on the network." .
+
+:OTDeviceManagementMessageEvent a owl:Class ;
+    rdfs:label "OT Device Management Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDeviceManagementMessage ] ;
+    :definition "Manage devices and their configurations." .
+
+:OTDiagnosticsMessageEvent a owl:Class ;
+    rdfs:label "OT Diagnostics Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDiagnosticsMessage ] ;
+    :definition "Relay error, exception, alarm, or log information." .
+
+:OTDisconnectRemoteConnectionCommandEvent a owl:Class ;
+    rdfs:label "OT Disconnect Remote Connection Command Event" ;
+    rdfs:subClassOf :OTConnectionCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDisconnectRemoteConnectionCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTEstablishRemoteConnectionCommandEvent ] ;
+    :definition "The Disconnect Request message is sent to the message receiver to indicate that the transmitter is terminating its TCP socket." .
+
+:OTDownloadControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Download Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyControlProgramCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTDownloadControlProgramCommand ] ;
+    :definition "Commands a remote device to download a control program." .
+
+:OTErrorMessageEvent a owl:Class ;
+    rdfs:label "OT Error Message Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTErrorMessage ] ;
+    :definition "An anticipated, reproducible defect occurred within the system." .
+
+:OTEstablishRemoteConnectionCommandEvent a owl:Class ;
+    rdfs:label "OT Establish Remote Connection Command Event" ;
+    rdfs:subClassOf :OTConnectionCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTEstablishRemoteConnectionCommand ] ;
+    :definition " Used to establish an TCP/IP Connection to the target device." .
+
+:OTEvent a owl:Class ;
+    rdfs:label "OT Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProtocolMessage ] ;
+    :definition "A discrete occurrence within an operational technology environment that denotes a significant change in state, execution of a command, or transmission of information." .
+
+:OTExceptionMessageEvent a owl:Class ;
+    rdfs:label "OT Exception Message Event" ;
+    rdfs:subClassOf :OTDiagnosticsMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTExceptionMessage ] ;
+    :definition "An unknown or anomalous condition occurred in the system." .
+
+:OTModifyControlProgramCommandEvent a owl:Class ;
+    rdfs:label "OT Modify Control Program Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceConfigurationCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControlProgram ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyControlProgramCommand ] ;
+    :definition "OT command that adds, removes, or changes, process data on a remote device." .
+
+:OTModifyDeviceConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Modify Device Configuration Command Event" ;
+    rdfs:subClassOf :OTDeviceConfigurationCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDeviceConfigurationCommand ] ;
+    :definition "Modify device configuration." .
+
+:OTModifyDeviceOperatingModeCommandEvent a owl:Class ;
+    rdfs:label "OT Modify Device Operating Mode Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceConfigurationCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTModifyDeviceOperatingModeCommand ] ;
+    :definition "Modifies the running state of an application or program on a device." .
+
+:OTNetworkManagementCommandEvent a owl:Class ;
+    rdfs:label "OT Network Management Command Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTNetworkManagementCommand ] ;
+    :definition "Manage message routing or network connection mechanisms." .
+
+:OTPauseCommandEvent a owl:Class ;
+    rdfs:label "OT Pause Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTPauseCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTRunCommandEvent ] ;
+    :definition "Commands a device to pause a service/program." .
+
+:OTProcessDataCommandEvent a owl:Class ;
+    rdfs:label "OT Process Data Command Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProcessDataCommand ] ;
+    :definition "Manage data associated with a controlled process." .
+
+:OTProgramModeCommandEvent a owl:Class ;
+    rdfs:label "OT Program Mode Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProgramModeCommand ] ;
+    :definition "Command that places the controller in a mode capable of reprogramming logic. This may or may not stop the program." .
+
+:OTProprietaryMessageEvent a owl:Class ;
+    rdfs:label "OT Proprietary Message Event" ;
+    rdfs:subClassOf :OTEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTProprietaryMessage ] ;
+    :definition "Vendor specific and may not be publicly documented, or values left for device specific configuration." .
+
+:OTReadCommandEvent a owl:Class ;
+    rdfs:label "OT Read Command Event" ;
+    rdfs:subClassOf :OTProcessDataCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadCommand ] ;
+    :definition "Read or retrieve data." .
+
+:OTReadDeviceConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Read Device Configuration Command Event" ;
+    rdfs:subClassOf :OTDeviceConfigurationCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadDeviceConfigurationCommand ] ;
+    :definition "Read device configuration." .
+
+:OTReadFileCommandEvent a owl:Class ;
+    rdfs:label "OT Read File Command Event" ;
+    rdfs:subClassOf :OTReadCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadFileCommand ] ;
+    :definition "Reads data in specified chunks or the contents of a specified file stored in the file device connected to the PC." .
+
+:OTReadTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Read Time Command Event" ;
+    rdfs:subClassOf :OTTimeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadTimeCommand ] ;
+    :definition "Read timing mechanisms." .
+
+:OTReadValueCommandEvent a owl:Class ;
+    rdfs:label "OT Read Value Command Event" ;
+    rdfs:subClassOf :OTReadCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTLogicVariable ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTReadValueCommand ] ;
+    :definition "Reads the contents of the specified number of consecutive parameter areawords starting from the specified word." .
+
+:OTRemoteModeCommandEvent a owl:Class ;
+    rdfs:label "OT Remote Mode Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTRemoteModeCommand ] ;
+    :definition "Command that places the controller in a mode capable of receiving read/write communication from a networked entity." .
+
+:OTRunCommandEvent a owl:Class ;
+    rdfs:label "OT Run Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTRunCommand ] ;
+    :definition "Commands a device to start or resume a service/program." .
+
+:OTSecurityCommandEvent a owl:Class ;
+    rdfs:label "OT Security Command Event" ;
+    rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTSecurityCommand ] ;
+    :definition "Ensure confidentiality, integrity, or availability of system information." .
+
+:OTSetTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Set Time Command Event" ;
+    rdfs:subClassOf :OTTimeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTSetTimeCommand ] ;
+    :definition "Set timing mechanisms." .
+
+:OTStopCommandEvent a owl:Class ;
+    rdfs:label "OT Stop Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTStopCommand ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :OTRunCommandEvent ] ;
+    :definition "Commands a device to stop a service/program." .
+
+:OTSynchronizeTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Synchronize Time Command Event" ;
+    rdfs:subClassOf :OTTimeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTSynchronizeTimeCommand ] ;
+    :definition "Used to align timing mechanisms." .
+
+:OTTestCommandEvent a owl:Class ;
+    rdfs:label "OT Test Command Event" ;
+    rdfs:subClassOf :OTModifyDeviceOperatingModeCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTControllerOperatingMode ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTTestCommand ] ;
+    :definition "Commands a  device to run a program in Test mode." .
+
+:OTTimeCommandEvent a owl:Class ;
+    rdfs:label "OT Time Command Event" ;
+    rdfs:subClassOf :OTDeviceManagementMessageEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTTimeCommand ] ;
+    :definition "Read, set, or calculate timing mechanisms." .
+
+:OTTransportConfigurationCommandEvent a owl:Class ;
+    rdfs:label "OT Transport Configuration Command Event" ;
+    rdfs:subClassOf :OTNetworkManagementCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTTransportConfigurationCommand ] ;
+    :definition "Configure transport settings for a communication channel." .
+
+:OTWriteCommandEvent a owl:Class ;
+    rdfs:label "OT Write Command Event" ;
+    rdfs:subClassOf :OTProcessDataCommandEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OTWriteCommand ] ;
+    :definition "Write or store data." .
+
+:OutputDeviceEvent a owl:Class ;
+    rdfs:label "Output Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OutputDevice ] ;
+    :definition "An event describing the activity or state of output devices, including sound cards, display adapters, or media controllers. These events relate to audio, video, or graphics functionality." .
+
+:PeripheralDeviceEvent a owl:Class ;
+    rdfs:label "Peripheral Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :RemovableMediaDevice ] ;
+    :definition "An event involving external or auxiliary devices, such as USB drives, Thunderbolt peripherals, or Bluetooth devices. Peripheral events provide visibility into resource availability and potential unauthorized access." .
+
+:PermissionGrantingEvent a owl:Class ;
+    rdfs:label "Permission Granting Event" ;
+    rdfs:subClassOf :AccessControlAdministrationEvent ;
+    :definition "An administrative event where authorization is given, allowing a subject to perform specific operations on a protected resource, effectuating a policy decision to allow access rights." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/user_access> .
+
+:PermissionRevokingEvent a owl:Class ;
+    rdfs:label "Permission Revoking Event" ;
+    rdfs:subClassOf :AccessControlAdministrationEvent ;
+    :definition "An administrative event entailing the withdrawal of previously granted access rights, reconfiguring permissions to prevent a subject from performing specific actions on a resource, in accordance with updated access policies." .
+
+:PhysicalAccessAlarmEvent a owl:Class ;
+    rdfs:label "Physical Access Alarm Event" ;
+    rdfs:subClassOf :DigitalEvent ;
+    rdfs:comment "An event occurring when a physical threshold is crossed." .
+
+:PhysicalLinkConnectEvent a owl:Class ;
+    rdfs:label "Physical Link Connect Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :PhysicalLinkUpEvent ] ;
+    :definition "The medium is attached or the port is enabled, establishing electrical or optical continuity so that link negotiation can begin." .
+
+:PhysicalLinkDisableEvent a owl:Class ;
+    rdfs:label "Physical Link Disable Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkUpEvent ] ;
+    :definition "An administrator issues a shutdown or disable command, forcing the link out of service regardless of signal status." .
+
+:PhysicalLinkDisconnectEvent a owl:Class ;
+    rdfs:label "Physical Link Disconnect Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkDownEvent ] ;
+    :definition "The transmission medium is removed or power is cut, physically breaking the path between the two interfaces." .
+
+:PhysicalLinkDownEvent a owl:Class ;
+    rdfs:label "Physical Link Down Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkUpEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :PhysicalLinkDisconnectEvent ] ;
+    :definition "Carrier or negotiation is lost, or the port is shut, rendering the link non-operational while the medium remains connected." .
+
+:PhysicalLinkErrorDisableEvent a owl:Class ;
+    rdfs:label "Physical Link Error Disable Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkDownEvent ] ;
+    :definition "The device automatically disables the link in response to fault conditions such as excessive faults or signal degradation." .
+
+:PhysicalLinkEvent a owl:Class ;
+    rdfs:label "Physical Link Event" ;
+    rdfs:subClassOf :NetworkDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :PhysicalLink ] ;
+    :definition "A discrete event that changes either the presence of the transmission medium or the operational state of a single-hop layer-1 link between two network nodes." .
+
+:PhysicalLinkUpEvent a owl:Class ;
+    rdfs:label "Physical Link Up Event" ;
+    rdfs:subClassOf :PhysicalLinkEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :PhysicalLinkConnectEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :PhysicalLinkDownEvent ] ;
+    :definition "Auto-negotiation and signal detection complete; carrier is present and the link can forward frames." .
+
+:PowerAndThermalDeviceEvent a owl:Class ;
+    rdfs:label "Power and Thermal Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Sensor ] ;
+    :definition "An event involving power supplies, batteries, or thermal management devices. These events represent changes in power states, temperature thresholds, or cooling system activity." .
+
+:PreAuthenticationEvent a owl:Class ;
+    rdfs:label "Pre-Authentication Event" ;
+    rdfs:subClassOf :AuthenticationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :Authentication ] ;
+    :definition "An event representing preparatory steps or processes conducted prior to the primary authentication operation. Pre-authentication often involves initial protocol exchanges, cryptographic challenges, or the validation of supplemental factors (e.g., pre-shared keys) to ensure the readiness and security of the authentication workflow." .
+
+:ProcessAccessEvent a owl:Class ;
+    rdfs:label "Process Access Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ProcessCreationEvent ] ;
+    :definition "An event where one process interacts with another, such as reading memory, inspecting state, or altering behavior." .
+
+:ProcessCreationEvent a owl:Class ;
+    rdfs:label "Process Creation Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ProcessStartFunction ] ;
+    :definition "An event where a new process is spawned, initializing its execution context and resource allocation." .
+
+:ProcessEvent a owl:Class ;
+    rdfs:label "Process Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Process ] ;
+    :definition "An event capturing lifecycle transitions, interactions, or activities of computer processes, including their creation, termination, and inter-process communication." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/process_activity> .
+
+:ProcessSetUserIDEvent a owl:Class ;
+    rdfs:label "Process Set User ID Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ProcessCreationEvent ] ;
+    :definition "An event where a process changes or adopts a specific user identity, modifying its access privileges or operational context." .
+
+:ProcessTerminationEvent a owl:Class ;
+    rdfs:label "Process Termination Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ProcessCreationEvent ] ;
+    :definition "An event marking the cessation of a process, including resource deallocation and cleanup, either due to normal completion or abnormal termination." .
+
+:ProximitySensorEvent a owl:Class ;
+    rdfs:label "Proximity Sensor Event" ;
+    rdfs:subClassOf :PhysicalAccessAlarmEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ProximitySensor ] ;
+    :definition "An event in which a proximity sensor detects the presence of a nearby object without physical contact." .
+
+:RDPConnectRequestEvent a owl:Class ;
+    rdfs:label "RDP Connect Request Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event where an RDP client sends a connection request specifying session parameters, such as display settings, compression preferences, and security requirements, to prepare for an interactive session." .
+
+:RDPConnectResponseEvent a owl:Class ;
+    rdfs:label "RDP Connect Response Event" ;
+    rdfs:subClassOf :RDPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :RDPConnectRequestEvent ] ;
+    :definition "An event where an RDP server acknowledges a connection request, finalizing session parameters and confirming the transition to an interactive remote session." .
+
+:RDPEvent a owl:Class ;
+    rdfs:label "RDP Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        [ a owl:Class ;
+            owl:unionOf (
+                    :TCPEvent
+                    :UDPEvent ) ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :RDPSession ] ;
+    :definition "An event involving the Remote Desktop Protocol (RDP), a communication protocol developed by Microsoft that facilitates secure remote access to graphical interfaces on desktops or applications hosted on remote servers. RDP supports multi-channel communication for transferring input, output, and management commands." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/rdp_activity> .
+
+:RDPInitialRequestEvent a owl:Class ;
+    rdfs:label "RDP Initial Request Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event where an RDP client initiates communication with a server by sending a request to establish a session and negotiate protocol capabilities for remote interaction." .
+
+:RDPInitialResponseEvent a owl:Class ;
+    rdfs:label "RDP Initial Response Event" ;
+    rdfs:subClassOf :RDPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :RDPInitialRequestEvent ] ;
+    :definition "An event where an RDP server responds to an initial request from a client, presenting its supported capabilities and agreeing to proceed with session negotiation." .
+
+:RDPTLSHandshakeEvent a owl:Class ;
+    rdfs:label "RDP TLS Handshake Event" ;
+    rdfs:subClassOf :RDPEvent ;
+    :definition "An event representing the cryptographic exchange of keys and certificates between an RDP client and server to establish a secure communication channel. The handshake ensures encryption, integrity, and authentication for the session." .
+
+:RemoveUserFromGroupEvent a owl:Class ;
+    rdfs:label "Remove User from Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :UserAccount ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :AddUserToGroupEvent ] ;
+    :definition "An event where a user is removed from a group, revoking the permissions and privileges associated with the group from the user." .
+
+:RestorationEvent a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Restoration Event" ;
+    rdfs:subClassOf :SecurityEvent ;
+    :definition "An event representing actions to return a compromised system or resource to a trusted operational state, such as through backup restoration, system reinstallation, or repair." ;
+    :related :Restore .
+
+:RevokePrivilegesFromGroupEvent a owl:Class ;
+    rdfs:label "Revoke Privileges from Group Event" ;
+    rdfs:subClassOf :GroupManagementEvent,
+        :PermissionRevokingEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :AssignPrivilegesToGroupEvent ] ;
+    :definition "An event where specific privileges or rights are removed from a group, restricting its members from performing actions or accessing resources previously allowed by those privileges." .
+
+:RTCUpdateEvent a owl:Class ;
+    rdfs:label "RTC Update Event" ;
+    rdfs:subClassOf :HardwareClockEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Real-timeClock ] ;
+    :definition "An event in which a Real-time Clock's stored time value is read from or written to its battery-backed storage." .
+
+:ScheduledJobCreationEvent a owl:Class ;
+    rdfs:label "Scheduled Job Creation Event" ;
+    rdfs:subClassOf :ScheduledJobEvent ;
+    :definition "An event representing the addition of a new task to the system's scheduler, defining its execution criteria and associated actions." .
+
+:ScheduledJobDeletionEvent a owl:Class ;
+    rdfs:label "Scheduled Job Deletion Event" ;
+    rdfs:subClassOf :ScheduledJobEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ScheduledJobCreationEvent ] ;
+    :definition "An event marking the removal of a scheduled task from the system, terminating its execution schedule." .
+
+:ScheduledJobDisableEvent a owl:Class ;
+    rdfs:label "Scheduled Job Disable Event" ;
+    rdfs:subClassOf :ScheduledJobEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ScheduledJobEnableEvent ] ;
+    :definition "An event where a scheduled task is deactivated, preventing further execution until re-enabled." .
+
+:ScheduledJobEnableEvent a owl:Class ;
+    rdfs:label "Scheduled Job Enable Event" ;
+    rdfs:subClassOf :ScheduledJobEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ScheduledJobCreationEvent ] ;
+    :definition "An event where a scheduled task is activated, allowing it to execute according to its defined parameters." .
+
+:ScheduledJobEvent a owl:Class ;
+    rdfs:label "Scheduled Job Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ScheduledJob ] ;
+    :definition "An event capturing the lifecycle or management of scheduled tasks within a system, including creation, modification, execution, or removal." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/scheduled_job_activity> .
+
+:ScheduledJobStartEvent a owl:Class ;
+    rdfs:label "Scheduled Job Start Event" ;
+    rdfs:subClassOf :ScheduledJobEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ScheduledJobCreationEvent ] ;
+    :definition "An event indicating the execution of a scheduled task, triggered either automatically by the scheduler or manually by a user." .
+
+:ScheduledJobUpdateEvent a owl:Class ;
+    rdfs:label "Scheduled Job Update Event" ;
+    rdfs:subClassOf :ScheduledJobEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ScheduledJobCreationEvent ] ;
+    :definition "An event where an existing scheduled task is updated, altering parameters such as timing, conditions, or actions." .
+
+:SecurityEvent a owl:Class ;
+    rdfs:label "Security Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :caused-by ;
+            owl:someValuesFrom :DefensiveAction ] ;
+    :definition "An event describing occurrences related to cybersecurity, including detection, remediation, or enforcement actions. Security events provide critical insights into the state, behavior, and resilience of digital systems." .
+
+:ServiceDeletionEvent a owl:Class ;
+    rdfs:label "Service Deletion Event" ;
+    rdfs:subClassOf :ApplicationDeletionEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
+    :definition "An event capturing the uninstallation or deregistration of a service application, ensuring it is no longer operational or available to clients." .
+
+:ServiceDisableEvent a owl:Class ;
+    rdfs:label "Service Disable Event" ;
+    rdfs:subClassOf :ApplicationDisableEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceEnableEvent ] ;
+    :definition "An event capturing the deactivation of a service application, preventing it from being started or accessed until re-enabled." .
+
+:ServiceEnableEvent a owl:Class ;
+    rdfs:label "Service Enable Event" ;
+    rdfs:subClassOf :ApplicationEnableEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
+    :definition "An event representing the activation of a service application, allowing it to start and provide its background or networked functionality." .
+
+:ServiceEvent a owl:Class ;
+    rdfs:label "Service Event" ;
+    rdfs:subClassOf :ApplicationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :ServiceApplication ] ;
+    :definition "An event capturing the operation, configuration, or lifecycle of a service application. Services are specialized applications designed to provide reusable functionality to clients, systems, or other applications, often operating in the background or across networks." .
+
+:ServiceInstallationEvent a owl:Class ;
+    rdfs:label "Service Installation Event" ;
+    rdfs:subClassOf :ApplicationInstallationEvent,
+        :ServiceEvent ;
+    :definition "An event representing the installation or registration of a service application within the system, enabling it to provide background or reusable functionality." .
+
+:ServiceRestartEvent a owl:Class ;
+    rdfs:label "Service Restart Event" ;
+    rdfs:subClassOf :ApplicationRestartEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStopEvent ],
+        [ a owl:Restriction ;
+            owl:onProperty :precedes ;
+            owl:someValuesFrom :ServiceStartEvent ] ;
+    :definition "An event describing the sequential stopping and starting of a service application to refresh its state, apply updates, or resolve operational issues." .
+
+:ServiceStartEvent a owl:Class ;
+    rdfs:label "Service Start Event" ;
+    rdfs:subClassOf :ApplicationStartEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
+    :definition "An event representing the initiation of a service application, transitioning it from an inactive state to an active state, enabling its background or networked operations." .
+
+:ServiceStopEvent a owl:Class ;
+    rdfs:label "Service Stop Event" ;
+    rdfs:subClassOf :ApplicationStopEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceStartEvent ] ;
+    :definition "An event capturing the cessation of a service application’s operations, transitioning it to an inactive state while ceasing its functionality to clients or dependent systems." .
+
+:ServiceUpdateEvent a owl:Class ;
+    rdfs:label "Service Update Event" ;
+    rdfs:subClassOf :ApplicationUpdateEvent,
+        :ServiceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :ServiceInstallationEvent ] ;
+    :definition "An event describing changes made to a service application, such as updates, reconfigurations, or patch installations, ensuring its continued availability and functionality." .
+
+:SMBEvent a owl:Class ;
+    rdfs:label "SMB Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FileTransferNetworkTraffic ] ;
+    :definition "An event involving the Server Message Block (SMB) protocol, a network file sharing protocol that allows client-server communication for accessing files, printers, and other shared network resources. SMB supports both transactional file operations and communication over reliable transport layers." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/smb_activity> .
+
+:SMBFileCreateEvent a owl:Class ;
+    rdfs:label "SMB File Create Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is created if it does not already exist, failing if the file is already present. This operation strictly enforces new file creation." .
+
+:SMBFileOpenEvent a owl:Class ;
+    rdfs:label "SMB File Open Event" ;
+    rdfs:subClassOf :SMBEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :SMBFileCreateEvent ] ;
+    :definition "An event where a file is opened if it exists, failing otherwise. This operation is used to access or query the existing file." .
+
+:SMBFileOpenIfEvent a owl:Class ;
+    rdfs:label "SMB File Open If Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is opened if it exists, or created if it does not. This operation merges file creation and access behavior." .
+
+:SMBFileOverwriteEvent a owl:Class ;
+    rdfs:label "SMB File Overwrite Event" ;
+    rdfs:subClassOf :SMBEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :SMBFileCreateEvent ] ;
+    :definition "An event where a file is opened and truncated if it exists, failing if the file does not already exist. This operation is destructive and focuses on replacing the file's contents." .
+
+:SMBFileOverwriteIfEvent a owl:Class ;
+    rdfs:label "SMB File Overwrite If Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is opened and truncated if it exists, or created otherwise. This operation combines destructive overwrite and creation behaviors." .
+
+:SMBFileSupersedeEvent a owl:Class ;
+    rdfs:label "SMB File Supersede Event" ;
+    rdfs:subClassOf :SMBEvent ;
+    :definition "An event where a file is overwritten if it exists or created if it does not. This operation combines file creation and modification semantics." .
+
+:Software-definedRadioEvent a owl:Class ;
+    rdfs:label "Software-defined Radio Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadio ] ;
+    :definition "An event involving a software-defined radio (SDR) device indicating that the SDR's lifecycle state, operational state, configuration, data-streaming status, timing/reference status, or fault condition has changed." ;
+    :synonym "SDR Event" .
+
+:Software-definedRadioRFStateChangeEvent a owl:Class ;
+    rdfs:label "Software-defined Radio RF State Change Event" ;
+    rdfs:subClassOf :Software-definedRadioEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioConfiguration ] ;
+    :definition "A software-defined radio (SDR) event where one or more radio-frequency (RF) parameters have been changed in a way that affects reception or emission (e.g., center frequency retune, gain/attenuation update, bandwidth/filter selection, antenna/port switch, TX enable/disable, etc)." .
+
+:Software-definedRadioWaveformApplicationConfigurationEvent a owl:Class ;
+    rdfs:label "Software-defined Radio Waveform Application Configuration Event" ;
+    rdfs:subClassOf :Software-definedRadioEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioWaveformApplication ] ;
+    :definition "An SDR event where the waveform application's operational parameters have been applied and validated (e.g., sample rate, bandwidth, channel selection, framing/modulation options), placing the waveform in a state ready to run." .
+
+:Software-definedRadioWaveformApplicationLoadEvent a owl:Class ;
+    rdfs:label "Software-defined Radio Waveform Application Load Event" ;
+    rdfs:subClassOf :Software-definedRadioEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioComputer ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Software-definedRadioWaveformApplication ] ;
+    :definition "An SDR event where a waveform application (software/firmware/FPGA image and associated descriptors) has been installed or selected on the SDR and is available to be configured." .
+
+:SoftwareClockEvent a owl:Class ;
+    rdfs:label "Software Clock Event" ;
+    rdfs:subClassOf :ClockEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SoftwareClock ] ;
+    :definition "A clock event involving a software-based timekeeping mechanism maintained by an operating system or application." .
+
+:SoftwareTimerEvent a owl:Class ;
+    rdfs:label "Software Timer Event" ;
+    rdfs:subClassOf :TimerEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SoftwareTimer ] ;
+    :definition "A timer event involving a software timer managed by an operating system or application to schedule tasks, implement timeouts, or trigger periodic operations." .
+
+:SSHConnectionCloseEvent a owl:Class ;
+    rdfs:label "SSH Connection Close Event" ;
+    rdfs:subClassOf :NetworkConnectionCloseEvent,
+        :SSHEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :SSHConnectionOpenEvent ] ;
+    :definition "An event indicating the termination of an SSH connection, signaling the end of a secure session." .
+
+:SSHConnectionFailEvent a owl:Class ;
+    rdfs:label "SSH Connection Fail Event" ;
+    rdfs:subClassOf :NetworkConnectionFailEvent,
+        :SSHEvent ;
+    :definition "An event indicating a failure to establish an SSH connection, often due to issues such as authentication errors, network timeouts, or server unavailability." .
+
+:SSHConnectionOpenEvent a owl:Class ;
+    rdfs:label "SSH Connection Open Event" ;
+    rdfs:subClassOf :NetworkConnectionOpenEvent,
+        :SSHEvent ;
+    :definition "An event indicating the successful establishment of an SSH connection between a client and a server, marking the initiation of a secure session." .
+
+:SSHConnectionRefuseEvent a owl:Class ;
+    rdfs:label "SSH Connection Refuse Event" ;
+    rdfs:subClassOf :NetworkConnectionRefuseEvent,
+        :SSHEvent ;
+    :definition "An event indicating that an SSH connection attempt was refused, typically due to server-side restrictions or closed ports." .
+
+:SSHConnectionResetEvent a owl:Class ;
+    rdfs:label "SSH Connection Reset Event" ;
+    rdfs:subClassOf :NetworkConnectionResetEvent,
+        :SSHEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :SSHConnectionOpenEvent ] ;
+    :definition "An event indicating the abrupt termination of an SSH connection due to protocol errors, network disruptions, or administrative actions." .
+
+:SSHEvent a owl:Class ;
+    rdfs:label "SSH Event" ;
+    rdfs:subClassOf :ApplicationLayerEvent,
+        :TCPEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SSHSession ] ;
+    :definition "An event involving the Secure Shell (SSH) protocol, a cryptographic network protocol designed to provide secure remote login, command execution, and data transfer. SSH facilitates encrypted communication between clients and servers, ensuring confidentiality, integrity, and authenticity." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/ssh_activity> .
+
+:SSHListenEvent a owl:Class ;
+    rdfs:label "SSH Listen Event" ;
+    rdfs:subClassOf :NetworkConnectionListenEvent,
+        :SSHEvent ;
+    :definition "An event indicating that an SSH server has started listening for incoming connection requests, enabling potential clients to initiate secure sessions." .
+
+:StorageDeviceEvent a owl:Class ;
+    rdfs:label "Storage Device Event" ;
+    rdfs:subClassOf :HardwareDeviceEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SecondaryStorage ] ;
+    :definition "An event describing the activity, configuration, or errors of storage devices, including physical disks, SSDs, or logical partitions. These events often pertain to data availability, integrity, and storage health." .
+
+:SystemCallEvent a owl:Class ;
+    rdfs:label "System Call Event" ;
+    rdfs:subClassOf :KernelEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SystemCall ] ;
+    :definition "An event where a user-space process requests a service or resource from the operating system kernel through a system call interface, enabling controlled interactions with hardware or kernel-level operations." .
+
+:SystemClockUpdateEvent a owl:Class ;
+    rdfs:label "System Clock Update Event" ;
+    rdfs:subClassOf :SoftwareClockEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :OperatingSystemClock ] ;
+    :definition "An event in which the operating system's primary timekeeping value is modified or synchronized." .
+
+:TCPEvent a owl:Class ;
+    rdfs:label "TCP Event" ;
+    rdfs:subClassOf :TransportLayerEvent ;
+    :definition "An event involving the Transmission Control Protocol (TCP), providing reliable, ordered, and error-checked delivery of data between applications." .
+
+:TimerEvent a owl:Class ;
+    rdfs:label "Timer Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Timer ] ;
+    :definition "An event involving a timer artifact, characterized by the initiation, expiration, modification, or cancellation of a countdown or interval-based temporal mechanism." .
+
+:TimerExpirationEvent a owl:Class ;
+    rdfs:label "Timer Expiration Event" ;
+    rdfs:subClassOf :SoftwareTimerEvent ;
+    :definition "An event in which a software timer reaches its configured duration and triggers associated actions (callbacks, interrupts, or signals)." .
+
+:TimerModificationEvent a owl:Class ;
+    rdfs:label "Timer Modification Event" ;
+    rdfs:subClassOf :SoftwareTimerEvent ;
+    :definition "An event in which the duration or expiration time of an active timer is changed." .
+
+:TimerSetEvent a owl:Class ;
+    rdfs:label "Timer Set Event" ;
+    rdfs:subClassOf :SoftwareTimerEvent ;
+    :definition "An event in which a software timer is initialized with a specific duration or expiration time." .
+
+:TransportLayerEvent a owl:Class ;
+    rdfs:label "Transport Layer Event" ;
+    rdfs:subClassOf :NetworkEvent ;
+    :definition "An event occurring at the transport layer, responsible for end-to-end communication and data transfer management." .
+
+:TunnelCloseEvent a owl:Class ;
+    rdfs:label "Tunnel Close Event" ;
+    rdfs:subClassOf :TunnelEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :TunnelOpenEvent ] ;
+    :definition "An event where a network tunnel is terminated, ending encapsulated communication and releasing the associated resources." .
+
+:TunnelEvent a owl:Class ;
+    rdfs:label "Tunnel Event" ;
+    rdfs:subClassOf :NetworkEvent ;
+    :definition "An event involving the establishment, usage, or termination of a network tunnel. Tunnels provide encapsulated communication pathways across various layers, enabling secure, isolated, or virtualized transport of data." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/tunnel_activity> .
+
+:TunnelOpenEvent a owl:Class ;
+    rdfs:label "Tunnel Open Event" ;
+    rdfs:subClassOf :TunnelEvent ;
+    :definition "An event where a network tunnel is established, enabling encapsulated communication between endpoints. This marks the initiation of secure or isolated data transport through the tunnel." .
+
+:TunnelRenewEvent a owl:Class ;
+    rdfs:label "Tunnel Renew Event" ;
+    rdfs:subClassOf :TunnelEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :TunnelOpenEvent ] ;
+    :definition "An event where the lifecycle of a network tunnel is extended, ensuring continued encapsulated communication and avoiding session expiration." .
+
+:UDPEvent a owl:Class ;
+    rdfs:label "UDP Event" ;
+    rdfs:subClassOf :TransportLayerEvent ;
+    :definition "An event involving the User Datagram Protocol (UDP), providing a connectionless datagram service with minimal protocol mechanisms." .
+
+:UnloadLibraryEvent a owl:Class ;
+    rdfs:label "Unload Library Event" ;
+    rdfs:subClassOf :ProcessEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :SharedLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :LoadLibraryEvent ] ;
+    :definition "An event where a process unloads a dynamically linked library or module, reducing its memory footprint or functionality." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/module_activity> .
+
+:UserAccountAttachPolicyEvent a owl:Class ;
+    rdfs:label "User Account Attach Policy Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where an IAM policy is attached to a user account." .
+
+:UserAccountCreationEvent a owl:Class ;
+    rdfs:label "User Account Creation Event" ;
+    rdfs:subClassOf :UserAccountEvent ;
+    :definition "An event representing the creation of a new user account within a system or domain." .
+
+:UserAccountDeletionEvent a owl:Class ;
+    rdfs:label "User Account Deletion Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event representing the permanent deletion of a user account from a system or domain." .
+
+:UserAccountDetachPolicyEvent a owl:Class ;
+    rdfs:label "User Account Detach Policy Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountAttachPolicyEvent ] ;
+    :definition "An event where an IAM policy is detached from a user account." .
+
+:UserAccountDisableEvent a owl:Class ;
+    rdfs:label "User Account Disable Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountEnableEvent ] ;
+    :definition "An event where a user account is disabled, preventing its active use within the system." .
+
+:UserAccountEnableEvent a owl:Class ;
+    rdfs:label "User Account Enable Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where a user account is enabled, granting it active use within the system." .
+
+:UserAccountEvent a owl:Class ;
+    rdfs:label "User Account Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :UserAccount ] ;
+    :definition "An event capturing operations or state changes performed on user accounts, including lifecycle management, access control modifications, and policy assignments." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/account_change> .
+
+:UserAccountLockEvent a owl:Class ;
+    rdfs:label "User Account Lock Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where a user account is locked out due to failed authentication attempts or administrative action." .
+
+:UserAccountMFADisableEvent a owl:Class ;
+    rdfs:label "User Account MFA Disable Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountMFAEnableEvent ] ;
+    :definition "An event where multi-factor authentication (MFA) is disabled for a user account." .
+
+:UserAccountMFAEnableEvent a owl:Class ;
+    rdfs:label "User Account MFA Enable Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where multi-factor authentication (MFA) is enabled for a user account." .
+
+:UserAccountPasswordChangeEvent a owl:Class ;
+    rdfs:label "User Account Password Change Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Credential ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where a user account's password is modified, typically by the user or an administrator." .
+
+:UserAccountPasswordResetEvent a owl:Class ;
+    rdfs:label "User Account Password Reset Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :Credential ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event where a user account's password is reset, typically due to a forgotten password or administrative action." .
+
+:UserAccountUpdateEvent a owl:Class ;
+    rdfs:label "User Account Update Event" ;
+    rdfs:subClassOf :UserAccountEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :UserAccountCreationEvent ] ;
+    :definition "An event capturing updates to a user account, including changes to its attributes or configuration." .
+
+:WatchdogTimerConfigurationEvent a owl:Class ;
+    rdfs:label "Watchdog Timer Configuration Event" ;
+    rdfs:subClassOf :WatchdogTimerEvent ;
+    :definition "An event in which a watchdog timer's timeout period or recovery action is configured." .
+
+:WatchdogTimerEvent a owl:Class ;
+    rdfs:label "Watchdog Timer Event" ;
+    rdfs:subClassOf :TimerEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WatchdogTimer ] ;
+    :definition "A watchdog timer event is any occurrence in which a watchdog timer is started, updated, reset, expired, or otherwise interacts with the system it monitors, resulting in a state change, status report, or corrective action intended to detect, signal, or recover from abnormal or stalled system behavior." .
+
+:WatchdogTimerExpirationEvent a owl:Class ;
+    rdfs:label "Watchdog Timer Expiration Event" ;
+    rdfs:subClassOf :WatchdogTimerEvent ;
+    :definition "An event indicating the watchdog timer was not serviced in time and triggers a reset or escalation action." .
+
+:WatchdogTimerResetEvent a owl:Class ;
+    rdfs:label "Watchdog Timer Reset Event" ;
+    rdfs:subClassOf :WatchdogTimerEvent ;
+    :definition "An event where a watchdog timer is reset as a consequence of watchdog timer expiry or watchdog timer escalation policy." .
+
+:WatchdogTimerServiceEvent a owl:Class ;
+    rdfs:label "Watchdog Timer Service Event" ;
+    rdfs:subClassOf :WatchdogTimerEvent ;
+    :definition "An event in which the watchdog timer is serviced (kicked/pet), extending the time until expiry." .
+
+:WebAuthentication a owl:Class ;
+    rdfs:label "Web Authentication" ;
+    rdfs:subClassOf :Authentication,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :SessionCookie ] ;
+    :definition "A request-response comprising a user credential presentation to a system and a verification response where the verifying party is a web server." .
+
+:WindowsRegistryEvent a owl:Class ;
+    rdfs:label "Windows Registry Event" ;
+    rdfs:subClassOf :DigitalEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WindowsRegistry ] ;
+    :definition "Events involving interactions with the Windows Registry, including keys, values, and associated security configurations." .
+
+:WindowsRegistryKeyCreationEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Creation Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyImportEvent ] ;
+    :definition "An event where a new registry key is added to the Windows Registry, establishing a new hierarchical node for configuration." .
+
+:WindowsRegistryKeyDeletionEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Deletion Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyCreationEvent ] ;
+    :definition "An event representing the removal of a registry key from the Windows Registry, including its hierarchical structure and associated metadata." .
+
+:WindowsRegistryKeyEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Event" ;
+    rdfs:subClassOf :WindowsRegistryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
+    :definition "Events representing actions performed on Windows Registry keys, such as creation, modification, or deletion, which define hierarchical nodes for storing configuration data." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/win/registry_key_activity> .
+
+:WindowsRegistryKeyExportEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Export Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyCreationEvent ] ;
+    :definition "An event representing the export of registry key data from the Windows Registry to an external file or format." .
+
+:WindowsRegistryKeyImportEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Import Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where registry key data is imported into the Windows Registry from an external source." .
+
+:WindowsRegistryKeyReadEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Read Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyCreationEvent ] ;
+    :definition "An event where a registry key is accessed to query its structure, properties, or associated metadata without modifying its state." .
+
+:WindowsRegistryKeyRenamingEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Renaming Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyCreationEvent ] ;
+    :definition "An event where the name of a registry key is changed, altering its identifier within the registry hierarchy." .
+
+:WindowsRegistryKeyRestoreEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Restore Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent ;
+    :definition "An event where a registry key is restored to a previous state using a backup or recovery mechanism." .
+
+:WindowsRegistryKeySetSecurityEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Set Security Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyCreationEvent ] ;
+    :definition "An event representing the application or modification of access controls or security settings to a registry key." .
+
+:WindowsRegistryKeyUpdateEvent a owl:Class ;
+    rdfs:label "Windows Registry Key Update Event" ;
+    rdfs:subClassOf :WindowsRegistryKeyEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryKeyCreationEvent ] ;
+    :definition "An event where an existing registry key is updated or reconfigured, reflecting changes to its metadata or properties." .
+
+:WindowsRegistryValueDeletionEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Deletion Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryValueSetEvent ] ;
+    :definition "An event where a registry value is deleted from the Windows Registry, permanently removing its associated data." .
+
+:WindowsRegistryValueEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Event" ;
+    rdfs:subClassOf :WindowsRegistryEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :WindowsRegistryValue ] ;
+    :definition "Events representing actions performed on Windows Registry values, which store configuration data within registry keys." ;
+    rdfs:seeAlso <https://schema.ocsf.io/classes/win/registry_value_activity> .
+
+:WindowsRegistryValueGetEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Get Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryValueSetEvent ] ;
+    :definition "An event where the data of a registry value is retrieved, typically to read its configuration or state." .
+
+:WindowsRegistryValueSetEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Set Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent ;
+    :definition "An event where data is assigned to a registry value, either creating it or updating its existing content." .
+
+:WindowsRegistryValueUpdateEvent a owl:Class ;
+    rdfs:label "Windows Registry Value Update Event" ;
+    rdfs:subClassOf :WindowsRegistryValueEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :WindowsRegistryValueSetEvent ] ;
+    :definition "An event indicating changes to the data or configuration of an existing registry value within the Windows Registry." .
+
+### Serialized using the ttlser deterministic serializer v1.2.3

@@ -1,12 +1,14 @@
-from stix2 import MemoryStore, Filter
-from rdflib import URIRef, Literal, RDF, RDFS, Namespace, BNode, SKOS
-from build import get_graph, _xmlns as _XMLNS
+import argparse
 import string
-import sys
+from pathlib import Path
+
+from stix2 import MemoryStore, Filter
+from rdflib import Graph, URIRef, Literal, RDF, RDFS, Namespace, BNode, SKOS
 
 owl = Namespace("http://www.w3.org/2002/07/owl#")
 rdfs = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 d3fend = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
+_XMLNS = str(d3fend)
 
 
 def _print(*args):
@@ -445,7 +447,7 @@ def update_definition(graph, tech):
 
 
 def update_and_add(graph, data, thesrc):
-    # If tech is missing, add it to d3fend-protege.atlas.ttl
+    # If a technique is missing, add it to the ATLAS module candidate.
     # Else, handle if technique has recently become deprecated, revoked, or has an updated label
 
     counters = {
@@ -610,11 +612,18 @@ def update_and_add(graph, data, thesrc):
     return counters
 
 
-def main(do_counters=True, ATLAS_VERSION="4.6.0"):
+def main(
+    do_counters=True,
+    ATLAS_VERSION="4.6.0",
+    input_file="src/ontology/external/atlas.ttl",
+    output_file="build/atlas.updates.ttl",
+    data_file="data/stix-atlas.json",
+):
 
     src = MemoryStore()
-    src.load_from_file("data/stix-atlas.json")
-    d3fend_graph = get_graph(filename="src/ontology/d3fend-protege.updates.ttl")
+    src.load_from_file(str(data_file))
+    # Do not follow imports into modules owned by other updaters.
+    d3fend_graph = Graph().parse(input_file, format="turtle")
 
     add_atlas_facts(d3fend_graph)
 
@@ -623,9 +632,9 @@ def main(do_counters=True, ATLAS_VERSION="4.6.0"):
         d3fend_graph, data, src
     )  # add new techniques and modify current ones
 
-    d3fend_graph.serialize(
-        destination="src/ontology/d3fend-protege.updates.ttl", format="turtle"
-    )
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    d3fend_graph.serialize(destination=output_file, format="turtle")
+    print(f"Review {output_file} against {input_file} before replacing the module.")
 
     if do_counters:
         # Print some stats
@@ -653,5 +662,16 @@ def main(do_counters=True, ATLAS_VERSION="4.6.0"):
 
 
 if __name__ == "__main__":
-    version = sys.argv[1]
-    main(do_counters=True, ATLAS_VERSION=version)
+    parser = argparse.ArgumentParser(description="Create an ATLAS module update.")
+    parser.add_argument("version")
+    parser.add_argument("--input", default="src/ontology/external/atlas.ttl")
+    parser.add_argument("--output", default="build/atlas.updates.ttl")
+    parser.add_argument("--data", default="data/stix-atlas.json")
+    args = parser.parse_args()
+    main(
+        do_counters=True,
+        ATLAS_VERSION=args.version,
+        input_file=args.input,
+        output_file=args.output,
+        data_file=args.data,
+    )

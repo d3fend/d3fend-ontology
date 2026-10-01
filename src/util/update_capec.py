@@ -1,8 +1,9 @@
+import argparse
+from pathlib import Path
+
 from defusedxml.ElementTree import parse
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS, OWL
-
-import sys
 
 
 def get_capec_graph(capec_path):
@@ -105,20 +106,34 @@ def get_capec_graph(capec_path):
     return g
 
 
-def main(CAPEC_VERSION="3.9"):
+def main(
+    CAPEC_VERSION="3.9",
+    input_file="src/ontology/external/capec.ttl",
+    output_file="build/capec.updates.ttl",
+    data_file=None,
+):
 
-    d3fend_graph = Graph()
-    d3fend_graph.parse("src/ontology/d3fend-protege.capec.ttl")
+    d3fend_graph = Graph().parse(input_file, format="turtle")
 
-    capec_graph = get_capec_graph(f"data/capec_v{CAPEC_VERSION}.xml")
+    capec_graph = get_capec_graph(data_file or f"data/capec_v{CAPEC_VERSION}.xml")
 
     d3fend_graph += capec_graph
 
-    d3fend_graph.serialize(
-        destination="src/ontology/d3fend-protege.capec.ttl", format="turtle"
-    )
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    d3fend_graph.serialize(destination=output_file, format="turtle")
+    print(f"Review {output_file} against {input_file} before replacing the module.")
 
 
 if __name__ == "__main__":
-    version = sys.argv[1]
-    main(CAPEC_VERSION=version)
+    parser = argparse.ArgumentParser(description="Create a CAPEC module update.")
+    parser.add_argument("version")
+    parser.add_argument("--input", default="src/ontology/external/capec.ttl")
+    parser.add_argument("--output", default="build/capec.updates.ttl")
+    parser.add_argument("--data")
+    args = parser.parse_args()
+    main(
+        CAPEC_VERSION=args.version,
+        input_file=args.input,
+        output_file=args.output,
+        data_file=args.data,
+    )

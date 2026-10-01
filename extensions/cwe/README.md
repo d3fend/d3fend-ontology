@@ -1,13 +1,15 @@
 
 # CWE -> D3FEND Converter
 
-This directory holds a Makefile and documents the steps necessary to all CWE to Original add of Top-25 CWEs to d3fend-protege.ttl.  
+This directory holds a Makefile for adding CWE data to the D3FEND CWE module,
+`src/ontology/external/cwe.ttl`. It writes a reviewable candidate to
+`build/cwe.updates.ttl` and retains the module's ontology header and imports.
 
 - This only converts the Research Concepts View (aka Graph) of CWE into a D3FEND taxonomy for CWE Weaknesses.
 
 - Future work will be required to extend this capability for ongoing CWE updates
 
-## How to use 
+## How to use
 
 To accomplish add in of CWE tree structure for the Research Concepts View (aka View 1000, Research Concepts Graph), here are the manual steps:
 
@@ -15,16 +17,19 @@ To accomplish add in of CWE tree structure for the Research Concepts View (aka V
 
   (i.e., go to the directory in which this README.md is located.)
 
-2. `make install-deps` 
+2. `make install-deps`
 
-  This will install the # Add all CWE to Original add of Top-25 CWEs to d3fend-protege.ttl
-
-To accomplish add in of CWE tree structure for CWE-1000 / Research
-Concepts View (aka Graph), here are the manual steps.
+  This installs the YARRRML parser and mapper dependencies.
 
 3. `make all`
 
-4. Review diffs to d3fend-protege.ttl manually. _Example: First time use, the Top 25 classes already present were direct subclasses of Weakness but this was no longer wanted given entire taxonomy with intermediate clases were available; statements were already there and deletions may be required_.
+4. Compare `build/cwe.updates.ttl` with `src/ontology/external/cwe.ttl` from
+   the repository root. For example, remove redundant direct subclasses of
+   `Weakness` when the full taxonomy supplies intermediate classes.
+
+5. After review, replace `src/ontology/external/cwe.ttl` with the candidate,
+   then run the repository's normal build and checks. The D3FEND entity
+   namespace remains unchanged.
 
 ## Notes on RML and YARRRML technology
 
@@ -53,7 +58,7 @@ CARML does not offer pre-built jars though appeared to be compatible with YARRRM
 
 Yatter did not work for RML examples tried. But minimal use, so may work out well later.
 
-### Learning Resources 
+### Learning Resources
 
 The [RML spec](https://rml.io/specs/rml/) has many examples.
 

@@ -1,10 +1,11 @@
+import argparse
+import re
+from html.parser import HTMLParser
+from pathlib import Path
+
 from stix2 import MemoryStore, Filter
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS, OWL
-
-from html.parser import HTMLParser
-import re
-import sys
 
 D3F = Namespace("http://d3fend.mitre.org/ontologies/d3fend.owl#")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
@@ -203,22 +204,36 @@ def get_sparta_graph(sparta_path, d3fend_graph):
     return g
 
 
-def main(SPARTA_VERSION="3.1"):
+def main(
+    SPARTA_VERSION="3.1",
+    input_file="src/ontology/external/sparta.ttl",
+    output_file="build/sparta.updates.ttl",
+    data_file=None,
+):
 
-    d3fend_graph = Graph()
-    d3fend_graph.parse("src/ontology/d3fend-protege.updates.ttl")
+    d3fend_graph = Graph().parse(input_file, format="turtle")
 
     sparta_graph = get_sparta_graph(
-        f"data/sparta_data_v{SPARTA_VERSION}.json", d3fend_graph
+        str(data_file or f"data/sparta_data_v{SPARTA_VERSION}.json"), d3fend_graph
     )
 
     d3fend_graph += sparta_graph
 
-    d3fend_graph.serialize(
-        destination="src/ontology/d3fend-protege.updates.ttl", format="turtle"
-    )
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    d3fend_graph.serialize(destination=output_file, format="turtle")
+    print(f"Review {output_file} against {input_file} before replacing the module.")
 
 
 if __name__ == "__main__":
-    version = sys.argv[1]
-    main(SPARTA_VERSION=version)
+    parser = argparse.ArgumentParser(description="Create a SPARTA module update.")
+    parser.add_argument("version")
+    parser.add_argument("--input", default="src/ontology/external/sparta.ttl")
+    parser.add_argument("--output", default="build/sparta.updates.ttl")
+    parser.add_argument("--data")
+    args = parser.parse_args()
+    main(
+        SPARTA_VERSION=args.version,
+        input_file=args.input,
+        output_file=args.output,
+        data_file=args.data,
+    )
