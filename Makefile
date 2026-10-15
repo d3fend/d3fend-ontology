@@ -363,6 +363,7 @@ build/d3fend-prefixes.json: builddir | robot ## create d3fend-specific prefix fi
 
 build/d3fend-with-header.owl:	src/ontology/d3fend-protege.ttl | robot
 	./bin/robot annotate --input src/ontology/d3fend-protege.ttl \
+		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--version-iri "http://d3fend.mitre.org/ontologies/d3fend/${D3FEND_VERSION}/d3fend.owl" \
 		--typed-annotation "http://d3fend.mitre.org/ontologies/d3fend.owl#release-date" ${D3FEND_RELEASE_DATE} xsd:dateTime \
 		--annotation owl:versionInfo ${D3FEND_VERSION} \
@@ -454,6 +455,7 @@ build/d3fend.csv: build/d3fend-public.owl ## make D3FEND csv, not part of build 
 
 build/d3fend-architecture.owl:	build/d3fend-full.owl
 	./bin/robot extract --method MIREOT \
+		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
 		--input build/d3fend-full.owl \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#NetworkNode" \
 		--branch-from-term "http://d3fend.mitre.org/ontologies/d3fend.owl#Application" \
@@ -461,11 +463,19 @@ build/d3fend-architecture.owl:	build/d3fend-full.owl
 	$(END)
 
 build/d3fend-public-mapped.owl: build/d3fend-public.owl
-	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-ontology-mappings.ttl --input build/d3fend-public.owl --output build/d3fend-public-mapped.owl
+	./bin/robot merge --include-annotations true \
+		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
+		--input src/ontology/mappings/d3fend-ontology-mappings.ttl \
+		--input build/d3fend-public.owl \
+		--output build/d3fend-public-mapped.owl
 	$(END)
 
 build/d3fend-public-cco.owl: build/d3fend-public.owl
-	./bin/robot merge --include-annotations true --input src/ontology/mappings/d3fend-cco.ttl --input build/d3fend-public.owl --output build/d3fend-public-cco.owl
+	./bin/robot merge --include-annotations true \
+		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
+		--input src/ontology/mappings/d3fend-cco.ttl \
+		--input build/d3fend-public.owl \
+		--output build/d3fend-public-cco.owl
 	$(END)
 
 build/d3fend-public.ttl: build/d3fend-public.owl
@@ -497,7 +507,10 @@ build/extensions: build/d3fend-public.ttl build/cci-to-d3fend-mapping.ttl build/
 	cat build/sp800-53r5-control-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	cat build/cci-to-d3fend-mapping.ttl >> build/d3fend-public-with-controls.ttl
 	pipenv run ttlfmt build/d3fend-public-with-controls.ttl
-	./bin/robot convert --input build/d3fend-public-with-controls.ttl --output build/d3fend-public-with-controls.owl
+	./bin/robot convert \
+		--add-prefix "d3f: http://d3fend.mitre.org/ontologies/d3fend.owl#" \
+		--input build/d3fend-public-with-controls.ttl \
+		--output build/d3fend-public-with-controls.owl
 	./bin/robot convert --input build/d3fend-public-with-controls.owl --output build/d3fend-public-with-controls.ttl
 	$(END)
 
@@ -615,7 +628,26 @@ test-jena: reportsdir ## Used to check d3fend-full.owl as parseable and useable 
 test-reasoner:
 	./bin/robot reason --reasoner ELK --input build/d3fend-public-with-controls.ttl -D reports/test-reasoner-results.ttl
 
-test:	robot test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner ## Checks all ontology build files as parseable and DL-compatible.
+D3FEND_RDFXML_TARGETS = build/d3fend-with-header.owl \
+	build/d3fend-with-links.owl \
+	build/d3fend-trimmed-literals.owl \
+	build/d3fend-full.owl \
+	build/d3fend-public-no-draft-kb-entries.owl \
+	build/d3fend-public-no-private-annotations.owl \
+	build/d3fend-public.owl \
+	build/d3fend-architecture.owl \
+	build/d3fend-public-mapped.owl \
+	build/d3fend-public-cco.owl
+
+D3FEND_RDFXML_FILES = $(D3FEND_RDFXML_TARGETS) build/d3fend-public-with-controls.owl
+
+test-prefixes: $(D3FEND_RDFXML_TARGETS) build/extensions
+	@for file in $(D3FEND_RDFXML_FILES); do \
+		grep -q 'xmlns:d3f="http://d3fend.mitre.org/ontologies/d3fend.owl#"' "$$file" || { echo "Missing xmlns:d3f in $$file"; exit 1; }; \
+		! grep -q 'xmlns:d3fend=' "$$file" || { echo "Unexpected xmlns:d3fend in $$file"; exit 1; }; \
+	done
+
+test:	robot test-load-owl test-load-ttl test-load-json test-load-full test-jena test-reasoner test-prefixes ## Checks all ontology build files as parseable and DL-compatible.
 	$(END)
 
 dist: distdir
