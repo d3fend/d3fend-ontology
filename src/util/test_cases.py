@@ -1,6 +1,6 @@
 from update_attack import get_stix_data, update_and_add
 from stix2 import MemoryStore
-from rdflib import URIRef, Literal, Graph, RDF, RDFS, Namespace
+from rdflib import URIRef, Literal, Graph, RDF, RDFS, SKOS, Namespace
 from build import _xmlns as _XMLNS
 
 owl = Namespace("http://www.w3.org/2002/07/owl#")
@@ -233,6 +233,33 @@ def test_cases(src, g):
         g.value(URIRef(_XMLNS + "T1066"), RDFS.comment),
         Literal("This technique has been revoked by T1027.005"),
     )
+
+    # Restoring an active technique must clear stale status and preferred labels.
+    uri = d3fend.T1047
+    restrictions = set(g.objects(uri, RDFS.subClassOf))
+    g.add((uri, owl.deprecated, Literal(True)))
+    g.set((uri, d3fend.definition, Literal("Obsolete definition")))
+    g.set((uri, RDFS.label, Literal("Old name")))
+    g.add((uri, SKOS.prefLabel, Literal("Old name")))
+    g.add((uri, RDFS.comment, Literal("Keep this mapping note")))
+    for text in (
+        "This technique has been deprecated.",
+        "**This technique has been deprecated.**",
+    ):
+        g.add((uri, RDFS.comment, Literal(text)))
+    tech = next(t for t in get_stix_data(src, g) if t["id"] == "T1047")
+    update_and_add(g, [tech], "mobile")
+    _assert(g.value(uri, owl.deprecated), None)
+    _assert(set(g.objects(uri, RDFS.comment)), {Literal("Keep this mapping note")})
+    _assert(set(g.objects(uri, SKOS.prefLabel)), {Literal(tech["label"])})
+    _assert(set(g.objects(uri, RDFS.subClassOf)), restrictions)
+    _assert(
+        g.value(uri, d3fend.definition),
+        Literal(tech["data"]["description"].strip().split("\n")[0].strip()),
+    )
+    snapshot = set(g)
+    update_and_add(g, [tech], "mobile")
+    _assert(set(g), snapshot)
 
 
 def main():

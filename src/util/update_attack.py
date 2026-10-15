@@ -536,6 +536,16 @@ def update_and_add(graph, data, framework="enterprise"):
                 framework,
                 tech["data"]["x_mitre_is_subtechnique"],
             )
+            if (
+                not (tech["deprecated"] or tech["revoked"])
+                and (attack_uri, owl.deprecated, Literal(True)) in graph
+            ):
+                graph.remove((attack_uri, owl.deprecated, None))
+                graph.remove((attack_uri, d3fend["definition"], None))
+                for comment in list(graph.objects(attack_uri, RDFS.comment)):
+                    text = str(comment).lstrip("*")
+                    if text.startswith("This technique has been deprecated"):
+                        graph.remove((attack_uri, RDFS.comment, comment))
             if tech["deprecated"]:
                 new = add_deprecated(graph, tech, framework)
                 counters["recently_deprecated"] += new
@@ -548,7 +558,7 @@ def update_and_add(graph, data, framework="enterprise"):
                 mod_label, pref_label = get_framework_labels(tech["label"], framework)
                 graph.add((attack_uri, RDFS.label, Literal(mod_label)))
                 if pref_label is not None:
-                    graph.add((attack_uri, skos.prefLabel, Literal(pref_label)))
+                    graph.set((attack_uri, skos.prefLabel, Literal(pref_label)))
                 counters["label_change"] += 1
         update_definition(graph, tech, framework)
 
