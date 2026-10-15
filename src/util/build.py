@@ -22,6 +22,8 @@ DEFAULT_CONTEXT = {
     "xsd": "http://www.w3.org/2001/XMLSchema#",
 }
 
+_xmlns = DEFAULT_CONTEXT["d3f"]
+
 
 class colors:
     HEADER = "\033[95m"
