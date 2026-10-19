@@ -1195,12 +1195,6 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:isDefinedBy <https://en-word.net/view/synset/00234091-v> ;
     :definition "x restricts y: The entity x bounds the use of entity y." .
 
-:resume a owl:ObjectProperty ;
-    rdfs:label "resume" ;
-    rdfs:subPropertyOf :d3fend-process-object-property ;
-    rdfs:isDefinedBy <https://en-word.net/view/synset/00350758-v> ;
-    :definition "x resume y: The agent or technique x continues a previous action on entity y. Usually occurs after suspension on y." .
-
 :resumes a owl:ObjectProperty ;
     rdfs:label "resumes" ;
     rdfs:subPropertyOf :associated-with ;
@@ -2863,7 +2857,10 @@ Poisoned data can be introduced via [AI Supply Chain Compromise](/techniques/AML
 :AML.T0021 a owl:Class ;
     rdfs:label "Establish Accounts - ATLAS" ;
     skos:prefLabel "Establish Accounts" ;
-    rdfs:subClassOf :ATLASResourceDevelopmentTechnique ;
+    rdfs:subClassOf :ATLASResourceDevelopmentTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :UserAccount ] ;
     :attack-id "AML.T0021" ;
     :definition "Adversaries may create accounts with various services for use in targeting, to gain access to resources needed in [AI Attack Staging](/tactics/AML.TA0001), or for victim impersonation." ;
     rdfs:seeAlso <https://atlas.mitre.org/techniques/AML.T0021> .
@@ -3017,7 +3014,19 @@ Specific common information repositories include SharePoint, Confluence, and ent
 :AML.T0037 a owl:Class ;
     rdfs:label "Data from Local System - ATLAS" ;
     skos:prefLabel "Data from Local System" ;
-    rdfs:subClassOf :ATLASCollectionTechnique ;
+    rdfs:subClassOf :ATLASCollectionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :ConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :Database ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :File ],
+        [ a owl:Restriction ;
+            owl:onProperty :accesses ;
+            owl:someValuesFrom :PrivateKey ] ;
     :attack-id "AML.T0037" ;
     :definition """Adversaries may search local system sources, such as file systems and configuration files or local databases, to find files of interest and sensitive data prior to Exfiltration.
 
@@ -16064,7 +16073,7 @@ Pennsylvania State University. (n.d.). Statistical Inference and Estimation. [Li
     rdfs:subClassOf :EX-0001,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "EX-0001.01" ;
     :definition "Threat actors may resend authentic-looking telecommands that were previously accepted by the spacecraft. Captures may include whole command PDUs with framing, CRC/MAC, counters, and timetags intact, or they may be reconstructed from operator tooling and procedure logs. When timing, counters, and mode preconditions align, the replayed packet can cause the same effect: toggling relays, initiating safing or recovery scripts, adjusting tables, commanding momentum dumps, or scheduling delta-v events. Even when outright execution fails, repeated “near-miss” injections can map acceptance windows, rate/size limits, and interlocks by observing the spacecraft’s acknowledgments and state changes. At scale, streams of valid-but-stale commands can congest command queues, delay legitimate activity, or trigger nuisance FDIR responses." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0001/01/> .
@@ -16494,7 +16503,7 @@ Unlike standalone malicious binaries or scripts, injected code executes within l
             owl:someValuesFrom :BusMessage ],
         [ a owl:Restriction ;
             owl:onProperty :may-produce ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "EX-0013.01" ;
     :definition "Here the adversary saturates paths with legitimate telecommands or bus messages so the spacecraft burns scarce resources honoring them. Inputs may be innocuous (no-ops, time queries, telemetry requests) or low-risk configuration edits, but at scale they consume command handler cycles, fill queues, generate events and logs, trigger acknowledgments, and provoke downstream work in subsystems (e.g., repeated state reports, mode toggles, or file listings). On internal buses, valid actuator or housekeeping messages replayed at high rate can starve higher-priority publishers or cause control laws to chase stale stimuli. Because the traffic is syntactically correct, and often contextually plausible, the system attempts to process it rather than discard it early, increasing CPU usage, memory pressure, and power draw. Consequences include delayed or preempted legitimate operations, transient loss of commandability, and knock-on FDIR activity as deadlines slip and telemetry appears inconsistent." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EX-0013/01/> .
@@ -16746,8 +16755,7 @@ SafeSEH might be applied only to some executable files or modules, allowing an a
 
 :ExecutableAllowlisting a :ExecutableAllowlisting,
         owl:Class,
-        owl:NamedIndividual,
-        :PlatformHardening ;
+        owl:NamedIndividual ;
     rdfs:label "Executable Allowlisting" ;
     rdfs:subClassOf :ExecutionIsolation,
         [ a owl:Restriction ;
@@ -16887,7 +16895,7 @@ On a Windows machine the Windows Defender Application Control (WDAC) policy enfo
     rdfs:subClassOf :SPARTAExfiltrationTechnique,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "EXF-0001" ;
     :definition "The adversary re-sends previously valid commands or procedures to cause the spacecraft to transmit data again, then captures the resulting downlink. Typical targets are recorder playbacks, payload product dumps, housekeeping snapshots, or file directory listings. By aligning replays with geometry (e.g., when the satellite is in view of actor-controlled apertures) and with acceptance conditions (counters, timetags, mode), the attacker induces legitimate transmissions that appear routine to operators. Variants include selectively replaying index ranges to fetch only high-value intervals, reissuing subscription/telemetry-rate changes to increase data volume, or queueing playbacks that fire during later passes when interception is feasible." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/EXF-0001/> .
@@ -17882,7 +17890,7 @@ The term "first-order" distinguishes first-order logic from higher-order logic, 
     rdfs:subClassOf :VehicleControlSoftware,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
-            owl:someValuesFrom :Telecommand ],
+            owl:someValuesFrom :WirelessCommand ],
         [ a owl:Restriction ;
             owl:onProperty :may-contain ;
             owl:someValuesFrom :SoftwareWatchdogTimer ] ;
@@ -19044,7 +19052,7 @@ Wikipedia. (n.d.). Statistical hypothesis testing. [Link](https://en.wikipedia.o
     rdfs:subClassOf :IA-0007,
         [ a owl:Restriction ;
             owl:onProperty :produces ;
-            owl:someValuesFrom :Telecommand ] ;
+            owl:someValuesFrom :WirelessCommand ] ;
     :attack-id "IA-0007.02" ;
     :definition "Adversaries may use a compromised, mission-owned ground system to transmit legitimate-looking commands to the target spacecraft. Because the ground equipment is already configured for the mission, correct waveforms, framing, dictionaries, and scheduling, the attacker’s traffic blends with routine operations. Initial access unfolds by inserting commands or procedures into existing timelines, modifying rate/size limits or command queues, or invoking maintenance dictionaries and rapid-response workflows that accept broader command sets. Pre-positioned scripts can chain actions across multiple passes and stations, while telemetry routing provides immediate feedback to refine follow-on steps. Exfiltration can be embedded in standard downlink channels or forwarded through gateways as ordinary mission data. The distinguishing feature is that command origin appears valid, transmitted from approved apertures using expected parameters, so the first execution event is not a protocol anomaly but a misuse of legitimate command authority obtained through the compromised ground system." ;
     rdfs:seeAlso <https://sparta.aerospace.org/technique/IA-0007/02/> .
@@ -26886,19 +26894,19 @@ Wikipedia. (n.d.). Range (statistics). [Link](https://en.wikipedia.org/wiki/Rang
             owl:onProperty :reads ;
             owl:someValuesFrom :MemoryBlock ] .
 
-:Real-timeOperatingSystem a owl:Class ;
-    rdfs:label "Real-time Operating System" ;
-    rdfs:subClassOf :OperatingSystem ;
-    rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_operating_system> ;
-    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints." ;
-    :synonym "RTOS" .
-
 :Real-timeClock a owl:Class ;
     rdfs:label "Real-time Clock" ;
     rdfs:subClassOf :HardwareClock ;
     rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_clock> ;
     :definition "A real-time clock (RTC) is an electronic device (most often in the form of an integrated circuit) that measures the passage of time." ;
     :synonym "RTC" .
+
+:Real-timeOperatingSystem a owl:Class ;
+    rdfs:label "Real-time Operating System" ;
+    rdfs:subClassOf :OperatingSystem ;
+    rdfs:isDefinedBy <https://dbpedia.org/resource/Real-time_operating_system> ;
+    :definition "A real-time operating system (RTOS) is an operating system (OS) for real-time computing applications that processes data and events that have critically defined time constraints." ;
+    :synonym "RTOS" .
 
 :REC-0001 a owl:Class ;
     rdfs:label "Gather Spacecraft Design Information - SPARTA" ;
@@ -30248,6 +30256,7 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may repetitively or successively change I/O point values to perform an action. Brute Force I/O may be achieved by changing either a range of I/O point values or a single point value repeatedly to manipulate a process function. The adversary's goal and the information they have about the target environment will influence which of the options they choose. In the case of brute forcing a range of point values, the adversary may be able to achieve an impact without targeting a specific point. In the case where a single point is targeted, the adversary may be able to generate instability on the process function associated with that particular point." .
 
 :T0807 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Command-Line Interface - ATTACK ICS" ;
     skos:prefLabel "Command-Line Interface" ;
     rdfs:subClassOf :ATTACKICSExecutionTechnique,
@@ -30260,6 +30269,7 @@ When system firmware verification fails a set of predefined responses is typical
         [ a owl:Restriction ;
             owl:onProperty :uses ;
             owl:someValuesFrom :CommandLineInterface ] ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "T0807" ;
     :definition "Adversaries may utilize command-line interfaces (CLIs) to interact with systems and execute commands. CLIs provide a means of interacting with computer systems and are a common feature across many types of platforms and devices within control systems environments. (Citation: Enterprise ATT&CK January 2018) Adversaries may also use CLIs to install and run new software, including malicious tools that may be installed over the course of an operation." .
 
@@ -30416,8 +30426,7 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T0821 a owl:Class ;
     rdfs:label "Modify Controller Tasking - ATTACK ICS" ;
-    skos:prefLabel "Modify Controller Tasking",
-        "Modify controller Tasking" ;
+    skos:prefLabel "Modify Controller Tasking" ;
     rdfs:subClassOf :ATTACKICSExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :modifies ;
@@ -30818,12 +30827,14 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Adversaries may attempt to perform screen capture of devices in the control system environment. Screenshots may be taken of workstations, HMIs, or other devices that display environment-relevant process, device, reporting, alarm, or related data. These device displays may reveal information regarding the ICS process, layout, control, and related schematics. In particular, an HMI can provide a lot of important industrial process information. (Citation: ICS-CERT October 2017) Analysis of screen captures may provide the adversary with an understanding of intended operations and interactions between critical devices." .
 
 :T0853 a owl:Class ;
+    owl:deprecated true ;
     rdfs:label "Scripting - ATTACK ICS" ;
     skos:prefLabel "Scripting" ;
     rdfs:subClassOf :ATTACKICSExecutionTechnique,
         [ a owl:Restriction ;
             owl:onProperty :executes ;
             owl:someValuesFrom :ExecutableScript ] ;
+    rdfs:comment "This technique has been deprecated." ;
     :attack-id "T0853" ;
     :definition "Adversaries may use scripting languages to execute arbitrary code in the form of a pre-written script or in the form of user-supplied code to an interpreter. Scripting languages are programming languages that differ from compiled languages, in that scripting languages use an interpreter, instead of a compiler. These interpreters read and compile part of the source code just before it is executed, as opposed to compilers, which compile each and every line of code to an executable file. Scripting allows software developers to run their code on any system where the interpreter exists. This way, they can distribute one package, instead of precompiling executables for many different systems. Scripting languages, such as Python, have their interpreters shipped as a default with many Linux distributions." .
 
@@ -31050,6 +31061,20 @@ When system firmware verification fails a set of predefined responses is typical
             owl:someValuesFrom :OutboundNetworkTraffic ] ;
     :attack-id "T0869" ;
     :definition "Adversaries may establish command and control capabilities over commonly used application layer protocols such as HTTP(S), OPC, RDP, telnet, DNP3, and modbus. These protocols may be used to disguise adversary actions as benign network traffic. Standard protocols may be seen on their associated port or in some cases over a non-standard port.  Adversaries may use these protocols to reach out of the network for command and control, or in some cases to other infected devices within the network." .
+
+:T0869.001 a owl:Class ;
+    rdfs:label "DNS - ATTACK ICS" ;
+    skos:prefLabel "DNS" ;
+    rdfs:subClassOf :T0869 ;
+    :attack-id "T0869.001" ;
+    :definition "Adversaries may communicate using the Domain Name System (DNS) application layer protocol to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and server." .
+
+:T0869.002 a owl:Class ;
+    rdfs:label "Publish/Subscribe Protocols - ATTACK ICS" ;
+    skos:prefLabel "Publish/Subscribe Protocols" ;
+    rdfs:subClassOf :T0869 ;
+    :attack-id "T0869.002" ;
+    :definition "Adversaries may communicate using publish/subscribe (pub/sub) application layer protocols to avoid detection/network filtering by blending in with existing traffic. Commands to the remote system, and often the results of those commands, will be embedded within the protocol traffic between the client and broker." .
 
 :T0870 a owl:Class ;
     owl:deprecated true ;
@@ -32296,9 +32321,15 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1046 a owl:Class ;
     rdfs:label "Network Service Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enumerates ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
-    :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)   " .
+    :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
 :T1047 a owl:Class ;
     rdfs:label "Windows Management Instrumentation" ;
@@ -32837,7 +32868,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1069 a owl:Class ;
     rdfs:label "Permission Groups Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enumerates ;
+            owl:someValuesFrom :UserGroup ] ;
     :attack-id "T1069" ;
     :definition "Adversaries may attempt to discover group and permission settings. This information can help adversaries determine which user accounts and groups are available, the membership of users in particular groups, and which users and groups have elevated permissions." .
 
@@ -33863,7 +33897,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1129 a owl:Class ;
     rdfs:label "Shared Modules" ;
-    rdfs:subClassOf :ExecutionTechnique ;
+    rdfs:subClassOf :ExecutionTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :loads ;
+            owl:someValuesFrom :SharedLibraryFile ] ;
     :attack-id "T1129" ;
     :definition "Adversaries may execute malicious payloads via loading shared modules. Shared modules are executable files that are loaded into processes to provide access to reusable code, such as specific custom functions or invoking OS API functions (i.e., [Native API](https://attack.mitre.org/techniques/T1106))." ;
     :todo "This is distinct [sub-]technique, but isn't it related to Native API Execution?  The concrete procedure examples indicate in3 or 4 cases API function calls to load the modules, which is not execution per se, but loading the code in preparation for execution.  [Astaroth software's 'techniques used' was one reference for this comment.]" .
@@ -33987,7 +34024,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1135 a owl:Class ;
     rdfs:label "Network Share Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enumerates ;
+            owl:someValuesFrom :NetworkFileShareResource ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1135" ;
     :definition "Adversaries may look for folders and drives shared on remote systems as a means of identifying sources of information to gather as a precursor for Collection and to identify potential systems of interest for Lateral Movement. Networks often contain shared network drives and folders that enable users to access file directories on various systems across a network." .
 
@@ -35723,14 +35766,12 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:seeAlso :T1643 .
 
 :T1453 a owl:Class ;
-    owl:deprecated true ;
     rdfs:label "Abuse Accessibility Features - ATTACK Mobile" ;
     skos:prefLabel "Abuse Accessibility Features" ;
     rdfs:subClassOf :ATTACKMobileCollectionTechnique,
         :ATTACKMobileCredentialAccessTechnique ;
-    rdfs:comment "**This technique has been deprecated. Please use [Input Capture](https://attack.mitre.org/techniques/T1417), [Input Injection](https://attack.mitre.org/techniques/T1516), and [Input Prompt](https://attack.mitre.org/techniques/T1411) where appropriate.**" ;
     :attack-id "T1453" ;
-    :definition "**This technique has been deprecated. Please use [Input Capture](https://attack.mitre.org/techniques/T1417), [Input Injection](https://attack.mitre.org/techniques/T1516), and [Input Prompt](https://attack.mitre.org/techniques/T1411) where appropriate.**" .
+    :definition "Adversaries may abuse accessibility features in Android devices to steal sensitive data and to spread malware to other devices. Accessibility features in Android are designed to assist users with disabilities, performing a variety of tasks, such as using Action Blocks to control lightbulbs, and changing the device’s user interface, such as changing the font size and adjusting contract or colors.(Citation: Google_AndroidAcsOverview)" .
 
 :T1454 a owl:Class ;
     owl:deprecated true ;
@@ -35826,13 +35867,11 @@ When system firmware verification fails a set of predefined responses is typical
     :definition "Malicious applications are a common attack vector used by adversaries to gain a presence on mobile devices. Mobile devices often are configured to allow application installation only from an authorized app store (e.g., Google Play Store or Apple App Store). An adversary may seek to place a malicious application in an authorized app store, enabling the application to be installed onto targeted devices." .
 
 :T1476 a owl:Class ;
-    owl:deprecated true ;
-    rdfs:label "Deliver Malicious App via Other Means - ATTACK Mobile" ;
-    skos:prefLabel "Deliver Malicious App via Other Means" ;
+    rdfs:label "Deliver Malicious Application via Other Means - ATTACK Mobile" ;
+    skos:prefLabel "Deliver Malicious Application via Other Means" ;
     rdfs:subClassOf :ATTACKMobileInitialAccessTechnique ;
-    rdfs:comment "This technique has been deprecated." ;
     :attack-id "T1476" ;
-    :definition "Malicious applications are a common attack vector used by adversaries to gain a presence on mobile devices. This technique describes installing a malicious application on targeted mobile devices without involving an authorized app store (e.g., Google Play Store or Apple App Store). Adversaries may wish to avoid placing malicious applications in an authorized app store due to increased potential risk of detection or other reasons. However, mobile devices often are configured to allow application installation only from an authorized app store which would prevent this technique from working." .
+    :definition "Adversaries may direct victims to download malicious applications via ways that avoid an authorized application store (e.g. Google Play Store or Apple App Store). For example, victims may be directed to downloading  a malicious APK directly from a domain. Adversaries may wish to avoid placing malicious applications in an authorized application store due to increased potential risk of detection or other reasons." .
 
 :T1477 a owl:Class ;
     owl:deprecated true ;
@@ -36053,7 +36092,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1495 a owl:Class ;
     rdfs:label "Firmware Corruption" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :Firmware ] ;
     :attack-id "T1495" ;
     :definition "Adversaries may overwrite or corrupt the flash memory contents of system BIOS or other firmware in devices attached to a system in order to render them inoperable or unable to boot, thus denying the availability to use the devices and/or the system.(Citation: Symantec Chernobyl W95.CIH) Firmware is software that is loaded and executed from non-volatile memory on hardware devices in order to initialize and manage device functionality. These devices may include the motherboard, hard drive, or video cards." .
 
@@ -37064,19 +37106,37 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1547.012 a owl:Class ;
     rdfs:label "Print Processors" ;
-    rdfs:subClassOf :T1547 ;
+    rdfs:subClassOf :T1547,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :SoftwareLibraryFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :WindowsRegistryKey ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :OSAPIFunction ] ;
     :attack-id "T1547.012" ;
     :definition "Adversaries may abuse print processors to run malicious DLLs during system boot for persistence and/or privilege escalation. Print processors are DLLs that are loaded by the print spooler service, `spoolsv.exe`, during boot.(Citation: Microsoft Intro Print Processors)" .
 
 :T1547.013 a owl:Class ;
     rdfs:label "XDG Autostart Entries" ;
-    rdfs:subClassOf :T1547 ;
+    rdfs:subClassOf :T1547,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :UserInitConfigurationFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :UserInitConfigurationFile ] ;
     :attack-id "T1547.013" ;
     :definition "Adversaries may add or modify XDG Autostart Entries to execute malicious programs or commands when a user’s desktop environment is loaded at login. XDG Autostart entries are available for any XDG-compliant Linux system. XDG Autostart entries use Desktop Entry files (`.desktop`) to configure the user’s desktop environment upon user login. These configuration files determine what applications launch upon user login, define associated applications to open specific file types, and define applications used to open removable media.(Citation: Free Desktop Application Autostart Feb 2006)(Citation: Free Desktop Entry Keys)" .
 
 :T1547.014 a owl:Class ;
     rdfs:label "Active Setup" ;
-    rdfs:subClassOf :T1547 ;
+    rdfs:subClassOf :T1547,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :WindowsRegistryKey ] ;
     :attack-id "T1547.014" ;
     :definition "Adversaries may achieve persistence by adding a Registry key to the Active Setup of the local machine. Active Setup is a Windows mechanism that is used to execute programs when a user logs in. The value stored in the Registry key will be executed after a user logs into the computer.(Citation: Klein Active Setup 2010) These programs will be executed under the context of the user and will have the account's associated permissions level." .
 
@@ -37331,13 +37391,28 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1553.005 a owl:Class ;
     rdfs:label "Mark-of-the-Web Bypass" ;
-    rdfs:subClassOf :T1553 ;
+    rdfs:subClassOf :T1553,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :DiskImage ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FileSystemMetadata ] ;
     :attack-id "T1553.005" ;
     :definition "Adversaries may abuse specific file formats to subvert Mark-of-the-Web (MOTW) controls. In Windows, when files are downloaded from the Internet, they are tagged with a hidden NTFS Alternate Data Stream (ADS) named <code>Zone.Identifier</code> with a specific value known as the MOTW.(Citation: Microsoft Zone.Identifier 2020) Files that are tagged with MOTW are protected and cannot perform certain actions. For example, starting in MS Office 10, if a MS Office file has the MOTW, it will open in Protected View. Executables tagged with the MOTW will be processed by Windows Defender SmartScreen that compares files with an allowlist of well-known executables. If the file is not known/trusted, SmartScreen will prevent the execution and warn the user not to run it.(Citation: Beek Use of VHD Dec 2020)(Citation: Outflank MotW 2020)(Citation: Intezer Russian APT Dec 2020)" .
 
 :T1553.006 a owl:Class ;
     rdfs:label "Code Signing Policy Modification" ;
-    rdfs:subClassOf :T1553 ;
+    rdfs:subClassOf :T1553,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :WindowsRegistry ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :OperatingSystemConfigurationComponent ] ;
     :attack-id "T1553.006" ;
     :definition "Adversaries may modify code signing policies to enable execution of unsigned or self-signed code. Code signing provides a level of authenticity on a program from a developer and a guarantee that the program has not been tampered with. Security controls can include enforcement mechanisms to ensure that only valid, signed code can be run on an operating system." .
 
@@ -37995,19 +38070,34 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1564.010 a owl:Class ;
     rdfs:label "Process Argument Spoofing" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :may-invoke ;
+            owl:someValuesFrom :WindowsWriteProcessMemory ],
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :ProcessSegment ] ;
     :attack-id "T1564.010" ;
     :definition "Adversaries may attempt to hide process command-line arguments by overwriting process memory. Process command-line arguments are stored in the process environment block (PEB), a data structure used by Windows to store various information about/used by a process. The PEB includes the process command-line arguments that are referenced when executing the process. When a process is created, defensive tools/sensors that monitor process creations may retrieve the process arguments from the PEB.(Citation: Microsoft PEB 2021)(Citation: Xpn Argue Like Cobalt 2019)" .
 
 :T1564.011 a owl:Class ;
     rdfs:label "Ignore Process Interrupts" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :Process ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ShellCommand ] ;
     :attack-id "T1564.011" ;
     :definition "Adversaries may evade defensive mechanisms by executing commands that hide from process interrupt signals. Many operating systems use signals to deliver messages to control process behavior. Command interpreters often include specific commands/flags that ignore errors and other hangups, such as when the user of the active session logs off.(Citation: Linux Signal Man)  These interrupt signals may also be used by defensive tools and/or analysts to pause or terminate specified running processes." .
 
 :T1564.012 a owl:Class ;
     rdfs:label "File/Path Exclusions" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :File ] ;
     :attack-id "T1564.012" ;
     :definition "Adversaries may attempt to hide their file-based artifacts by writing them to specific folders or file names excluded from antivirus (AV) scanning and other defensive capabilities. AV and other file-based scanners often include exclusions to optimize performance as well as ease installation and legitimate use of applications. These exclusions may be contextual (e.g., scans are only initiated in response to specific triggering events/alerts), but are also often hardcoded strings referencing specific folders and/or files assumed to be trusted and legitimate.(Citation: Microsoft File Folder Exclusions)" .
 
@@ -38019,7 +38109,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1564.014 a owl:Class ;
     rdfs:label "Extended Attributes" ;
-    rdfs:subClassOf :T1564 ;
+    rdfs:subClassOf :T1564,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :FileSystemMetadata ] ;
     :attack-id "T1564.014" ;
     :definition "Adversaries may abuse extended attributes (xattrs) on macOS and Linux to hide their malicious data in order to evade detection. Extended attributes are key-value pairs of file and directory metadata used by both macOS and Linux. They are not visible through standard tools like `Finder`,  `ls`, or `cat` and require utilities such as `xattr` (macOS) or `getfattr` (Linux) for inspection. Operating systems and applications use xattrs for tagging, integrity checks, and access control. On Linux, xattrs are organized into namespaces such as `user.` (user permissions), `trusted.` (root permissions), `security.`, and `system.`, each with specific permissions. On macOS, xattrs are flat strings without namespace prefixes, commonly prefixed with `com.apple.*` (e.g., `com.apple.quarantine`, `com.apple.metadata:_kMDItemUserTags`) and used by system features like Gatekeeper and Spotlight.(Citation: Establishing persistence using extended attributes on Linux)" .
 
@@ -39165,6 +39258,12 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1608.006" ;
     :definition "Adversaries may poison mechanisms that influence search engine optimization (SEO) to further lure staged capabilities towards potential victims. Search engines typically display results to users based on purchased ads as well as the site’s ranking/score/reputation calculated by their web crawlers and algorithms.(Citation: Atlas SEO)(Citation: MalwareBytes SEO)" .
 
+:T1608.007 a owl:Class ;
+    rdfs:label "AI Result Poisoning" ;
+    rdfs:subClassOf :T1608 ;
+    :attack-id "T1608.007" ;
+    :definition "Adversaries may manipulate publicly accessible web content to influence generative AI systems or AI-powered search engines into retrieving, citing, or recommending attacker-controlled information.(Citation: Digiday AI Result Poisoning)(Citation: Netcraft AI Summaries)" .
+
 :T1609 a owl:Class ;
     rdfs:label "Container Administration Command" ;
     rdfs:subClassOf :ExecutionTechnique ;
@@ -39185,7 +39284,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1612 a owl:Class ;
     rdfs:label "Build Image on Host" ;
-    rdfs:subClassOf :StealthTechnique ;
+    rdfs:subClassOf :StealthTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :creates ;
+            owl:someValuesFrom :ContainerImage ] ;
     :attack-id "T1612" ;
     :definition "Adversaries may build a container image directly on a host to bypass defenses that monitor for the retrieval of malicious images from a public registry. A remote <code>build</code> request may be sent to the Docker API that includes a Dockerfile that pulls a vanilla base image, such as alpine, from a public or local registry and then builds a custom image upon it.(Citation: Docker Build Image)" .
 
@@ -39642,7 +39744,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1647 a owl:Class ;
     rdfs:label "Plist File Modification" ;
-    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :modifies ;
+            owl:someValuesFrom :PropertyListFile ] ;
     :attack-id "T1647" ;
     :definition "Adversaries may modify property list files (plist files) to enable other malicious activity, while also potentially evading and bypassing system defenses. macOS applications use plist files, such as the <code>info.plist</code> file, to store properties and configuration settings that inform the operating system how to handle the application at runtime. Plist files are structured metadata in key-value pairs formatted in XML based on Apple's Core Foundation DTD. Plist files can be saved in text or binary format.(Citation: fileinfo plist file description) " .
 
@@ -39684,7 +39789,19 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1652 a owl:Class ;
     rdfs:label "Device Driver Discovery" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enumerates ;
+            owl:someValuesFrom :HardwareDriver ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :OperatingSystemFile ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :OSAPIFunction ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-execute ;
+            owl:someValuesFrom :ShellCommand ] ;
     :attack-id "T1652" ;
     :definition "Adversaries may attempt to enumerate local device drivers on a victim host. Information about device drivers may highlight various insights that shape follow-on behaviors, such as the function/purpose of the host, present security tools (i.e. [Security Software Discovery](https://attack.mitre.org/techniques/T1518/001)) or other defenses (e.g., [Virtualization/Sandbox Evasion](https://attack.mitre.org/techniques/T1497)), as well as potential exploitable vulnerabilities (e.g., [Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T1068))." .
 
@@ -39696,7 +39813,13 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1654 a owl:Class ;
     rdfs:label "Log Enumeration" ;
-    rdfs:subClassOf :DiscoveryTechnique ;
+    rdfs:subClassOf :DiscoveryTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :enumerates ;
+            owl:someValuesFrom :EventLog ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-access ;
+            owl:someValuesFrom :LogFile ] ;
     :attack-id "T1654" ;
     :definition "Adversaries may enumerate system and service logs to find useful data. These logs may highlight various types of valuable insights for an adversary, such as user authentication records ([Account Discovery](https://attack.mitre.org/techniques/T1087)), security or vulnerable software ([Software Discovery](https://attack.mitre.org/techniques/T1518)), or hosts within a compromised network ([Remote System Discovery](https://attack.mitre.org/techniques/T1018))." .
 
@@ -39796,7 +39919,10 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1667 a owl:Class ;
     rdfs:label "Email Bombing" ;
-    rdfs:subClassOf :ImpactTechnique ;
+    rdfs:subClassOf :ImpactTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :Email ] ;
     :attack-id "T1667" ;
     :definition "Adversaries may flood targeted email addresses with an overwhelming volume of messages. This may bury legitimate emails in a flood of spam and disrupt business operations.(Citation: sophos-bombing)(Citation: krebs-email-bombing)" .
 
@@ -39974,6 +40100,12 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1685.006" ;
     :definition "Adversaries may clear system logs to hide evidence of an intrusion. macOS and Linux both keep track of system or user-initiated actions via system logs. The majority of native system logging is stored under the `/var/log/` directory. Subfolders in this directory categorize logs by their related functions, such as:(Citation: Linux Logs)" .
 
+:T1685.007 a owl:Class ;
+    rdfs:label "Impair Autonomous Defenses" ;
+    rdfs:subClassOf :T1685 ;
+    :attack-id "T1685.007" ;
+    :definition "Adversaries may use methods like [Indirect Prompt Injection](https://attack.mitre.org/techniques/T1698) to disrupt, disable, or otherwise impair autonomous defensive capabilities such as LLM-assisted processing of malware, artifacts, or activity.(Citation: Prompt Injection LLM-Powered SOC Assistants) This behavior may cause a system to ignore data, fail to alert on malicious activity, abort analysis, or to be disabled completely." .
+
 :T1686 a owl:Class ;
     rdfs:label "Disable or Modify System Firewall" ;
     rdfs:subClassOf :DefenseImpairmentTechnique ;
@@ -40138,6 +40270,97 @@ When system firmware verification fails a set of predefined responses is typical
     :attack-id "T1695.003" ;
     :definition "Adversaries may block access to Wi-Fi communications to prevent messages from reaching target systems and devices. Wi-Fi connections allow for communications between IT and OT systems and devices. Blocking Wi-Fi communications may also block command and reporting messages.(Citation: Bonnie Zhu, Anthony Joseph, Shankar Sastry 2011)" .
 
+:T1696 a owl:Class ;
+    rdfs:label "Anti-Automation Evasion" ;
+    rdfs:subClassOf :StealthTechnique ;
+    :attack-id "T1696" ;
+    :definition "Adversaries may employ various means to evade or complete automation checks. Automation checks distinguish human users from bot traffic and prevent bots from reaching the web pages protected by automation checks. For example, a user may be required to solve a CAPTCHA challenge before accessing a form or login page. Traditional CAPTCHAs ask the user to decipher a string of characters, type the characters into a box, and submit the form. reCAPTCHA asks the user to identify images, click a checkbox, or evaluate the user’s behavior from mouse movement and device cookies.(Citation: CAPTCHAS Cloudflare)" .
+
+:T1696.001 a owl:Class ;
+    rdfs:label "Automate CAPTCHA Completion" ;
+    rdfs:subClassOf :T1696 ;
+    :attack-id "T1696.001" ;
+    :definition "Adversaries may attempt to use bots to successfully solve CAPTCHA challenges. CAPTCHA challenges are typically used by defenders to detect and prevent bot and spam traffic from accessing protected webpages. CAPTCHAs are automated tests often placed before login screens or form fields. Traditional CAPTCHAs ask the user to decipher a string of characters, type the characters into a box, and submit the form. reCAPTCHA asks the user to identify images, click a checkbox, or evaluate the user’s behavior from mouse movement and device cookies.(Citation: CAPTCHAS Cloudflare)" .
+
+:T1696.002 a owl:Class ;
+    rdfs:label "Avoid CAPTCHA" ;
+    rdfs:subClassOf :T1696 ;
+    :attack-id "T1696.002" ;
+    :definition "Adversaries may avoid CAPTCHA challenges by mimicking human behavior. Automation tests, such as CAPTCHA, are typically used by defenders to detect and prevent bot and spam traffic from accessing protected webpages. CAPTCHAs are often placed before login screens or form fields. Traditional CAPTCHAs ask the user to decipher a string of characters, type the characters into a box, and submit the form. reCAPTCHA asks the user to identify images, click a checkbox, or evaluate the user’s behavior from mouse movement and device cookies.(Citation: CAPTCHAS Cloudflare)" .
+
+:T1697 a owl:Class ;
+    rdfs:label "Steal Application Specific Passwords" ;
+    rdfs:subClassOf :CredentialAccessTechnique ;
+    :attack-id "T1697" ;
+    :definition "Adversaries may steal Application Specific Passwords (ASPs) to gain access to [Valid Accounts](https://attack.mitre.org/techniques/T1078), bypassing multifactor authentication (MFA) methods. ASPs are passwords typically used to give third-party applications or legacy devices (which do not support MFA methods) account access.(Citation: Application Specific Passwords)(Citation: Application Specific Passwords Push Sec)" .
+
+:T1698 a owl:Class ;
+    rdfs:label "Indirect Prompt Injection" ;
+    rdfs:subClassOf :ExecutionTechnique ;
+    :attack-id "T1698" ;
+    :definition "Adversaries may deliver malicious prompts to an LLM indirectly by embedding the prompts in content that the adversary expects may be processed by an LLM.(Citation: NIST indirect prompt injection) These prompts can be included in web pages,(Citation: Palo Alto Indirect Prompt Injection ITW) documents, emails, tickets,(Citation: Snyk Indirect Prompt Injection) code, or other sources that an agent, copilot, or other AI system may retrieve and process. When an LLM processes this content, the embedded instructions may cause the system to perform unintended behaviors.(Citation: GTIG AI Threats Sep 2026)" .
+
+:T1699 a owl:Class ;
+    rdfs:label "Direct Prompt Injection" ;
+    rdfs:subClassOf :ExecutionTechnique ;
+    :attack-id "T1699" ;
+    :definition "Adversaries may input malicious prompts directly into an LLM’s user interface.(Citation: NIST Direct Prompt Injection) The prompts can be designed to bypass safeguards, manipulate context, override previous instructions, or coerce the LLM into unauthorized behavior.(Citation: OWASP Prompt Injection)" .
+
+:T1700 a owl:Class ;
+    rdfs:label "AI-Enabled Exfiltration" ;
+    rdfs:subClassOf :ExfiltrationTechnique ;
+    :attack-id "T1700" ;
+    :definition "Adversaries may utilize [Direct Prompt Injection](https://attack.mitre.org/techniques/T1699), [Indirect Prompt Injection](https://attack.mitre.org/techniques/T1698) or other methods to instruct enterprise AI agents to exfiltrate data.(Citation: Prompt-Injection Exfil)(Citation: Anthropic Report Sep 2026) When enterprise systems incorporate the use of AI assistants or other AI agents, adversaries may abuse these systems to weaponize sanctioned tools available to the agent.(Citation: Google Security State of Prompt Injections)" .
+
+:T1701 a owl:Class ;
+    rdfs:label "Command and Scripting Interpreter - ATTACK ICS" ;
+    skos:prefLabel "Command and Scripting Interpreter" ;
+    rdfs:subClassOf :ATTACKICSExecutionTechnique ;
+    :attack-id "T1701" ;
+    :definition "Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries. These interfaces and languages provide ways of interacting with computer systems and are a common feature across many different platforms within industrial control system environments. Most systems come with some built-in command-line interface and scripting capabilities, for example, macOS and Linux distributions include some flavor of [Unix Shell](https://attack.mitre.org/techniques/T1701/003) while Windows installations include the [Windows Command Shell](https://attack.mitre.org/techniques/T1701/002) and [PowerShell](https://attack.mitre.org/techniques/T1701/001). Some also have cross-platform interpreters such as [Python](https://attack.mitre.org/techniques/T1701/005), as well as those commonly associated with client applications such as [JavaScript](https://attack.mitre.org/techniques/T1701/006) and [Visual Basic](https://attack.mitre.org/techniques/T1701/004). Many controllers have command-line interfaces for management purposes." .
+
+:T1701.001 a owl:Class ;
+    rdfs:label "PowerShell - ATTACK ICS" ;
+    skos:prefLabel "PowerShell" ;
+    rdfs:subClassOf :T1701 ;
+    :attack-id "T1701.001" ;
+    :definition "Adversaries may abuse PowerShell commands and scripts for execution. PowerShell is a powerful interactive command-line interface and scripting environment included in the Windows operating system.(Citation: TechNet PowerShell) Adversaries can use PowerShell to perform a number of actions, including discovery of information and execution of code. Examples include the <code>Start-Process</code> cmdlet which can be used to run an executable and the <code>Invoke-Command</code> cmdlet which runs a command locally or on a remote computer (though administrator permissions are required to use PowerShell to connect to remote systems)." .
+
+:T1701.002 a owl:Class ;
+    rdfs:label "Windows Command Shell - ATTACK ICS" ;
+    skos:prefLabel "Windows Command Shell" ;
+    rdfs:subClassOf :T1701 ;
+    :attack-id "T1701.002" ;
+    :definition "Adversaries may abuse the Windows command shell for execution. The Windows command shell (cmd) is the primary command prompt on Windows systems which is used in industrial control system environments. The Windows command prompt can be used to control almost any aspect of a system, with various permission levels required for different subsets of commands. The command prompt can be invoked remotely via  [Remote Services](https://attack.mitre.org/techniques/T0886) (e.g., Telnet, SSH, RDP, etc.)" .
+
+:T1701.003 a owl:Class ;
+    rdfs:label "Unix Shell - ATTACK ICS" ;
+    skos:prefLabel "Unix Shell" ;
+    rdfs:subClassOf :T1701 ;
+    :attack-id "T1701.003" ;
+    :definition "Adversaries may abuse Unix shell commands and scripts for execution. Unix shells are the primary command prompt on Linux, macOS, and ESXi systems, though many variations of the Unix shell exist (e.g. sh, ash, bash, zsh, etc.) depending on the specific OS or distribution.(Citation: DieNet Bash)(Citation: Apple ZShell) Unix shells can control every aspect of a system, with certain commands requiring elevated privileges." .
+
+:T1701.004 a owl:Class ;
+    rdfs:label "Visual Basic - ATTACK ICS" ;
+    skos:prefLabel "Visual Basic" ;
+    rdfs:subClassOf :T1701 ;
+    :attack-id "T1701.004" ;
+    :definition "Adversaries may abuse Visual Basic (VB) for execution. VB is a programming language created by Microsoft with interoperability with many Windows technologies such as [Component Object Model](https://attack.mitre.org/techniques/T1559/001) and the [Native API](https://attack.mitre.org/techniques/T1106) through the Windows API. Although tagged as legacy with no planned future evolutions, VB is integrated and supported in the .NET Framework and cross-platform .NET Core.(Citation: VB .NET Mar 2020)(Citation: VB Microsoft)" .
+
+:T1701.005 a owl:Class ;
+    rdfs:label "Python - ATTACK ICS" ;
+    skos:prefLabel "Python" ;
+    rdfs:subClassOf :T1701 ;
+    :attack-id "T1701.005" ;
+    :definition "Adversaries may abuse Python commands and scripts for execution. Python is a very popular scripting/programming language, with capabilities to perform many functions. Python can be executed interactively from the command-line (via the <code>python.exe</code> interpreter) or via scripts (.py) that can be written and distributed to different systems. Python code can also be compiled into binary executables.(Citation: Zscaler APT31 Covid-19 October 2020)" .
+
+:T1701.006 a owl:Class ;
+    rdfs:label "JavaScript - ATTACK ICS" ;
+    skos:prefLabel "JavaScript" ;
+    rdfs:subClassOf :T1701 ;
+    :attack-id "T1701.006" ;
+    :definition "Adversaries may abuse various implementations of JavaScript for execution. JavaScript is a platform-independent scripting language (compiled just-in-time at runtime) commonly associated with scripts in webpages, though JavaScript can be executed in runtime environments outside the browser.(Citation: NodeJS)" .
+
 :t-SNEClustering a owl:Class,
         owl:NamedIndividual ;
     rdfs:label "t-SNE Clustering" ;
@@ -40164,7 +40387,7 @@ Initial Access consists of techniques that use various entry vectors to gain the
     rdfs:label "Execution" ;
     rdfs:subClassOf :ATTACKEnterpriseTactic,
         :OffensiveTactic ;
-    :definition """The adversary is trying to run malicious code.
+    :definition """The adversary is trying to run malicious code or instructions on a system.
 
 Execution consists of techniques that result in adversary-controlled code running on a local or remote system. Techniques that run malicious code are often paired with techniques from all other tactics to achieve broader goals, like exploring a network or stealing data. For example, an adversary might use a remote access tool to run a PowerShell script that does Remote System Discovery.""" ;
     :display-order 2 .
@@ -40544,13 +40767,6 @@ Defense Impairment consists of techniques that degrade, disable, or undermine th
             owl:someValuesFrom xsd:string ] ;
     :definition "A reference used to develop KB articles." ;
     :pref-label "Technique Reference" .
-
-:Telecommand a owl:Class ;
-    rdfs:label "Telecommand" ;
-    rdfs:subClassOf :RemoteCommand ;
-    rdfs:isDefinedBy <http://dbpedia.org/resource/Telecommand> ;
-    :definition "A telecommand or telecontrol is a command sent to control a remote system or systems not directly connected (e.g. via wires) to the place from which the telecommand is sent." ;
-    :synonym "Remote Control Command" .
 
 :TemporalDifferenceLearning a owl:Class,
         owl:NamedIndividual ;
@@ -42558,6 +42774,13 @@ Wikipedia. (n.d.). Central tendency. [Link](https://en.wikipedia.org/wiki/Centra
             owl:onProperty :accesses ;
             owl:someValuesFrom :WirelessRouter ] ;
     :definition "An attacker who targets wireless communication methods, like Wi-Fi, without needing physical access to the premises." .
+
+:WirelessCommand a owl:Class ;
+    rdfs:label "Wireless Command" ;
+    rdfs:subClassOf :RemoteCommand ;
+    rdfs:isDefinedBy <http://dbpedia.org/resource/Telecommand> ;
+    :definition "A wireless command is a remote command transmitted to a system over a non-wired medium." ;
+    :synonym "Telecommand" .
 
 :WirelessLink a owl:Class ;
     rdfs:label "Wireless Link" ;
