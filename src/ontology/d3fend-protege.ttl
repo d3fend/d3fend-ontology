@@ -23189,6 +23189,32 @@ Key steps in operational process security monitoring are:
     rdfs:seeAlso <http://dbpedia.org/page/Linux_kernel_interfaces>,
         <http://dbpedia.org/resource/Windows_API> .
 
+:OSAPIFunctionAnalysis a :OSAPIFunctionAnalysis,
+        owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "OS API Function Analysis" ;
+    rdfs:subClassOf :ProcessAnalysis,
+        [ a owl:Restriction ;
+            owl:onProperty :analyzes ;
+            owl:someValuesFrom :OSAPIFunction ] ;
+    :d3fend-id "D3-OSAPIFA" ;
+    :definition "Analyzing a process's invocations of operating system application programming interface (API) functions to determine whether it is exhibiting unauthorized behavior." ;
+    :kb-article """## How it works
+
+Invocations of OS API functions are observed during process execution through API hooking, application instrumentation, or execution-environment monitoring. Depending on the collection mechanism, observations may include the function invoked, its arguments and return value, its calling location, and process context. The analysis targets runtime use of operating system interfaces, including user-mode APIs, rather than requiring direct observation of kernel system calls.
+
+An analysis component evaluates individual invocations, their calling context, and relationships among calls against rules describing expected or suspicious behavior. Unexpected combinations of callers, functions, and arguments may indicate exploitation. Correlating multiple invocations can reveal higher-level behavior, such as downloading a file and subsequently executing it. Analysis can occur during execution or afterward using recorded observations.
+
+## Considerations
+
+* Coverage and evasion: Unmonitored interfaces and direct kernel calls can bypass user-mode API hooks. Analysis is also limited to behavior exercised during the observation period.
+* Context and false positives: Evaluate arguments and calling context rather than function names alone. Application-specific rules may require updates when application versions or expected calling patterns change.
+* Telemetry fidelity: Distinguish directly observed API invocations from inferred operations. Treat file or process events as supporting context, not proof of a particular API invocation, unless the telemetry identifies that invocation.
+* Collection cost: Detailed monitoring can introduce execution overhead and substantial telemetry volume. Balance collection scope and analysis depth against performance requirements.
+""" ;
+    :kb-reference :Reference-TowardAutomatedDynamicMalwareAnalysisUsingCWSandbox ;
+    rdfs:seeAlso :OSAPISensor .
+
 :OSAPIGetSystemTime a owl:Class ;
     rdfs:label "OS API Get System Time" ;
     rdfs:subClassOf :OSAPISystemFunction,
@@ -47843,6 +47869,17 @@ In various embodiments, a name server transmits a canonical name as resolution t
     :kb-organization "SmartTouch Inc" ;
     :kb-reference-of :BiometricAuthentication ;
     :kb-reference-title "Tokenless biometric transaction authorization method and system" .
+
+:Reference-TowardAutomatedDynamicMalwareAnalysisUsingCWSandbox a :AcademicPaperReference,
+        owl:NamedIndividual ;
+    rdfs:label "Reference - Toward Automated Dynamic Malware Analysis Using CWSandbox - IEEE" ;
+    :has-link "https://ieeexplore.ieee.org/document/4140988"^^xsd:anyURI ;
+    :kb-abstract "Malware is notoriously difficult to combat because it appears and spreads so quickly. In this article, we describe the design and implementation of CWSandbox, a malware analysis tool that fulfills our three design criteria of automation, effectiveness, and correctness for the Win32 family of operating systems" ;
+    :kb-author "Carsten Willems, Thorsten Holz, and Felix Freiling" ;
+    :kb-mitre-analysis "Describes Windows API interception and behavioral reporting, including inspection of call parameters and results and a CreateFileA hooking example. ResearchGate" ;
+    :kb-organization "IEEE" ;
+    :kb-reference-of :OSAPIFunctionAnalysis ;
+    :kb-reference-title "Toward Automated Dynamic Malware Analysis Using CWSandbox" .
 
 :Reference-Tripwire a owl:NamedIndividual,
         :UserManualReference ;
