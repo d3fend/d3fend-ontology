@@ -6,3 +6,9 @@
     1. e.g. An IRI of `Proxy-basedWebServerAccessMediation` would have the label `Proxy-based Web Server Access Mediation` 
 1. Do not use bracket characters in IRIs.
 1. Do not use unicode characters in IRIs.
+
+## WordNet references
+
+WordNet references use [Open English WordNet](https://en-word.net/), with
+URLs of the form `https://en-word.net/view/synset/{synset-id}`. Each reference
+should match the intended meaning and part of speech.
