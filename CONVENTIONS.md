@@ -9,9 +9,6 @@
 
 ## WordNet references
 
-Use [Open English WordNet](https://en-word.net/) for all new and updated WordNet
-references, with links in the form `https://en-word.net/view/synset/{synset-id}`.
-Select the exact word sense and part of speech; do not use retired Princeton
-WordNet URLs. When migrating an existing reference, verify concept identity
-through the Collaborative Interlingual Index (ILI), since numeric synset IDs can
-differ between WordNet versions.
+WordNet references use [Open English WordNet](https://en-word.net/), with
+URLs of the form `https://en-word.net/view/synset/{synset-id}`. Each reference
+should match the intended meaning and part of speech.
