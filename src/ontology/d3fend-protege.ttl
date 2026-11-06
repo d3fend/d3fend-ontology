@@ -2232,6 +2232,41 @@ Agglomerative clustering starts with each data point as its own cluster. The alg
 3. Scikit-learn. (30 Jun 2023). Scikit-learn Documentation: Agglomerative Clustering.
 [Link](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html).""" .
 
+:AIAgentMessage a owl:Class ;
+    rdfs:label "AI Agent Message" ;
+    rdfs:subClassOf :DigitalMessage,
+        [ a owl:Restriction ;
+            owl:onProperty :has-sender ;
+            owl:someValuesFrom :Agent ],
+        [ a owl:Restriction ;
+            owl:onProperty :has-recipient ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "A digital message sent from one AI agent to another as part of a multi-agent workflow, such as a delegated task or a returned result. A request from an AI agent to execute a tool is an AI Agent Tool Call." .
+
+:AIAgentToolCall a owl:Class ;
+    rdfs:label "AI Agent Tool Call" ;
+    skos:altLabel "Tool Call" ;
+    rdfs:subClassOf :Command ;
+    :definition "A command proposed or issued by an AI agent to execute a tool or skill declared in an AI Agent Tool Manifest, together with any arguments supplied for it. The AI Agent Message or other digital message that carries the call is a separate artifact." .
+
+:AIAgentToolConfiguration a owl:Class ;
+    rdfs:label "AI Agent Tool Configuration" ;
+    rdfs:subClassOf :ConfigurationResource ;
+    :definition "Information that declares the tools, skills, or capabilities an AI agent may invoke, including their names, parameters, and permitted operations. Examples include an MCP (Model Context Protocol) server's tool declarations and a skill file's frontmatter and instructions." .
+
+:AIAgentToolManifest a owl:Class ;
+    rdfs:label "AI Agent Tool Manifest" ;
+    skos:altLabel "Skill File",
+        "Tool Manifest" ;
+    rdfs:subClassOf :ConfigurationFile,
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :AIAgentToolConfiguration ],
+        [ a owl:Restriction ;
+            owl:onProperty :loaded-by ;
+            owl:someValuesFrom :Agent ] ;
+    :definition "A configuration file loaded by an AI agent at startup or tool-discovery time that declares available tools, skills, or capabilities. Examples include an MCP (Model Context Protocol) server manifest and a skill file (e.g. SKILL.md)." .
+
 :AircraftComputer a owl:Class ;
     rdfs:label "Aircraft Computer" ;
     rdfs:subClassOf :VehicleComputer ;
