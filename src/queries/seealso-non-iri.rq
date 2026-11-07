@@ -1,0 +1,25 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+# Quality report: rdfs:seeAlso assertions whose object is a string literal
+# instead of an IRI (issue #439).
+#
+# D3FEND ships make-has-links-anyURI.rq to DELETE/INSERT d3f:has-link string
+# literals into xsd:anyURI; rdfs:seeAlso has no such guard, so a seeAlso pointing
+# at a CURIE string (for example "T1574.001") instead of an @id slips through.
+# This read-only report is the regression guard for #439, catching the defect on
+# every build rather than fixing it once. Scoped to rdfs:seeAlso deliberately:
+# d3f:has-link string literals are a separate, already-handled condition (the
+# make-has-links-anyURI fix), so folding them in would swamp the #439 signal.
+# Measured at 11 occurrences in D3FEND v1.4.0.
+#
+# Sibling of inconsistent-iri.rq; no reasoning impact. Paired profile severity:
+# ERROR (a seeAlso that is not an IRI is a real data defect).
+
+SELECT DISTINCT ?entity ?property ?value
+WHERE {
+    BIND(rdfs:seeAlso AS ?property)
+    ?entity rdfs:seeAlso ?value .
+    FILTER(isLiteral(?value))
+} ORDER BY ?entity
