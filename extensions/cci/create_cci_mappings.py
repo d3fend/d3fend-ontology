@@ -1,3 +1,5 @@
+import argparse
+
 import numpy as np
 import pandas  # requires openpyxl in environment to do read_excel
 from owlready2 import default_world
@@ -34,7 +36,9 @@ def get_d3fend_technique_name(d3fend_id):
     query = d3fend_technique_query.format(d3fend_id)
     raw_result = d3fend_world.sparql(query)
     # print(raw_result)
-    result = list(raw_result)  # owlready2 sparql query to lookup technique name; could cache
+    result = list(
+        raw_result
+    )  # owlready2 sparql query to lookup technique name; could cache
     if result and result[0] and result[0][0]:
         # print("{} -> {}\n".format(d3fend_id, result))
         return result[0][0].name  # .namespace, .iri
@@ -50,8 +54,7 @@ def get_cci_iri(cci_id):
 # Use when adding CCI mappings to NIST controls, but if doing that,
 # remember to use XML data for those NIST reference mappings, tying to
 # CCI XML data from DoD Cyber Exchange, as the spreadsheet isn't
-# faithful table mapping of that XML:/e
-# https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CCI_List.zip)
+# faithful table mapping of that XML.
 def get_sp800_53_control_iri_name(version, control_id):
     """Formats IRI for a NIST SP800-53 control by removing spaces and brackets and embedding the release version"""
     control_iri_name = control_id.replace(" ", "")
@@ -71,7 +74,7 @@ def write_cci_mappings(
     relation,
     techniques_string,
     cci_catalog_prefix="CCICatalog",
-    cci_catalog_version_date="2022-04-05",
+    cci_catalog_version_date=None,
 ):
     """Writes mappings for one row in frame (spreadsheet.) to .ttl"""
     if status != "deprecated":
@@ -126,28 +129,44 @@ def write_cci_mappings(
         f.write("\n")
 
 
-df = pandas.read_excel(io="extensions/cci/CCI_Mapping.xlsx", sheet_name="U_CCI_List")
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", required=True)
+    parser.add_argument("--sheet", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--mapping-version", required=True)
+    return parser.parse_args()
 
-df = df[~df["D3FEND"].isnull()]
-# dataframe as read treats str 'NA' and np.nan the same; but if that
-# changes, pull NA string fields explicitly
-df = df[~df["D3FEND"].str.contains("NA")]
-df = df[~df["D3FEND"].str.contains("TBD")]
-df = df[~df["D3FEND"].str.contains("Duplicate")]
-df = df[~df["D3FEND"].str.contains("Review")]
 
-with open("build/cci-to-d3fend-mapping.ttl", "w") as f:
-    df.apply(
-        lambda x: write_cci_mappings(
-            f,
-            # no versioning on CCI data; pub date instead; versions are on NIST pubs
-            x["publishdate"],  # Just the date, no time
-            x["_id"],  # this is the CCI-nnnnnn formated id
-            x["contributor"],  # DISA-FSO or DISA-FSP
-            x["status"],  # deprecated or draft (dump deprecated)
-            x["definition"],
-            x["Relation"],
-            x["D3FEND"],
-        ),
-        axis=1,
-    )
+def main():
+    args = parse_args()
+    df = pandas.read_excel(io=args.source, sheet_name=args.sheet)
+
+    df = df[~df["D3FEND"].isnull()]
+    # dataframe as read treats str 'NA' and np.nan the same; but if that
+    # changes, pull NA string fields explicitly
+    df = df[~df["D3FEND"].str.contains("NA")]
+    df = df[~df["D3FEND"].str.contains("TBD")]
+    df = df[~df["D3FEND"].str.contains("Duplicate")]
+    df = df[~df["D3FEND"].str.contains("Review")]
+
+    with open(args.output, "w") as f:
+        df.apply(
+            lambda x: write_cci_mappings(
+                f,
+                # no versioning on CCI data; pub date instead; versions are on NIST pubs
+                x["publishdate"],  # Just the date, no time
+                x["_id"],  # this is the CCI-nnnnnn formated id
+                x["contributor"],  # DISA-FSO or DISA-FSP
+                x["status"],  # deprecated or draft (dump deprecated)
+                x["definition"],
+                x["Relation"],
+                x["D3FEND"],
+                cci_catalog_version_date=args.mapping_version,
+            ),
+            axis=1,
+        )
+
+
+if __name__ == "__main__":
+    main()

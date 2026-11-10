@@ -1,3 +1,5 @@
+import argparse
+
 import numpy as np
 import pandas  # requires openpyxl to do read_excel
 from owlready2 import default_world
@@ -62,7 +64,7 @@ def write_nist_control_mappings(
     control_name,
     relation,
     techniques_string,
-    nist_catalog_iri="NIST_SP_800-53_R5",
+    nist_catalog_iri,
 ):
     """Writes mappings for one row in frame (spreadsheet.) to .ttl"""
     version = str(version)
@@ -97,27 +99,41 @@ def write_nist_control_mappings(
     f.write("\n")
 
 
-# Corrected D3-LIC to D3-DLIC
-df = pandas.read_excel(
-    io="extensions/nist/sp800-53r5-control-catalog-d3fend-mapping.xlsx",
-    sheet_name="SP 800-53 Revision 5--d3fend",
-)
-techniques_column = "D3FEND Techniques"  # Corrected typo 'qes'->'ques' on column name original in spreadsheet
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", required=True)
+    parser.add_argument("--sheet", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--version", required=True)
+    parser.add_argument("--catalog-iri", required=True)
+    return parser.parse_args()
 
-df = df[~df[techniques_column].isnull()]
-# dataframe as read treats str 'NA' and np.nan the same; but if that
-# changes, pull NA string fields explicitly
-df = df[~df[techniques_column].str.contains("NA")]
 
-with open("build/sp800-53r5-control-to-d3fend-mapping.ttl", "w") as f:
-    df.apply(
-        lambda x: write_nist_control_mappings(
-            f,
-            "5",
-            x["Control Identifier"],
-            x["Control (or Control Enhancement) Name"],
-            x["Relation"],
-            x[techniques_column],
-        ),
-        axis=1,
-    )
+def main():
+    args = parse_args()
+    # Corrected D3-LIC to D3-DLIC
+    df = pandas.read_excel(io=args.source, sheet_name=args.sheet)
+    techniques_column = "D3FEND Techniques"
+
+    df = df[~df[techniques_column].isnull()]
+    # dataframe as read treats str 'NA' and np.nan the same; but if that
+    # changes, pull NA string fields explicitly
+    df = df[~df[techniques_column].str.contains("NA")]
+
+    with open(args.output, "w") as f:
+        df.apply(
+            lambda x: write_nist_control_mappings(
+                f,
+                args.version,
+                x["Control Identifier"],
+                x["Control (or Control Enhancement) Name"],
+                x["Relation"],
+                x[techniques_column],
+                args.catalog_iri,
+            ),
+            axis=1,
+        )
+
+
+if __name__ == "__main__":
+    main()

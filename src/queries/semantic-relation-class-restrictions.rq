@@ -1,0 +1,24 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX d3f: <http://d3fend.mitre.org/ontologies/d3fend.owl#>
+
+SELECT DISTINCT ?item ?predicate ?predicate_label ?target ?target_label
+WHERE {
+    VALUES ?relation_root {
+        d3f:semantic-relation
+        d3f:may-be-associated-with
+        d3f:enables
+    }
+    ?predicate rdfs:subPropertyOf* ?relation_root .
+    ?item rdfs:subClassOf ?restriction .
+    ?restriction rdf:type owl:Restriction ;
+        owl:onProperty ?predicate ;
+        owl:someValuesFrom ?target .
+    OPTIONAL { ?predicate rdfs:label ?raw_predicate_label . }
+    OPTIONAL { ?target rdfs:label ?raw_target_label . }
+    BIND (COALESCE(STR(?raw_predicate_label), REPLACE(STR(?predicate), "^.*[#/]", "")) AS ?predicate_label)
+    BIND (COALESCE(STR(?raw_target_label), REPLACE(STR(?target), "^.*[#/]", "")) AS ?target_label)
+    FILTER (isIRI(?target))
+}
+ORDER BY ?item ?predicate ?target
