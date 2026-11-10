@@ -17756,6 +17756,40 @@ File format specifications often define expected values for specific fields. A c
     :synonym "Firewall Filter Rule",
         "Packet Filter Rule" .
 
+:FirewallRuleCreationEvent a owl:Class ;
+    rdfs:label "Firewall Rule Creation Event" ;
+    rdfs:subClassOf :ApplicationConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FirewallRule ] ;
+    :definition "A an application configuration modification event in which a firewall rule is added to a firewall rule set." ;
+    rdfs:seeAlso <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4946> .
+
+:FirewallRuleDeletionEvent a owl:Class ;
+    rdfs:label "Firewall Rule Deletion Event" ;
+    rdfs:subClassOf :ApplicationConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FirewallRuleCreationEvent ] ;
+    :definition "An application configuration modification event in which a firewall rule is removed from a firewall rule set." ;
+    rdfs:seeAlso <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4948> .
+
+:FirewallRuleUpdateEvent a owl:Class ;
+    rdfs:label "Firewall Rule Update Event" ;
+    rdfs:subClassOf :ApplicationConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FirewallRuleCreationEvent ] ;
+    rdfs:comment "Enabling, disabling, or repositioning a rule within its rule set is an update." ;
+    :definition "An application configuration modification event in which a firewall rule is altered while remaining in its firewall rule set." ;
+    rdfs:seeAlso <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4947> .
+
 :Firmware a owl:Class ;
     rdfs:label "Firmware" ;
     rdfs:subClassOf :Software ;
@@ -21986,7 +22020,7 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
             owl:onProperty :may-contain ;
             owl:someValuesFrom :IPAddress ] ;
     :definition "An application rule used by packet filter software that specifies a matching condition on network traffic and replacement values for the address or port fields of network packets in network traffic satisfying the condition." ;
-    rdfs:seeAlso <https://dbpedia.org/resource/Network_address_translation> ; 
+    rdfs:seeAlso <https://dbpedia.org/resource/Network_address_translation> ;
     :synonym "NAT Rule",
         "Port Forwarding Rule" .
 
@@ -32345,11 +32379,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Service Discovery" ;
     rdfs:subClassOf :DiscoveryTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :produces ;
-            owl:someValuesFrom :NetworkTraffic ],
-        [ a owl:Restriction ;
             owl:onProperty :enumerates ;
-            owl:someValuesFrom :ServiceApplicationProcess ] ;
+            owl:someValuesFrom :ServiceApplicationProcess ],
+        [ a owl:Restriction ;
+            owl:onProperty :produces ;
+            owl:someValuesFrom :NetworkTraffic ] ;
     :attack-id "T1046" ;
     :definition "Adversaries may attempt to get a listing of services running on remote hosts and local network infrastructure devices, including those that may be vulnerable to remote software exploitation. Common methods to acquire this information include port and/or vulnerability scans using tools that are brought onto a system.(Citation: CISA AR21-126A FIVEHANDS May 2021)" .
 
