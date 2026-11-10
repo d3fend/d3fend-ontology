@@ -930,6 +930,11 @@ Moving forward different distinctions of kinds of has-part (contains) relationsh
     rdfs:subPropertyOf :may-be-associated-with ;
     :definition "x may-transfer y: The entity x may send the thing y; that is, 'x transfers y' may be true." .
 
+:may-use a owl:ObjectProperty ;
+    rdfs:label "may-use" ;
+    rdfs:subPropertyOf :may-be-associated-with ;
+    :definition "x may-use y: The entity x may use the thing y; that is, 'x uses y' may be true." .
+
 :mediates-access-to a owl:ObjectProperty ;
     rdfs:label "mediates-access-to" ;
     rdfs:subPropertyOf :associated-with ;
@@ -17732,9 +17737,60 @@ File format specifications often define expected values for specific fields. A c
     rdfs:subClassOf :ComputerNetworkNode,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-use ;
+            owl:someValuesFrom :NetworkAddressTranslationRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :FirewallRule ] ;
     :definition "In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines. This definition refers to network firewalls." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> .
+
+:FirewallRule a owl:Class ;
+    rdfs:label "Firewall Rule" ;
+    rdfs:subClassOf :ApplicationRule,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :IPAddress ] ;
+    :definition "An application rule used by firewall software that specifies a matching condition on network traffic and whether network traffic satisfying the condition is permitted or blocked." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> ;
+    :synonym "Firewall Filter Rule",
+        "Packet Filter Rule" .
+
+:FirewallRuleCreationEvent a owl:Class ;
+    rdfs:label "Firewall Rule Creation Event" ;
+    rdfs:subClassOf :ApplicationConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FirewallRule ] ;
+    :definition "An application configuration modification event in which a firewall rule is added to a firewall rule set." ;
+    rdfs:seeAlso <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4946> .
+
+:FirewallRuleDeletionEvent a owl:Class ;
+    rdfs:label "Firewall Rule Deletion Event" ;
+    rdfs:subClassOf :ApplicationConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FirewallRuleCreationEvent ] ;
+    :definition "An application configuration modification event in which a firewall rule is removed from a firewall rule set." ;
+    rdfs:seeAlso <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4948> .
+
+:FirewallRuleUpdateEvent a owl:Class ;
+    rdfs:label "Firewall Rule Update Event" ;
+    rdfs:subClassOf :ApplicationConfigurationModificationEvent,
+        [ a owl:Restriction ;
+            owl:onProperty :has-participant ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :preceded-by ;
+            owl:someValuesFrom :FirewallRuleCreationEvent ] ;
+    rdfs:comment "Enabling, disabling, or repositioning a rule within its rule set is an update." ;
+    :definition "An application configuration modification event in which a firewall rule is altered while remaining in its firewall rule set." ;
+    rdfs:seeAlso <https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4947> .
 
 :Firmware a owl:Class ;
     rdfs:label "Firmware" ;
@@ -18735,7 +18791,10 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
 
 :Host-basedFirewall a owl:Class ;
     rdfs:label "Host-based Firewall" ;
-    rdfs:subClassOf :SystemSoftware ;
+    rdfs:subClassOf :SystemSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :FirewallRule ] ;
     :definition "A software firewall which controls network inbound and outbound network traffic to the host computer." .
 
 :HostConfigurationSensor a owl:Class ;
@@ -21955,6 +22014,18 @@ Network Access Mediation is a crucial process in telecommunications and IT netwo
     :kb-reference :Reference-WhatIsNetworkAccessControl ;
     rdfs:seeAlso <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-160v1r1.pdf> ;
     :synonym "Network Access Control" .
+
+:NetworkAddressTranslationRule a owl:Class ;
+    rdfs:label "Network Address Translation Rule" ;
+    rdfs:subClassOf :ApplicationRule,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :IPAddress ] ;
+    :definition "An application rule used by packet filter software that specifies a matching condition on network traffic and replacement values for the address or port fields of network packets in network traffic satisfying the condition." ;
+    rdfs:seeAlso <https://dbpedia.org/resource/Network_address_translation> ;
+    :synonym "NAT Policy Rule",
+        "NAT Rule",
+        "Port Forwarding Rule" .
 
 :NetworkAgent a owl:Class ;
     rdfs:label "Network Agent" ;
@@ -27779,7 +27850,10 @@ Queries for reverse resolution requests (that is, requests where IP(s) are sent 
 
 :Router a owl:Class ;
     rdfs:label "Router" ;
-    rdfs:subClassOf :ComputerNetworkNode ;
+    rdfs:subClassOf :ComputerNetworkNode,
+        [ a owl:Restriction ;
+            owl:onProperty :may-use ;
+            owl:someValuesFrom :NetworkAddressTranslationRule ] ;
     rdfs:isDefinedBy <http://dbpedia.org/resource/Router_(computing)> ;
     :definition "A router is a networking device that forwards data packets between computer networks. Routers perform the traffic directing functions on the Internet. Data sent through the internet, such as a web page or email, is in the form of data packets. A packet is typically forwarded from one router to another router through the networks that constitute an internetwork (e.g. the Internet) until it reaches its destination node." .
 
@@ -29996,7 +30070,10 @@ This technique ensures the integrity of system owned file resources. System file
     rdfs:subClassOf :OperatingSystemConfigurationComponent,
         [ a owl:Restriction ;
             owl:onProperty :configures ;
-            owl:someValuesFrom :Host-basedFirewall ] ;
+            owl:someValuesFrom :Host-basedFirewall ],
+        [ a owl:Restriction ;
+            owl:onProperty :contains ;
+            owl:someValuesFrom :FirewallRule ] ;
     :definition "The configuration for a individual host operating system's firewall." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> ;
     :todo "No SystemFirewall class specified in ontology to relate the configuration concept to... ahem." .
@@ -39102,13 +39179,28 @@ When system firmware verification fails a set of predefined responses is typical
 
 :T1599 a owl:Class ;
     rdfs:label "Network Boundary Bridging" ;
-    rdfs:subClassOf :DefenseImpairmentTechnique ;
+    rdfs:subClassOf :DefenseImpairmentTechnique,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :InternetNetworkTraffic ] ;
     :attack-id "T1599" ;
     :definition "Adversaries may bridge network boundaries by compromising perimeter network devices or internal devices responsible for network segmentation. Breaching these devices may enable an adversary to bypass restrictions on traffic routing that otherwise separate trusted and untrusted networks." .
 
 :T1599.001 a owl:Class ;
     rdfs:label "Network Address Translation Traversal" ;
-    rdfs:subClassOf :T1599 ;
+    rdfs:subClassOf :T1599,
+        [ a owl:Restriction ;
+            owl:onProperty :may-create ;
+            owl:someValuesFrom :NetworkAddressTranslationRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-modify ;
+            owl:someValuesFrom :NetworkAddressTranslationRule ] ;
     :attack-id "T1599.001" ;
     :definition "Adversaries may bridge network boundaries by modifying a network device’s Network Address Translation (NAT) configuration. Malicious modifications to NAT may enable an adversary to bypass restrictions on traffic routing that otherwise separate trusted and untrusted networks." .
 
