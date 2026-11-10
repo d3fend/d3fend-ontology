@@ -17730,9 +17730,23 @@ File format specifications often define expected values for specific fields. A c
     rdfs:subClassOf :ComputerNetworkNode,
         [ a owl:Restriction ;
             owl:onProperty :filters ;
-            owl:someValuesFrom :NetworkTraffic ] ;
+            owl:someValuesFrom :NetworkTraffic ],
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :FirewallRule ] ;
     :definition "In computing, a firewall is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. A firewall typically establishes a barrier between a trusted internal network and untrusted external network, such as the Internet. Firewalls are often categorized as either network firewalls or host-based firewalls. Network firewalls filter traffic between two or more networks and run on network hardware. Host-based firewalls run on host computers and control network traffic in and out of those machines. This definition refers to network firewalls." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> .
+
+:FirewallRule a owl:Class ;
+    rdfs:label "Firewall Rule" ;
+    rdfs:subClassOf :ApplicationRule,
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :IPAddress ] ;
+    :definition "A firewall configuration resource that specifies a matching condition on network traffic and whether network traffic satisfying the condition is permitted or blocked." ;
+    rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> ;
+    :synonym "Firewall Filter Rule",
+        "Packet Filter Rule" .
 
 :Firmware a owl:Class ;
     rdfs:label "Firmware" ;
@@ -18733,7 +18747,10 @@ A homoglyph, in this context, is a deceptive string or word which looks like a t
 
 :Host-basedFirewall a owl:Class ;
     rdfs:label "Host-based Firewall" ;
-    rdfs:subClassOf :SystemSoftware ;
+    rdfs:subClassOf :SystemSoftware,
+        [ a owl:Restriction ;
+            owl:onProperty :uses ;
+            owl:someValuesFrom :FirewallRule ] ;
     :definition "A software firewall which controls network inbound and outbound network traffic to the host computer." .
 
 :HostConfigurationSensor a owl:Class ;
@@ -29994,7 +30011,10 @@ This technique ensures the integrity of system owned file resources. System file
     rdfs:subClassOf :OperatingSystemConfigurationComponent,
         [ a owl:Restriction ;
             owl:onProperty :configures ;
-            owl:someValuesFrom :Host-basedFirewall ] ;
+            owl:someValuesFrom :Host-basedFirewall ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-contain ;
+            owl:someValuesFrom :FirewallRule ] ;
     :definition "The configuration for a individual host operating system's firewall." ;
     rdfs:seeAlso <http://dbpedia.org/resource/Firewall_(computing)> ;
     :todo "No SystemFirewall class specified in ontology to relate the configuration concept to... ahem." .
@@ -39089,14 +39109,11 @@ When system firmware verification fails a set of predefined responses is typical
     rdfs:label "Network Boundary Bridging" ;
     rdfs:subClassOf :DefenseImpairmentTechnique,
         [ a owl:Restriction ;
-            owl:onProperty :may-access ;
-            owl:someValuesFrom :Firewall ],
-        [ a owl:Restriction ;
-            owl:onProperty :may-access ;
-            owl:someValuesFrom :Router ],
-        [ a owl:Restriction ;
             owl:onProperty :may-modify ;
-            owl:someValuesFrom :AccessControlList ] ;
+            owl:someValuesFrom :FirewallRule ],
+        [ a owl:Restriction ;
+            owl:onProperty :may-produce ;
+            owl:someValuesFrom :InternetNetworkTraffic ] ;
     :attack-id "T1599" ;
     :definition "Adversaries may bridge network boundaries by compromising perimeter network devices or internal devices responsible for network segmentation. Breaching these devices may enable an adversary to bypass restrictions on traffic routing that otherwise separate trusted and untrusted networks." .
 
