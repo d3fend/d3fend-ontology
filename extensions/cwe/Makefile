@@ -1,5 +1,6 @@
 # Install yarrrml-parser
 CWE_URL ?= https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
+PIPENV ?= pipenv
 
 install-yarrrml-parser:
 	npm install
@@ -26,11 +27,15 @@ parse-yarrrml: cwe-yarrrml.yaml
 create-cwe-triples: download-cwe parse-yarrrml
 	java -jar rmlmapper-7.3.3-r374-all.jar -m cwe-rules.rml.ttl --output cwe-all-out.nt
 
+# Refresh source-owned text before merging, so catalog renames replace old labels.
 # Run robot to merge to defend-protege.ttl (assume ROBOT in place in bin; test)
 # Use --add-prefix to prevent replacement of dcterms/skos prefixes with ns1, ns2 during robot's merge
 merge-cwe-with-d3fend: create-cwe-triples
-	java -jar ../../bin/robot.jar merge --include-annotations true --input ../../src/ontology/d3fend-protege.ttl --input cwe-all-out.nt --output ../../src/ontology/d3fend-protege.ttl --add-prefix "dcterms: http://purl.org/dc/terms/" --add-prefix "skos: http://www.w3.org/2004/02/skos/core#"
-	cd ../..; make format
+	cd ../.. && $(PIPENV) run python extensions/cwe/refresh_cwe.py \
+		src/ontology/d3fend-protege.ttl extensions/cwe/cwe-all-out.nt \
+		extensions/cwe/cwe-refreshed.ttl
+	java -jar ../../bin/robot.jar merge --include-annotations true --input cwe-refreshed.ttl --input cwe-all-out.nt --output ../../src/ontology/d3fend-protege.ttl --add-prefix "dcterms: http://purl.org/dc/terms/" --add-prefix "skos: http://www.w3.org/2004/02/skos/core#"
+	$(MAKE) -C ../.. format
 	@echo "Now use Protege to manually remove the subClassOf :Weakness statements that were on Top 25 classes and aren't pillars, as they are not direct subclasses of :Weakness.  Hint: Reference git diff on d3fend-protege.tll and search for - on :Weakness."
 
 clean:
