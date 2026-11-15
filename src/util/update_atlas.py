@@ -49,7 +49,7 @@ def get_stix_data(thesrc, graph):
         label_change = False
 
         if current_label is not None:
-            label_change = current_label.strip() != tech["name"]
+            label_change = current_label.strip() != tech["name"] + " - ATLAS"
 
         revoked_by_id = ""
         if revoked:
@@ -444,6 +444,28 @@ def update_definition(graph, tech):
     return new
 
 
+# Re-syncs tactic superclasses of an existing technique with the STIX
+# kill_chain_phases, mirroring ensure_superclasses in update_attack.py
+def ensure_superclasses(graph, tech):
+    atlas_uri = URIRef(_XMLNS + tech["id"])
+    if tech["data"].get("x_mitre_is_subtechnique", False):
+        desired = {d3fend[tech["superclasses"]]}
+    else:
+        desired = {d3fend[s] for s in tech["superclasses"]}
+    for target in desired:
+        graph.add((atlas_uri, RDFS.subClassOf, target))
+    for obj in list(graph.objects(atlas_uri, RDFS.subClassOf)):
+        name = str(obj).split("#")[-1]
+        if (
+            isinstance(obj, URIRef)
+            and name.startswith("ATLAS")
+            and name.endswith("Technique")
+            and name != "ATLASTechnique"
+            and obj not in desired
+        ):
+            graph.remove((atlas_uri, RDFS.subClassOf, obj))
+
+
 def update_and_add(graph, data, thesrc):
     # If tech is missing, add it to d3fend-protege.atlas.ttl
     # Else, handle if technique has recently become deprecated, revoked, or has an updated label
@@ -464,6 +486,7 @@ def update_and_add(graph, data, thesrc):
             counters["missing"] += 1
             counters[key] += 1
         else:
+            ensure_superclasses(graph, tech)
             if tech["deprecated"]:
                 new = add_deprecated(graph, tech)
                 counters["recently_deprecated"] += new
@@ -476,7 +499,7 @@ def update_and_add(graph, data, thesrc):
                 if current_label is not None:
                     graph.remove((atlas_uri, RDFS.label, current_label))
                 graph.add((atlas_uri, RDFS.label, Literal(tech["label"] + " - ATLAS")))
-                graph.add((atlas_uri, SKOS.prefLabel, Literal(tech["label"])))
+                graph.set((atlas_uri, SKOS.prefLabel, Literal(tech["label"])))
                 counters["label_change"] += 1
         update_definition(graph, tech)
 
@@ -496,6 +519,11 @@ def update_and_add(graph, data, thesrc):
             None,
         )
         tactic_uri = URIRef(_XMLNS + atlas_id)
+        if (tactic_uri, None, None) in graph and graph.value(
+            tactic_uri, SKOS.prefLabel
+        ) != Literal(tactic["name"]):
+            graph.set((tactic_uri, RDFS.label, Literal(tactic["name"] + " - ATLAS")))
+            graph.set((tactic_uri, SKOS.prefLabel, Literal(tactic["name"])))
         if (tactic_uri, None, None) not in graph:
             graph.add((tactic_uri, RDF.type, owl.Class))
             graph.add((tactic_uri, RDF.type, owl.NamedIndividual))
