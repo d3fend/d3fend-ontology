@@ -1,13 +1,13 @@
 
 # CWE -> D3FEND Converter
 
-This directory holds a Makefile and documents the steps necessary to all CWE to Original add of Top-25 CWEs to d3fend-protege.ttl.  
+This directory holds a Makefile and documents the steps necessary to all CWE to Original add of Top-25 CWEs to d3fend-protege.ttl.
 
 - This only converts the Research Concepts View (aka Graph) of CWE into a D3FEND taxonomy for CWE Weaknesses.
 
 - Future work will be required to extend this capability for ongoing CWE updates
 
-## How to use 
+## How to use
 
 To accomplish add in of CWE tree structure for the Research Concepts View (aka View 1000, Research Concepts Graph), here are the manual steps:
 
@@ -15,7 +15,7 @@ To accomplish add in of CWE tree structure for the Research Concepts View (aka V
 
   (i.e., go to the directory in which this README.md is located.)
 
-2. `make install-deps` 
+2. `make install-deps`
 
   This will install the # Add all CWE to Original add of Top-25 CWEs to d3fend-protege.ttl
 
@@ -25,6 +25,16 @@ Concepts View (aka Graph), here are the manual steps.
 3. `make all`
 
 4. Review diffs to d3fend-protege.ttl manually. _Example: First time use, the Top 25 classes already present were direct subclasses of Weakness but this was no longer wanted given entire taxonomy with intermediate clases were available; statements were already there and deletions may be required_.
+
+## Updating existing entries
+
+Before the ROBOT merge, `refresh_cwe.py` replaces names and definitions supplied by the incoming catalog. Existing curated relationships and other annotations remain in place. The hierarchy review described above is still required.
+
+Run the import regression checks from the repository root with:
+
+```sh
+pipenv run python -m unittest discover -s extensions/cwe -p test_refresh_cwe.py
+```
 
 ## Notes on RML and YARRRML technology
 
@@ -53,7 +63,7 @@ CARML does not offer pre-built jars though appeared to be compatible with YARRRM
 
 Yatter did not work for RML examples tried. But minimal use, so may work out well later.
 
-### Learning Resources 
+### Learning Resources
 
 The [RML spec](https://rml.io/specs/rml/) has many examples.
 
