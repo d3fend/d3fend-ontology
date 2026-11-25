@@ -19,7 +19,7 @@ CAPEC_ITEM_URL_PREFIX ?= https://capec.mitre.org/data/definitions/
 SPARTA_VERSION := 4.0
 SPARTA_STIX_URL ?= https://sparta.aerospace.org/download/STIX?f=sparta_data_v$(SPARTA_VERSION).json
 SPARTA_ITEM_URL_PREFIX ?= https://sparta.aerospace.org/technique/
-ATLAS_VERSION := 2026.06
+ATLAS_VERSION := 2026.10
 ATLAS_STIX_URL ?= https://github.com/mitre-atlas/atlas-data/releases/download/v$(ATLAS_VERSION)/stix-atlas.json
 ATLAS_ITEM_URL_PREFIX ?= https://atlas.mitre.org/techniques/
 CWEC_URL ?= https://cwe.mitre.org/data/xml/cwec_latest.xml.zip
